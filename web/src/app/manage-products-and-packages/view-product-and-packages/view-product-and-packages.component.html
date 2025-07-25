@@ -1,0 +1,440 @@
+<div class="container-fluid" style="margin: 2% 2% 2% 3%">
+	<div class="row add-edit-main-row">
+		<span>
+			<span
+				[routerLink]="['/licenses']"
+				style="margin-left: 0.25rem; color: #637373; margin-right: 2px; cursor: pointer">
+				{{ 'Pages.License.ViewLicense.pagetitle' | translate }}</span
+			>
+			<img src="assets/images/arrow_forward.svg" style="width: 27px" />
+			<span style="margin-left: 3px" [ngStyle]="{ color: appService.whiteBrandingColor }">{{
+				'Pages.License.ViewLicense.subtitle' | translate
+			}}</span>
+		</span>
+	</div>
+
+	<div class="row section-wrapper" style="margin-top: 2rem">
+		<div class="form-title">
+			<span>{{ 'Pages.License.ViewLicense.ClientProfile.title' | translate }}</span>
+		</div>
+		<div class="row card-body">
+			<div class="row">
+				<div class="col-md-2">
+					<div class="form-group">
+						<label>{{ 'Pages.License.ViewLicense.ClientProfile.id' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-4 valueCss">
+					{{
+						clientData && clientData.client_id
+							? clientData.client_id
+							: ('Pages.License.ViewLicense.realtimedatanotavailabel' | translate)
+					}}
+				</div>
+				<div class="col-md-2">
+					<div class="form-group">
+						<label>{{ 'Pages.License.ViewLicense.ClientProfile.name' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-4 valueCss">
+					{{
+						clientData && clientData.name
+							? clientData.name
+							: ('Pages.License.ViewLicense.realtimedatanotavailabel' | translate)
+					}}
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-2">
+					<div class="form-group">
+						<label>{{ 'Pages.License.ViewLicense.ClientProfile.status' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-4 valueCss">
+					{{
+						clientData && clientData.status
+							? clientData.status
+							: ('Pages.License.ViewLicense.realtimedatanotavailabel' | translate)
+					}}
+				</div>
+				<div class="col-md-2">
+					<div class="form-group">
+						<label>{{ 'Pages.License.ViewLicense.ClientProfile.parentAccount' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-4 valueCss">
+					{{
+						clientData && clientData.Parent_client && clientData.Parent_client.name
+							? clientData.Parent_client.name
+							: ('Pages.License.ViewLicense.realtimedatanotavailabel' | translate)
+					}}
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-2">
+					<div class="form-group">
+						<label>{{ 'Pages.License.ViewLicense.ClientProfile.category' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-4 valueCss">
+					{{
+						clientData && clientData.Parent_client && clientData.Parent_client.category
+							? clientData.Parent_client.category
+							: ('Pages.License.ViewLicense.realtimedatanotavailabel' | translate)
+					}}
+				</div>
+				<div class="col-md-2">
+					<div class="form-group">
+						<label>{{ 'Pages.License.ViewLicense.ClientProfile.country' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-4 valueCss">
+					{{
+						clientData &&
+						clientData.Parent_client &&
+						clientData.Parent_client.Countries &&
+						clientData.Parent_client.Countries[0].name
+							? clientData.Parent_client.Countries[0].name
+							: ('Pages.License.ViewLicense.realtimedatanotavailabel' | translate)
+					}}
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row section-wrapper" style="margin-top: 2rem" *ngIf="SubscriptionData">
+		<div class="form-title">
+			<span>
+				{{ 'Pages.License.ViewLicense.Subscription.title' | translate }}
+			</span>
+			<span style="float: right; text-transform: capitalize; font-size: 0.9rem">
+				<span *ngIf="SubscriptionData.status != 'Expired'">
+					{{ 'Pages.License.ViewLicense.Subscription.expireson' | translate }}
+				</span>
+				<span *ngIf="SubscriptionData.status == 'Expired'">
+					{{ 'Pages.License.ViewLicense.Subscription.expiredon' | translate }}
+				</span>
+				{{
+					SubscriptionData && SubscriptionData.endDate != null
+						? (SubscriptionData && SubscriptionData.endDate | DateFormat)
+						: '-'
+				}}
+			</span>
+		</div>
+		<div class="row card-body">
+			<div class="row">
+				<div class="col-md-12 mb-3 mt-2 text-right">
+					<div class="mb-3 text-danger" *ngIf="SubscriptionData.status == 'Suspended'">
+						{{ 'Pages.License.ViewLicense.Subscription.temporarilysuspended' | translate }}
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-3">
+					<div class="form-group"></div>
+				</div>
+				<div class="col-md-3">
+					<div class="form-group">
+						<label> {{ 'Pages.License.ViewLicense.Subscription.totalcount' | translate }}</label>
+					</div>
+				</div>
+
+				<div class="col-md-3">
+					<div class="form-group">
+						<label>{{ 'Pages.License.ViewLicense.Subscription.use' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-3">
+					<div class="form-group">
+						<label>{{ 'Pages.License.ViewLicense.Subscription.available' | translate }}</label>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-3">
+					<div class="form-group">
+						<label>{{ 'Pages.License.ViewLicense.Subscription.learnercount' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-3 valueCss">
+					{{
+						SubscriptionData.unlLearner == true
+							? ('Pages.License.ViewLicense.unlimited' | translate)
+							: SubscriptionData.learnerCount
+					}}
+				</div>
+				<div class="col-md-3 valueCss">
+					{{
+						SubscriptionData.unlLearner == true
+							? ('Pages.License.ViewLicense.unlimited' | translate)
+							: SubscriptionData.useLearnerCount
+					}}
+				</div>
+				<div class="col-md-3 valueCss">
+					{{
+						SubscriptionData.unlLearner == true
+							? ('Pages.License.ViewLicense.unlimited' | translate)
+							: SubscriptionData.learnerCount - SubscriptionData.useLearnerCount
+					}}
+				</div>
+			</div>
+
+			<div class="row" style="margin-top: 1rem">
+				<div class="col-md-3">
+					<div class="form-group">
+						<label>{{ 'Pages.License.ViewLicense.Subscription.onlyonWhatsApp' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-3 valueCss">
+					{{
+						SubscriptionData.whatsAppUnl == true
+							? ('Pages.License.ViewLicense.unlimited' | translate)
+							: SubscriptionData.whatsAppCount
+					}}
+				</div>
+				<div class="col-md-3 valueCss">
+					{{
+						SubscriptionData.whatsAppUnl == true
+							? ('Pages.License.ViewLicense.unlimited' | translate)
+							: SubscriptionData.useWhatsAppCount
+					}}
+				</div>
+				<div class="col-md-3 valueCss">
+					{{
+						SubscriptionData.whatsAppUnl == true
+							? ('Pages.License.ViewLicense.unlimited' | translate)
+							: SubscriptionData.whatsAppCount - SubscriptionData.useWhatsAppCount
+					}}
+				</div>
+			</div>
+
+			<div class="row" style="margin-top: 1rem">
+				<div class="col-md-3">
+					<div class="form-group">
+						<label>{{ 'Pages.License.ViewLicense.Subscription.onDripAppwithsharingonWhatsApp' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-3 valueCss">
+					<!-- {{SubscriptionData.sharWhatsAppCount}} -->
+					{{
+						SubscriptionData.sharWhatsAppUnl == true
+							? ('Pages.License.ViewLicense.unlimited' | translate)
+							: SubscriptionData.sharWhatsAppCount
+					}}
+				</div>
+				<div class="col-md-3 valueCss">
+					<!-- {{SubscriptionData.useSharWhatsAppCount}} -->
+					{{
+						SubscriptionData.sharWhatsAppUnl == true
+							? ('Pages.License.ViewLicense.unlimited' | translate)
+							: SubscriptionData.useSharWhatsAppCount
+					}}
+				</div>
+				<div class="col-md-3 valueCss">
+					{{
+						SubscriptionData.sharWhatsAppUnl == true
+							? ('Pages.License.ViewLicense.unlimited' | translate)
+							: SubscriptionData.sharWhatsAppCount - SubscriptionData.useSharWhatsAppCount
+					}}
+				</div>
+			</div>
+
+			<!-- Only Email -->
+			<div class="row" style="margin-top: 1rem">
+				<div class="col-md-3">
+					<div class="form-group">
+						<label>{{ 'Pages.License.ViewLicense.Subscription.onlyOnEmail' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-3 valueCss">
+					<!-- {{SubscriptionData.emailCount}} -->
+					{{
+						SubscriptionData.onlyEmailUnl == true
+							? ('Pages.License.ViewLicense.unlimited' | translate)
+							: SubscriptionData.onlyEmailCount
+					}}
+				</div>
+				<div class="col-md-3 valueCss">
+					<!-- {{SubscriptionData.useEmailCount}} -->
+					{{
+						SubscriptionData.onlyEmailUnl == true
+							? ('Pages.License.ViewLicense.unlimited' | translate)
+							: SubscriptionData.useOnlyEmailCount
+					}}
+				</div>
+				<div class="col-md-3 valueCss">
+					<!-- {{SubscriptionData.emailCount - SubscriptionData.useEmailCount}} -->
+					{{
+						SubscriptionData.onlyEmailUnl == true
+							? ('Pages.License.ViewLicense.unlimited' | translate)
+							: SubscriptionData.onlyEmailCount - SubscriptionData.useOnlyEmailCount
+					}}
+				</div>
+			</div>
+
+			<div class="row" style="margin-top: 1rem">
+				<div class="col-md-3">
+					<div class="form-group">
+						<label>{{ 'Pages.License.ViewLicense.Subscription.onDripAppwithsharingonemail' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-3 valueCss">
+					<!-- {{SubscriptionData.emailCount}} -->
+					{{
+						SubscriptionData.emailUnl == true
+							? ('Pages.License.ViewLicense.unlimited' | translate)
+							: SubscriptionData.emailCount
+					}}
+				</div>
+				<div class="col-md-3 valueCss">
+					<!-- {{SubscriptionData.useEmailCount}} -->
+					{{
+						SubscriptionData.emailUnl == true
+							? ('Pages.License.ViewLicense.unlimited' | translate)
+							: SubscriptionData.useEmailCount
+					}}
+				</div>
+				<div class="col-md-3 valueCss">
+					<!-- {{SubscriptionData.emailCount - SubscriptionData.useEmailCount}} -->
+					{{
+						SubscriptionData.emailUnl == true
+							? ('Pages.License.ViewLicense.unlimited' | translate)
+							: SubscriptionData.emailCount - SubscriptionData.useEmailCount
+					}}
+				</div>
+			</div>
+
+			<div class="row" style="margin-top: 1rem">
+				<div class="col-md-3">
+					<div class="form-group">
+						<label>{{ 'Pages.License.ViewLicense.Subscription.onlyonDripapp' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-3 valueCss">
+					{{
+						SubscriptionData.dripappUnl == true
+							? ('Pages.License.ViewLicense.unlimited' | translate)
+							: SubscriptionData.dripappCount
+					}}
+				</div>
+				<div class="col-md-3 valueCss">
+					{{
+						SubscriptionData.dripappUnl == true
+							? ('Pages.License.ViewLicense.unlimited' | translate)
+							: SubscriptionData.useDripappCount
+					}}
+				</div>
+				<div class="col-md-3 valueCss">
+					{{
+						SubscriptionData.dripappUnl == true
+							? ('Pages.License.ViewLicense.unlimited' | translate)
+							: SubscriptionData.dripappCount - SubscriptionData.useDripappCount
+					}}
+				</div>
+			</div>
+
+			<div class="row" style="margin-top: 1rem">
+				<div class="col-md-3">
+					<div class="form-group">
+						<label>{{ 'Pages.License.ViewLicense.Subscription.onlyTeam' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-3 valueCss">
+					{{
+						SubscriptionData.onlyTeamUnl == true
+							? ('Pages.License.ViewLicense.unlimited' | translate)
+							: SubscriptionData.onlyTeamCount
+					}}
+				</div>
+				<div class="col-md-3 valueCss">
+					{{
+						SubscriptionData.onlyTeamUnl == true
+							? ('Pages.License.ViewLicense.unlimited' | translate)
+							: SubscriptionData.useOnlyTeamCount
+					}}
+				</div>
+				<div class="col-md-3 valueCss">
+					{{
+						SubscriptionData.onlyTeamUnl == true
+							? ('Pages.License.ViewLicense.unlimited' | translate)
+							: SubscriptionData.onlyTeamCount - SubscriptionData.useOnlyTeamCount
+					}}
+				</div>
+			</div>
+
+			<div class="row" style="margin-top: 1rem">
+				<div class="col-md-3">
+					<div class="form-group">
+						<label>{{ 'Pages.License.ViewLicense.Subscription.onDripAppWithTeam' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-3 valueCss">
+					{{
+						SubscriptionData.dripWithTeamUnl == true
+							? ('Pages.License.ViewLicense.unlimited' | translate)
+							: SubscriptionData.dripWithTeamCount
+					}}
+				</div>
+				<div class="col-md-3 valueCss">
+					{{
+						SubscriptionData.dripWithTeamUnl == true
+							? ('Pages.License.ViewLicense.unlimited' | translate)
+							: SubscriptionData.useDripWithTeamCount
+					}}
+				</div>
+				<div class="col-md-3 valueCss">
+					{{
+						SubscriptionData.dripWithTeamUnl == true
+							? ('Pages.License.ViewLicense.unlimited' | translate)
+							: SubscriptionData.dripWithTeamCount - SubscriptionData.useDripWithTeamCount
+					}}
+				</div>
+			</div>
+
+			<div class="row" style="margin-top: 1rem">
+				<div class="col-md-3">
+					<div class="form-group">
+						<label>{{ 'Pages.License.ViewLicense.Subscription.serverstorage' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-3 valueCss">
+					{{
+						SubscriptionData.dataTransferUnl == true
+							? ('Pages.License.ViewLicense.unlimited' | translate)
+							: SubscriptionData.dataTransferCount
+					}}
+				</div>
+				<div class="col-md-3 valueCss">
+					{{ 'Pages.License.ViewLicense.realtimedatanotavailabel' | translate }}
+				</div>
+				<div class="col-md-3 valueCss">
+					{{ 'Pages.License.ViewLicense.realtimedatanotavailabel' | translate }}
+				</div>
+			</div>
+
+			<div class="row" style="margin-top: 1rem">
+				<div class="col-md-3">
+					<div class="form-group">
+						<label>{{ 'Pages.License.ViewLicense.Subscription.datatransfer' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-3 valueCss">
+					{{
+						SubscriptionData.serverStorageUnl == true
+							? ('Pages.License.ViewLicense.unlimited' | translate)
+							: SubscriptionData.serverStrgCount
+					}}
+				</div>
+				<div class="col-md-3 valueCss">
+					{{ 'Pages.License.ViewLicense.realtimedatanotavailabel' | translate }}
+				</div>
+				<div class="col-md-3 valueCss">
+					{{ 'Pages.License.ViewLicense.realtimedatanotavailabel' | translate }}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

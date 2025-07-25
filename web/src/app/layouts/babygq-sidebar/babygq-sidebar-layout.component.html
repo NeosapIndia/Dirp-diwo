@@ -1,0 +1,1150 @@
+<div class="sidebar app-aside" id="sidebar">
+	<div class="sidebar-container perfect-scrollbar" style="margin-top: 20px">
+		<div *ngIf="projectName == 'drip'">
+			<nav>
+				<ul class="main-navigation-menu">
+					<li
+						class="open"
+						id="demoPortal"
+						*ngxPermissionsOnly="permissionObject?.H"
+						routerLinkActive="active activeLink"
+						[routerLinkActiveOptions]="{ exact: true }">
+						<a [routerLink]="['/home']">
+							<div class="item-content">
+								<div class="item-media">
+									<div class="tooltip2 lettericon" data-text="home" data-size="sm" data-char-count="2">
+										<div class="size-sm">
+											<span class="letter-icon left_side_menu_padding_top glyphicon">
+												<!-- <img src="assets/images/sidebar/home_icon.svg" /> -->
+												<span [innerHTML]="iconObject['home_icon']"></span>
+											</span>
+										</div>
+										<span class="tooltiptext">{{ 'Pages.ProjectSidebar.demoportal' | translate }}</span>
+									</div>
+								</div>
+								<div class="item-inner">
+									<span class="title">{{ 'Pages.ProjectSidebar.home' | translate }}</span>
+								</div>
+							</div>
+						</a>
+					</li>
+
+					<li
+						class="open"
+						id="demoPortal"
+						*ngIf="
+							permissionObject?.BA[0] != '' ||
+							permissionObject?.PA[0] != '' ||
+							permissionObject?.CA[0] != '' ||
+							permissionObject?.POA[0] != ''
+						"
+						routerLinkActive="active"
+						[routerLinkActiveOptions]="{ exact: true }">
+						<a [routerLink]="['/clients']">
+							<div class="item-content">
+								<div class="item-media">
+									<div class="tooltip2 lettericon" data-text="assets-library" data-size="sm" data-char-count="2">
+										<div class="size-sm">
+											<span class="letter-icon left_side_menu_padding_top glyphicon">
+												<!-- <img src="assets/images/sidebar/switch_account.svg" /> -->
+												<span [innerHTML]="iconObject['switch_account']"></span>
+											</span>
+										</div>
+										<span class="tooltiptext">{{ 'Pages.ProjectSidebar.demoportal' | translate }}</span>
+									</div>
+								</div>
+								<div class="item-inner">
+									<span class="title">{{ 'Pages.ProjectSidebar.accounts' | translate }}</span>
+								</div>
+							</div>
+						</a>
+					</li>
+
+					<!-- New User DD As per User Role Excel Sheet -->
+					<li
+						class="open sidebar-dropdown"
+						id="index1"
+						routerLinkActive="active"
+						*ngxPermissionsOnly="
+							permissionObject?.AU || permissionObject?.L || permissionObject?.SRA || permissionObject?.LG
+						">
+						<a href="javascript:void(0)" (click)="showHideList('list1', ['list2', 'list3', 'list4'])">
+							<div class="item-content">
+								<div class="item-media">
+									<div class="lettericon tooltip2" data-text="Dashboard" data-size="sm" data-char-count="2">
+										<div class="size-sm">
+											<span class="letter-icon left_side_menu_padding_top glyphicon">
+												<!-- <img src="assets/images/sidebar/users_icon.svg" /> -->
+												<span [innerHTML]="iconObject['users_icon']"></span>
+											</span>
+										</div>
+										<span class="tooltiptext">{{ 'Pages.ProjectSidebar.users' | translate }}</span>
+									</div>
+								</div>
+								<div class="item-inner">
+									<span class="title">{{ 'Pages.ProjectSidebar.users' | translate }}</span
+									><i class="icon-arrow"></i>
+								</div>
+							</div>
+						</a>
+						<ul class="sub-menu" id="list1">
+							<li
+								class="open"
+								routerLinkActive="active"
+								[routerLinkActiveOptions]="{ exact: true }"
+								*ngxPermissionsOnly="permissionObject?.AU">
+								<a [routerLink]="['/user']">
+									<span class="title" style="font-size: 0.9rem !important">
+										{{ 'Pages.ProjectSidebar.adminusers' | translate }}
+									</span>
+								</a>
+							</li>
+							<li
+								class="open"
+								routerLinkActive="active"
+								[routerLinkActiveOptions]="{ exact: true }"
+								*ngxPermissionsOnly="permissionObject?.L">
+								<a [routerLink]="['/contacts']">
+									<span class="title" style="font-size: 0.9rem !important">
+										{{ 'Pages.ProjectSidebar.contacts' | translate }}
+									</span>
+								</a>
+							</li>
+
+							<!-- <li class="open" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" *ngxPermissionsOnly="permissionObject?.SRA">
+                                <a > <span class="title" style="font-size: 15px !important;">System Role Assignment</span> </a>
+                            </li> -->
+
+							<li
+								class="open"
+								routerLinkActive="active"
+								[routerLinkActiveOptions]="{ exact: true }"
+								*ngxPermissionsOnly="permissionObject?.LG">
+								<a [routerLink]="['/contact-groups']">
+									<span class="title" style="font-size: 0.9rem !important">
+										{{ 'Pages.ProjectSidebar.contactgroups' | translate }}
+									</span>
+								</a>
+							</li>
+						</ul>
+					</li>
+
+					<li
+						class="open"
+						id="demoPortal"
+						*ngxPermissionsOnly="permissionObject?.A"
+						routerLinkActive="active"
+						[routerLinkActiveOptions]="{ exact: true }">
+						<a [routerLink]="['/assets-library']">
+							<div class="item-content">
+								<div class="item-media">
+									<div class="tooltip2 lettericon" data-text="assets-library" data-size="sm" data-char-count="2">
+										<div class="size-sm">
+											<span class="letter-icon left_side_menu_padding_top glyphicon">
+												<!-- <img src="assets/images/sidebar/assets_icon.svg" /> -->
+												<span [innerHTML]="iconObject['assets_icon']"></span>
+											</span>
+										</div>
+										<span class="tooltiptext">{{ 'Pages.ProjectSidebar.demoportal' | translate }}</span>
+									</div>
+								</div>
+								<div class="item-inner">
+									<span class="title"> {{ 'Pages.ProjectSidebar.assets' | translate }} </span>
+								</div>
+							</div>
+						</a>
+					</li>
+
+					<li
+						class="open"
+						id="demoPortal"
+						*ngxPermissionsOnly="permissionObject?.DOC"
+						routerLinkActive="active"
+						[routerLinkActiveOptions]="{ exact: true }">
+						<a [routerLink]="['/document-library']">
+							<div class="item-content">
+								<div class="item-media">
+									<div class="tooltip2 lettericon" data-text="assets-library" data-size="sm" data-char-count="2">
+										<div class="size-sm">
+											<span class="letter-icon left_side_menu_padding_top glyphicon">
+												<span [innerHTML]="iconObject['assets_icon']"></span>
+											</span>
+										</div>
+										<span class="tooltiptext">{{ 'Pages.ProjectSidebar.demoportal' | translate }}</span>
+									</div>
+								</div>
+								<div class="item-inner">
+									<span class="title"> {{ 'Pages.ProjectSidebar.document' | translate }} </span>
+								</div>
+							</div>
+						</a>
+					</li>
+
+					<li
+						class="open"
+						id="demoPortal"
+						*ngxPermissionsOnly="permissionObject?.D"
+						routerLinkActive="active"
+						[routerLinkActiveOptions]="{ exact: true }">
+						<a [routerLink]="['/drips-library']">
+							<div class="item-content">
+								<div class="item-media">
+									<div class="tooltip2 lettericon" data-text="drips-library" data-size="sm" data-char-count="2">
+										<div class="size-sm">
+											<span class="letter-icon left_side_menu_padding_top glyphicon">
+												<!-- <img src="assets/images/sidebar/drip_icon.svg" /> -->
+												<span [innerHTML]="iconObject['drip_icon']"></span>
+											</span>
+										</div>
+										<span class="tooltiptext"> {{ 'Pages.ProjectSidebar.demoportal' | translate }} </span>
+									</div>
+								</div>
+								<div class="item-inner">
+									<span class="title">{{ 'Pages.ProjectSidebar.drips' | translate }}</span>
+								</div>
+							</div>
+						</a>
+					</li>
+
+					<li
+						class="open"
+						id="demoPortal"
+						*ngxPermissionsOnly="permissionObject?.DF"
+						routerLinkActive="active"
+						[routerLinkActiveOptions]="{ exact: true }">
+						<a [routerLink]="['/drip-flows']">
+							<div class="item-content">
+								<div class="item-media">
+									<div class="tooltip2 lettericon" data-text="campaigns" data-size="sm" data-char-count="2">
+										<div class="size-sm">
+											<span class="letter-icon left_side_menu_padding_top glyphicon">
+												<!-- <img src="assets/images/sidebar/campaign_icon.svg" /> -->
+												<span [innerHTML]="iconObject['campaign_icon']"></span>
+											</span>
+										</div>
+										<span class="tooltiptext"> {{ 'Pages.ProjectSidebar.demoportal' | translate }} </span>
+									</div>
+								</div>
+								<div class="item-inner">
+									<span class="title">{{ 'Pages.ProjectSidebar.dripflows' | translate }}</span>
+								</div>
+							</div>
+						</a>
+					</li>
+
+					<li
+						class="open"
+						id="demoPortal"
+						*ngxPermissionsOnly="permissionObject?.AN"
+						routerLinkActive="active"
+						[routerLinkActiveOptions]="{ exact: true }">
+						<a [routerLink]="['/learning-analytics']">
+							<div class="item-content">
+								<div class="item-media">
+									<div class="tooltip2 lettericon" data-text="learning-analytics" data-size="sm" data-char-count="2">
+										<div class="size-sm">
+											<span class="letter-icon left_side_menu_padding_top glyphicon">
+												<!-- <img src="assets/images/sidebar/analytics_icon.svg" /> -->
+												<span [innerHTML]="iconObject['analytics_icon']"></span>
+											</span>
+										</div>
+										<span class="tooltiptext"> {{ 'Pages.ProjectSidebar.demoportal' | translate }} </span>
+									</div>
+								</div>
+								<div class="item-inner">
+									<span class="title">{{ 'Pages.ProjectSidebar.analytics' | translate }}</span>
+								</div>
+							</div>
+						</a>
+					</li>
+					<li
+						class="open"
+						id="demoPortal"
+						*ngxPermissionsOnly="permissionObject?.CHT"
+						routerLinkActive="active"
+						[routerLinkActiveOptions]="{ exact: true }">
+						<a [routerLink]="['/chats']">
+							<div class="item-content">
+								<div class="item-media">
+									<div class="tooltip2 lettericon" data-text="chats" data-size="sm" data-char-count="2">
+										<div class="size-sm">
+											<span class="letter-icon glyphicon">
+												<!-- <img src="assets/images/sidebar/chat_icon.svg" /> -->
+												<span [innerHTML]="iconObject['chat_icon']"></span>
+											</span>
+										</div>
+										<span class="tooltiptext"> {{ 'Pages.ProjectSidebar.demoportal' | translate }} </span>
+									</div>
+								</div>
+								<div class="item-inner">
+									<span class="title">{{ 'Pages.ProjectSidebar.chats' | translate }}</span>
+								</div>
+							</div>
+						</a>
+					</li>
+
+					<li
+						class="open sidebar-dropdown"
+						id="index1"
+						routerLinkActive="active"
+						*ngIf="
+							permissionObject?.MS[0] != '' ||
+							permissionObject?.AB[0] != '' ||
+							permissionObject?.WS[0] != '' ||
+							permissionObject?.ES[0] != '' ||
+							permissionObject?.WT[0] != ''
+						">
+						<a href="javascript:void(0)" (click)="showHideList('list2', ['list1', 'list3', 'list4'])">
+							<div class="item-content">
+								<div class="item-media">
+									<div class="lettericon tooltip2" data-text="Dashboard" data-size="sm" data-char-count="2">
+										<div class="size-sm">
+											<span class="letter-icon left_side_menu_padding_top glyphicon">
+												<!-- <img src="assets/images/sidebar/settings_icon.svg" /> -->
+												<span [innerHTML]="iconObject['settings_icon']"></span>
+											</span>
+										</div>
+										<span class="tooltiptext"> {{ 'Pages.ProjectSidebar.settings' | translate }}</span>
+									</div>
+								</div>
+								<div class="item-inner">
+									<span class="title">{{ 'Pages.ProjectSidebar.settings' | translate }}</span
+									><i class="icon-arrow"></i>
+								</div>
+							</div>
+						</a>
+						<ul class="sub-menu" id="list2">
+							<li
+								class="open"
+								routerLinkActive="active"
+								[routerLinkActiveOptions]="{ exact: true }"
+								*ngxPermissionsOnly="permissionObject?.MS">
+								<a [routerLink]="['/master-setting']">
+									<span class="title" style="font-size: 0.9rem !important">
+										{{ 'Pages.ProjectSidebar.mastersettings' | translate }}</span
+									>
+								</a>
+							</li>
+
+							<li
+								class="open"
+								routerLinkActive="active"
+								[routerLinkActiveOptions]="{ exact: true }"
+								*ngxPermissionsOnly="permissionObject?.AG">
+								<a [routerLink]="['/agents']">
+									<span class="title" style="font-size: 0.9rem !important">
+										{{ 'Pages.ProjectSidebar.agentAndEtlSetup' | translate }}</span
+									>
+								</a>
+							</li>
+
+							<li
+								class="open"
+								routerLinkActive="active"
+								[routerLinkActiveOptions]="{ exact: true }"
+								*ngxPermissionsOnly="permissionObject?.AB">
+								<a [routerLink]="['/general-settings']">
+									<span class="title" style="font-size: 0.9rem !important">
+										{{ 'Pages.ProjectSidebar.generalsettings' | translate }}</span
+									>
+								</a>
+							</li>
+
+							<li
+								class="open"
+								routerLinkActive="active"
+								[routerLinkActiveOptions]="{ exact: true }"
+								*ngxPermissionsOnly="permissionObject?.WS">
+								<a [routerLink]="['/whatsapp-setup']">
+									<span class="title" style="font-size: 0.9rem !important">
+										{{ 'Pages.ProjectSidebar.whatsAppsetup' | translate }}</span
+									>
+								</a>
+							</li>
+							<li
+								class="open"
+								routerLinkActive="active"
+								[routerLinkActiveOptions]="{ exact: true }"
+								*ngxPermissionsOnly="permissionObject?.TS">
+								<a [routerLink]="['/teams-setup']">
+									<span class="title" style="font-size: 0.9rem !important">
+										{{ 'Pages.ProjectSidebar.teamsetup' | translate }}</span
+									>
+								</a>
+							</li>
+							<li
+								class="open"
+								routerLinkActive="active"
+								[routerLinkActiveOptions]="{ exact: true }"
+								*ngxPermissionsOnly="permissionObject?.WT">
+								<a [routerLink]="['/whatsapp-template']">
+									<span class="title" style="font-size: 0.9rem !important">
+										{{ 'Pages.ProjectSidebar.whatsApptemplates' | translate }}</span
+									>
+								</a>
+							</li>
+						</ul>
+					</li>
+
+					<li
+						class="open sidebar-dropdown"
+						id="index1"
+						routerLinkActive="active"
+						*ngxPermissionsOnly="permissionObject?.PAP">
+						<a href="javascript:void(0)" (click)="showHideList('list3', ['list1', 'list2', 'list4'])">
+							<div class="item-content">
+								<div class="item-media">
+									<div class="lettericon tooltip2" data-text="Dashboard" data-size="sm" data-char-count="2">
+										<div class="size-sm">
+											<span class="letter-icon left_side_menu_padding_top glyphicon">
+												<!-- <img src="assets/images/sidebar/sales_icon.svg" /> -->
+												<span [innerHTML]="iconObject['sales_icon']"></span>
+											</span>
+										</div>
+										<span class="tooltiptext">{{ 'Pages.ProjectSidebar.sales' | translate }}</span>
+									</div>
+								</div>
+								<div class="item-inner">
+									<span class="title">{{ 'Pages.ProjectSidebar.sales' | translate }}</span
+									><i class="icon-arrow"></i>
+								</div>
+							</div>
+						</a>
+						<ul class="sub-menu" id="list3">
+							<li
+								class="open"
+								routerLinkActive="active"
+								[routerLinkActiveOptions]="{ exact: true }"
+								*ngxPermissionsOnly="permissionObject?.PAP">
+								<a [routerLink]="['/licenses']">
+									<span class="title" style="font-size: 0.9rem !important">
+										{{ 'Pages.ProjectSidebar.licenses' | translate }}</span
+									>
+								</a>
+							</li>
+							<!-- <li class="open" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" *ngxPermissionsOnly="permissionObject?.SR">
+                                <a [routerLink]="['/sales']"><span class="title" style="font-size: 15px !important;">Sales Report</span> </a>
+                            </li> -->
+						</ul>
+					</li>
+
+					<li
+						class="open"
+						id="demoPortal"
+						*ngxPermissionsOnly="permissionObject?.SM"
+						routerLinkActive="active"
+						[routerLinkActiveOptions]="{ exact: true }">
+						<a [routerLink]="['/system-health']">
+							<div class="item-content">
+								<div class="item-media">
+									<div class="tooltip2 lettericon" data-text="support" data-size="sm" data-char-count="2">
+										<div class="size-sm">
+											<span class="letter-icon left_side_menu_padding_top glyphicon">
+												<span [innerHTML]="iconObject['systemhealth_icon']"></span>
+											</span>
+										</div>
+										<span class="tooltiptext"> {{ 'Pages.ProjectSidebar.systemhealth' | translate }} </span>
+									</div>
+								</div>
+								<div class="item-inner">
+									<span class="title">{{ 'Pages.ProjectSidebar.systemhealth' | translate }}</span>
+								</div>
+							</div>
+						</a>
+					</li>
+
+					<li
+						class="open"
+						id="demoPortal"
+						*ngxPermissionsOnly="permissionObject?.S"
+						routerLinkActive="active"
+						[routerLinkActiveOptions]="{ exact: true }">
+						<a [routerLink]="['/support']">
+							<div class="item-content">
+								<div class="item-media">
+									<div class="tooltip2 lettericon" data-text="learning-analytics" data-size="sm" data-char-count="2">
+										<div class="size-sm">
+											<span class="letter-icon left_side_menu_padding_top glyphicon">
+												<!-- <img src="assets/images/sidebar/support_icon.svg" /> -->
+												<span [innerHTML]="iconObject['support_icon']"></span>
+											</span>
+										</div>
+										<span class="tooltiptext"> {{ 'Pages.ProjectSidebar.support' | translate }} </span>
+									</div>
+								</div>
+								<div class="item-inner">
+									<span class="title">{{ 'Pages.ProjectSidebar.support' | translate }}</span>
+								</div>
+							</div>
+						</a>
+					</li>
+
+					<li
+						class="open"
+						id="demoPortal"
+						*ngxPermissionsOnly="permissionObject?.OI"
+						routerLinkActive="active"
+						[routerLinkActiveOptions]="{ exact: true }">
+						<a [routerLink]="['/opt-ins']">
+							<div class="item-content">
+								<div class="item-media">
+									<div class="tooltip2 lettericon" data-text="campaigns" data-size="sm" data-char-count="2">
+										<div class="size-sm">
+											<span class="letter-icon left_side_menu_padding_top glyphicon">
+												<!-- <img src="assets/images/sidebar/about_us_icon.svg" /> -->
+												<span [innerHTML]="iconObject['about_us_icon']"></span>
+											</span>
+										</div>
+										<span class="tooltiptext">{{ 'Pages.ProjectSidebar.optins' | translate }}</span>
+									</div>
+								</div>
+								<div class="item-inner">
+									<span class="title">{{ 'Pages.ProjectSidebar.optins' | translate }}</span>
+								</div>
+							</div>
+						</a>
+					</li>
+
+					<li
+						class="open sidebar-dropdown"
+						id="index1"
+						routerLinkActive="active"
+						*ngIf="
+							permissionObject?.T[0] != '' ||
+							permissionObject?.PP[0] != '' ||
+							permissionObject?.DPA[0] != '' ||
+							permissionObject?.CP[0] != ''
+						">
+						<a href="javascript:void(0)" (click)="showHideList('list4', ['list1', 'list3', 'list2'])">
+							<div class="item-content">
+								<div class="item-media">
+									<div class="lettericon tooltip2" data-text="Dashboard" data-size="sm" data-char-count="2">
+										<div class="size-sm">
+											<span class="letter-icon left_side_menu_padding_top glyphicon">
+												<!-- <img src="assets/images/sidebar/settings_icon.svg" /> -->
+												<span [innerHTML]="iconObject['settings_icon']"></span>
+											</span>
+										</div>
+										<span class="tooltiptext">{{ 'Pages.ProjectSidebar.legal' | translate }}</span>
+									</div>
+								</div>
+								<div class="item-inner">
+									<span class="title">{{ 'Pages.ProjectSidebar.legal' | translate }}</span
+									><i class="icon-arrow"></i>
+								</div>
+							</div>
+						</a>
+						<ul class="sub-menu" id="list4">
+							<li
+								class="open"
+								routerLinkActive="active"
+								[routerLinkActiveOptions]="{ exact: true }"
+								*ngxPermissionsOnly="permissionObject?.T">
+								<a>
+									<span class="title" style="font-size: 0.9rem !important" (click)="ToSUrl()">{{
+										'Pages.ProjectSidebar.toS' | translate
+									}}</span>
+								</a>
+							</li>
+							<li
+								class="open"
+								routerLinkActive="active"
+								[routerLinkActiveOptions]="{ exact: true }"
+								*ngxPermissionsOnly="permissionObject?.PP">
+								<a>
+									<span class="title" style="font-size: 0.9rem !important" (click)="PrivacyPolicyUrl()">{{
+										'Pages.ProjectSidebar.privacypolicy' | translate
+									}}</span>
+								</a>
+							</li>
+							<li
+								class="open"
+								routerLinkActive="active"
+								[routerLinkActiveOptions]="{ exact: true }"
+								*ngxPermissionsOnly="permissionObject?.DPA">
+								<a>
+									<span class="title" style="font-size: 0.9rem !important" (click)="DPAUrl()">{{
+										'Pages.ProjectSidebar.dpa' | translate
+									}}</span>
+								</a>
+							</li>
+							<li
+								class="open"
+								routerLinkActive="active"
+								[routerLinkActiveOptions]="{ exact: true }"
+								*ngxPermissionsOnly="permissionObject?.CP">
+								<a>
+									<span class="title" style="font-size: 0.9rem !important" (click)="CookiePolicyUrl()">{{
+										'Pages.ProjectSidebar.cookiepolicy' | translate
+									}}</span>
+								</a>
+							</li>
+						</ul>
+					</li>
+
+					<li
+						class="open"
+						id="demoPortal"
+						*ngxPermissionsOnly="permissionObject?.AUS"
+						routerLinkActive="active"
+						[routerLinkActiveOptions]="{ exact: true }">
+						<a [routerLink]="['/about-us']">
+							<div class="item-content">
+								<div class="item-media">
+									<div class="tooltip2 lettericon" data-text="campaigns" data-size="sm" data-char-count="2">
+										<div class="size-sm">
+											<span class="letter-icon left_side_menu_padding_top glyphicon">
+												<!-- <img src="assets/images/sidebar/about_us_icon.svg" /> -->
+												<span [innerHTML]="iconObject['about_us_icon']"></span>
+											</span>
+										</div>
+										<span class="tooltiptext"> {{ 'Pages.ProjectSidebar.demoportal' | translate }} </span>
+									</div>
+								</div>
+								<div class="item-inner">
+									<span class="title">{{ 'Pages.ProjectSidebar.aboutUs' | translate }}</span>
+								</div>
+							</div>
+						</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+		<div *ngIf="projectName == 'diwo'">
+			<nav>
+				<ul class="main-navigation-menu">
+					<li
+						class="open"
+						id="demoPortal"
+						*ngxPermissionsOnly="permissionObject?.H"
+						routerLinkActive="active activeLink"
+						[routerLinkActiveOptions]="{ exact: true }">
+						<a [routerLink]="['/diwo-home']">
+							<div class="item-content">
+								<div class="item-media">
+									<div class="tooltip2 lettericon" data-text="home" data-size="sm" data-char-count="2">
+										<div class="size-sm">
+											<span class="letter-icon left_side_menu_padding_top glyphicon">
+												<!-- <img src="assets/images/sidebar/home_icon.svg" /> -->
+												<span [innerHTML]="iconObject['home_icon']"></span>
+											</span>
+										</div>
+										<span class="tooltiptext">{{ 'Pages.ProjectSidebar.demoportal' | translate }}</span>
+									</div>
+								</div>
+								<div class="item-inner">
+									<span class="title">{{ 'Pages.ProjectSidebar.home' | translate }}</span>
+								</div>
+							</div>
+						</a>
+					</li>
+
+					<li
+						class="open"
+						id="demoPortal"
+						*ngIf="
+							permissionObject?.BA[0] != '' ||
+							permissionObject?.PA[0] != '' ||
+							permissionObject?.CA[0] != '' ||
+							permissionObject?.POA[0] != ''
+						"
+						routerLinkActive="active"
+						[routerLinkActiveOptions]="{ exact: true }">
+						<a [routerLink]="['/clients']">
+							<div class="item-content">
+								<div class="item-media">
+									<div class="tooltip2 lettericon" data-text="assets-library" data-size="sm" data-char-count="2">
+										<div class="size-sm">
+											<span class="letter-icon left_side_menu_padding_top glyphicon">
+												<!-- <img src="assets/images/sidebar/switch_account.svg" /> -->
+												<span [innerHTML]="iconObject['switch_account']"></span>
+											</span>
+										</div>
+										<span class="tooltiptext">{{ 'Pages.ProjectSidebar.demoportal' | translate }}</span>
+									</div>
+								</div>
+								<div class="item-inner">
+									<span class="title">{{ 'Pages.ProjectSidebar.accounts' | translate }}</span>
+								</div>
+							</div>
+						</a>
+					</li>
+
+					<li
+						class="open sidebar-dropdown"
+						id="index1"
+						routerLinkActive="active"
+						*ngxPermissionsOnly="
+							permissionObject?.AU || permissionObject?.L || permissionObject?.SRA || permissionObject?.LG
+						">
+						<a href="javascript:void(0)" (click)="showHideList('list1', ['list2', 'list3', 'list4'])">
+							<div class="item-content">
+								<div class="item-media">
+									<div class="lettericon tooltip2" data-text="Dashboard" data-size="sm" data-char-count="2">
+										<div class="size-sm">
+											<span class="letter-icon left_side_menu_padding_top glyphicon">
+												<!-- <img src="assets/images/sidebar/users_icon.svg" /> -->
+												<span [innerHTML]="iconObject['users_icon']"></span>
+											</span>
+										</div>
+										<span class="tooltiptext">{{ 'Pages.ProjectSidebar.users' | translate }}</span>
+									</div>
+								</div>
+								<div class="item-inner">
+									<span class="title">{{ 'Pages.ProjectSidebar.users' | translate }}</span
+									><i class="icon-arrow"></i>
+								</div>
+							</div>
+						</a>
+						<ul class="sub-menu" id="list1">
+							<li
+								class="open"
+								routerLinkActive="active"
+								[routerLinkActiveOptions]="{ exact: true }"
+								*ngxPermissionsOnly="permissionObject?.AU">
+								<a [routerLink]="['/user']">
+									<span class="title" style="font-size: 0.9rem !important">{{
+										'Pages.ProjectSidebar.adminusers' | translate
+									}}</span>
+								</a>
+							</li>
+							<li
+								class="open"
+								routerLinkActive="active"
+								[routerLinkActiveOptions]="{ exact: true }"
+								*ngxPermissionsOnly="permissionObject?.L">
+								<a [routerLink]="['/learners']">
+									<span class="title" style="font-size: 0.9rem !important">{{
+										'Pages.ProjectSidebar.learners' | translate
+									}}</span>
+								</a>
+							</li>
+							<li
+								class="open"
+								routerLinkActive="active"
+								[routerLinkActiveOptions]="{ exact: true }"
+								*ngxPermissionsOnly="permissionObject?.LG">
+								<a [routerLink]="['/learner-groups']">
+									<span class="title" style="font-size: 0.9rem !important">{{
+										'Pages.ProjectSidebar.learnergroups' | translate
+									}}</span>
+								</a>
+							</li>
+						</ul>
+					</li>
+
+					<li
+						class="open"
+						id="demoPortal"
+						*ngxPermissionsOnly="permissionObject?.MB"
+						routerLinkActive="active"
+						[routerLinkActiveOptions]="{ exact: true }">
+						<a [routerLink]="['/module']">
+							<div class="item-content">
+								<div class="item-media">
+									<div class="tooltip2 lettericon" data-text="Modules" data-size="sm" data-char-count="2">
+										<div class="size-sm">
+											<span class="letter-icon left_side_menu_padding_top glyphicon">
+												<!-- <img src="assets/images/sidebar/workbook_icon.svg" /> -->
+												<span [innerHTML]="iconObject['workbook_icon']"></span>
+											</span>
+										</div>
+										<span class="tooltiptext"> {{ 'Pages.ProjectSidebar.demoportal' | translate }} </span>
+									</div>
+								</div>
+								<div class="item-inner">
+									<span class="title">{{ 'Pages.ProjectSidebar.coursebooks' | translate }}</span>
+								</div>
+							</div>
+						</a>
+					</li>
+
+					<li
+						class="open"
+						id="demoPortal"
+						*ngxPermissionsOnly="permissionObject?.DCOU"
+						routerLinkActive="active"
+						[routerLinkActiveOptions]="{ exact: true }">
+						<a [routerLink]="['/diwo-courses']">
+							<div class="item-content">
+								<div class="item-media">
+									<div class="tooltip2 lettericon" data-text="Courses" data-size="sm" data-char-count="2">
+										<div class="size-sm">
+											<span class="letter-icon left_side_menu_padding_top glyphicon">
+												<span [innerHTML]="iconObject['course_icon']"></span>
+											</span>
+										</div>
+										<span class="tooltiptext"> {{ 'Pages.ProjectSidebar.demoportal' | translate }} </span>
+									</div>
+								</div>
+								<div class="item-inner">
+									<span class="title">{{ 'Pages.ProjectSidebar.courses' | translate }}</span>
+								</div>
+							</div>
+						</a>
+					</li>
+
+					<li
+						class="open"
+						id="demoPortal"
+						*ngxPermissionsOnly="permissionObject?.DPTW"
+						routerLinkActive="active"
+						[routerLinkActiveOptions]="{ exact: true }">
+						<a [routerLink]="['/diwo-pathways']">
+							<div class="item-content">
+								<div class="item-media">
+									<div class="tooltip2 lettericon" data-text="Pathways" data-size="sm" data-char-count="2">
+										<div class="size-sm">
+											<span class="letter-icon left_side_menu_padding_top glyphicon">
+												<span [innerHTML]="iconObject['pathway_icon']"></span>
+											</span>
+										</div>
+										<span class="tooltiptext"> {{ 'Pages.ProjectSidebar.demoportal' | translate }} </span>
+									</div>
+								</div>
+								<div class="item-inner">
+									<span class="title">{{ 'Pages.ProjectSidebar.pathways' | translate }}</span>
+								</div>
+							</div>
+						</a>
+					</li>
+
+					<li
+						class="open"
+						id="demoPortal"
+						*ngxPermissionsOnly="permissionObject?.SES"
+						routerLinkActive="active"
+						[routerLinkActiveOptions]="{ exact: true }">
+						<a [routerLink]="['/session']">
+							<div class="item-content">
+								<div class="item-media">
+									<div class="tooltip2 lettericon" data-text="Sessions" data-size="sm" data-char-count="2">
+										<div class="size-sm">
+											<span class="letter-icon left_side_menu_padding_top glyphicon">
+												<!-- <img src="assets/images/sidebar/session_icon.svg.svg" /> -->
+												<span [innerHTML]="iconObject['session_icon']"></span>
+											</span>
+										</div>
+										<span class="tooltiptext"> {{ 'Pages.ProjectSidebar.demoportal' | translate }} </span>
+									</div>
+								</div>
+								<div class="item-inner">
+									<span class="title">{{ 'Pages.ProjectSidebar.sessions' | translate }}</span>
+								</div>
+							</div>
+						</a>
+					</li>
+
+					<li
+						class="open"
+						id="demoPortal"
+						*ngxPermissionsOnly="permissionObject?.AN"
+						routerLinkActive="active"
+						[routerLinkActiveOptions]="{ exact: true }">
+						<a [routerLink]="['/diwo-learning-analytics']">
+							<div class="item-content">
+								<div class="item-media">
+									<div class="tooltip2 lettericon" data-text="learning-analytics" data-size="sm" data-char-count="2">
+										<div class="size-sm">
+											<span class="letter-icon left_side_menu_padding_top glyphicon">
+												<!-- <img src="assets/images/sidebar/analytics_icon.svg" /> -->
+												<span [innerHTML]="iconObject['analytics_icon']"></span>
+											</span>
+										</div>
+										<span class="tooltiptext"> {{ 'Pages.ProjectSidebar.demoportal' | translate }} </span>
+									</div>
+								</div>
+								<div class="item-inner">
+									<span class="title">{{ 'Pages.ProjectSidebar.analytics' | translate }}</span>
+								</div>
+							</div>
+						</a>
+					</li>
+
+					<li
+						class="open sidebar-dropdown"
+						id="index1"
+						routerLinkActive="active"
+						*ngIf="permissionObject?.MS[0] != '' || permissionObject?.AB[0] != ''">
+						<a href="javascript:void(0)" (click)="showHideList('list2', ['list1', 'list3', 'list4'])">
+							<div class="item-content">
+								<div class="item-media">
+									<div class="lettericon tooltip2" data-text="Dashboard" data-size="sm" data-char-count="2">
+										<div class="size-sm">
+											<span class="letter-icon left_side_menu_padding_top glyphicon">
+												<!-- <img src="assets/images/sidebar/settings_icon.svg" /> -->
+												<span [innerHTML]="iconObject['settings_icon']"></span>
+											</span>
+										</div>
+										<span class="tooltiptext"> {{ 'Pages.ProjectSidebar.settings' | translate }}</span>
+									</div>
+								</div>
+								<div class="item-inner">
+									<span class="title">{{ 'Pages.ProjectSidebar.settings' | translate }}</span
+									><i class="icon-arrow"></i>
+								</div>
+							</div>
+						</a>
+						<ul class="sub-menu" id="list2">
+							<li
+								class="open"
+								routerLinkActive="active"
+								[routerLinkActiveOptions]="{ exact: true }"
+								*ngxPermissionsOnly="permissionObject?.MS">
+								<a [routerLink]="['/master-setting']">
+									<span class="title" style="font-size: 0.9rem !important">
+										{{ 'Pages.ProjectSidebar.mastersettings' | translate }}</span
+									>
+								</a>
+							</li>
+							<li
+								class="open"
+								routerLinkActive="active"
+								[routerLinkActiveOptions]="{ exact: true }"
+								*ngxPermissionsOnly="permissionObject?.AB">
+								<a [routerLink]="['/general-settings']">
+									<span class="title" style="font-size: 0.9rem !important">
+										{{ 'Pages.ProjectSidebar.generalsettings' | translate }}</span
+									>
+								</a>
+							</li>
+							<li
+								class="open"
+								routerLinkActive="active"
+								[routerLinkActiveOptions]="{ exact: true }"
+								*ngxPermissionsOnly="permissionObject?.WS">
+								<a [routerLink]="['/whatsapp-setup']">
+									<span class="title" style="font-size: 0.9rem !important">
+										{{ 'Pages.ProjectSidebar.messagesetup' | translate }}</span
+									>
+								</a>
+							</li>
+						</ul>
+					</li>
+
+					<li
+						class="open sidebar-dropdown"
+						id="index1"
+						routerLinkActive="active"
+						*ngxPermissionsOnly="permissionObject?.PAP">
+						<a href="javascript:void(0)" (click)="showHideList('list3', ['list1', 'list2', 'list4'])">
+							<div class="item-content">
+								<div class="item-media">
+									<div class="lettericon tooltip2" data-text="Dashboard" data-size="sm" data-char-count="2">
+										<div class="size-sm">
+											<span class="letter-icon left_side_menu_padding_top glyphicon">
+												<!-- <img src="assets/images/sidebar/sales_icon.svg" /> -->
+												<span [innerHTML]="iconObject['sales_icon']"></span>
+											</span>
+										</div>
+										<span class="tooltiptext">{{ 'Pages.ProjectSidebar.sales' | translate }}</span>
+									</div>
+								</div>
+								<div class="item-inner">
+									<span class="title">{{ 'Pages.ProjectSidebar.sales' | translate }}</span
+									><i class="icon-arrow"></i>
+								</div>
+							</div>
+						</a>
+						<ul class="sub-menu" id="list3">
+							<li
+								class="open"
+								routerLinkActive="active"
+								[routerLinkActiveOptions]="{ exact: true }"
+								*ngxPermissionsOnly="permissionObject?.PAP">
+								<a [routerLink]="['/diwo-licenses']">
+									<span class="title" style="font-size: 0.9rem !important">
+										{{ 'Pages.ProjectSidebar.licenses' | translate }}</span
+									>
+								</a>
+							</li>
+							<!-- <li class="open" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" *ngxPermissionsOnly="permissionObject?.SR">
+                        <a [routerLink]="['/sales']"><span class="title" style="font-size: 15px !important;">Sales Report</span> </a>
+                    </li> -->
+						</ul>
+					</li>
+
+					<li
+						class="open"
+						id="demoPortal"
+						*ngxPermissionsOnly="permissionObject?.SM"
+						routerLinkActive="active"
+						[routerLinkActiveOptions]="{ exact: true }">
+						<a [routerLink]="['/system-health']">
+							<div class="item-content">
+								<div class="item-media">
+									<div class="tooltip2 lettericon" data-text="support" data-size="sm" data-char-count="2">
+										<div class="size-sm">
+											<span class="letter-icon left_side_menu_padding_top glyphicon">
+												<span [innerHTML]="iconObject['systemhealth_icon']"></span>
+											</span>
+										</div>
+										<span class="tooltiptext"> {{ 'Pages.ProjectSidebar.systemhealth' | translate }} </span>
+									</div>
+								</div>
+								<div class="item-inner">
+									<span class="title">{{ 'Pages.ProjectSidebar.systemhealth' | translate }}</span>
+								</div>
+							</div>
+						</a>
+					</li>
+
+					<li
+						class="open"
+						id="demoPortal"
+						*ngxPermissionsOnly="permissionObject?.S"
+						routerLinkActive="active"
+						[routerLinkActiveOptions]="{ exact: true }">
+						<a [routerLink]="['/support']">
+							<div class="item-content">
+								<div class="item-media">
+									<div class="tooltip2 lettericon" data-text="support" data-size="sm" data-char-count="2">
+										<div class="size-sm">
+											<span class="letter-icon left_side_menu_padding_top glyphicon">
+												<!-- <img src="assets/images/sidebar/support_icon.svg" /> -->
+												<span [innerHTML]="iconObject['support_icon']"></span>
+											</span>
+										</div>
+										<span class="tooltiptext"> {{ 'Pages.ProjectSidebar.support' | translate }} </span>
+									</div>
+								</div>
+								<div class="item-inner">
+									<span class="title">{{ 'Pages.ProjectSidebar.support' | translate }}</span>
+								</div>
+							</div>
+						</a>
+					</li>
+
+					<li
+						class="open"
+						id="demoPortal"
+						*ngxPermissionsOnly="permissionObject?.OI"
+						routerLinkActive="active"
+						[routerLinkActiveOptions]="{ exact: true }">
+						<a [routerLink]="['/opt-ins']">
+							<div class="item-content">
+								<div class="item-media">
+									<div class="tooltip2 lettericon" data-text="campaigns" data-size="sm" data-char-count="2">
+										<div class="size-sm">
+											<span class="letter-icon left_side_menu_padding_top glyphicon">
+												<!-- <img src="assets/images/sidebar/about_us_icon.svg" /> -->
+												<span [innerHTML]="iconObject['about_us_icon']"></span>
+											</span>
+										</div>
+										<span class="tooltiptext">{{ 'Pages.ProjectSidebar.optins' | translate }}</span>
+									</div>
+								</div>
+								<div class="item-inner">
+									<span class="title">{{ 'Pages.ProjectSidebar.optins' | translate }}</span>
+								</div>
+							</div>
+						</a>
+					</li>
+
+					<li
+						class="open sidebar-dropdown"
+						id="index1"
+						routerLinkActive="active"
+						*ngIf="
+							permissionObject?.T[0] != '' ||
+							permissionObject?.PP[0] != '' ||
+							permissionObject?.DPA[0] != '' ||
+							permissionObject?.CP[0] != ''
+						">
+						<a href="javascript:void(0)" (click)="showHideList('list4', ['list1', 'list3', 'list2'])">
+							<div class="item-content">
+								<div class="item-media">
+									<div class="lettericon tooltip2" data-text="Dashboard" data-size="sm" data-char-count="2">
+										<div class="size-sm">
+											<span class="letter-icon left_side_menu_padding_top glyphicon">
+												<!-- <img src="assets/images/sidebar/settings_icon.svg" /> -->
+												<span [innerHTML]="iconObject['settings_icon']"></span>
+											</span>
+										</div>
+										<span class="tooltiptext">{{ 'Pages.ProjectSidebar.legal' | translate }}</span>
+									</div>
+								</div>
+								<div class="item-inner">
+									<span class="title">{{ 'Pages.ProjectSidebar.legal' | translate }}</span
+									><i class="icon-arrow"></i>
+								</div>
+							</div>
+						</a>
+						<ul class="sub-menu" id="list4">
+							<li
+								class="open"
+								routerLinkActive="active"
+								[routerLinkActiveOptions]="{ exact: true }"
+								*ngxPermissionsOnly="permissionObject?.T">
+								<a>
+									<span class="title" style="font-size: 0.9rem !important" (click)="ToSUrl()">{{
+										'Pages.ProjectSidebar.toS' | translate
+									}}</span>
+								</a>
+							</li>
+							<li
+								class="open"
+								routerLinkActive="active"
+								[routerLinkActiveOptions]="{ exact: true }"
+								*ngxPermissionsOnly="permissionObject?.PP">
+								<a>
+									<span class="title" style="font-size: 0.9rem !important" (click)="PrivacyPolicyUrl()">{{
+										'Pages.ProjectSidebar.privacypolicy' | translate
+									}}</span>
+								</a>
+							</li>
+							<li
+								class="open"
+								routerLinkActive="active"
+								[routerLinkActiveOptions]="{ exact: true }"
+								*ngxPermissionsOnly="permissionObject?.DPA">
+								<a>
+									<span class="title" style="font-size: 0.9rem !important" (click)="DPAUrl()">{{
+										'Pages.ProjectSidebar.dpa' | translate
+									}}</span>
+								</a>
+							</li>
+							<li
+								class="open"
+								routerLinkActive="active"
+								[routerLinkActiveOptions]="{ exact: true }"
+								*ngxPermissionsOnly="permissionObject?.CP">
+								<a>
+									<span class="title" style="font-size: 0.9rem !important" (click)="CookiePolicyUrl()">{{
+										'Pages.ProjectSidebar.cookiepolicy' | translate
+									}}</span>
+								</a>
+							</li>
+						</ul>
+					</li>
+
+					<li
+						class="open"
+						id="demoPortal"
+						*ngxPermissionsOnly="permissionObject?.AUS"
+						routerLinkActive="active"
+						[routerLinkActiveOptions]="{ exact: true }">
+						<a [routerLink]="['/about-us']">
+							<div class="item-content">
+								<div class="item-media">
+									<div class="tooltip2 lettericon" data-text="campaigns" data-size="sm" data-char-count="2">
+										<div class="size-sm">
+											<span class="letter-icon left_side_menu_padding_top glyphicon">
+												<!-- <img src="assets/images/sidebar/about_us_icon.svg" /> -->
+												<span [innerHTML]="iconObject['about_us_icon']"></span>
+											</span>
+										</div>
+										<span class="tooltiptext"> {{ 'Pages.ProjectSidebar.demoportal' | translate }} </span>
+									</div>
+								</div>
+								<div class="item-inner">
+									<span class="title">{{ 'Pages.ProjectSidebar.aboutUs' | translate }}</span>
+								</div>
+							</div>
+						</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>

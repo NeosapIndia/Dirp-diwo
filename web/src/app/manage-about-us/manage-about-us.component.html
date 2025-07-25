@@ -1,0 +1,123 @@
+<div class="pageDiv" style="min-height: calc(100vh - 95px)">
+	<div style="margin-top: 2rem">
+		<div class="row">
+			<div class="panel header-panel-white" style="display: flex">
+				<div class="col-md-3" style="padding-left: 0.5%">
+					<span class="mainTitle no-margin pageTitle_Main">{{ 'Pages.AboutUs.Home.pagetitle' | translate }}</span>
+				</div>
+				<div class="col-md-9" style="padding-right: 0"></div>
+			</div>
+		</div>
+	</div>
+
+	<div style="margin-top: 0.5rem">
+		<div class="row">
+			<div class="panel panel-white">
+				<div class="row">
+					<div class="col-md-12" style="text-align: center">
+						<div class="image-sec">
+							<img
+								*ngIf="aboutUsInfo && aboutUsInfo.theme_image_path"
+								[src]="imageHost + aboutUsInfo.theme_image_path"
+								class="banner-image" />
+							<img *ngIf="!aboutUsInfo.theme_image_path" src="assets/images/banner1.avif" class="banner-image" />
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<p class="banner-text" *ngIf="aboutUsInfo && aboutUsInfo.about_text">{{ aboutUsInfo.about_text }}</p>
+						<p class="banner-text" *ngIf="!aboutUsInfo.about_text">
+							{{ 'Pages.AboutUs.Home.aboutustext' | translate }}
+						</p>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12" style="text-align: center">
+						<p class="version-text">{{ 'Pages.AboutUs.Home.version' | translate }}: {{ appVerion }}</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- <div style="margin-top: 0.5rem" *ngIf="!aboutUsInfo">
+		<div class="row">
+			<div class="panel panel-white">
+				<div class="row">
+					<div class="col-md-12" style="text-align: center">
+						<div class="image-sec">
+							<img src="assets/images/banner1.avif" class="banner-image" />
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<p class="banner-text">{{ 'Pages.AboutUs.Home.aboutustext' | translate }}</p>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12" style="text-align: center">
+						<p class="version-text">{{ 'Pages.AboutUs.Home.version' | translate }}: {{ appVerion }}</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div> -->
+
+	<div style="margin-top: 0.5rem" *ngIf="showNeosapStaticData && projectName == 'drip'">
+		<div class="row">
+			<div class="panel panel-white">
+				<div class="row">
+					<div class="col-md-12" style="text-align: center; margin-top: 1rem">
+						<img *ngIf="!appService.aboutWebLogo" src="assets/images/drip_logo.png" class="banner-image-2" />
+						<img *ngIf="appService.aboutWebLogo" [src]="appService.aboutWebLogo" class="banner-image-2" />
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<p class="banner-text" *ngIf="!appService.aboutWebText">
+							{{ 'Pages.AboutUs.Home.aboutustextforneosapdrip' | translate }}
+						</p>
+						<p class="banner-text" *ngIf="appService.aboutWebText">
+							{{ appService.aboutWebText }}
+						</p>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12" style="text-align: center">
+						<p class="version-text">{{ 'Pages.AboutUs.Home.version' | translate }}: {{ appVerion }}</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div style="margin-top: 0.5rem" *ngIf="showNeosapStaticData && projectName == 'diwo'">
+		<div class="row">
+			<div class="panel panel-white">
+				<div class="row">
+					<div class="col-md-12" style="text-align: center; margin-top: 1rem">
+						<img *ngIf="!appService.aboutWebLogo" src="assets/images/diwo_logo.png" class="banner-image-2" />
+						<img *ngIf="appService.aboutWebLogo" [src]="appService.aboutWebLogo" class="banner-image-2" />
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<p class="banner-text" *ngIf="!appService.aboutWebText">
+							{{ 'Pages.AboutUs.Home.aboutustextforneosapdiwo' | translate }}
+						</p>
+						<p class="banner-text" *ngIf="appService.aboutWebText">
+							{{ appService.aboutWebText }}
+						</p>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12" style="text-align: center">
+						<p class="version-text">{{ 'Pages.AboutUs.Home.version' | translate }}: {{ appVerion }}</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

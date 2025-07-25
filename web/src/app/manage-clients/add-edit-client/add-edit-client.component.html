@@ -1,0 +1,2827 @@
+<div class="container-fluid" style="margin: 2% 2% 2% 3%">
+	<div class="row add-edit-main-row">
+		<div class="col-md-6" style="margin-left: -15px">
+			<span
+				[routerLink]="['/clients']"
+				style="margin-left: 0.25rem; color: #637373; margin-right: 2px; cursor: pointer">
+				{{ 'Pages.Account.AddEdit.pagetitle' | translate }}</span
+			>
+			<img src="assets/images/arrow_forward.svg" style="width: 27px" />
+			<span style="margin-left: 3px" [ngStyle]="{ color: appService.whiteBrandingColor }" *ngIf="!this.clientId">{{
+				'Pages.Account.AddEdit.subtitleforaddedit' | translate
+			}}</span>
+			<span style="margin-left: 3px" [ngStyle]="{ color: appService.whiteBrandingColor }" *ngIf="this.clientId">{{
+				'Pages.Account.AddEdit.subtitleforview' | translate
+			}}</span>
+		</div>
+		<div class="col-md-6" style="padding-right: 0px" *ngIf="this.clientId">
+			<div class="text-right add-circle" style="cursor: pointer; margin-bottom: -9px; margin-top: 8px">
+				<!-- <img
+					*ngIf="isViewMode"
+					src="assets/images/edit_icon.svg"
+					style="width: 25px"
+					title="{{ 'Pages.Account.AddEdit.editAccountButtonTooltip' | translate }}"
+					(click)="editAccount()" /> -->
+				<span
+					*ngIf="isViewMode"
+					[innerHTML]="iconObject['edit_icon_25']"
+					(click)="editAccount()"
+					title="{{ 'Pages.Account.AddEdit.editAccountButtonTooltip' | translate }}">
+				</span>
+				<img
+					*ngIf="!isViewMode"
+					src="assets/images/edit_icon-gray.svg"
+					style="width: 25px"
+					title="{{ 'Pages.Account.AddEdit.editAccountButtonTooltip' | translate }}"
+					(click)="editAccount()" />
+			</div>
+		</div>
+	</div>
+
+	<form [formGroup]="ClientForm">
+		<div class="row section-wrapper" style="margin-top: 2rem">
+			<div class="form-title">
+				<span>{{ 'Pages.Account.AddEdit.BasicInfo.title' | translate }}</span>
+			</div>
+			<div class="row card-body">
+				<div class="row" style="margin-top: -5px">
+					<div class="col-md-6">
+						<div
+							class="form-group"
+							style="margin-top: 0"
+							[ngClass]="{
+								'has-error': f.name.invalid && (f.name.dirty || f.name.touched),
+								'has-success': f.name.valid && (f.name.dirty || f.name.touched)
+							}">
+							<label>{{ 'Pages.Account.AddEdit.BasicInfo.Name.title' | translate }}</label>
+							<input
+								type="text"
+								class="form-control"
+								id="exampleInputEmail1"
+								placeholder="{{ 'Pages.Account.AddEdit.BasicInfo.Name.placeholder' | translate }}"
+								formControlName="name" />
+							<div class="error" *ngIf="f.name.errors && f.name.touched">
+								<div *ngIf="f.name.errors.required">{{ 'Pages.Account.AddEdit.BasicInfo.Name.error' | translate }}</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-6">
+						<div
+							class="form-group"
+							style="margin-top: 0"
+							[ngClass]="{
+								'has-error': f.parentClientId.invalid && (f.parentClientId.dirty || f.parentClientId.touched),
+								'has-success': f.parentClientId.valid && (f.parentClientId.dirty || f.parentClientId.touched)
+							}">
+							<label>{{ 'Pages.Account.AddEdit.BasicInfo.ParentName.title' | translate }}</label>
+							<ng-select
+								[items]="clientListForForm"
+								class="ng-select-wrap"
+								placeholder="{{ 'Pages.Account.AddEdit.BasicInfo.ParentName.placeholder' | translate }}"
+								bindLabel="clientIdWithName"
+								bindValue="id"
+								[multiple]="false"
+								[closeOnSelect]="true"
+								[searchable]="true"
+								[clearable]="false"
+								(change)="selectedChildClient($event)"
+								formControlName="parentClientId">
+							</ng-select>
+							<div class="error" *ngIf="f.parentClientId.errors && f.parentClientId.touched">
+								<div *ngIf="f.parentClientId.errors.required">
+									{{ 'Pages.Account.AddEdit.BasicInfo.ParentName.error' | translate }}
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-md-6">
+						<div
+							class="form-group"
+							[ngClass]="{
+								'has-error': f.category.invalid && (f.category.dirty || f.category.touched),
+								'has-success': f.category.valid && (f.category.dirty || f.category.touched)
+							}">
+							<label>{{ 'Pages.Account.AddEdit.BasicInfo.Category.title' | translate }}</label>
+							<ng-select
+								[items]="categoryList"
+								class="ng-select-wrap"
+								placeholder="{{ 'Pages.Account.AddEdit.BasicInfo.Category.placeholder' | translate }}"
+								bindLabel="name"
+								bindValue="name"
+								[multiple]="false"
+								[closeOnSelect]="true"
+								[searchable]="false"
+								formControlName="category">
+							</ng-select>
+							<div *ngIf="f.category.errors && f.category.touched" class="error invalid-feedback">
+								<div *ngIf="f.category.errors.required">
+									{{ 'Pages.Account.AddEdit.BasicInfo.Category.error' | translate }}
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-6">
+						<div
+							class="form-group"
+							[ngClass]="{
+								'has-error': f.client_country.invalid && (f.client_country.dirty || f.client_country.touched),
+								'has-success': f.client_country.valid && (f.client_country.dirty || f.client_country.touched)
+							}">
+							<label>{{ 'Pages.Account.AddEdit.BasicInfo.Country.title' | translate }}</label>
+							<ng-select
+								[items]="countryNameList"
+								class="ng-select-wrap"
+								placeholder="{{ 'Pages.Account.AddEdit.BasicInfo.Country.placeholder' | translate }}"
+								bindLabel="name"
+								bindValue="id"
+								[multiple]="false"
+								[closeOnSelect]="true"
+								[searchable]="true"
+								formControlName="client_country">
+							</ng-select>
+							<div *ngIf="f.client_country.errors && f.client_country.touched" class="error invalid-feedback">
+								<div *ngIf="f.client_country.errors.required">
+									{{ 'Pages.Account.AddEdit.BasicInfo.Country.error' | translate }}
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-6">
+						<div
+							class="form-group"
+							*ngIf="type == 'drip'"
+							[ngClass]="{
+								'has-error':
+									f.defaultGroupForDrip.invalid && (f.defaultGroupForDrip.dirty || f.defaultGroupForDrip.touched),
+								'has-success':
+									f.defaultGroupForDrip.valid && (f.defaultGroupForDrip.dirty || f.defaultGroupForDrip.touched)
+							}">
+							<label>{{ 'Pages.Account.AddEdit.BasicInfo.defaultLearnerGroup.title_drip' | translate }}</label>
+							<div>
+								<label class="switch">
+									<input
+										type="checkbox"
+										class="form-control js-switch"
+										formControlName="defaultGroupForDrip"
+										[disabled]="isViewMode" />
+									<span
+										class="slider round"
+										[ngStyle]="{
+										'background-color': f.defaultGroupForDrip.value ? appService.whiteBrandingColor : '#ccc',
+									}">
+									</span>
+								</label>
+							</div>
+						</div>
+
+						<div
+							class="form-group"
+							*ngIf="type == 'diwo'"
+							[ngClass]="{
+								'has-error':
+									f.defaultGroupForDiwo.invalid && (f.defaultGroupForDiwo.dirty || f.defaultGroupForDiwo.touched),
+								'has-success':
+									f.defaultGroupForDiwo.valid && (f.defaultGroupForDiwo.dirty || f.defaultGroupForDiwo.touched)
+							}">
+							<label>{{ 'Pages.Account.AddEdit.BasicInfo.defaultLearnerGroup.title_diwo' | translate }}</label>
+							<div>
+								<label class="switch">
+									<input
+										type="checkbox"
+										class="form-control js-switch"
+										formControlName="defaultGroupForDiwo"
+										[disabled]="isViewMode" />
+									<span
+										class="slider round"
+										[ngStyle]="{
+										'background-color': f.defaultGroupForDiwo.value ? appService.whiteBrandingColor : '#ccc',
+									}">
+									</span>
+								</label>
+							</div>
+						</div>
+
+						<!-- <label style="vertical-align: top; margin-top: 3px; margin-right: 15px">{{
+							'Pages.Account.AddEdit.BasicInfo.dripsharing' | translate
+						}}</label>
+						<label class="switch">
+							<input
+								*ngIf="type == 'drip'"
+								type="checkbox"
+								class="form-control js-switch"
+								formControlName="defaultGroupForDrip" />
+							<input
+								*ngIf="type == 'diwo'"
+								type="checkbox"
+								class="form-control js-switch"
+								formControlName="defaultGroupForDiwo" />
+							<span class="slider round"></span>
+						</label> -->
+					</div>
+
+					<!-- Unification -->
+					<div class="col-md-6">
+						<div
+							*ngIf="
+								type == 'drip' && (UserRoleId == 2 || UserRoleId == 3 || isDiwoAccess || (isDiwoAccess && f.DiwoAccess))
+							">
+							<div class="form-group">
+								<label style="vertical-align: top; margin-top: 3px; margin-right: 15px">{{
+									'Pages.Account.AddEdit.BasicInfo.enableDiwo' | translate
+								}}</label>
+								<div>
+									<label class="switch">
+										<input type="checkbox" class="form-control js-switch" formControlName="DiwoAccess" />
+										<span
+											class="slider round"
+											[ngStyle]="{
+											'background-color': f.DiwoAccess.value ? appService.whiteBrandingColor : '#ccc',
+										}"></span>
+									</label>
+								</div>
+							</div>
+						</div>
+
+						<div
+							*ngIf="
+								type == 'diwo' && (UserRoleId == 2 || UserRoleId == 3 || isDripAccess || (isDripAccess && f.DripAccess))
+							">
+							<div class="form-group">
+								<label style="vertical-align: top; margin-top: 3px; margin-right: 15px">{{
+									'Pages.Account.AddEdit.BasicInfo.enableDrip' | translate
+								}}</label>
+								<div>
+									<label class="switch">
+										<input type="checkbox" class="form-control js-switch" formControlName="DripAccess" />
+										<span
+											class="slider round"
+											[ngStyle]="{
+											'background-color': f.DripAccess.value ? appService.whiteBrandingColor : '#ccc',
+										}"></span>
+									</label>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- Add Toogle Here -->
+					<div class="col-md-12" *ngIf="type == 'diwo'">
+						<div class="row">
+							<div class="form-group col-md-6">
+								<label>{{
+									'Pages.Workbook.AddEdit.MarkVideoWorksheetCompleteonVideoWatchPercentage' | translate
+								}}</label>
+								<div>
+									<label class="switch">
+										<input
+											type="checkbox"
+											class="form-control js-switch"
+											formControlName="videoComplition"
+											[disabled]="isviewMode" />
+										<span
+											class="slider round"
+											[ngStyle]="{
+												'background-color': f.videoComplition.value ? appService.whiteBrandingColor : '#ccc'
+											}"></span>
+									</label>
+								</div>
+							</div>
+							<div class="form-group col-md-6" *ngIf="f.videoComplition.value">
+								<label>{{ 'Pages.Workbook.AddEdit.Percentage.title' | translate }}</label>
+
+								<ng-select
+									[items]="percentageDropDown"
+									class="ng-select-wrap"
+									placeholder="{{ 'Pages.Account.AddEdit.BasicInfo.ParentName.placeholder' | translate }}"
+									bindLabel="label"
+									bindValue="value"
+									[multiple]="false"
+									[closeOnSelect]="true"
+									[searchable]="true"
+									[clearable]="false"
+									formControlName="percentage">
+								</ng-select>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-12" *ngIf="type == 'diwo'">
+						<div class="row">
+							<div class="col-md-4">
+								<div class="form-group" style="display: grid">
+									<label>
+										{{ 'Pages.Account.AddEdit.BasicInfo.QuizCompletion.title' | translate }}
+									</label>
+								</div>
+
+								<div class="form-group" style="display: grid">
+									<label class="switch">
+										<input type="checkbox" class="form-control js-switch" formControlName="isQuizCompletion" />
+										<span
+											class="slider round"
+											[ngStyle]="{
+												'background-color': f.isQuizCompletion.value ? appService.whiteBrandingColor : '#ccc'
+											}"></span>
+									</label>
+								</div>
+							</div>
+							<div class="col-md-4" *ngIf="f.isQuizCompletion.value">
+								<div class="form-group">
+									<label> {{ 'Pages.Account.AddEdit.BasicInfo.QuizCompletionPercentage.title' | translate }}</label>
+									<ng-select
+										style="text-align: left"
+										[items]="quizPercentageDropDown"
+										class="ng-select-wrap"
+										bindLabel="label"
+										bindValue="value"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										[clearable]="false"
+										formControlName="quizPercentage">
+									</ng-select>
+								</div>
+							</div>
+							<div class="col-md-4" *ngIf="f.isQuizCompletion.value">
+								<div class="form-group">
+									<label> {{ 'Pages.Account.AddEdit.BasicInfo.maxreattempts.title' | translate }}</label>
+									<ng-select
+										style="text-align: left"
+										[items]="MaxReattemptsAllowedList"
+										class="ng-select-wrap"
+										bindLabel="label"
+										bindValue="value"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										[clearable]="false"
+										formControlName="maxReAttemptsAllowed">
+									</ng-select>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div
+						class="form-group col-md-2"
+						*ngIf="(UserRoleId == 2 || UserRoleId == 3) && appService?.configurable_feature?.whatsApp">
+						<div
+							class="form-group"
+							*ngIf="type == 'drip'"
+							[ngClass]="{
+								'has-error': f.enableChatBot.invalid && (f.enableChatBot.dirty || f.enableChatBot.touched),
+								'has-success': f.enableChatBot.valid && (f.enableChatBot.dirty || f.enableChatBot.touched)
+							}">
+							<label>{{ 'Pages.Account.AddEdit.BasicInfo.enableChatBot' | translate }}</label>
+							<div>
+								<label class="switch">
+									<input
+										type="checkbox"
+										class="form-control js-switch"
+										formControlName="enableChatBot"
+										[disabled]="isViewMode"
+										(change)="showWhatsAppDefaultReplyPopUp()" />
+									<span
+										class="slider round"
+										[ngStyle]="{
+										'background-color': f.enableChatBot.value ? appService.whiteBrandingColor : '#ccc',
+									}">
+									</span>
+								</label>
+							</div>
+						</div>
+					</div>
+
+					<div
+						class="form-group col-md-2"
+						*ngIf="(UserRoleId == 2 || UserRoleId == 3) && appService?.configurable_feature?.broadside">
+						<div
+							class="form-group"
+							*ngIf="type == 'drip'"
+							[ngClass]="{
+								'has-error': f.useSendGrid.invalid && (f.useSendGrid.dirty || f.useSendGrid.touched),
+								'has-success': f.useSendGrid.valid && (f.useSendGrid.dirty || f.useSendGrid.touched)
+							}">
+							<label>{{ 'Pages.Account.AddEdit.BasicInfo.useSendGrid' | translate }}</label>
+							<div>
+								<label class="switch">
+									<input
+										type="checkbox"
+										class="form-control js-switch"
+										formControlName="useSendGrid"
+										[disabled]="isViewMode" />
+									<span
+										class="slider round"
+										[ngStyle]="{
+										'background-color': f.useSendGrid.value ? appService.whiteBrandingColor : '#ccc',
+									}">
+									</span>
+								</label>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- *ngIf="projectName == 'drip'" -->
+				<div class="row" *ngIf="projectName == 'drip'">
+					<div class="col-md-6">
+						<div class="fileupload-buttonbar">
+							<div class="form-group">
+								<label>{{ 'Pages.Account.AddEdit.BasicInfo.Avatar.title' | translate }}</label>
+								<div style="display: flex">
+									<div>
+										<label
+											class="btn center pad fileinput-button browse_lable"
+											[ngStyle]="{
+												'background-color': appService.whiteBrandingColor,
+												border: '1px solid' + appService.whiteBrandingColor,
+												color: 'white'
+											}"
+											style="
+												padding: 10px 20px;
+												border-radius: 22px;
+												color: white;
+												margin-bottom: 0px;
+												margin-top: 2px;
+											">
+											<input
+												id="mediaWeb"
+												type="file"
+												accept="image/*"
+												(change)="uploadImage($event)"
+												[disabled]="isViewMode"
+												[ngClass]="{ 'edit-disabled': isViewMode }" />
+											{{ 'Pages.Account.AddEdit.BasicInfo.Avatar.browseimage' | translate }}
+										</label>
+									</div>
+									<div style="margin-top: 2px">
+										<table
+											*ngIf="ClientForm.value.avatar"
+											role="presentation"
+											class="table table-striped"
+											style="margin-bottom: 0px">
+											<tbody class="files">
+												<tr class="template-upload fade in">
+													<td>
+														<p class="name imgName">{{ ClientForm.value.avatar }}</p>
+													</td>
+													<td style="position: absolute; right: 0">
+														<label
+															[ngStyle]="{
+																'background-color': appService.whiteBrandingColor,
+																border: '1px solid' + appService.whiteBrandingColor,
+																color: 'white'
+															}"
+															class="btn cancel border_radius">
+															<span (click)="onDeleteImage()">{{
+																'Pages.Account.AddEdit.BasicInfo.Avatar.delete' | translate
+															}}</span>
+														</label>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+										<table
+											*ngIf="!ClientForm.value.avatar"
+											role="presentation"
+											class="table table-striped"
+											style="margin-bottom: 0px">
+											<tbody class="files">
+												<tr class="template-upload fade in">
+													<td>
+														<p class="name imgName">
+															{{ 'Pages.Account.AddEdit.BasicInfo.Avatar.recommendedratio' | translate }}
+														</p>
+													</td>
+													<td style="position: absolute; right: 0"></td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+								<div *ngIf="ClientForm.value.avatar">
+									<div class="row">
+										<div class="col-md-4">
+											<img [src]="avtarPath + f.avatar_file_name.value" style="width: 100%" />
+										</div>
+									</div>
+								</div>
+								<span class="fileupload-loading"></span>
+								<div class="error" *ngIf="f.avatar.errors && f.avatar.touched" style="color: #a94442">
+									<div *ngIf="f.avatar.errors.required">
+										{{ 'Pages.Account.AddEdit.BasicInfo.Avatar.error' | translate }}
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div
+						class="col-md-12"
+						*ngIf="type == 'drip' && (f.category.value == 'Client Account' || f.category.value == 'Branch Account')">
+						<div class="form-group">
+							<label>{{ 'Pages.Account.AddEdit.BasicInfo.assetsharing' | translate }}</label>
+							<div>
+								<label class="switch">
+									<input
+										type="checkbox"
+										class="form-control js-switch"
+										formControlName="share_flag"
+										[disabled]="isViewMode"
+										(change)="changeShare()" />
+									<span
+										class="slider round"
+										[ngStyle]="{
+										'background-color': f.share_flag.value ? appService.whiteBrandingColor : '#ccc',
+									}">
+									</span>
+								</label>
+							</div>
+						</div>
+
+						<!-- <div class="form-group" style="float: right; margin-bottom: -14px; margin-right: 15px">
+							<label style="vertical-align: top; margin-top: 3px; margin-right: 15px">{{
+								'Pages.Account.AddEdit.BasicInfo.dripsharing' | translate
+							}}</label>
+							<label class="switch">
+								<input
+									type="checkbox"
+									class="form-control js-switch"
+									(click)="changeShare()"
+									formControlName="drip_share_flag" />
+								<span
+									class="slider round"
+									[ngStyle]="{
+									'background-color': f.drip_share_flag.value ? appService.whiteBrandingColor : '#ccc',
+								}"></span>
+							</label>
+						</div> -->
+
+						<div class="form-group">
+							<label>{{ 'Pages.Account.AddEdit.BasicInfo.dripsharing' | translate }}</label>
+							<div>
+								<label class="switch">
+									<input
+										type="checkbox"
+										class="form-control js-switch"
+										formControlName="drip_share_flag"
+										[disabled]="isViewMode"
+										(change)="changeShare()" />
+									<span
+										class="slider round"
+										[ngStyle]="{
+										'background-color': f.drip_share_flag.value ? appService.whiteBrandingColor : '#ccc',
+									}">
+									</span>
+								</label>
+							</div>
+						</div>
+					</div>
+
+					<div
+						class="col-md-12"
+						*ngIf="type == 'diwo' && (f.category.value == 'Client Account' || f.category.value == 'Branch Account')">
+						<div class="form-group">
+							<label>{{ 'Pages.Account.AddEdit.BasicInfo.workbooksharing' | translate }}</label>
+							<div>
+								<label class="switch">
+									<input
+										type="checkbox"
+										class="form-control js-switch"
+										formControlName="workbookshareflag"
+										[disabled]="isViewMode"
+										(change)="changeShare()" />
+									<span
+										class="slider round"
+										[ngStyle]="{
+										'background-color': f.workbookshareflag.value ? appService.whiteBrandingColor : '#ccc',
+									}">
+									</span>
+								</label>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="row section-wrapper" style="margin-top: 2rem">
+			<div class="form-title">
+				<span>{{
+					type === 'drip'
+						? ('Pages.Account.AddEdit.LearnerJobRole.titleContact' | translate)
+						: ('Pages.Account.AddEdit.LearnerJobRole.title' | translate)
+				}}</span>
+			</div>
+			<div class="card-body">
+				<div class="row">
+					<div class="col-md-6" *ngFor="let item of jobRoleForm; let i = index">
+						<div
+							class="form-group"
+							style="margin-top: -5px"
+							[ngStyle]="{ 'margin-top': i == 0 || i == 1 ? '-5px' : '12px' }">
+							<div class="info-icon-div">
+								<div>
+									<label *ngIf="i == 0">{{
+										type === 'drip'
+											? ('Pages.Account.AddEdit.LearnerJobRole.titleContact' | translate)
+											: ('Pages.Account.AddEdit.LearnerJobRole.title' | translate)
+									}}</label>
+									<label *ngIf="i !== 0" style="visibility: hidden">{{
+										type === 'drip'
+											? ('Pages.Account.AddEdit.LearnerJobRole.titleContact' | translate)
+											: ('Pages.Account.AddEdit.LearnerJobRole.title' | translate)
+									}}</label>
+								</div>
+								<div>
+									<label>
+										<span
+											style="cursor: pointer"
+											*ngIf="i == 0"
+											class="info-icon"
+											[innerHTML]="iconObject['info_icon_25']"
+											title="{{ 'Pages.Account.AddEdit.LearnerJobRole.learnerJobroletooltip' | translate }}"></span>
+
+										<span
+											style="cursor: pointer; visibility: hidden"
+											*ngIf="i !== 0"
+											class="info-icon"
+											[innerHTML]="iconObject['info_icon_25']"
+											title="{{ 'Pages.Account.AddEdit.LearnerJobRole.learnerJobroletooltip' | translate }}"></span>
+									</label>
+								</div>
+							</div>
+
+							<img
+								src="assets/images/cancel_icon.svg"
+								*ngIf="i !== 0"
+								(click)="removeJobRole(i)"
+								style="width: 26px; float: right; margin-top: 1px; cursor: pointer" />
+							<input
+								type="text"
+								class="form-control"
+								placeholder="{{ 'Pages.Account.AddEdit.LearnerJobRole.placeholder' | translate }}"
+								[(ngModel)]="jobRoleForm[i].job_role_name"
+								[ngModelOptions]="{ standalone: true }"
+								(keypress)="RestrictComma(event)"
+								[disabled]="isViewMode" />
+							<div
+								class="text-right add-circle"
+								style="cursor: pointer; margin-bottom: -9px; margin-top: 8px"
+								*ngIf="i == jobRoleForm.length - 1">
+								<!-- <img
+									src="assets/images/add_icon.svg"
+									style="width: 30px"
+									title="{{ 'Pages.Account.AddEdit.LearnerJobRole.addbtntooltip' | translate }}"
+									(click)="addOneJobRoleInForm()" /> -->
+								<span
+									[innerHTML]="iconObject['add_icon_30']"
+									style="width: 30px"
+									title="{{ 'Pages.Account.AddEdit.LearnerJobRole.addbtntooltip' | translate }}"
+									(click)="addOneJobRoleInForm()"></span>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="form-group" *ngIf="showJobRoleCopyButton">
+					<div
+						class="text-right add-circle"
+						style="margin-right: 0px; margin-top: 15px; cursor: pointer; margin-bottom: 15px">
+						<button
+							class="btn border_radius"
+							[ngStyle]="{
+								'background-color': appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+								color: 'white'
+							}"
+							[disabled]="isViewMode"
+							(click)="copyJobRoleFromParentClient()">
+							{{ 'Pages.Account.AddEdit.LearnerJobRole.copyjobrole' | translate }}
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Custom Fields -->
+		<div class="row section-wrapper" style="margin-top: 2rem" *ngIf="f.category.value === 'Client Account'">
+			<div class="form-title">
+				<span> {{ 'Pages.Account.AddEdit.CustomFields.title' | translate }}</span>
+			</div>
+			<div class="row card-body">
+				<div class="row" *ngFor="let item of customFields; let i = index">
+					<div class="col-md-3">
+						<div class="form-group" style="margin-top: -2px">
+							<label>{{ 'Pages.Account.AddEdit.CustomFields.fields.label.title' | translate }}</label>
+							<input
+								type="text"
+								class="form-control"
+								[(ngModel)]="item.label"
+								[ngModelOptions]="{ standalone: true }"
+								(blur)="checkInputField(i)"
+								[disabled]="isViewMode"
+								placeholder="{{ 'Pages.Account.AddEdit.CustomFields.fields.label.placeholder' | translate }}" />
+							<div class="error" *ngIf="item.lableRequiredError">
+								<div style="color: red">{{ 'Pages.Account.AddEdit.CustomFields.fields.label.error' | translate }}</div>
+							</div>
+							<div class="error" *ngIf="item.lableDuplicateError">
+								<div style="color: red">
+									{{ 'Pages.Account.AddEdit.CustomFields.fields.label.duplicateError' | translate }}
+								</div>
+							</div>
+							<div class="error" *ngIf="item.lableNameNotAllowed">
+								<div style="color: red">
+									{{ 'Pages.Account.AddEdit.CustomFields.fields.label.notAllowed' | translate }}
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-2">
+						<div class="form-group" style="margin-top: 0px">
+							<label>{{ 'Pages.Account.AddEdit.CustomFields.fields.dataType.title' | translate }}</label>
+							<ng-select
+								[items]="customFieldTypes"
+								class="ng-select-wrap"
+								placeholder="{{ 'Pages.Account.AddEdit.CustomFields.fields.dataType.placeholder' | translate }}"
+								bindLabel="value"
+								bindValue="value"
+								[multiple]="false"
+								[closeOnSelect]="true"
+								[searchable]="false"
+								[clearable]="false"
+								[(ngModel)]="item.dataType"
+								[ngModelOptions]="{ standalone: true }"
+								[disabled]="isViewMode || item.isCreated"
+								(change)="selectCustomFieldType(i)">
+							</ng-select>
+						</div>
+						<div class="error" *ngIf="item.dataTypeError">
+							<div style="color: red">{{ 'Pages.Account.AddEdit.CustomFields.fields.dataType.error' | translate }}</div>
+						</div>
+					</div>
+
+					<div class="col-md-5" style="display: flex; justify-content: space-around">
+						<div class="form-group" style="margin-top: 2.3rem; display: flex; justify-content: center">
+							<div>
+								<label class="switch">
+									<input
+										type="checkbox"
+										class="form-control js-switch"
+										[(ngModel)]="item.isRequired"
+										[ngModelOptions]="{ standalone: true }"
+										[disabled]="isViewMode" />
+									<span
+										class="slider round"
+										[ngStyle]="{
+										'background-color': item.isRequired ? appService.whiteBrandingColor : '#ccc',
+									}"></span>
+								</label>
+							</div>
+							<div>
+								<label style="margin-top: 4px; padding-left: 15px">
+									{{ 'Pages.Account.AddEdit.CustomFields.fields.required.title' | translate }}</label
+								>
+							</div>
+						</div>
+						<div class="form-group" style="margin-top: 2.3rem; display: flex; justify-content: center">
+							<div>
+								<label class="switch">
+									<input
+										type="checkbox"
+										class="form-control js-switch"
+										[(ngModel)]="item.isHide"
+										[ngModelOptions]="{ standalone: true }"
+										[disabled]="isViewMode" />
+									<span
+										class="slider round"
+										[ngStyle]="{
+										'background-color': item.isHide ? appService.whiteBrandingColor : '#ccc',
+									}"></span>
+								</label>
+							</div>
+							<div>
+								<label style="margin-top: 4px; padding-left: 15px">
+									{{ 'Pages.Account.AddEdit.CustomFields.fields.hide.title' | translate }}
+									<img
+										style="width: 30px"
+										src="assets/images/info_icon.svg"
+										title="{{ 'Pages.Account.AddEdit.CustomFields.hideMessage' | translate }}" />
+								</label>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-1" *ngIf="!isViewMode">
+						<div class="visible-md visible-lg visible-sm visible-xs" style="margin-top: 2.5rem">
+							<a class="btn-xs action-edit-btn" style="padding: 0.25rem 1.75rem" (click)="editCustomField(i)">
+								{{ 'Utils.Action.edit' | translate }}</a
+							>
+						</div>
+					</div>
+					<div class="col-md-1" *ngIf="!isViewMode && !item.isCreated">
+						<img
+							src="assets/images/cancel_icon.svg"
+							(click)="removeCustomField(i)"
+							style="float: right; margin-top: 2.5rem; cursor: pointer" />
+					</div>
+				</div>
+
+				<div class="text-right add-circle" style="cursor: pointer; margin-bottom: -9px; margin-top: 8px">
+					<!-- <img
+						src="assets/images/add_icon.svg"
+						style="width: 30px"
+						title="{{ 'Pages.Account.AddEdit.LearnerJobRole.addbtntooltip' | translate }}"
+						(click)="addCustomField()" /> -->
+					<span
+						[innerHTML]="iconObject['add_icon_30']"
+						style="width: 30px"
+						title="{{ 'Pages.Account.AddEdit.LearnerJobRole.addbtntooltip' | translate }}"
+						(click)="addCustomField()"></span>
+				</div>
+			</div>
+		</div>
+
+		<!-- Document Metadata Custom Fields -->
+		<div
+			class="row section-wrapper"
+			style="margin-top: 2rem"
+			*ngIf="f.category.value === 'Client Account' && appService?.configurable_feature?.documents && type == 'drip'">
+			<div class="form-title">
+				<span> {{ 'Pages.Account.AddEdit.DocumentMetadataCustomFields.title' | translate }}</span>
+			</div>
+			<div class="row card-body">
+				<div class="row" *ngFor="let item of documentCustomFields; let i = index">
+					<div class="col-md-3">
+						<div class="form-group" style="margin-top: -2px">
+							<label>{{ 'Pages.Account.AddEdit.DocumentMetadataCustomFields.fields.label.title' | translate }}</label>
+							<input
+								type="text"
+								class="form-control"
+								[(ngModel)]="item.label"
+								[ngModelOptions]="{ standalone: true }"
+								(blur)="checkDocumentInputField(i)"
+								[disabled]="isViewMode"
+								placeholder="{{
+									'Pages.Account.AddEdit.DocumentMetadataCustomFields.fields.label.placeholder' | translate
+								}}" />
+							<div class="error" *ngIf="item.lableRequiredError">
+								<div style="color: red">
+									{{ 'Pages.Account.AddEdit.DocumentMetadataCustomFields.fields.label.error' | translate }}
+								</div>
+							</div>
+							<div class="error" *ngIf="item.lableDuplicateError">
+								<div style="color: red">
+									{{ 'Pages.Account.AddEdit.DocumentMetadataCustomFields.fields.label.duplicateError' | translate }}
+								</div>
+							</div>
+							<div class="error" *ngIf="item.lableNameNotAllowed">
+								<div style="color: red">
+									{{ 'Pages.Account.AddEdit.DocumentMetadataCustomFields.fields.label.notAllowed' | translate }}
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-2">
+						<div class="form-group" style="margin-top: 0px">
+							<label>{{
+								'Pages.Account.AddEdit.DocumentMetadataCustomFields.fields.dataType.title' | translate
+							}}</label>
+							<ng-select
+								[items]="customFieldTypes"
+								class="ng-select-wrap"
+								placeholder="{{
+									'Pages.Account.AddEdit.DocumentMetadataCustomFields.fields.dataType.placeholder' | translate
+								}}"
+								bindLabel="value"
+								bindValue="value"
+								[multiple]="false"
+								[closeOnSelect]="true"
+								[searchable]="false"
+								[clearable]="false"
+								[(ngModel)]="item.dataType"
+								[ngModelOptions]="{ standalone: true }"
+								[disabled]="isViewMode || item.isCreated"
+								(change)="selectDocumentCustomFieldType(i)">
+							</ng-select>
+						</div>
+						<div class="error" *ngIf="item.dataTypeError">
+							<div style="color: red">
+								{{ 'Pages.Account.AddEdit.DocumentMetadataCustomFields.fields.dataType.error' | translate }}
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-5" style="display: flex; justify-content: space-around">
+						<div class="form-group" style="margin-top: 2.3rem; display: flex; justify-content: center">
+							<div>
+								<label class="switch">
+									<input
+										type="checkbox"
+										class="form-control js-switch"
+										[(ngModel)]="item.isRequired"
+										[ngModelOptions]="{ standalone: true }"
+										[disabled]="isViewMode" />
+									<span
+										class="slider round"
+										[ngStyle]="{
+											'background-color': item.isRequired ? appService.whiteBrandingColor : '#ccc',
+										}"></span>
+								</label>
+							</div>
+							<div>
+								<label style="margin-top: 4px; padding-left: 15px">
+									{{ 'Pages.Account.AddEdit.DocumentMetadataCustomFields.fields.required.title' | translate }}</label
+								>
+							</div>
+						</div>
+						<div class="form-group" style="margin-top: 2.3rem; display: flex; justify-content: center">
+							<div>
+								<label class="switch">
+									<input
+										type="checkbox"
+										class="form-control js-switch"
+										[(ngModel)]="item.isHide"
+										[ngModelOptions]="{ standalone: true }"
+										[disabled]="isViewMode" />
+									<span
+										class="slider round"
+										[ngStyle]="{
+											'background-color': item.isHide ? appService.whiteBrandingColor : '#ccc',
+										}"></span>
+								</label>
+							</div>
+							<div>
+								<label style="margin-top: 4px; padding-left: 15px">
+									{{ 'Pages.Account.AddEdit.DocumentMetadataCustomFields.fields.hide.title' | translate }}
+									<img
+										style="width: 30px"
+										src="assets/images/info_icon.svg"
+										title="{{ 'Pages.Account.AddEdit.DocumentMetadataCustomFields.hideMessage' | translate }}" />
+								</label>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-1" *ngIf="!isViewMode">
+						<div class="visible-md visible-lg visible-sm visible-xs" style="margin-top: 2.5rem">
+							<a
+								class="btn-xs action-edit-btn"
+								style="padding: 0.25rem 1.75rem"
+								[ngStyle]="{
+									'background-color': appService.whiteBrandingColor,
+									border: '1px solid' + appService.whiteBrandingColor,
+									color: 'white'
+								}"
+								(click)="editDocumentCustomField(i)">
+								{{ 'Utils.Action.edit' | translate }}</a
+							>
+						</div>
+					</div>
+					<div class="col-md-1" *ngIf="!isViewMode && !item.isCreated">
+						<img
+							src="assets/images/cancel_icon.svg"
+							(click)="removeDocumentCustomField(i)"
+							style="float: right; margin-top: 2.5rem; cursor: pointer" />
+					</div>
+				</div>
+
+				<div class="text-right add-circle" style="cursor: pointer; margin-bottom: -9px; margin-top: 8px">
+					<!-- <img
+							src="assets/images/add_icon.svg"
+							style="width: 30px"
+							title="{{ 'Pages.Account.AddEdit.LearnerJobRole.addbtntooltip' | translate }}"
+							(click)="addCustomField()" /> -->
+					<span
+						[innerHTML]="iconObject['add_icon_30']"
+						style="width: 30px"
+						title="{{ 'Pages.Account.AddEdit.LearnerJobRole.addbtntooltip' | translate }}"
+						(click)="addDocumentCustomField()"></span>
+				</div>
+			</div>
+		</div>
+
+		<div class="row" style="float: right; margin-top: 2rem">
+			<button
+				class="btn btn-o btn-primary border_radius functionalBtn"
+				style="
+					margin-right: 20px;
+					background-color: lightgray !important;
+					color: black;
+					border: 1px solid lightgray !important;
+				"
+				(click)="cancel()">
+				{{ 'Utils.cancel' | translate }}
+			</button>
+			<button
+				class="btn border_radius functionalBtn"
+				[ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}"
+				style="margin-right: 7px"
+				(click)="save()"
+				*ngIf="this.clientId"
+				[disabled]="isViewMode">
+				{{ 'Pages.Account.AddEdit.updateAccount' | translate }}
+			</button>
+			<button
+				class="btn border_radius functionalBtn"
+				[ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}"
+				style="margin-right: 7px"
+				(click)="save()"
+				*ngIf="!this.clientId">
+				{{ 'Pages.Account.AddEdit.saveAccount' | translate }}
+			</button>
+		</div>
+	</form>
+
+	<div class="row section-wrapper" style="margin-top: 7rem" *ngIf="SubscriptionData && type == 'drip'">
+		<div class="form-title">
+			<span>{{ 'Pages.License.ViewLicense.Subscription.title' | translate }}</span>
+			<span style="float: right; text-transform: capitalize; font-size: 0.9rem">
+				{{ 'Pages.License.ViewLicense.Subscription.expireson' | translate }}
+				{{
+					SubscriptionData && SubscriptionData.endDate != null
+						? (SubscriptionData && SubscriptionData.endDate | DateFormat)
+						: '-'
+				}}
+			</span>
+		</div>
+		<div class="row card-body">
+			<div class="row">
+				<div class="col-md-12 mb-3 mt-2 text-right">
+					<div class="mb-3 text-danger" *ngIf="SubscriptionData.status == 'Suspended'">
+						{{ 'Pages.License.ViewLicense.Subscription.temporarilysuspended' | translate }}
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-3">
+					<div class="form-group"></div>
+				</div>
+				<div class="col-md-3">
+					<div class="form-group">
+						<label> {{ 'Pages.License.ViewLicense.Subscription.totalcount' | translate }}</label>
+					</div>
+				</div>
+
+				<div class="col-md-3">
+					<div class="form-group">
+						<label>{{ 'Pages.License.ViewLicense.Subscription.use' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-3">
+					<div class="form-group">
+						<label>{{ 'Pages.License.ViewLicense.Subscription.available' | translate }}</label>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-3">
+					<div class="form-group">
+						<label>{{ 'Pages.License.ViewLicense.Subscription.learnercount' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-3 valueCss">
+					{{
+						SubscriptionData.unlLearner == true
+							? ('Pages.License.ViewLicense.unlimited' | translate)
+							: SubscriptionData.learnerCount
+					}}
+				</div>
+				<div class="col-md-3 valueCss">
+					{{
+						SubscriptionData.unlLearner == true
+							? ('Pages.License.ViewLicense.unlimited' | translate)
+							: SubscriptionData.useLearnerCount
+					}}
+				</div>
+				<div class="col-md-3 valueCss">
+					{{
+						SubscriptionData.unlLearner == true
+							? ('Pages.License.ViewLicense.unlimited' | translate)
+							: SubscriptionData.learnerCount - SubscriptionData.useLearnerCount
+					}}
+				</div>
+			</div>
+
+			<div class="row" style="margin-top: 1rem">
+				<div class="col-md-3">
+					<div class="form-group">
+						<label>{{ 'Pages.License.ViewLicense.Subscription.onlyonWhatsApp' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-3 valueCss">
+					{{
+						SubscriptionData.whatsAppUnl == true
+							? ('Pages.License.ViewLicense.unlimited' | translate)
+							: SubscriptionData.whatsAppCount
+					}}
+				</div>
+				<div class="col-md-3 valueCss">
+					{{
+						SubscriptionData.whatsAppUnl == true
+							? ('Pages.License.ViewLicense.unlimited' | translate)
+							: SubscriptionData.useWhatsAppCount
+					}}
+				</div>
+				<div class="col-md-3 valueCss">
+					{{
+						SubscriptionData.whatsAppUnl == true
+							? ('Pages.License.ViewLicense.unlimited' | translate)
+							: SubscriptionData.whatsAppCount - SubscriptionData.useWhatsAppCount
+					}}
+				</div>
+			</div>
+
+			<div class="row" style="margin-top: 1rem">
+				<div class="col-md-3">
+					<div class="form-group">
+						<label>{{ 'Pages.License.ViewLicense.Subscription.onDripAppwithsharingonWhatsApp' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-3 valueCss">
+					{{
+						SubscriptionData.sharWhatsAppUnl == true
+							? ('Pages.License.ViewLicense.unlimited' | translate)
+							: SubscriptionData.sharWhatsAppCount
+					}}
+				</div>
+				<div class="col-md-3 valueCss">
+					{{
+						SubscriptionData.sharWhatsAppUnl == true
+							? ('Pages.License.ViewLicense.unlimited' | translate)
+							: SubscriptionData.useSharWhatsAppCount
+					}}
+				</div>
+				<div class="col-md-3 valueCss">
+					{{
+						SubscriptionData.sharWhatsAppUnl == true
+							? ('Pages.License.ViewLicense.unlimited' | translate)
+							: SubscriptionData.sharWhatsAppCount - SubscriptionData.useSharWhatsAppCount
+					}}
+				</div>
+			</div>
+
+			<!-- Only Email -->
+			<div class="row" style="margin-top: 1rem">
+				<div class="col-md-3">
+					<div class="form-group">
+						<label>{{ 'Pages.License.ViewLicense.Subscription.onlyOnEmail' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-3 valueCss">
+					{{
+						SubscriptionData.onlyEmailUnl == true
+							? ('Pages.License.ViewLicense.unlimited' | translate)
+							: SubscriptionData.onlyEmailCount
+					}}
+				</div>
+				<div class="col-md-3 valueCss">
+					{{
+						SubscriptionData.onlyEmailUnl == true
+							? ('Pages.License.ViewLicense.unlimited' | translate)
+							: SubscriptionData.useOnlyEmailCount
+					}}
+				</div>
+				<div class="col-md-3 valueCss">
+					{{
+						SubscriptionData.onlyEmailUnl == true
+							? ('Pages.License.ViewLicense.unlimited' | translate)
+							: SubscriptionData.onlyEmailCount - SubscriptionData.useOnlyEmailCount
+					}}
+				</div>
+			</div>
+
+			<div class="row" style="margin-top: 1rem">
+				<div class="col-md-3">
+					<div class="form-group">
+						<label>{{ 'Pages.License.ViewLicense.Subscription.onDripAppwithsharingonemail' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-3 valueCss">
+					{{
+						SubscriptionData.emailUnl == true
+							? ('Pages.License.ViewLicense.unlimited' | translate)
+							: SubscriptionData.emailCount
+					}}
+				</div>
+				<div class="col-md-3 valueCss">
+					{{
+						SubscriptionData.emailUnl == true
+							? ('Pages.License.ViewLicense.unlimited' | translate)
+							: SubscriptionData.useEmailCount
+					}}
+				</div>
+				<div class="col-md-3 valueCss">
+					{{
+						SubscriptionData.emailUnl == true
+							? ('Pages.License.ViewLicense.unlimited' | translate)
+							: SubscriptionData.emailCount - SubscriptionData.useEmailCount
+					}}
+				</div>
+			</div>
+
+			<div class="row" style="margin-top: 1rem">
+				<div class="col-md-3">
+					<div class="form-group">
+						<label>{{ 'Pages.License.ViewLicense.Subscription.onlyonDripapp' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-3 valueCss">
+					{{
+						SubscriptionData.dripappUnl == true
+							? ('Pages.License.ViewLicense.unlimited' | translate)
+							: SubscriptionData.dripappCount
+					}}
+				</div>
+				<div class="col-md-3 valueCss">
+					{{
+						SubscriptionData.dripappUnl == true
+							? ('Pages.License.ViewLicense.unlimited' | translate)
+							: SubscriptionData.useDripappCount
+					}}
+				</div>
+				<div class="col-md-3 valueCss">
+					{{
+						SubscriptionData.dripappUnl == true
+							? ('Pages.License.ViewLicense.unlimited' | translate)
+							: SubscriptionData.dripappCount - SubscriptionData.useDripappCount
+					}}
+				</div>
+			</div>
+
+			<div class="row" style="margin-top: 1rem">
+				<div class="col-md-3">
+					<div class="form-group">
+						<label>{{ 'Pages.License.ViewLicense.Subscription.onlyTeam' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-3 valueCss">
+					{{
+						SubscriptionData.onlyTeamUnl == true
+							? ('Pages.License.ViewLicense.unlimited' | translate)
+							: SubscriptionData.onlyTeamCount
+					}}
+				</div>
+				<div class="col-md-3 valueCss">
+					{{
+						SubscriptionData.onlyTeamUnl == true
+							? ('Pages.License.ViewLicense.unlimited' | translate)
+							: SubscriptionData.useOnlyTeamCount
+					}}
+				</div>
+				<div class="col-md-3 valueCss">
+					{{
+						SubscriptionData.onlyTeamUnl == true
+							? ('Pages.License.ViewLicense.unlimited' | translate)
+							: SubscriptionData.onlyTeamCount - SubscriptionData.useOnlyTeamCount
+					}}
+				</div>
+			</div>
+
+			<div class="row" style="margin-top: 1rem">
+				<div class="col-md-3">
+					<div class="form-group">
+						<label>{{ 'Pages.License.ViewLicense.Subscription.onDripAppWithTeam' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-3 valueCss">
+					{{
+						SubscriptionData.dripWithTeamUnl == true
+							? ('Pages.License.ViewLicense.unlimited' | translate)
+							: SubscriptionData.dripWithTeamCount
+					}}
+				</div>
+				<div class="col-md-3 valueCss">
+					{{
+						SubscriptionData.dripWithTeamUnl == true
+							? ('Pages.License.ViewLicense.unlimited' | translate)
+							: SubscriptionData.useDripWithTeamCount
+					}}
+				</div>
+				<div class="col-md-3 valueCss">
+					{{
+						SubscriptionData.dripWithTeamUnl == true
+							? ('Pages.License.ViewLicense.unlimited' | translate)
+							: SubscriptionData.dripWithTeamCount - SubscriptionData.useDripWithTeamCount
+					}}
+				</div>
+			</div>
+
+			<div class="row" style="margin-top: 1rem">
+				<div class="col-md-3">
+					<div class="form-group">
+						<label>{{ 'Pages.License.ViewLicense.Subscription.serverstorage' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-3 valueCss">
+					{{
+						SubscriptionData.dataTransferUnl == true
+							? ('Pages.License.ViewLicense.unlimited' | translate)
+							: SubscriptionData.dataTransferCount
+					}}
+				</div>
+				<div class="col-md-3 valueCss">
+					{{ 'Pages.License.ViewLicense.realtimedatanotavailabel' | translate }}
+				</div>
+				<div class="col-md-3 valueCss">
+					{{ 'Pages.License.ViewLicense.realtimedatanotavailabel' | translate }}
+				</div>
+			</div>
+
+			<div class="row" style="margin-top: 1rem">
+				<div class="col-md-3">
+					<div class="form-group">
+						<label>{{ 'Pages.License.ViewLicense.Subscription.datatransfer' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-3 valueCss">
+					{{
+						SubscriptionData.serverStorageUnl == true
+							? ('Pages.License.ViewLicense.unlimited' | translate)
+							: SubscriptionData.serverStrgCount
+					}}
+				</div>
+				<div class="col-md-3 valueCss">
+					{{ 'Pages.License.ViewLicense.realtimedatanotavailabel' | translate }}
+				</div>
+				<div class="col-md-3 valueCss">
+					{{ 'Pages.License.ViewLicense.realtimedatanotavailabel' | translate }}
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row section-wrapper" style="margin-top: 7rem" *ngIf="SubscriptionData && type == 'diwo'">
+		<div class="form-title">
+			<span>
+				{{ 'Pages.DiwoLicense.ViewLicense.Subscription.title' | translate }}
+			</span>
+			<span style="float: right; text-transform: capitalize; font-size: 0.9rem">
+				<span *ngIf="SubscriptionData.status != 'Expired'">
+					{{ 'Pages.DiwoLicense.ViewLicense.Subscription.expireson' | translate }}
+				</span>
+				<span *ngIf="SubscriptionData.status == 'Expired'">
+					{{ 'Pages.DiwoLicense.ViewLicense.Subscription.expiredon' | translate }}
+				</span>
+				{{
+					SubscriptionData && SubscriptionData.endDate != null
+						? (SubscriptionData && SubscriptionData.endDate | DateFormat)
+						: '-'
+				}}
+			</span>
+		</div>
+		<div class="row card-body">
+			<div class="row">
+				<div class="col-md-12 mb-3 mt-2 text-right">
+					<div class="mb-3 text-danger" *ngIf="SubscriptionData.status == 'Suspended'">
+						{{ 'Pages.DiwoLicense.ViewLicense.Subscription.temporarilysuspended' | translate }}
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-3">
+					<div class="form-group"></div>
+				</div>
+				<div class="col-md-3">
+					<div class="form-group">
+						<label> {{ 'Pages.DiwoLicense.ViewLicense.Subscription.totalcount' | translate }}</label>
+					</div>
+				</div>
+
+				<div class="col-md-3">
+					<div class="form-group">
+						<label>{{ 'Pages.DiwoLicense.ViewLicense.Subscription.use' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-3">
+					<div class="form-group">
+						<label>{{ 'Pages.DiwoLicense.ViewLicense.Subscription.available' | translate }}</label>
+					</div>
+				</div>
+			</div>
+
+			<!-- ---------------------------------------------------- Learner Count -------------------------- -->
+
+			<div class="row">
+				<div class="col-md-3">
+					<div class="form-group">
+						<label>{{ 'Pages.DiwoLicense.ViewLicense.Subscription.learnercount' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-3 valueCss">
+					{{
+						SubscriptionData.unlimitedLearner == true
+							? ('Pages.DiwoLicense.ViewLicense.unlimited' | translate)
+							: SubscriptionData.learnerCount
+					}}
+				</div>
+				<div class="col-md-3 valueCss">
+					{{
+						SubscriptionData.unlimitedLearner == true
+							? ('Pages.DiwoLicense.ViewLicense.unlimited' | translate)
+							: SubscriptionData.liveLearnerCount
+					}}
+				</div>
+				<div class="col-md-3 valueCss">
+					{{
+						SubscriptionData.unlimitedLearner == true
+							? ('Pages.DiwoLicense.ViewLicense.unlimited' | translate)
+							: SubscriptionData.learnerCount - SubscriptionData.liveLearnerCount
+					}}
+				</div>
+			</div>
+
+			<!-- ---------------------------------------------------- WorkBook Count -------------------------- -->
+
+			<div class="row" style="margin-top: 1rem">
+				<div class="col-md-3">
+					<div class="form-group">
+						<label>{{ 'Pages.DiwoLicense.ViewLicense.Subscription.Workbookcredit' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-3 valueCss">
+					{{
+						SubscriptionData.unlimitedWorkbook == true
+							? ('Pages.DiwoLicense.ViewLicense.unlimited' | translate)
+							: SubscriptionData.workbookCount
+					}}
+				</div>
+				<div class="col-md-3 valueCss">
+					{{
+						SubscriptionData.unlimitedWorkbook == true
+							? ('Pages.DiwoLicense.ViewLicense.unlimited' | translate)
+							: SubscriptionData.liveWorkbookCount
+					}}
+				</div>
+				<div class="col-md-3 valueCss">
+					{{
+						SubscriptionData.unlimitedWorkbook == true
+							? ('Pages.DiwoLicense.ViewLicense.unlimited' | translate)
+							: SubscriptionData.workbookCount - SubscriptionData.liveWorkbookCount
+					}}
+				</div>
+			</div>
+
+			<!-- ---------------------------------------------------- Data Storage Count -------------------------- -->
+
+			<div class="row" style="margin-top: 1rem">
+				<div class="col-md-3">
+					<div class="form-group">
+						<label>{{ 'Pages.DiwoLicense.ViewLicense.Subscription.serverstorage' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-3 valueCss">
+					{{
+						SubscriptionData.unlimitedDataTransfer == true
+							? ('Pages.DiwoLicense.ViewLicense.unlimited' | translate)
+							: SubscriptionData.DataTransferCount
+					}}
+				</div>
+				<div class="col-md-3 valueCss">
+					{{ 'Pages.DiwoLicense.ViewLicense.realtimedatanotavailabel' | translate }}
+				</div>
+				<div class="col-md-3 valueCss">
+					{{ 'Pages.DiwoLicense.ViewLicense.realtimedatanotavailabel' | translate }}
+				</div>
+			</div>
+
+			<!-- ---------------------------------------------------- Data Transfer Count -------------------------- -->
+
+			<div class="row" style="margin-top: 1rem">
+				<div class="col-md-3">
+					<div class="form-group">
+						<label>{{ 'Pages.DiwoLicense.ViewLicense.Subscription.datatransfer' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-3 valueCss">
+					{{
+						SubscriptionData.UnlimitedServerStor == true
+							? ('Pages.DiwoLicense.ViewLicense.unlimited' | translate)
+							: SubscriptionData.serverStorageCount
+					}}
+				</div>
+				<div class="col-md-3 valueCss">
+					{{ 'Pages.DiwoLicense.ViewLicense.realtimedatanotavailabel' | translate }}
+				</div>
+				<div class="col-md-3 valueCss">
+					{{ 'Pages.DiwoLicense.ViewLicense.realtimedatanotavailabel' | translate }}
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<app-manage-custom-temp
+		*ngIf="(UserRoleId == 2 || UserRoleId == 3) && type == 'drip'"
+		[ClientId]="clientId"
+		[isEdit]="isEdit"></app-manage-custom-temp>
+</div>
+
+<div
+	class="modal fade credit-note"
+	id="customFieldValidationPopup"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="myModalLabel"
+	aria-hidden="true"
+	data-backdrop="static"
+	data-keyboard="false">
+	<div
+		class="modal-dialog"
+		[ngClass]="{
+			'other-type-pop-up': customFields[customFieldEditIndex]?.dataType != 'Dropdown select',
+			'dropdown-type-pop-up': customFields[customFieldEditIndex]?.dataType == 'Dropdown select'
+		}"
+		*ngIf="customFields">
+		<div class="modal-content">
+			<div
+				class="modal-header"
+				[ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="cancelCustomFilter()">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					<span
+						style="text-transform: capitalize"
+						*ngIf="customFields[customFieldEditIndex]?.dataType != 'Dropdown select'"
+						>{{ 'Pages.Account.AccountHome.Modal.CustomField.popupTitle' | translate }}
+						{{ customFields[customFieldEditIndex]?.dataType ? customFields[customFieldEditIndex].dataType : '' }}</span
+					>
+					<span
+						style="text-transform: capitalize"
+						*ngIf="customFields[customFieldEditIndex]?.dataType == 'Dropdown select'">
+						{{ 'Pages.Account.AccountHome.Modal.CustomField.dropdownPopupTitle' | translate }}
+					</span>
+				</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row" *ngIf="customFields && customFields.length > 0">
+					<div
+						class="col-md-12"
+						style="margin-bottom: 10px"
+						*ngIf="
+							customFields &&
+							customFields.length > 0 &&
+							['Radio select', 'Dropdown select'].indexOf(customFields[customFieldEditIndex].dataType) == -1
+						">
+						<p>
+							{{ 'Pages.Account.AccountHome.Modal.CustomField.popUpMessage' | translate }}
+						</p>
+					</div>
+					<div class="col-md-12 form-group" style="margin-top: -5px">
+						<!-- Add Custom Field Validation Code -->
+						<!-- -----------------------------Single-line text / Multi-line text------------------- -->
+						<div
+							*ngIf="['Single-line text', 'Multi-line text'].indexOf(customFields[customFieldEditIndex].dataType) > -1">
+							<div class="row">
+								<div class="form-group col-md-6" style="margin-top: -2px">
+									<label>{{ 'Pages.Account.AccountHome.Modal.CustomField.minCharLimit.title' | translate }}</label>
+									<input
+										type="text"
+										class="form-control"
+										type="number"
+										[(ngModel)]="customFields[customFieldEditIndex].minCharLimit"
+										[ngModelOptions]="{ standalone: true }"
+										[disabled]="isViewMode"
+										placeholder="{{
+											'Pages.Account.AccountHome.Modal.CustomField.minCharLimit.placeholder' | translate
+										}}" />
+								</div>
+								<div class="form-group col-md-6" style="margin-top: -2px">
+									<label>{{ 'Pages.Account.AccountHome.Modal.CustomField.maxCharLimit.title' | translate }}</label>
+									<input
+										type="text"
+										class="form-control"
+										type="number"
+										[(ngModel)]="customFields[customFieldEditIndex].maxCharLimit"
+										[ngModelOptions]="{ standalone: true }"
+										[disabled]="isViewMode"
+										placeholder="{{
+											'Pages.Account.AccountHome.Modal.CustomField.maxCharLimit.placeholder' | translate
+										}}" />
+								</div>
+
+								<div class="form-group col-md-6">
+									<label>{{ 'Pages.Account.AccountHome.Modal.CustomField.RestrictNumber.title' | translate }}</label>
+									<div>
+										<label class="switch">
+											<input
+												type="checkbox"
+												class="form-control js-switch"
+												[(ngModel)]="customFields[customFieldEditIndex].restrictNumber"
+												[ngModelOptions]="{ standalone: true }" />
+											<span
+												class="slider round"
+												[ngStyle]="{
+												'background-color': customFields[customFieldEditIndex].restrictNumber ? appService.whiteBrandingColor : '#ccc',
+											}">
+											</span>
+										</label>
+									</div>
+								</div>
+
+								<div class="form-group col-md-6">
+									<label>{{ 'Pages.Account.AccountHome.Modal.CustomField.AllowSpecialChar.title' | translate }}</label>
+									<div>
+										<label class="switch">
+											<input
+												type="checkbox"
+												class="form-control js-switch"
+												[(ngModel)]="customFields[customFieldEditIndex].restrictSpecialChar"
+												[ngModelOptions]="{ standalone: true }" />
+											<span
+												class="slider round"
+												[ngStyle]="{
+												'background-color': customFields[customFieldEditIndex].restrictSpecialChar ? appService.whiteBrandingColor : '#ccc',
+											}">
+											</span>
+										</label>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- -----------------------------Number------------------- -->
+						<div
+							*ngIf="
+								customFields &&
+								customFields.length > 0 &&
+								['Number', 'Percentage'].indexOf(customFields[customFieldEditIndex].dataType) > -1
+							">
+							<div class="row">
+								<div class="form-group col-md-6" style="margin-top: -2px">
+									<label>{{ 'Pages.Account.AccountHome.Modal.CustomField.setMinValue.title' | translate }}</label>
+									<input
+										type="text"
+										class="form-control"
+										type="number"
+										[(ngModel)]="customFields[customFieldEditIndex].setMinValue"
+										[ngModelOptions]="{ standalone: true }"
+										[disabled]="isViewMode"
+										placeholder="{{
+											'Pages.Account.AccountHome.Modal.CustomField.setMinValue.placeholder' | translate
+										}}" />
+								</div>
+								<div class="form-group col-md-6" style="margin-top: -2px">
+									<label>{{ 'Pages.Account.AccountHome.Modal.CustomField.setMaxValue.title' | translate }}</label>
+									<input
+										type="text"
+										class="form-control"
+										type="number"
+										[(ngModel)]="customFields[customFieldEditIndex].setMaxValue"
+										[ngModelOptions]="{ standalone: true }"
+										[disabled]="isViewMode"
+										placeholder="{{
+											'Pages.Account.AccountHome.Modal.CustomField.setMaxValue.placeholder' | translate
+										}}" />
+								</div>
+
+								<div class="form-group col-md-6" style="margin-top: -2px">
+									<label>{{ 'Pages.Account.AccountHome.Modal.CustomField.decimalLimit.title' | translate }}</label>
+									<input
+										type="text"
+										class="form-control"
+										type="number"
+										[(ngModel)]="customFields[customFieldEditIndex].decimalLimit"
+										[ngModelOptions]="{ standalone: true }"
+										[disabled]="isViewMode"
+										placeholder="{{
+											'Pages.Account.AccountHome.Modal.CustomField.decimalLimit.placeholder' | translate
+										}}" />
+								</div>
+							</div>
+						</div>
+
+						<!-- -----------------------------Currecny------------------- -->
+						<div
+							*ngIf="
+								customFields &&
+								customFields.length > 0 &&
+								['Currency'].indexOf(customFields[customFieldEditIndex].dataType) > -1
+							">
+							<div class="row">
+								<div class="form-group col-md-12" style="margin-top: -2px">
+									<label>{{ 'Pages.Account.AccountHome.Modal.CustomField.currency.title' | translate }}</label>
+									<ng-select
+										[items]="countryNameList"
+										class="ng-select-wrap"
+										placeholder="{{ 'Pages.Account.AccountHome.Modal.CustomField.currency.placeholder' | translate }}"
+										bindLabel="nameWithCurrencySymbol"
+										bindValue="name"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="true"
+										[clearable]="false"
+										(change)="selectCountryForCurrency($event)"
+										[(ngModel)]="customFields[customFieldEditIndex].countryName"
+										[ngModelOptions]="{ standalone: true }"
+										[disabled]="isViewMode">
+									</ng-select>
+								</div>
+							</div>
+						</div>
+
+						<!-- -----------------------------Date Picker----------------- -->
+						<div
+							*ngIf="
+								customFields &&
+								customFields.length > 0 &&
+								['Date picker'].indexOf(customFields[customFieldEditIndex].dataType) > -1
+							">
+							<div class="row">
+								<div class="form-group col-md-12" style="margin-top: -2px">
+									<label>{{
+										'Pages.Account.AccountHome.Modal.CustomField.futureDateTypeList.title' | translate
+									}}</label>
+									<ng-select
+										[items]="datePickerCustomFieldValidationList"
+										class="ng-select-wrap"
+										placeholder="{{
+											'Pages.Account.AccountHome.Modal.CustomField.futureDateTypeList.placeholder' | translate
+										}}"
+										bindLabel="value"
+										bindValue="value"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="true"
+										[clearable]="false"
+										(change)="selecDatePickerValidation($event)"
+										[(ngModel)]="customFields[customFieldEditIndex].datePickerValidationType"
+										[ngModelOptions]="{ standalone: true }"
+										[disabled]="isViewMode">
+									</ng-select>
+								</div>
+
+								<!-- For Future Date  -->
+								<div
+									class="form-group col-md-12"
+									*ngIf="customFields[customFieldEditIndex].datePickerValidationType === 'Future Date Only'">
+									<label>{{
+										'Pages.Account.AccountHome.Modal.CustomField.futureDateTypeList.title' | translate
+									}}</label>
+									<ng-select
+										[items]="futureDateValidationList"
+										class="ng-select-wrap"
+										placeholder="{{
+											'Pages.Account.AccountHome.Modal.CustomField.futureDateTypeList.placeholder' | translate
+										}}"
+										bindLabel="value"
+										bindValue="value"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="true"
+										[clearable]="false"
+										[(ngModel)]="customFields[customFieldEditIndex].futureDateValidationType"
+										[ngModelOptions]="{ standalone: true }"
+										[disabled]="isViewMode">
+									</ng-select>
+								</div>
+
+								<!-- For Future Date-====>> ['Any date after buffer time','Any date in a rolling date range'] -->
+								<div
+									*ngIf="customFields[customFieldEditIndex].futureDateValidationType === 'Any date after buffer time'"
+									class="form-group col-md-6">
+									<label>{{ 'Pages.Account.AccountHome.Modal.CustomField.bufferdays.title' | translate }}</label>
+									<input
+										type="text"
+										class="form-control"
+										type="number"
+										[(ngModel)]="customFields[customFieldEditIndex].dayCount"
+										[ngModelOptions]="{ standalone: true }"
+										[disabled]="isViewMode"
+										placeholder="{{
+											'Pages.Account.AccountHome.Modal.CustomField.bufferdays.placeholder' | translate
+										}}" />
+								</div>
+
+								<div
+									*ngIf="
+										customFields[customFieldEditIndex].futureDateValidationType === 'Any date in a rolling date range'
+									"
+									class="form-group col-md-6">
+									<label>{{ 'Pages.Account.AccountHome.Modal.CustomField.rollingDateRange.title' | translate }}</label>
+									<input
+										type="text"
+										class="form-control"
+										type="number"
+										[(ngModel)]="customFields[customFieldEditIndex].dayCount"
+										[ngModelOptions]="{ standalone: true }"
+										[disabled]="isViewMode"
+										placeholder="{{
+											'Pages.Account.AccountHome.Modal.CustomField.rollingDateRange.placeholder' | translate
+										}}" />
+								</div>
+								<!-- For Specific Date Range -->
+								<div
+									*ngIf="customFields[customFieldEditIndex].datePickerValidationType === 'Specific Date Range'"
+									class="form-group col-md-12">
+									<label>{{ 'Pages.Analytics.Home.Filter.filterDate' | translate }} </label>
+									<input
+										type="text"
+										ngxDaterangepickerMd
+										[showDropdowns]="true"
+										onkeydown="return false"
+										[showCustomRangeLabel]="true"
+										[alwaysShowCalendars]="true"
+										[ranges]="ranges"
+										[linkedCalendars]="true"
+										[isInvalidDate]="isInvalidDate"
+										[showClearButton]="false"
+										[showCancel]="true"
+										placeholder="DD-MM-YYYY - DD-MM-YYYY"
+										[autoApply]="true"
+										[locale]="{ applyLabel: 'ok', format: 'DD-MM-YYYY' }"
+										class="form-control"
+										autocomplete="off"
+										(change)="onDateChange($event)"
+										[(ngModel)]="customFields[customFieldEditIndex].dateRange"
+										[ngModelOptions]="{ standalone: true }" />
+								</div>
+							</div>
+						</div>
+
+						<!-- -----------------------------Dropdown / Radio Button------------------- -->
+						<div
+							*ngIf="
+								customFields &&
+								customFields.length > 0 &&
+								['Radio select', 'Dropdown select'].indexOf(customFields[customFieldEditIndex].dataType) > -1
+							">
+							<div class="row">
+								<div class="col-md-12" style="display: flex; justify-content: start">
+									<div></div>
+									<div>
+										<div>
+											<a
+												[ngClass]="{ 'edit-disabled': !writePermission }"
+												class="btn btn-info border_radius"
+												(click)="pathFile.click()">
+												{{ 'Pages.Account.AccountHome.Modal.CustomField.uploadTemplate' | translate }}
+											</a>
+											<input
+												type="file"
+												style="display: none"
+												id="historyFile"
+												class="btn btn-info border_radius"
+												#pathFile
+												(change)="uploadLabels($event)" />
+										</div>
+										<div style="text-align: center">
+											<a href="assets/file/upload_labels.xlsx" download style="font-size: 0.7rem">
+												{{ 'Pages.Account.AccountHome.Modal.CustomField.downloadTemplate' | translate }}</a
+											>
+										</div>
+									</div>
+									<div>
+										<a
+											[ngClass]="{ 'edit-disabled': !writePermission }"
+											style="margin-left: 1rem"
+											class="btn btn-info border_radius"
+											(click)="showLoadOptionPopup()">
+											{{ 'Pages.Account.AccountHome.Modal.CustomField.useList' | translate }}
+										</a>
+									</div>
+								</div>
+							</div>
+
+							<div class="row" *ngIf="customFields[customFieldEditIndex]?.options.length > 0">
+								<div
+									*ngFor="
+										let item of customFields[customFieldEditIndex].options
+											| paginate
+												: {
+														itemsPerPage: limit == 'all' ? totalCount : limit,
+														currentPage: page,
+														totalItems: totalCount
+												  };
+										index as i
+									">
+									<div class="col-md-6">
+										<div class="row">
+											<div class="form-group col-md-8">
+												<div style="display: flex; justify-content: space-between">
+													<div>
+														<label
+															>{{ 'Pages.Account.AccountHome.Modal.CustomField.options.title' | translate }}
+														</label>
+													</div>
+													<div>
+														<img
+															*ngIf="customFields[customFieldEditIndex].options.length > 2 && !item.isCreated"
+															(click)="deleteOption(i)"
+															src="assets/images/cancel_icon.svg"
+															style="width: 26px; float: right; margin-top: 1px; cursor: pointer" />
+													</div>
+												</div>
+												<input
+													type="text"
+													class="form-control"
+													[(ngModel)]="item.label"
+													(change)="checkOptionField(i)"
+													placeholder="{{
+														'Pages.Account.AccountHome.Modal.CustomField.options.placeholder' | translate
+													}}" />
+												<div *ngIf="item.requiredError" class="error invalid-feedback">
+													<div>Label is required</div>
+												</div>
+												<div class="row" *ngIf="i + 1 == customFields[customFieldEditIndex].options.length">
+													<div
+														class="col-md-12"
+														style="
+															display: flex;
+															align-items: center;
+															margin-top: 0.5rem;
+															margin-bottom: -0.5rem;
+															justify-content: flex-end;
+														">
+														<!-- <img
+															src="assets/images/add_icon.svg"
+															(click)="addOption()"
+															style="width: 30px; cursor: pointer" /> -->
+														<span
+															[innerHTML]="iconObject['add_icon_30']"
+															style="width: 30px; cursor: pointer"
+															(click)="addOption()"></span>
+													</div>
+												</div>
+											</div>
+											<div class="col-md-4">
+												<div class="form-group" style="margin-top: 3.1rem; display: flex; justify-content: center">
+													<div>
+														<label class="switch">
+															<input
+																type="checkbox"
+																class="form-control js-switch"
+																[(ngModel)]="item.isHide"
+																[ngModelOptions]="{ standalone: true }"
+																[disabled]="isViewMode" />
+															<span
+																class="slider round"
+																[ngStyle]="{
+																'background-color': item.isHide ? appService.whiteBrandingColor : '#ccc',
+															}"></span>
+														</label>
+													</div>
+													<div>
+														<label style="padding-left: 15px; margin-left: 3px; display: flex; align-items: normal">
+															{{ 'Pages.Account.AddEdit.CustomFields.fields.hide.title' | translate }}
+															<!-- <img
+																style="width: 30px"
+																src="assets/images/info_icon.svg"
+																title="{{ 'Pages.Account.AddEdit.CustomFields.hideMessage' | translate }}"
+														/> -->
+
+															<span
+																[innerHTML]="iconObject['info_icon_25']"
+																style="width: 30px"
+																title="{{ 'Pages.Account.AddEdit.CustomFields.hideMessage' | translate }}"></span>
+														</label>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- <div
+					class="visible-md visible-lg visible-sm visible-xs"
+					style="text-align: right; margin-bottom: 0.75rem; margin-top: 1.5rem">
+					<a
+						class="btn-xs action-pause-btn"
+						(click)="setCusomFieldValidation()"
+						style="padding: 7px 23px; border-radius: 30px; font-size: 1rem; margin-right: 10px"
+						>{{ 'Utils.ok' | translate }}</a
+					>
+				</div> -->
+				<div class="row" *ngIf="customFields && customFields.length > 0">
+					<!-- Pagination For Drop Down Options-->
+					<div class="col-md-6">
+						<div
+							class="custom-field-pagination"
+							style="margin-left: -3rem"
+							*ngIf="['Radio select', 'Dropdown select'].indexOf(customFields[customFieldEditIndex].dataType) > -1">
+							<pagination-controls (pageChange)="onPageChangeEvent($event)"> </pagination-controls>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div
+							class="visible-md visible-lg visible-sm visible-xs"
+							style="text-align: right; margin-bottom: 0.75rem; margin-top: 1.5rem">
+							<a
+								*ngIf="['Radio select', 'Dropdown select'].indexOf(customFields[customFieldEditIndex].dataType) > -1"
+								class="btn-xs action-edit-btn"
+								style="padding: 7px 23px; border-radius: 30px; font-size: 0.9rem; margin-right: 10px"
+								(click)="clearLabelList()"
+								>{{ 'Utils.Action.ClearAll' | translate }}</a
+							>
+							<a
+								class="btn-xs action-edit-btn"
+								style="padding: 7px 23px; border-radius: 30px; font-size: 0.9rem; margin-right: 10px"
+								(click)="cancelCustomFilter()"
+								>{{ 'Utils.Action.cancel' | translate }}</a
+							>
+							<a
+								class="btn-xs action-edit-btn"
+								(click)="setCusomFieldValidation()"
+								style="margin-right: 9px; padding: 7px 20px; border-radius: 30px; font-size: 0.9rem"
+								>{{ 'Utils.save' | translate }}</a
+							>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div
+	class="modal fade credit-note"
+	id="documentCustomFieldValidationPopup"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="myModalLabel"
+	aria-hidden="true"
+	data-backdrop="static"
+	data-keyboard="false">
+	<div
+		class="modal-dialog"
+		[ngClass]="{
+			'other-type-pop-up': documentCustomFields[customFieldEditIndex]?.dataType != 'Dropdown select',
+			'dropdown-type-pop-up': documentCustomFields[customFieldEditIndex]?.dataType == 'Dropdown select'
+		}"
+		*ngIf="documentCustomFields">
+		<div class="modal-content">
+			<div
+				class="modal-header"
+				[ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="cancelCustomFilter()">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					<span
+						style="text-transform: capitalize"
+						*ngIf="documentCustomFields[customFieldEditIndex]?.dataType != 'Dropdown select'"
+						>{{ 'Pages.Account.AccountHome.Modal.CustomField.popupTitle' | translate }}
+						{{
+							documentCustomFields[customFieldEditIndex]?.dataType
+								? documentCustomFields[customFieldEditIndex].dataType
+								: ''
+						}}</span
+					>
+					<span
+						style="text-transform: capitalize"
+						*ngIf="documentCustomFields[customFieldEditIndex]?.dataType == 'Dropdown select'">
+						{{ 'Pages.Account.AccountHome.Modal.CustomField.dropdownPopupTitle' | translate }}
+					</span>
+				</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row" *ngIf="documentCustomFields && documentCustomFields.length > 0">
+					<div
+						class="col-md-12"
+						style="margin-bottom: 10px"
+						*ngIf="
+							documentCustomFields &&
+							documentCustomFields.length > 0 &&
+							['Radio select', 'Dropdown select'].indexOf(
+								documentCustomFields[documentCustomFieldEditIndex].dataType
+							) == -1
+						">
+						<p>
+							{{ 'Pages.Account.AccountHome.Modal.CustomField.popUpMessage' | translate }}
+						</p>
+					</div>
+					<div class="col-md-12 form-group" style="margin-top: -5px">
+						<!-- Add Custom Field Validation Code -->
+						<!-- -----------------------------Single-line text / Multi-line text------------------- -->
+						<div
+							*ngIf="
+								['Single-line text', 'Multi-line text'].indexOf(
+									documentCustomFields[documentCustomFieldEditIndex].dataType
+								) > -1
+							">
+							<div class="row">
+								<div class="form-group col-md-6" style="margin-top: -2px">
+									<label>{{ 'Pages.Account.AccountHome.Modal.CustomField.minCharLimit.title' | translate }}</label>
+									<input
+										type="text"
+										class="form-control"
+										type="number"
+										[(ngModel)]="documentCustomFields[documentCustomFieldEditIndex].minCharLimit"
+										[ngModelOptions]="{ standalone: true }"
+										[disabled]="isViewMode"
+										placeholder="{{
+											'Pages.Account.AccountHome.Modal.CustomField.minCharLimit.placeholder' | translate
+										}}" />
+								</div>
+								<div class="form-group col-md-6" style="margin-top: -2px">
+									<label>{{ 'Pages.Account.AccountHome.Modal.CustomField.maxCharLimit.title' | translate }}</label>
+									<input
+										type="text"
+										class="form-control"
+										type="number"
+										[(ngModel)]="documentCustomFields[documentCustomFieldEditIndex].maxCharLimit"
+										[ngModelOptions]="{ standalone: true }"
+										[disabled]="isViewMode"
+										placeholder="{{
+											'Pages.Account.AccountHome.Modal.CustomField.maxCharLimit.placeholder' | translate
+										}}" />
+								</div>
+
+								<div class="form-group col-md-6">
+									<label>{{ 'Pages.Account.AccountHome.Modal.CustomField.RestrictNumber.title' | translate }}</label>
+									<div>
+										<label class="switch">
+											<input
+												type="checkbox"
+												class="form-control js-switch"
+												[(ngModel)]="documentCustomFields[documentCustomFieldEditIndex].restrictNumber"
+												[ngModelOptions]="{ standalone: true }" />
+											<span
+												class="slider round"
+												[ngStyle]="{
+												'background-color': documentCustomFields[documentCustomFieldEditIndex].restrictNumber ? appService.whiteBrandingColor : '#ccc',
+											}">
+											</span>
+										</label>
+									</div>
+								</div>
+
+								<div class="form-group col-md-6">
+									<label>{{ 'Pages.Account.AccountHome.Modal.CustomField.AllowSpecialChar.title' | translate }}</label>
+									<div>
+										<label class="switch">
+											<input
+												type="checkbox"
+												class="form-control js-switch"
+												[(ngModel)]="documentCustomFields[documentCustomFieldEditIndex].restrictSpecialChar"
+												[ngModelOptions]="{ standalone: true }" />
+											<span
+												class="slider round"
+												[ngStyle]="{
+												'background-color': documentCustomFields[documentCustomFieldEditIndex].restrictSpecialChar ? appService.whiteBrandingColor : '#ccc',
+											}">
+											</span>
+										</label>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- -----------------------------Number------------------- -->
+						<div
+							*ngIf="
+								documentCustomFields &&
+								documentCustomFields.length > 0 &&
+								['Number', 'Percentage'].indexOf(documentCustomFields[documentCustomFieldEditIndex].dataType) > -1
+							">
+							<div class="row">
+								<div class="form-group col-md-6" style="margin-top: -2px">
+									<label>{{ 'Pages.Account.AccountHome.Modal.CustomField.setMinValue.title' | translate }}</label>
+									<input
+										type="text"
+										class="form-control"
+										type="number"
+										[(ngModel)]="documentCustomFields[documentCustomFieldEditIndex].setMinValue"
+										[ngModelOptions]="{ standalone: true }"
+										[disabled]="isViewMode"
+										placeholder="{{
+											'Pages.Account.AccountHome.Modal.CustomField.setMinValue.placeholder' | translate
+										}}" />
+								</div>
+								<div class="form-group col-md-6" style="margin-top: -2px">
+									<label>{{ 'Pages.Account.AccountHome.Modal.CustomField.setMaxValue.title' | translate }}</label>
+									<input
+										type="text"
+										class="form-control"
+										type="number"
+										[(ngModel)]="documentCustomFields[documentCustomFieldEditIndex].setMaxValue"
+										[ngModelOptions]="{ standalone: true }"
+										[disabled]="isViewMode"
+										placeholder="{{
+											'Pages.Account.AccountHome.Modal.CustomField.setMaxValue.placeholder' | translate
+										}}" />
+								</div>
+
+								<div class="form-group col-md-6" style="margin-top: -2px">
+									<label>{{ 'Pages.Account.AccountHome.Modal.CustomField.decimalLimit.title' | translate }}</label>
+									<input
+										type="text"
+										class="form-control"
+										type="number"
+										[(ngModel)]="documentCustomFields[documentCustomFieldEditIndex].decimalLimit"
+										[ngModelOptions]="{ standalone: true }"
+										[disabled]="isViewMode"
+										placeholder="{{
+											'Pages.Account.AccountHome.Modal.CustomField.decimalLimit.placeholder' | translate
+										}}" />
+								</div>
+							</div>
+						</div>
+
+						<!-- -----------------------------Currecny------------------- -->
+						<div
+							*ngIf="
+								documentCustomFields &&
+								documentCustomFields.length > 0 &&
+								['Currency'].indexOf(documentCustomFields[documentCustomFieldEditIndex].dataType) > -1
+							">
+							<div class="row">
+								<div class="form-group col-md-12" style="margin-top: -2px">
+									<label>{{ 'Pages.Account.AccountHome.Modal.CustomField.currency.title' | translate }}</label>
+									<ng-select
+										[items]="countryNameList"
+										class="ng-select-wrap"
+										placeholder="{{ 'Pages.Account.AccountHome.Modal.CustomField.currency.placeholder' | translate }}"
+										bindLabel="nameWithCurrencySymbol"
+										bindValue="name"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="true"
+										[clearable]="false"
+										(change)="selectDocumentCountryForCurrency($event)"
+										[(ngModel)]="documentCustomFields[documentCustomFieldEditIndex].countryName"
+										[ngModelOptions]="{ standalone: true }"
+										[disabled]="isViewMode">
+									</ng-select>
+								</div>
+							</div>
+						</div>
+
+						<!-- -----------------------------Date Picker----------------- -->
+						<div
+							*ngIf="
+								documentCustomFields &&
+								documentCustomFields.length > 0 &&
+								['Date picker'].indexOf(documentCustomFields[documentCustomFieldEditIndex].dataType) > -1
+							">
+							<div class="row">
+								<div class="form-group col-md-12" style="margin-top: -2px">
+									<label>{{
+										'Pages.Account.AccountHome.Modal.CustomField.futureDateTypeList.title' | translate
+									}}</label>
+									<ng-select
+										[items]="datePickerCustomFieldValidationList"
+										class="ng-select-wrap"
+										placeholder="{{
+											'Pages.Account.AccountHome.Modal.CustomField.futureDateTypeList.placeholder' | translate
+										}}"
+										bindLabel="value"
+										bindValue="value"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="true"
+										[clearable]="false"
+										(change)="selecDocumentDatePickerValidation($event)"
+										[(ngModel)]="documentCustomFields[documentCustomFieldEditIndex].datePickerValidationType"
+										[ngModelOptions]="{ standalone: true }"
+										[disabled]="isViewMode">
+									</ng-select>
+								</div>
+
+								<!-- For Future Date  -->
+								<div
+									class="form-group col-md-12"
+									*ngIf="
+										documentCustomFields[documentCustomFieldEditIndex].datePickerValidationType === 'Future Date Only'
+									">
+									<label>{{
+										'Pages.Account.AccountHome.Modal.CustomField.futureDateTypeList.title' | translate
+									}}</label>
+									<ng-select
+										[items]="futureDateValidationList"
+										class="ng-select-wrap"
+										placeholder="{{
+											'Pages.Account.AccountHome.Modal.CustomField.futureDateTypeList.placeholder' | translate
+										}}"
+										bindLabel="value"
+										bindValue="value"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="true"
+										[clearable]="false"
+										[(ngModel)]="documentCustomFields[documentCustomFieldEditIndex].futureDateValidationType"
+										[ngModelOptions]="{ standalone: true }"
+										[disabled]="isViewMode">
+									</ng-select>
+								</div>
+
+								<!-- For Future Date-====>> ['Any date after buffer time','Any date in a rolling date range'] -->
+								<div
+									*ngIf="
+										documentCustomFields[documentCustomFieldEditIndex].futureDateValidationType ===
+										'Any date after buffer time'
+									"
+									class="form-group col-md-6">
+									<label>{{ 'Pages.Account.AccountHome.Modal.CustomField.bufferdays.title' | translate }}</label>
+									<input
+										type="text"
+										class="form-control"
+										type="number"
+										[(ngModel)]="documentCustomFields[documentCustomFieldEditIndex].dayCount"
+										[ngModelOptions]="{ standalone: true }"
+										[disabled]="isViewMode"
+										placeholder="{{
+											'Pages.Account.AccountHome.Modal.CustomField.bufferdays.placeholder' | translate
+										}}" />
+								</div>
+
+								<div
+									*ngIf="
+										documentCustomFields[documentCustomFieldEditIndex].futureDateValidationType ===
+										'Any date in a rolling date range'
+									"
+									class="form-group col-md-6">
+									<label>{{ 'Pages.Account.AccountHome.Modal.CustomField.rollingDateRange.title' | translate }}</label>
+									<input
+										type="text"
+										class="form-control"
+										type="number"
+										[(ngModel)]="documentCustomFields[documentCustomFieldEditIndex].dayCount"
+										[ngModelOptions]="{ standalone: true }"
+										[disabled]="isViewMode"
+										placeholder="{{
+											'Pages.Account.AccountHome.Modal.CustomField.rollingDateRange.placeholder' | translate
+										}}" />
+								</div>
+								<!-- For Specific Date Range -->
+								<div
+									*ngIf="
+										documentCustomFields[documentCustomFieldEditIndex].datePickerValidationType ===
+										'Specific Date Range'
+									"
+									class="form-group col-md-12">
+									<label>{{ 'Pages.Analytics.Home.Filter.filterDate' | translate }} </label>
+									<input
+										type="text"
+										ngxDaterangepickerMd
+										[showDropdowns]="true"
+										onkeydown="return false"
+										[showCustomRangeLabel]="true"
+										[alwaysShowCalendars]="true"
+										[ranges]="ranges"
+										[linkedCalendars]="true"
+										[isInvalidDate]="isInvalidDate"
+										[showClearButton]="false"
+										[showCancel]="true"
+										placeholder="DD-MM-YYYY - DD-MM-YYYY"
+										[autoApply]="true"
+										[locale]="{ applyLabel: 'ok', format: 'DD-MM-YYYY' }"
+										class="form-control"
+										autocomplete="off"
+										(change)="onDocumentDateChange($event)"
+										[(ngModel)]="documentCustomFields[documentCustomFieldEditIndex].dateRange"
+										[ngModelOptions]="{ standalone: true }" />
+								</div>
+							</div>
+						</div>
+
+						<!-- -----------------------------Dropdown / Radio Button------------------- -->
+						<div
+							*ngIf="
+								documentCustomFields &&
+								documentCustomFields.length > 0 &&
+								['Radio select', 'Dropdown select'].indexOf(
+									documentCustomFields[documentCustomFieldEditIndex].dataType
+								) > -1
+							">
+							<div class="row">
+								<div class="col-md-12" style="display: flex; justify-content: start">
+									<div></div>
+									<div>
+										<div>
+											<a
+												[ngClass]="{ 'edit-disabled': !writePermission }"
+												class="btn border_radius"
+												[ngStyle]="{
+													'background-color': appService.whiteBrandingColor,
+													border: '1px solid' + appService.whiteBrandingColor,
+													color: 'white'
+												}"
+												(click)="pathFile.click()">
+												{{ 'Pages.Account.AccountHome.Modal.CustomField.uploadTemplate' | translate }}
+											</a>
+											<input
+												type="file"
+												style="display: none"
+												id="historyFile"
+												class="btn border_radius"
+												[ngStyle]="{
+													'background-color': appService.whiteBrandingColor,
+													border: '1px solid' + appService.whiteBrandingColor,
+													color: 'white'
+												}"
+												#pathFile
+												(change)="uploadLabels($event)" />
+										</div>
+										<div style="text-align: center">
+											<a href="assets/file/upload_labels.xlsx" download style="font-size: 0.7rem">
+												{{ 'Pages.Account.AccountHome.Modal.CustomField.downloadTemplate' | translate }}</a
+											>
+										</div>
+									</div>
+									<div>
+										<a
+											[ngClass]="{ 'edit-disabled': !writePermission }"
+											style="margin-left: 1rem"
+											class="btn border_radius"
+											[ngStyle]="{
+												'background-color': appService.whiteBrandingColor,
+												border: '1px solid' + appService.whiteBrandingColor,
+												color: 'white'
+											}"
+											(click)="showLoadOptionPopup()">
+											{{ 'Pages.Account.AccountHome.Modal.CustomField.useList' | translate }}
+										</a>
+									</div>
+								</div>
+							</div>
+
+							<div class="row" *ngIf="documentCustomFields[documentCustomFieldEditIndex]?.options.length > 0">
+								<div
+									*ngFor="
+										let item of documentCustomFields[documentCustomFieldEditIndex].options
+											| paginate
+												: {
+														itemsPerPage: limit == 'all' ? totalCount : limit,
+														currentPage: page,
+														totalItems: totalCount
+												  };
+										index as i
+									">
+									<div class="col-md-6">
+										<div class="row">
+											<div class="form-group col-md-8">
+												<div style="display: flex; justify-content: space-between">
+													<div>
+														<label
+															>{{ 'Pages.Account.AccountHome.Modal.CustomField.options.title' | translate }}
+														</label>
+													</div>
+													<div>
+														<img
+															*ngIf="
+																documentCustomFields[documentCustomFieldEditIndex].options.length > 2 && !item.isCreated
+															"
+															(click)="deleteDcoumentOption(i)"
+															src="assets/images/cancel_icon.svg"
+															style="width: 26px; float: right; margin-top: 1px; cursor: pointer" />
+													</div>
+												</div>
+												<input
+													type="text"
+													class="form-control"
+													[(ngModel)]="item.label"
+													(change)="checkDocumentOptionField(i)"
+													placeholder="{{
+														'Pages.Account.AccountHome.Modal.CustomField.options.placeholder' | translate
+													}}" />
+												<div *ngIf="item.requiredError" class="error invalid-feedback">
+													<div>Label is required</div>
+												</div>
+												<div
+													class="row"
+													*ngIf="i + 1 == documentCustomFields[documentCustomFieldEditIndex].options.length">
+													<div
+														class="col-md-12"
+														style="
+															display: flex;
+															align-items: center;
+															margin-top: 0.5rem;
+															margin-bottom: -0.5rem;
+															justify-content: flex-end;
+														">
+														<!-- <img
+															src="assets/images/add_icon.svg"
+															(click)="addOption()"
+															style="width: 30px; cursor: pointer" /> -->
+														<span
+															[innerHTML]="iconObject['add_icon_30']"
+															style="width: 30px; cursor: pointer"
+															(click)="addDocumentOption()"></span>
+													</div>
+												</div>
+											</div>
+											<div class="col-md-4">
+												<div class="form-group" style="margin-top: 3.1rem; display: flex; justify-content: center">
+													<div>
+														<label class="switch">
+															<input
+																type="checkbox"
+																class="form-control js-switch"
+																[(ngModel)]="item.isHide"
+																[ngModelOptions]="{ standalone: true }"
+																[disabled]="isViewMode" />
+															<span
+																class="slider round"
+																[ngStyle]="{
+																'background-color': item.isHide ? appService.whiteBrandingColor : '#ccc',
+															}"></span>
+														</label>
+													</div>
+													<div>
+														<label style="padding-left: 15px">
+															{{ 'Pages.Account.AddEdit.DocumentMetadataCustomFields.fields.hide.title' | translate }}
+															<span
+																[innerHTML]="iconObject['info_icon_25']"
+																style="width: 30px"
+																title="{{
+																	'Pages.Account.AddEdit.DocumentMetadataCustomFields.hideMessage' | translate
+																}}"></span>
+														</label>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- <div
+					class="visible-md visible-lg visible-sm visible-xs"
+					style="text-align: right; margin-bottom: 0.75rem; margin-top: 1.5rem">
+					<a
+						class="btn-xs action-pause-btn"
+						(click)="setCusomFieldValidation()"
+						style="padding: 7px 23px; border-radius: 30px; font-size: 1rem; margin-right: 10px"
+						>{{ 'Utils.ok' | translate }}</a
+					>
+				</div> -->
+				<div class="row" *ngIf="documentCustomFields && documentCustomFields.length > 0">
+					<!-- Pagination For Drop Down Options-->
+					<div class="col-md-6">
+						<div
+							class="custom-field-pagination"
+							style="margin-left: -3rem"
+							*ngIf="
+								['Radio select', 'Dropdown select'].indexOf(
+									documentCustomFields[documentCustomFieldEditIndex].dataType
+								) > -1
+							">
+							<pagination-controls (pageChange)="onPageChangeEvent($event)"> </pagination-controls>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div
+							class="visible-md visible-lg visible-sm visible-xs"
+							style="text-align: right; margin-bottom: 0.75rem; margin-top: 1.5rem">
+							<a
+								*ngIf="
+									['Radio select', 'Dropdown select'].indexOf(
+										documentCustomFields[documentCustomFieldEditIndex].dataType
+									) > -1
+								"
+								class="btn-xs"
+								[ngStyle]="{
+									'background-color': appService.whiteBrandingColor,
+									border: '1px solid' + appService.whiteBrandingColor,
+									color: 'white'
+								}"
+								style="padding: 7px 23px; border-radius: 30px; font-size: 0.9rem; margin-right: 10px"
+								(click)="clearDocumentLabelList()"
+								>{{ 'Utils.Action.ClearAll' | translate }}</a
+							>
+							<a
+								class="btn-xs"
+								[ngStyle]="{
+									'background-color': appService.whiteBrandingColor,
+									border: '1px solid' + appService.whiteBrandingColor,
+									color: 'white'
+								}"
+								style="padding: 7px 23px; border-radius: 30px; font-size: 0.9rem; margin-right: 10px"
+								(click)="cancelDocumentCustomFilter()"
+								>{{ 'Utils.Action.cancel' | translate }}</a
+							>
+							<a
+								class="btn-xs action-edit-btn"
+								[ngStyle]="{
+									'background-color': appService.whiteBrandingColor,
+									border: '1px solid' + appService.whiteBrandingColor,
+									color: 'white'
+								}"
+								(click)="setDocmentCusomFieldValidation()"
+								style="margin-right: 9px; padding: 7px 20px; border-radius: 30px; font-size: 0.9rem"
+								>{{ 'Utils.save' | translate }}</a
+							>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div
+	class="modal fade credit-note"
+	id="loadOptionModel"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="myModalLabel"
+	aria-hidden="true"
+	data-backdrop="static"
+	data-keyboard="false">
+	<div class="modal-dialog" style="width: 34%; margin-top: 15%; margin-left: 34%">
+		<div class="modal-content">
+			<div
+				class="modal-header"
+				[ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="cancelOptionpopup()">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					<span>{{ 'Pages.Account.AccountHome.Modal.CustomField.loadOptions.title' | translate }}</span>
+				</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-12 form-group" style="margin-top: -5px">
+						<div>
+							<div class="row">
+								<div class="form-group col-md-12" style="margin-top: -2px">
+									<label>{{ 'Pages.Account.AccountHome.Modal.CustomField.loadOptions.title' | translate }}</label>
+									<ng-select
+										[items]="loadOptionList"
+										class="ng-select-wrap"
+										placeholder="{{
+											'Pages.Account.AccountHome.Modal.CustomField.loadOptions.placeholder' | translate
+										}}"
+										bindLabel="value"
+										bindValue="value"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="true"
+										[clearable]="false"
+										[(ngModel)]="selectedLoadOption"
+										[ngModelOptions]="{ standalone: true }"
+										(change)="selectLoadOptions($event)"
+										[disabled]="isViewMode">
+									</ng-select>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div
+					class="visible-md visible-lg visible-sm visible-xs"
+					style="text-align: right; margin-bottom: 0.75rem; margin-top: 1.5rem">
+					<a
+						class="btn-xs action-edit-btn"
+						(click)="loadOptions()"
+						style="padding: 7px 23px; border-radius: 30px; font-size: 1rem; margin-right: 10px"
+						>{{ 'Utils.use' | translate }}</a
+					>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div
+	class="modal fade credit-note"
+	id="customFieldWarningPopUp"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="myModalLabel"
+	aria-hidden="true"
+	data-backdrop="static"
+	data-keyboard="false">
+	<div class="modal-dialog" style="width: 34%; margin-top: 15%; margin-left: 34%">
+		<div class="modal-content">
+			<div
+				class="modal-header"
+				[ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="cancelOptionpopup()">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					<span>{{ 'Pages.Account.AccountHome.Modal.CustomField.updateCustomFiled.hearder' | translate }}</span>
+				</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-12 form-group" style="margin-top: -5px">
+						<p *ngIf="beforeEditCustomFieldData && beforeEditCustomFieldData.dataType == 'Dropdown select'">
+							{{ 'Pages.Account.AccountHome.Modal.CustomField.updateCustomFiled.message_1' | translate }}
+						</p>
+						<p *ngIf="beforeEditCustomFieldData && beforeEditCustomFieldData.dataType != 'Dropdown select'">
+							{{ 'Pages.Account.AccountHome.Modal.CustomField.updateCustomFiled.message_2' | translate }}
+						</p>
+					</div>
+				</div>
+				<div
+					class="visible-md visible-lg visible-sm visible-xs"
+					style="text-align: right; margin-bottom: 0.75rem; margin-top: 1.5rem">
+					<a
+						class="btn-xs action-pause-btn"
+						(click)="cancelCustomFilter()"
+						style="padding: 7px 23px; border-radius: 30px; font-size: 1rem; margin-right: 10px"
+						>{{ 'Utils.cancel' | translate }}</a
+					>
+					<a
+						class="btn-xs action-edit-btn"
+						(click)="closeWarningPopup()"
+						style="margin-right: 9px; padding: 7px 20px; border-radius: 30px; font-size: 0.9rem"
+						>{{ 'Utils.proceed' | translate }}</a
+					>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- ---WhatsApp default Reply Pop-up -->
+<div
+	class="modal fade credit-note"
+	id="whatsappDefaultReplyPopUp"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="myModalLabel"
+	aria-hidden="true"
+	data-backdrop="static"
+	data-keyboard="false">
+	<div class="modal-dialog" style="width: 34%; margin-top: 15%; margin-left: 34%">
+		<div class="modal-content">
+			<div
+				class="modal-header"
+				[ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}">
+				<button
+					type="button"
+					class="close"
+					data-dismiss="modal"
+					aria-label="Close"
+					(click)="cancelWhatsAppDefaultReplyPopUp(true)">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					<span>{{ 'Pages.Account.AccountHome.Modal.whatsAppDefaultReplyPopup.header' | translate }}</span>
+				</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-12 form-group" style="margin-top: -5px">
+						<p>
+							{{ 'Pages.Account.AccountHome.Modal.whatsAppDefaultReplyPopup.message' | translate }}
+						</p>
+					</div>
+				</div>
+				<div
+					class="visible-md visible-lg visible-sm visible-xs"
+					style="text-align: right; margin-bottom: 0.75rem; margin-top: 1.5rem">
+					<a
+						class="btn-xs action-pause-btn"
+						(click)="cancelWhatsAppDefaultReplyPopUp(true)"
+						style="padding: 7px 23px; border-radius: 30px; font-size: 1rem; margin-right: 10px"
+						>{{ 'Utils.cancel' | translate }}</a
+					>
+					<a
+						class="btn-xs action-edit-btn"
+						(click)="changeWhatsAppDefaultReplyToggleValueInGenralSetting()"
+						style="margin-right: 9px; padding: 7px 20px; border-radius: 30px; font-size: 0.9rem"
+						>{{ 'Utils.proceed' | translate }}</a
+					>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

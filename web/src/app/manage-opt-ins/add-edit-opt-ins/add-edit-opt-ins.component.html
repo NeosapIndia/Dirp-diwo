@@ -1,0 +1,357 @@
+<div class="container-fluid" style="margin: 2% 2% 2% 3%; min-height: calc(100vh - 110px)">
+	<div class="row add-edit-main-row">
+		<span>
+			<span
+				[routerLink]="['/opt-ins']"
+				style="margin-left: 0.25rem; color: #637373; margin-right: 2px; cursor: pointer">
+				{{ 'Pages.OptIns.AddEdit.pagetitle' | translate }}</span
+			>
+			<img src="assets/images/arrow_forward.svg" style="width: 27px" />
+			<span style="color: #6513e1; margin-left: 3px"> {{ 'Pages.OptIns.AddEdit.subtitle' | translate }}</span>
+		</span>
+	</div>
+
+	<form [formGroup]="optInsForm">
+		<div class="row section-wrapper" style="margin-top: 2rem">
+			<div class="form-title">
+				<span>{{ 'Pages.OptIns.AddEdit.GetStarted.title' | translate }}</span>
+			</div>
+			<div class="row card-body">
+				<div class="row" style="margin-top: -15px">
+					<div class="col-md-6">
+						<div
+							class="form-group"
+							[ngClass]="{
+								'has-error': f.MarketId.invalid && (f.MarketId.dirty || f.MarketId.touched),
+								'has-success': f.MarketId.valid && (f.MarketId.dirty || f.MarketId.touched)
+							}">
+							<label>{{ 'Pages.OptIns.AddEdit.GetStarted.MarketName.title' | translate }}</label>
+							<ng-select
+								[items]="marketList"
+								class="ng-select-wrap"
+								placeholder="{{ 'Pages.OptIns.AddEdit.GetStarted.MarketName.placeholder' | translate }}"
+								bindLabel="name"
+								bindValue="id"
+								[multiple]="false"
+								[closeOnSelect]="true"
+								[searchable]="false"
+								(change)="selectedMarket($event)"
+								formControlName="MarketId">
+							</ng-select>
+							<div *ngIf="f.MarketId.errors && f.MarketId.touched" class="error invalid-feedback">
+								<div *ngIf="f.MarketId.errors.required">
+									{{ 'Pages.OptIns.AddEdit.GetStarted.MarketName.error' | translate }}
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="row section-wrapper" style="margin-top: 2rem" *ngIf="selectedMarketName != null">
+			<div class="form-title">
+				<span> {{ 'Pages.OptIns.AddEdit.Policy.title' | translate }}</span>
+			</div>
+			<div class="card-body">
+				<div class="row" style="margin-top: -15px">
+					<div class="col-md-6">
+						<div
+							class="form-group"
+							[ngClass]="{
+								'has-error': f.policy_type.invalid && (f.policy_type.dirty || f.policy_type.touched),
+								'has-success': f.policy_type.valid && (f.policy_type.dirty || f.policy_type.touched)
+							}">
+							<label>{{ 'Pages.OptIns.AddEdit.Policy.SelectPolicy.title' | translate }}</label>
+							<ng-select
+								[items]="PolicyList"
+								class="ng-select-wrap"
+								placeholder="{{ 'Pages.OptIns.AddEdit.Policy.SelectPolicy.placeholder' | translate }}"
+								bindLabel="label"
+								bindValue="value"
+								[multiple]="true"
+								[closeOnSelect]="true"
+								[searchable]="false"
+								formControlName="policy_type"
+								(ngModelChange)="changePolicySelection()">
+							</ng-select>
+							<div *ngIf="f.policy_type.errors && f.policy_type.touched" class="error invalid-feedback">
+								<div *ngIf="f.policy_type.errors.required">
+									{{ 'Pages.OptIns.AddEdit.Policy.SelectPolicy.error' | translate }}
+								</div>
+							</div>
+						</div>
+
+						<div class="row fileupload-buttonbar" *ngIf="selectedPolicyType.indexOf('Cookie Policy') >= 0">
+							<div
+								class="col-lg-12 form-group"
+								[ngClass]="{
+									'has-error':
+										f.CookiePolicy_file.invalid && (f.CookiePolicy_file.dirty || f.CookiePolicy_file.touched),
+									'has-success': f.CookiePolicy_file.valid && (f.CookiePolicy_file.dirty || f.CookiePolicy_file.touched)
+								}">
+								<label>{{ 'Pages.OptIns.AddEdit.Policy.cookiepolicy' | translate }}</label>
+								<div class="center drag">
+									<i class="fa fa-cloud-upload pad" style="font-size: 1.875rem" aria-hidden="true "></i>
+									<p class="pad" style="font-size: 0.9rem">
+										{{ 'Pages.OptIns.AddEdit.Policy.dragandDropPolicyfile' | translate }}
+									</p>
+									<p class="pad" style="font-size: 0.9rem">
+										{{ 'Pages.OptIns.AddEdit.Policy.or' | translate }}
+									</p>
+									<label
+										class="btn btn-primary center pad fileinput-button browse_lable"
+										style="color: #fff; border-radius: 8px !important; padding-left: 1.25rem; padding-right: 1.25rem"
+										><input id="media_CookiePolicy" type="file" (change)="CookiePolicy_uploadFile($event)" />
+										{{ 'Pages.OptIns.AddEdit.Policy.browsepolicyfile' | translate }}
+									</label>
+								</div>
+								<span class="fileupload-loading"></span>
+							</div>
+						</div>
+						<table
+							*ngIf="selectedPolicyType.indexOf('Cookie Policy') >= 0 && optInsForm.value.CookiePolicy_file != ''"
+							role="presentation"
+							class="table table-striped">
+							<tbody class="files">
+								<tr class="template-upload fade in">
+									<td style="width: 80%">
+										<p class="name">{{ optInsForm.value.CookiePolicy_file.name }}</p>
+									</td>
+									<td>
+										<label class="btn btn-warning cancel border_radius">
+											<span (click)="onDeleteImage_CookiePolicy()">{{ 'Utils.delete' | translate }}</span>
+										</label>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+
+						<div class="row fileupload-buttonbar" *ngIf="selectedPolicyType.indexOf('Terms and Conditions') >= 0">
+							<div
+								class="col-lg-12 form-group"
+								[ngClass]="{
+									'has-error':
+										f.TermsandConditions_file.invalid &&
+										(f.TermsandConditions_file.dirty || f.TermsandConditions_file.touched),
+									'has-success':
+										f.TermsandConditions_file.valid &&
+										(f.TermsandConditions_file.dirty || f.TermsandConditions_file.touched)
+								}">
+								<label>{{ 'Pages.OptIns.AddEdit.Policy.termsandconditions' | translate }}</label>
+								<div class="center drag">
+									<i class="fa fa-cloud-upload pad" style="font-size: 1.875rem" aria-hidden="true "></i>
+									<p class="pad" style="font-size: 0.9rem">
+										{{ 'Pages.OptIns.AddEdit.Policy.dragandDropPolicyfile' | translate }}
+									</p>
+									<p class="pad" style="font-size: 0.9rem">
+										{{ 'Pages.OptIns.AddEdit.Policy.or' | translate }}
+									</p>
+									<label
+										class="btn btn-primary center pad fileinput-button browse_lable"
+										style="color: #fff; border-radius: 8px !important; padding-left: 1.25rem; padding-right: 1.25rem"
+										><input
+											id="media_TermsandConditions"
+											type="file"
+											(change)="TermsandConditions_uploadFile($event)" />
+										{{ 'Pages.OptIns.AddEdit.Policy.browsepolicyfile' | translate }}
+									</label>
+								</div>
+								<span class="fileupload-loading"></span>
+							</div>
+						</div>
+						<table
+							*ngIf="
+								selectedPolicyType.indexOf('Terms and Conditions') >= 0 &&
+								optInsForm.value.TermsandConditions_file != ''
+							"
+							role="presentation"
+							class="table table-striped">
+							<tbody class="files">
+								<tr class="template-upload fade in">
+									<td style="width: 80%">
+										<p class="name">{{ optInsForm.value.TermsandConditions_file.name }}</p>
+									</td>
+									<td>
+										<label class="btn btn-warning cancel border_radius">
+											<span (click)="onDeleteImage_TermsandConditions()">{{ 'Utils.delete' | translate }}</span>
+										</label>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+
+						<div class="row fileupload-buttonbar" *ngIf="selectedPolicyType.indexOf('Data Processing Agreement') >= 0">
+							<div
+								class="col-lg-12 form-group"
+								[ngClass]="{
+									'has-error':
+										f.DataProcessingAgreement_file.invalid &&
+										(f.DataProcessingAgreement_file.dirty || f.DataProcessingAgreement_file.touched),
+									'has-success':
+										f.DataProcessingAgreement_file.valid &&
+										(f.DataProcessingAgreement_file.dirty || f.DataProcessingAgreement_file.touched)
+								}">
+								<label>{{ 'Pages.OptIns.AddEdit.Policy.dataprocessingagreement' | translate }}</label>
+								<div class="center drag">
+									<i class="fa fa-cloud-upload pad" style="font-size: 1.875rem" aria-hidden="true "></i>
+									<p class="pad" style="font-size: 0.9rem">
+										{{ 'Pages.OptIns.AddEdit.Policy.dragandDropPolicyfile' | translate }}
+									</p>
+									<p class="pad" style="font-size: 0.9rem">
+										{{ 'Pages.OptIns.AddEdit.Policy.or' | translate }}
+									</p>
+									<label
+										class="btn btn-primary center pad fileinput-button browse_lable"
+										style="color: #fff; border-radius: 8px !important; padding-left: 1.25rem; padding-right: 1.25rem"
+										><input
+											id="media_DataProcessingAgreement"
+											type="file"
+											(change)="DataProcessingAgreement_uploadFile($event)" />
+										{{ 'Pages.OptIns.AddEdit.Policy.browsepolicyfile' | translate }}
+									</label>
+								</div>
+								<span class="fileupload-loading"></span>
+							</div>
+						</div>
+						<table
+							*ngIf="
+								selectedPolicyType.indexOf('Data Processing Agreement') >= 0 &&
+								optInsForm.value.DataProcessingAgreement_file != ''
+							"
+							role="presentation"
+							class="table table-striped">
+							<tbody class="files">
+								<tr class="template-upload fade in">
+									<td style="width: 80%">
+										<p class="name">{{ optInsForm.value.DataProcessingAgreement_file.name }}</p>
+									</td>
+									<td>
+										<label class="btn btn-warning cancel border_radius">
+											<span (click)="onDeleteImage_DataProcessingAgreement()">{{ 'Utils.delete' | translate }}</span>
+										</label>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+
+						<div class="row fileupload-buttonbar" *ngIf="selectedPolicyType.indexOf('Privacy Policy') >= 0">
+							<div
+								class="col-lg-12 form-group"
+								[ngClass]="{
+									'has-error':
+										f.PrivacyPolicy_file.invalid && (f.PrivacyPolicy_file.dirty || f.PrivacyPolicy_file.touched),
+									'has-success':
+										f.PrivacyPolicy_file.valid && (f.PrivacyPolicy_file.dirty || f.PrivacyPolicy_file.touched)
+								}">
+								<label> {{ 'Pages.OptIns.AddEdit.Policy.privacypolicy' | translate }}</label>
+								<div class="center drag">
+									<i class="fa fa-cloud-upload pad" style="font-size: 1.875rem" aria-hidden="true "></i>
+									<p class="pad" style="font-size: 0.9rem">
+										{{ 'Pages.OptIns.AddEdit.Policy.dragandDropPolicyfile' | translate }}
+									</p>
+									<p class="pad" style="font-size: 0.9rem">
+										{{ 'Pages.OptIns.AddEdit.Policy.or' | translate }}
+									</p>
+									<label
+										class="btn btn-primary center pad fileinput-button browse_lable"
+										style="color: #fff; border-radius: 8px !important; padding-left: 1.25rem; padding-right: 1.25rem"
+										><input id="media_PrivacyPolicy" type="file" (change)="PrivacyPolicy_uploadFile($event)" />
+										{{ 'Pages.OptIns.AddEdit.Policy.browsepolicyfile' | translate }}
+									</label>
+								</div>
+								<span class="fileupload-loading"></span>
+							</div>
+						</div>
+						<table
+							*ngIf="selectedPolicyType.indexOf('Privacy Policy') >= 0 && optInsForm.value.PrivacyPolicy_file != ''"
+							role="presentation"
+							class="table table-striped">
+							<tbody class="files">
+								<tr class="template-upload fade in">
+									<td style="width: 80%">
+										<p class="name">{{ optInsForm.value.PrivacyPolicy_file.name }}</p>
+									</td>
+									<td>
+										<label class="btn btn-warning cancel border_radius">
+											<span (click)="onDeleteImage_PrivacyPolicy()">{{ 'Utils.delete' | translate }}</span>
+										</label>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+
+				<div class="row" *ngIf="selectedPolicyType.length > 0">
+					<div class="col-md-6">
+						<div class="form-group">
+							<label>{{ 'Pages.OptIns.AddEdit.Policy.policynotifyusers' | translate }}</label>
+
+							<div
+								style="text-align: left; color: #000; margin-top: 0.5rem"
+								*ngIf="selectedPolicyType.indexOf('Cookie Policy') >= 0">
+								<input
+									type="checkbox"
+									class="acceptTermsCheck"
+									(click)="onCheck_CookiePolicy()"
+									style="vertical-align: text-bottom !important; width: 18px !important; height: 18px !important" />
+								&nbsp;&nbsp;{{ 'Pages.OptIns.AddEdit.Policy.cookiepolicy' | translate }}
+							</div>
+
+							<div
+								style="text-align: left; margin-top: 10px; color: #000"
+								*ngIf="selectedPolicyType.indexOf('Terms and Conditions') >= 0">
+								<input
+									type="checkbox"
+									class="acceptTermsCheck"
+									(click)="onCheck_TermsandConditions()"
+									style="vertical-align: text-bottom !important; width: 18px !important; height: 18px !important" />
+								&nbsp;&nbsp; {{ 'Pages.OptIns.AddEdit.Policy.termsandconditions' | translate }}
+							</div>
+
+							<div
+								style="text-align: left; margin-top: 10px; color: #000"
+								*ngIf="selectedPolicyType.indexOf('Data Processing Agreement') >= 0">
+								<input
+									type="checkbox"
+									class="acceptTermsCheck"
+									(click)="onCheck_DataProcessingAgreement()"
+									style="vertical-align: text-bottom !important; width: 18px !important; height: 18px !important" />
+								&nbsp;&nbsp;{{ 'Pages.OptIns.AddEdit.Policy.dataprocessingagreement' | translate }}
+							</div>
+
+							<div
+								style="text-align: left; margin-top: 10px; color: #000"
+								*ngIf="selectedPolicyType.indexOf('Privacy Policy') >= 0">
+								<input
+									type="checkbox"
+									class="acceptTermsCheck"
+									(click)="onCheck_PrivacyPolicy()"
+									style="vertical-align: text-bottom !important; width: 18px !important; height: 18px !important" />
+								&nbsp;&nbsp; {{ 'Pages.OptIns.AddEdit.Policy.privacypolicy' | translate }}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="row" style="float: right; margin-top: 2rem">
+			<a
+				class="btn btn-o btn-primary border_radius functionalBtn"
+				style="
+					margin-right: 20px;
+					background-color: lightgray !important;
+					color: black;
+					border: 1px solid lightgray !important;
+				"
+				(click)="cancel()"
+				>{{ 'Utils.cancel' | translate }}</a
+			>
+			<a class="btn btn-o btn-primary border_radius functionalBtn" style="margin-right: 7px" (click)="save()">{{
+				'Utils.save' | translate
+			}}</a>
+		</div>
+	</form>
+</div>

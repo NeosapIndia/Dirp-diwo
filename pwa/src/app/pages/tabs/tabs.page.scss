@@ -1,0 +1,58 @@
+ion-tab-button {
+	--color: var(--ion-color-light);
+	background: #f7f7f7;
+	--color-selected: var(--branding-color) !important;
+}
+
+.tab-selected {
+	color: var(--branding-color);
+}
+
+.main-panel-desktop {
+	display: flex !important;
+	align-items: center !important;
+	width: 100%;
+	height: 65px;
+}
+
+.left-panel-desktop {
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	// width: 14.7%;
+	width: 69.6%;
+	padding-left: 0.8rem;
+}
+
+.right-panel-desktop {
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+	width: 25%;
+}
+
+.header-logo {
+	height: 35px;
+}
+
+.main-panel-desktop ion-tab-button {
+	display: flex;
+	align-items: center;
+	// justify-content: end;
+	justify-content: flex-end;
+}
+
+@media only screen and (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+	.left-panel-portrait-tab {
+		width: 65.5% !important;
+		// margin-left: -0.5rem !important;
+		padding-left: 0 !important;
+	}
+
+	.main-panel-desktop ion-tab-button {
+		margin-right: 1rem !important;
+	}
+}
+
+@media only screen and (min-width: 1024px) and (max-width: 1366.98px) and (orientation: landscape) {
+}

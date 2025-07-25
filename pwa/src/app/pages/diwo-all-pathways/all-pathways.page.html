@@ -1,0 +1,115 @@
+<!-- <ion-header>
+	<ion-toolbar class="toolbar-head">
+		<ion-buttons slot="start" style="padding-top: 6px">
+			<ion-back-button (click)="back()" text=""></ion-back-button>
+		</ion-buttons>
+		<ion-title
+			[ngClass]="{ 'ion-title-desktop': isdesktopView || isTabletLandscapeView}"
+			style="padding: 6px 0px 0px 0px; text-align: center">
+			{{'Utils.mylearningpathways' | translate}}</ion-title
+		>
+		<ion-buttons slot="end" style="visibility: hidden">
+			<ion-back-button (click)="back()" text=""></ion-back-button>
+		</ion-buttons>
+	</ion-toolbar>
+</ion-header> -->
+
+<ion-header *ngIf="isMobile && isMobileView">
+	<ion-toolbar class="toolbar-head">
+		<img *ngIf="clientBranding" [src]="imageBaseURL + clientBranding.learner_app_icon_path" class="header-logo" />
+		<img *ngIf="!clientBranding && appService.defaultPWALogo" [src]="appService.defaultPWALogo" class="header-logo" />
+		<img
+			*ngIf="!clientBranding &&!appService.defaultPWALogo"
+			src="assets/icon/diwo_full_logo.png"
+			class="header-logo" />
+	</ion-toolbar>
+</ion-header>
+
+<ion-content
+	[fullscreen]="true"
+	class="ion-padding-horizontal"
+	[scrollEvents]="true"
+	(ionScroll)="getScrollPos($event)">
+	<ion-grid>
+		<!-- My Learnering Pathways -->
+		<ion-row [ngClass]="{ 'ion-main-row-desktop': isdesktopView || isTabletLandscapeView || isTablet}">
+			<ion-col
+				size-sm="12"
+				size-md="9"
+				size-lg="7"
+				class="page-wrapper2 main-col"
+				[ngClass]="{ 'ion-main-col-desktop': isdesktopView || isTabletLandscapeView || isTablet}">
+				<div class="ion-sort-desktop">
+					<p class="mylearning-pathways">{{'Utils.learningpathways' | translate}}</p>
+				</div>
+
+				<!-- SearchBox -->
+				<ion-row class="ion--header-search-main-row">					
+					<ion-col class="no-padding">
+						<ion-header id="header-desktop-searchbar">
+						<div class="custom-search-container">
+							<input
+							type="text"
+							[(ngModel)]="searchQuery"
+            				(ngModelChange)="filterData()"
+							class="custom-search-input"
+							[placeholder]="'Utils.searchboxPlaceholderForCourses' | translate"
+							/>
+							<ion-icon name="search" class="custom-search-icon"></ion-icon>
+						</div>
+						</ion-header>
+					</ion-col>
+				</ion-row>
+
+
+				<ion-row class="custom-gutter">
+					<ion-col
+						*ngFor="let item of filteredAssignPathwayListData"						
+						size-sm="6" size-md="3" size-lg="3" size="6"
+						class="page-wrapper">
+						<div class="custom-card" (click)="showPathwayDetail(item)">
+							<div *ngIf="item">
+								<div class="wb-img">
+									<img [src]="imageBaseURL + 'uploads/diwo_pathway_thumbnail/' + item.avatar_file_name" class="wbImg" />
+								</div>
+								<div class="wb-details">
+									<p class="wb-name">{{item.title}}</p>									
+									<p class="courseandmodulecount">
+										{{ item.totalCourses }} {{ item.totalCourses === 1 ? 'Course and' : 'Courses and' }} 
+										{{ item.totalModules }} {{ item.totalModules === 1 ? 'Module' : 'Modules' }}
+									</p>
+									<p class="progressbar">
+										<!-- <progress [value]="5" [max]="10"></progress> -->
+										<progress [value]="item.completedCount" [max]="item.totalCourses"></progress>
+									</p>
+									<!-- <p class="learnerstatus"
+									[ngClass]="{
+										'red-shade': item.pathwayStatus == 'Not Started',
+										'yellow-shade': item.pathwayStatus == 'In Progress',
+										'green-shade': item.pathwayStatus == 'Completed' || item.pathwayStatus == 'Certified'
+									 }"
+									>{{item.pathwayStatus ? item.pathwayStatus : '-'}}</p> -->
+									<p class="learnerstatus">{{item.pathwayStatus ? item.pathwayStatus : '-'}}</p>
+								</div>
+							</div>
+						</div>
+					</ion-col>
+				</ion-row>
+			</ion-col>
+		</ion-row>
+
+		<div class="back-to-top-btn" *ngIf="backToTop" (click)="gotToTop()">
+			<ion-icon id="top-icon" name="chevron-up-outline"></ion-icon>
+		</div>
+	</ion-grid>
+	<ion-refresher
+		ion-refresh-native
+		slot="fixed"
+		disabled="false"
+		(ionRefresh)="doRefresh($event)"
+		pullFactor="0.1"
+		pullMin="50"
+		pullMax="200">
+		<ion-refresher-content></ion-refresher-content>
+	</ion-refresher>
+</ion-content>

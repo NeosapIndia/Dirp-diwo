@@ -1,0 +1,339 @@
+<div class="pageDiv" style="min-height: calc(100vh - 95px)">
+	<div style="margin-top: 2rem">
+		<div class="row">
+			<div class="panel header-panel-white" style="display: flex">
+				<div class="col-md-3" style="padding-left: 0.5%">
+					<span class="mainTitle no-margin pageTitle_Main">
+						{{ 'Pages.SystemHealth.Home.pagetitle' | translate }}
+					</span>
+				</div>
+				<div class="col-md-9" style="padding-right: 0"></div>
+			</div>
+		</div>
+	</div>
+
+	<div>
+		<div class="row">
+			<div class="panel panel-white">
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col-md-12" style="display: flex; align-items: center; justify-content: end">
+							<span style="margin-right: 5px">
+								{{ 'Pages.SystemHealth.Home.lastupdated' | translate }}: {{ lastUpdatedDateTime }}
+							</span>
+							<img src="assets/images/refresh_icon.svg" (click)="refreshSystemHealthDetail()" style="cursor: pointer" />
+						</div>
+					</div>
+
+					<!-- Row 1: CPU and Memory -->
+					<div class="row" style="margin-top: 1rem">
+						<div class="col-md-6">
+							<div class="box-panel panel-default d-flex justify-content-between align-items-center box-content">
+								<div class="left-content">
+									<h4>
+										<span class="system-type-data-text">{{ system_HealthData?.CPU_load }}%</span>
+									</h4>
+									<div class="progress half-width">
+										<div
+											class="progress-bar"
+											role="progressbar"
+											[ngClass]="cpuColor"
+											[style.width.%]="system_HealthData?.CPU_load"></div>
+									</div>
+									<p class="system-type-text">{{ 'Pages.SystemHealth.Home.cpuUsage' | translate }}</p>
+								</div>
+								<div class="right-icon">
+									<span [innerHTML]="iconObject['cpuIcon']"></span>
+								</div>
+							</div>
+						</div>
+
+						<div class="col-md-6">
+							<div class="box-panel panel-default d-flex justify-content-between align-items-center box-content">
+								<div class="left-content">
+									<h4>
+										<span class="system-type-data-text">
+											{{ system_HealthData?.RAM_used }}
+											<span class="gb_class"> {{ 'Pages.SystemHealth.Home.gb' | translate }}</span>
+											<span style="margin-left: 4px">/{{ system_HealthData?.RAM_total_size }}</span>
+											<span class="gb_class">
+												{{ 'Pages.SystemHealth.Home.gb' | translate }}
+											</span>
+										</span>
+									</h4>
+									<div class="progress half-width">
+										<div
+											class="progress-bar"
+											role="progressbar"
+											[ngClass]="memoryColor"
+											[style.width.%]="system_HealthData?.RAM_usage_in_percentage"></div>
+									</div>
+									<p class="system-type-text">{{ 'Pages.SystemHealth.Home.memory' | translate }}</p>
+								</div>
+								<div class="right-icon">
+									<span [innerHTML]="iconObject['memoryIcon']"></span>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- Row 2: Disk Usage and Temperature and Uptime -->
+					<div class="row" style="margin-top: 1rem">
+						<div class="col-md-6">
+							<div class="box-panel">
+								<div class="panel-default d-flex justify-content-between align-items-center box-content">
+									<div class="left-content">
+										<h4>
+											<span class="system-type-data-text">
+												{{ system_HealthData?.Disk_used }}
+												<span class="gb_class"> {{ 'Pages.SystemHealth.Home.gb' | translate }}</span>
+												<span style="margin-left: 4px">/{{ system_HealthData?.Disk_total_size }}</span>
+												<span class="gb_class">
+													{{ 'Pages.SystemHealth.Home.gb' | translate }}
+												</span>
+											</span>
+										</h4>
+										<div class="progress half-width">
+											<div
+												class="progress-bar"
+												role="progressbar"
+												[ngClass]="diskColor"
+												[style.width.%]="system_HealthData?.Disk_usage_in_percentage"></div>
+										</div>
+										<div class="show-disk-details">
+											<p class="system-type-text-1">
+												{{ 'Pages.SystemHealth.Home.diskusage' | translate }}
+											</p>
+											<span
+												*ngIf="!showDiskDetails"
+												style="width: 30%; cursor: pointer; padding-top: 0.5rem; margin-left: 0.5rem"
+												(click)="toggleDiskDetails()"
+												[innerHTML]="iconObject['expand_more_icon']"></span>
+											<span
+												*ngIf="showDiskDetails"
+												style="width: 30%; cursor: pointer; padding-top: 0.5rem; margin-left: 0.5rem"
+												(click)="toggleDiskDetails()"
+												[innerHTML]="iconObject['expand_less_icon_30']"></span>
+										</div>
+									</div>
+									<div class="right-icon">
+										<span [innerHTML]="iconObject['diskIcon']"></span>
+									</div>
+								</div>
+								<div
+									*ngIf="showDiskDetails && system_HealthData?.diskInfo?.length > 0"
+									style="padding: 0rem 2rem 1rem 1rem">
+									<div class="partition-details">
+										<strong>{{ 'Pages.SystemHealth.Home.partitionDetails' | translate }}</strong>
+									</div>
+									<div *ngFor="let partition of system_HealthData?.diskInfo" class="partition-detail">
+										<div style="display: flex; justify-content: space-between; align-items: center">
+											<span class="mount-name">{{ partition.mount }}</span>
+											<span class="size-used">
+												{{ partition.used_GB }}{{ 'Pages.SystemHealth.Home.gb' | translate }}/{{ partition.total_GB
+												}}{{ 'Pages.SystemHealth.Home.gb' | translate }}
+											</span>
+										</div>
+										<div class="progress partition-bar mt-1 mb-1">
+											<div
+												class="progress-bar"
+												[ngClass]="getDiskBarColor(partition.used_percentage)"
+												role="progressbar"
+												[style.width.%]="partition.used_percentage"></div>
+										</div>
+										<p class="used-percent">
+											{{ partition.used_percentage }}% {{ 'Pages.SystemHealth.Home.used' | translate }}
+										</p>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- <div class="col-md-6">
+							<div class="box-panel panel-default d-flex justify-content-between align-items-center box-content">
+								<div class="left-content">
+									<h4>
+										<span class="system-type-data-text">{{ system_HealthData?.CPU_temp }}</span>
+									</h4>
+									<div class="progress half-width" style="visibility: hidden">
+										<div class="progress-bar progress-bar-success" role="progressbar"></div>
+									</div>
+									<p class="system-type-text">{{ 'Pages.SystemHealth.Home.temperature' | translate }}</p>
+								</div>
+								<div class="right-icon">
+									<span [innerHTML]="iconObject['temperatureIcon']"></span>
+								</div>
+							</div>
+						</div> -->
+
+						<!-- Row 3: Uptime -->
+						<div class="col-md-6">
+							<div class="box-panel panel-default d-flex justify-content-between align-items-center box-content">
+								<div class="left-content">
+									<h4 class="system-type-data-text">
+										<span class="system-type-data-text">
+											{{ getUptime(system_HealthData?.System_uptime) }}
+										</span>
+									</h4>
+									<div class="progress half-width" style="visibility: hidden">
+										<div class="progress-bar progress-bar-success" role="progressbar"></div>
+									</div>
+									<p class="system-type-text" style="margin-top: 1.2rem; margin-bottom: 0.4rem">
+										{{ 'Pages.SystemHealth.Home.uptime' | translate }}
+									</p>
+								</div>
+								<div class="right-icon">
+									<span [innerHTML]="iconObject['uptimeIcon']"></span>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- Network Activity -->
+					<div class="row" style="margin-top: 1rem">
+						<div class="col-md-12">
+							<div class="box-panel panel-default">
+								<div class="panel-heading">
+									<strong>{{ 'Pages.SystemHealth.Home.networkactivity' | translate }}</strong>
+								</div>
+								<div class="panel-body row">
+									<div class="col-md-6 text-start">
+										<p class="network-detail-heading">
+											{{ 'Pages.SystemHealth.Home.received' | translate }}
+										</p>
+									</div>
+									<div class="col-md-6 text-center">
+										<p class="network-detail">
+											{{ system_HealthData?.Network_received_per_sec }}
+											{{ 'Pages.SystemHealth.Home.mb/s' | translate }}
+										</p>
+									</div>
+
+									<div class="col-md-6 text-start">
+										<p class="network-detail-heading">
+											{{ 'Pages.SystemHealth.Home.sent' | translate }}
+										</p>
+									</div>
+									<div class="col-md-6 text-center">
+										<p class="network-detail">
+											{{ system_HealthData?.Network_Sent_per_sec }}
+											{{ 'Pages.SystemHealth.Home.mb/s' | translate }}
+										</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="row" style="margin-top: 1rem" *ngIf="roleId == 2">
+						<div class="form-group col-md-4">
+							<div class="form-group">
+								<label>{{ 'Pages.SystemHealth.Home.cpunotification' | translate }}</label>
+								<div>
+									<label class="switch">
+										<input
+											type="checkbox"
+											class="form-control js-switch"
+											[(ngModel)]="notificationFlagsDetail.CPUNotification"
+											[ngModelOptions]="{ standalone: true }"
+											(change)="updateSystemHealthNotificationData()" />
+										<span
+											class="slider round"
+											[ngStyle]="{
+										'background-color': notificationFlagsDetail.CPUNotification ? appService.whiteBrandingColor : '#ccc',
+									}">
+										</span>
+									</label>
+								</div>
+							</div>
+						</div>
+						<div class="form-group col-md-4">
+							<div class="form-group">
+								<label>{{ 'Pages.SystemHealth.Home.memorynotification' | translate }}</label>
+								<div>
+									<label class="switch">
+										<input
+											type="checkbox"
+											class="form-control js-switch"
+											[(ngModel)]="notificationFlagsDetail.MemoryNotification"
+											[ngModelOptions]="{ standalone: true }"
+											(change)="updateSystemHealthNotificationData()" />
+										<span
+											class="slider round"
+											[ngStyle]="{
+										'background-color': notificationFlagsDetail.MemoryNotification ? appService.whiteBrandingColor : '#ccc',
+									}">
+										</span>
+									</label>
+								</div>
+							</div>
+						</div>
+						<div class="form-group col-md-4">
+							<div class="form-group">
+								<label>{{ 'Pages.SystemHealth.Home.disknotification' | translate }}</label>
+								<div>
+									<label class="switch">
+										<input
+											type="checkbox"
+											class="form-control js-switch"
+											[(ngModel)]="notificationFlagsDetail.DiskNotification"
+											[ngModelOptions]="{ standalone: true }"
+											(change)="updateSystemHealthNotificationData()" />
+										<span
+											class="slider round"
+											[ngStyle]="{
+										'background-color': notificationFlagsDetail.DiskNotification ? appService.whiteBrandingColor : '#ccc',
+									}">
+										</span>
+									</label>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- Services Status -->
+					<!-- <div class="row">
+						<div class="col-md-12">
+							<div class="box-panel panel-default">
+								<div class="panel-heading">
+									<strong> Services Status </strong>
+								</div>
+								<div class="panel-body row">
+									<div class="col-md-12" style="padding: 0">
+										<div class="col-md-8 text-start">
+											<p>{{ 'Pages.SystemHealth.Home.nginx' | translate }}</p>
+										</div>
+										<div class="col-md-2 text-center">
+											<p class="status-label running">Running</p>
+										</div>
+										<div class="col-md-2 text-center"></div>
+									</div>
+
+									<div class="col-md-12" style="padding: 0">
+										<div class="col-md-8 text-start">
+											<p>{{ 'Pages.SystemHealth.Home.postgresql' | translate }}</p>
+										</div>
+										<div class="col-md-2 text-center">
+											<p class="status-label stopped">Stopped</p>
+										</div>
+										<div class="col-md-2 text-center"></div>
+									</div>
+
+									<div class="col-md-12" style="padding: 0">
+										<div class="col-md-8 text-start">
+											<p>{{ 'Pages.SystemHealth.Home.mediacms' | translate }}</p>
+										</div>
+										<div class="col-md-2 text-center">
+											<p class="status-label running">Running</p>
+										</div>
+										<div class="col-md-2 text-center"></div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div> -->
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,576 @@
+<div class="container-fluid" style="margin: 2% 2% 2% 3%; min-height: calc(100vh - 110px)">
+	<div class="row add-edit-main-row">
+		<span>
+			<span
+				[routerLink]="['/diwo-courses']"
+				style="margin-left: 0.25rem; color: #637373; margin-right: 2px; cursor: pointer">
+				{{ 'Pages.DiwoModuleAssignment.pagetitle' | translate }}</span
+			>
+			<img src="assets/images/arrow_forward.svg" style="width: 27px" />
+			<span style="margin-left: 3px" [ngStyle]="{ color: appService.whiteBrandingColor }">
+				{{ 'Pages.DiwoModuleAssignment.subtitle' | translate }}</span
+			>
+		</span>
+	</div>
+
+	<!-- block 1 -->
+	<div class="row section-wrapper" style="margin-top: 2rem">
+		<div class="form-title">
+			<span>{{ 'Pages.DiwoModuleAssignment.ModuleDeatils.title' | translate }}</span>
+			<span
+				*ngIf="ModuleDetailsChanges && viewChanges"
+				class="new-modifition-status"
+				style="padding: 0.2rem 0.8rem 0.2rem 0.8rem"
+				[ngStyle]="{ 'background-color': appService.whiteBrandingColor }">
+				{{ 'Modified' }}
+			</span>
+		</div>
+		<div class="row card-body">
+			<div class="row" style="display: flex; justify-content: center">
+				<div class="col-md-10">
+					<div class="row">
+						<div class="col-md-2">
+							<div class="form-group">
+								<label>{{ 'Pages.DiwoModuleAssignment.ModuleDeatils.moduletitle' | translate }}</label>
+							</div>
+						</div>
+						<div class="col-md-4 valueCss">
+							{{ moduleDetail && moduleDetail.title ? moduleDetail.title : '-' }}
+						</div>
+
+						<div class="col-md-2">
+							<div class="form-group">
+								<label>{{ 'Pages.DiwoModuleAssignment.ModuleDeatils.moduleid' | translate }}</label>
+							</div>
+						</div>
+						<div class="col-md-4 valueCss">{{ moduleDetail && moduleDetail.id ? moduleDetail.id : '-' }}</div>
+					</div>
+
+					<div class="row">
+						<div class="col-md-2">
+							<div class="form-group">
+								<label>{{ 'Pages.DiwoModuleAssignment.ModuleDeatils.createdby' | translate }}</label>
+							</div>
+						</div>
+						<div class="col-md-4 valueCss">
+							{{ moduleDetail && moduleDetail.author ? moduleDetail.author : '-' }}
+						</div>
+						<div class="col-md-2">
+							<div class="form-group">
+								<label>{{ 'Pages.DiwoModuleAssignment.ModuleDeatils.lastupdated' | translate }}</label>
+							</div>
+						</div>
+						<div class="col-md-4 valueCss">
+							{{ moduleDetail && moduleDetail.updatedAt ? (moduleDetail.updatedAt | DateFormat) : '-' }}
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-2">
+							<div class="form-group">
+								<label>{{ 'Pages.DiwoModuleAssignment.ModuleDeatils.moduletype' | translate }}</label>
+							</div>
+						</div>
+						<div class="col-md-4 valueCss">
+							{{
+								moduleDetail && moduleDetail.DiwoModule && moduleDetail.DiwoModule.type
+									? moduleDetail.DiwoModule.type
+									: '-'
+							}}
+						</div>
+					</div>
+				</div>
+				<div class="col-md-2">
+					<div *ngIf="moduleDetail.DiwoAssets && moduleDetail.DiwoAssets.length > 0" class="image-wrapper">
+						<img [src]="assetBasePath + moduleDetail.DiwoAssets[0].path" class="centered-image" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row" *ngIf="finalAssignmentList.length > 0" style="margin-top: 2rem" id="Assignment_Table">
+		<div class="assignment-title">
+			{{ 'Pages.DiwoModuleAssignment.AssignmentForModule.title' | translate }}
+		</div>
+		<div class="panel panel-white" style="margin: 0">
+			<div class="sub table-responsive">
+				<table class="table table-striped table-hover" id="sample-table-3">
+					<thead>
+						<tr style="height: 80px">
+							<th
+								class="left tb-first-heading tb-line-height"
+								style="padding-left: 1rem; width: 10vw; word-wrap: break-word">
+								{{ 'Pages.DiwoModuleAssignment.AssignmentForModule.Table.Header.assignmentId' | translate }}
+							</th>
+							<th class="left tb-head-bg tb-line-height" style="word-wrap: break-word">
+								{{ 'Pages.DiwoModuleAssignment.AssignmentForModule.Table.Header.learnergroup' | translate }}
+							</th>
+							<th class="left tb-head-bg tb-line-height" style="word-wrap: break-word">
+								{{ 'Pages.DiwoModuleAssignment.AssignmentForModule.Table.Header.createdDate' | translate }}
+							</th>
+							<th class="left tb-head-bg tb-line-height" style="word-wrap: break-word">
+								{{ 'Pages.DiwoModuleAssignment.AssignmentForModule.Table.Header.createdBy' | translate }}
+							</th>
+							<th class="left tb-head-bg tb-line-height" style="word-wrap: break-word">
+								{{ 'Pages.DiwoModuleAssignment.AssignmentForModule.Table.Header.lastupdated' | translate }}
+							</th>
+							<th class="left tb-head-bg tb-line-height" style="word-wrap: break-word">
+								{{ 'Pages.DiwoModuleAssignment.AssignmentForModule.Table.Header.status' | translate }}
+							</th>
+							<th class="left tb-last-heading tb-line-height" style="width: 240px; min-width: 240px; max-width: 240px">
+								{{ 'Pages.DiwoModuleAssignment.AssignmentForModule.Table.Header.actions' | translate }}
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr
+							*ngFor="
+								let item of finalAssignmentList
+									| paginate
+										: {
+												itemsPerPage: limit == 'all' ? totalCount : limit,
+												currentPage: page,
+												totalItems: totalCount
+										  };
+								index as i
+							">
+							<td class="left two-row-td-tag" style="padding-left: 1rem; padding-top: 15px">
+								<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+									{{ item.assignmentId }}
+								</p>
+							</td>
+							<td class="left two-row-td-tag" style="padding-top: 15px">
+								<p
+									data-toggle="tooltip"
+									data-placement="top"
+									[title]="item.learnerGroupName"
+									class="two-row-p-tag"
+									style="-webkit-box-orient: vertical">
+									{{ item.learnerGroupName ? item.learnerGroupName : '-' }}
+								</p>
+							</td>
+							<td class="left two-row-td-tag" style="padding-top: 15px">
+								<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+									{{ item.createdAt != null ? (item.createdAt | DateFormat) : '-' }}
+								</p>
+							</td>
+							<td class="left two-row-td-tag" style="padding-top: 15px">
+								<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+									{{ item.author }}
+								</p>
+							</td>
+							<td class="left two-row-td-tag" style="padding-top: 15px">
+								<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+									{{ item.updatedAt != null ? (item.updatedAt | DateFormat) : '-' }}
+								</p>
+							</td>
+							<td class="left" style="padding-top: 13px">
+								<span
+									class="btn-xs assignment-status-Draft"
+									*ngIf="item.status == 'Draft'"
+									title="{{ item.tooltip }}"
+									>{{ 'Utils.Status.draft' | translate }}</span
+								>
+								<span
+									class="btn-xs assignment-status-scheduled"
+									*ngIf="item.status == 'Scheduled'"
+									title="{{ item.tooltip }}"
+									>{{ 'Utils.Status.scheduled' | translate }}</span
+								>
+								<span
+									class="btn-xs assignment-status-finished"
+									*ngIf="item.status == 'Finished'"
+									title="{{ item.tooltip }}"
+									>{{ 'Utils.Status.finished' | translate }}</span
+								>
+								<span
+									class="btn-xs assignment-status-assigned"
+									*ngIf="item.status == 'Assigned'"
+									title="{{ item.tooltip }}"
+									>{{ 'Utils.Status.assigned' | translate }}</span
+								>
+							</td>
+							<td class="left two-row-td-tag" style="padding: 0.938rem 1rem 0.938rem 0.75rem">
+								<div class="visible-md visible-lg visible-sm visible-xs">
+									<a
+										*ngIf="item.status != 'Finished'"
+										class="btn-xs action-edit-btn"
+										[ngStyle]="{
+											'background-color': appService.whiteBrandingColor,
+											border: '1px solid' + appService.whiteBrandingColor,
+											color: 'white'
+										}"
+										style="padding: 0.25rem 2.05rem; margin-left: 5px"
+										(click)="editAssignment(item, false)"
+										>{{ 'Utils.Action.edit' | translate }}</a
+									>
+									<a
+										*ngIf="item.status == 'Finished'"
+										class="btn-xs action-edit-btn"
+										[ngStyle]="{
+											'background-color': appService.whiteBrandingColor,
+											border: '1px solid' + appService.whiteBrandingColor,
+											color: 'white'
+										}"
+										style="padding: 0.25rem 1.7rem; margin-left: 5px"
+										(click)="editAssignment(item, true)"
+										>{{ 'Utils.Action.view' | translate }}
+									</a>
+									<button
+										class="btn-xs action-delete-btn"
+										[ngStyle]="{
+											color: appService.whiteBrandingColor,
+											border: '0.5px solid' + appService.whiteBrandingColor
+										}"
+										style="padding: 4px 21px; font-size: 0.75rem"
+										(click)="removeAssignment(item)"
+										[ngClass]="{ 'edit-disabled': item.status != 'Draft' && item.status != 'Scheduled' }"
+										[disabled]="item.status != 'Draft' && item.status != 'Scheduled'">
+										{{ 'Utils.Action.remove' | translate }}
+									</button>
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<div
+					style="text-align: center; margin-top: 2rem; margin-bottom: 3rem"
+					*ngIf="finalAssignmentList && finalAssignmentList.length == 0">
+					<img src="assets/images/No Results.svg" alt="" style="width: 15%" />
+					<h3>{{ 'Utils.nodataToShow' | translate }}</h3>
+					<p style="width: 50%; margin: 0 auto">
+						{{ 'Pages.DiwoModuleAssignment.AssignmentForModule.nodatatoshow' | translate }}
+					</p>
+				</div>
+			</div>
+		</div>
+		<div class="pagination-wrapper" style="width: 100%" style="margin-top: 1rem">
+			<div style="float: right">
+				<span> {{ 'Utils.perpage' | translate }} : &nbsp;</span>
+				<select class="default-dropdown" (change)="changeResult($event.target.value)">
+					<option *ngFor="let count of pageResultCount; let i = index" [selected]="i == 0">
+						{{ count }}
+					</option>
+				</select>
+			</div>
+			<pagination-controls (pageChange)="onPageChangeEvent($event)" style="float: right"> </pagination-controls>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-8"></div>
+		<div class="col-md-4 add_lgroup_btn">
+			<a style="float: right; font-size: 0.875rem; color: grey">
+				<div class="info-icon-div">
+					<div style="margin-right: 5px; margin-top: -8px">
+						<label>{{ 'Pages.DiwoModuleAssignment.AssignmentForModule.addnewassignment' | translate }}</label>
+					</div>
+					<div>
+						<label style="cursor: pointer">
+							<span class="info-icon" [innerHTML]="iconObject['add_icon_35']" (click)="showAssignmentAddFlow()"></span>
+						</label>
+					</div>
+				</div>
+			</a>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-10" style="padding-left: 0">
+			<div class="info-icon-div" *ngIf="differentsDetectedInPathwayAndAssignment || ModuleDetailsChanges">
+				<div class="view-changes">
+					<div class="info-icon" [innerHTML]="iconObject['info_icon_25']" style="height: 25px"></div>
+
+					<div style="margin-left: 0.8rem; color: #000">
+						<span>{{ 'Pages.DiwoModuleAssignment.AssignmentForModule.changeDetect' | translate }}</span>
+					</div>
+				</div>
+				<div style="display: flex; align-items: center; margin-top: -5px">
+					<div style="margin-left: 1rem">
+						<div>
+							<label class="switch">
+								<input
+									type="checkbox"
+									class="form-control js-switch"
+									[(ngModel)]="viewChanges"
+									[ngModelOptions]="{ standalone: true }" />
+								<span
+									class="slider round"
+									[ngStyle]="{
+										'background-color': viewChanges ? appService.whiteBrandingColor : '#ccc'
+									}"></span>
+							</label>
+						</div>
+					</div>
+					<div style="margin-left: 5px; margin-top: -8px">
+						<label>{{ 'Pages.DiwoModuleAssignment.AssignmentForModule.viewChanges' | translate }}</label>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- </div> -->
+
+	<!--add assignment-->
+	<div class="row section-wrapper" *ngIf="assignmentAddScreen">
+		<div
+			class="row card-body"
+			style="margin-left: 15px; margin-right: 15px"
+			*ngFor="let assignment of assignmentDetails">
+			<div class="row p-5px" style="margin-top: -5px">
+				<div class="col-md-6">
+					<div
+						class="form-group"
+						style="margin-top: 0"
+						[ngClass]="{
+							'has-error': assignment.isLearnerGroupNotSelected,
+							'has-success': assignment.isLearnerGroupNotSelected
+						}">
+						<label>{{ 'Pages.DiwoModuleAssignment.AssignmentDetails.SelectGroup.title' | translate }}</label>
+						<ng-select
+							[items]="AllLearnerGroupsDropDownList"
+							class="ng-select-wrap"
+							placeholder="{{ 'Pages.DiwoModuleAssignment.AssignmentDetails.SelectGroup.placeholder' | translate }}"
+							bindLabel="title"
+							bindValue="id"
+							[multiple]="true"
+							[closeOnSelect]="true"
+							[searchable]="true"
+							(change)="onSelectLearnerGroup($event)"
+							[(ngModel)]="assignment.selectedLearnerGroup"
+							[ngModelOptions]="{ standalone: true }"
+							[disabled]="isViewedMode || assignment.status == 'Assigned' || assignment.status == 'Finished'">
+						</ng-select>
+						<div class="error" *ngIf="assignment.isLearnerGroupNotSelected">
+							{{ 'Pages.DiwoModuleAssignment.AssignmentDetails.SelectGroup.error' | translate }}
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="form-group" style="margin-top: 0">
+						<label style="display: flex"
+							>{{ 'Pages.DiwoAssignment.AssignmentDetails.SelectFacilatator.title' | translate }}
+							<span
+								[innerHTML]="iconObject['info_icon_25']"
+								style="height: 0px"
+								title="{{ 'Pages.DiwoAssignment.AssignmentDetails.SelectFacilatator.tooltip' | translate }}"></span>
+						</label>
+						<ng-select
+							[items]="trainerList"
+							class="ng-select-wrap"
+							placeholder="{{ 'Pages.DiwoAssignment.AssignmentDetails.SelectFacilatator.placeholder' | translate }}"
+							bindLabel="name"
+							bindValue="id"
+							[multiple]="false"
+							[closeOnSelect]="true"
+							[searchable]="true"
+							[(ngModel)]="assignment.TrainerId"
+							[ngModelOptions]="{ standalone: true }"
+							[disabled]="isViewedMode || assignment.status == 'Assigned' || assignment.status == 'Finished'"
+							(change)="onSelectTrainer(i)">
+						</ng-select>
+					</div>
+				</div>
+				<!-- ------------- -->
+			</div>
+
+			<!-- learner assignment section -->
+			<div class="row p-5px">
+				<div class="col-md-3 date">
+					<div class="form-group">
+						<label>{{ 'Pages.DiwoModuleAssignment.AssignmentDetails.StartDate.title' | translate }}</label>
+						<input
+							type="text"
+							ngxDaterangepickerMd
+							[showDropdowns]="true"
+							onkeydown="return false"
+							name="sDate"
+							id="sDate"
+							[showClearButton]="false"
+							[showCancel]="true"
+							[singleDatePicker]="true"
+							[autoApply]="true"
+							[locale]="{ applyLabel: 'ok', format: 'DD-MM-YYYY' }"
+							placeholder="DD-MM-YYYY"
+							autocomplete="off"
+							class="form-control"
+							[(ngModel)]="assignment.assignmentStartDate"
+							[ngModelOptions]="{ standalone: true }"
+							(change)="onSelectAssignmentStartDate($event)"
+							[disabled]="isViewedMode || assignment.status == 'Assigned' || assignment.status == 'Finished'" />
+					</div>
+				</div>
+				<div class="col-md-3">
+					<div class="form-group">
+						<label>
+							{{ 'Pages.DiwoModuleAssignment.AssignmentDetails.StartTime.title' | translate }}
+						</label>
+						<ng-select
+							[items]="timePicker"
+							class="ng-select-wrap"
+							placeholder="{{ 'Pages.DiwoModuleAssignment.AssignmentDetails.StartTime.title' | translate }}"
+							bindLabel="time"
+							bindValue="id"
+							[multiple]="false"
+							[closeOnSelect]="true"
+							[searchable]="true"
+							[clearable]="false"
+							[(ngModel)]="assignment.assignmentStartTime"
+							[ngModelOptions]="{ standalone: true }"
+							(change)="onSelectAssignmentStartTime($event)"
+							[disabled]="isViewedMode || assignment.status == 'Assigned' || assignment.status == 'Finished'">
+						</ng-select>
+					</div>
+				</div>
+				<div class="col-md-3 date">
+					<div class="form-group">
+						<label>{{ 'Pages.DiwoModuleAssignment.AssignmentDetails.EndDate.title' | translate }}</label>
+						<input
+							type="text"
+							ngxDaterangepickerMd
+							[showDropdowns]="true"
+							onkeydown="return false"
+							name="eDate"
+							id="eDate"
+							[showClearButton]="false"
+							[showCancel]="true"
+							[singleDatePicker]="true"
+							[autoApply]="true"
+							[locale]="{ applyLabel: 'ok', format: 'DD-MM-YYYY' }"
+							placeholder="DD-MM-YYYY"
+							autocomplete="off"
+							class="form-control"
+							[(ngModel)]="assignment.assignmentEndDate"
+							[ngModelOptions]="{ standalone: true }"
+							(change)="onSelectAssignmentEndDate($event)"
+							[disabled]="isViewedMode || assignment.status == 'Finished'" />
+					</div>
+				</div>
+				<div class="col-md-3">
+					<div class="form-group">
+						<label>
+							{{ 'Pages.DiwoModuleAssignment.AssignmentDetails.EndTime.title' | translate }}
+						</label>
+						<ng-select
+							[items]="timePicker"
+							class="ng-select-wrap"
+							placeholder="{{ 'Pages.DiwoModuleAssignment.AssignmentDetails.EndTime.title' | translate }}"
+							bindLabel="time"
+							bindValue="id"
+							[multiple]="false"
+							[closeOnSelect]="true"
+							[searchable]="true"
+							[clearable]="false"
+							[(ngModel)]="assignment.assignmentEndTime"
+							[ngModelOptions]="{ standalone: true }"
+							(change)="onSelectAssignmentEndTime($event)"
+							[disabled]="isViewedMode || assignment.status == 'Finished'">
+						</ng-select>
+					</div>
+				</div>
+			</div>
+
+			<!-- add cancel -->
+			<div class="row" style="float: right; margin-top: 2rem">
+				<button
+					class="btn btn-o btn-primary border_radius functionalBtn"
+					style="
+						margin-right: 20px;
+						background-color: lightgray !important;
+						color: black;
+						border: 1px solid lightgray !important;
+					"
+					(click)="cancelAssignModule()">
+					{{ 'Utils.cancel' | translate }}
+				</button>
+
+				<button
+					class="btn btn-o btn-primary border_radius functionalBtn"
+					style="
+						margin-right: 7px;
+						background-color: lightgray !important;
+						color: black;
+						border: 1px solid lightgray !important;
+					"
+					[disabled]="this.assignmentDetails[0].status != null && this.assignmentDetails[0].status != 'Draft'"
+					(click)="saveAssignModule(false)">
+					{{ 'Pages.DiwoModuleAssignment.saveasdraft' | translate }}
+				</button>
+
+				<button
+					class="btn border_radius functionalBtn"
+					[ngStyle]="{
+						'background-color': appService.whiteBrandingColor,
+						border: '1px solid' + appService.whiteBrandingColor,
+						color: 'white'
+					}"
+					style="margin-right: 7px"
+					(click)="saveAssignModule(true)">
+					{{
+						editAssignmentId
+							? ('Pages.DiwoModuleAssignment.updatemodule' | translate)
+							: ('Pages.DiwoModuleAssignment.assignmodule' | translate)
+					}}
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Delete MODAL -->
+<div
+	class="modal fade credit-note"
+	id="assignmentDeleteModel"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="myModalLabel"
+	aria-hidden="true"
+	data-backdrop="static"
+	data-keyboard="false">
+	<div class="modal-dialog" style="width: 40%; margin-top: 20%; margin-left: auto; margin-right: auto">
+		<div class="modal-content">
+			<div
+				class="modal-header"
+				[ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="cancelDeleteModal()">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					<span>{{ 'Pages.DiwoModuleAssignment.Modal.Delete.title' | translate }}</span>
+				</h4>
+			</div>
+			<div class="modal-body">
+				<span>{{ 'Pages.DiwoModuleAssignment.Modal.Delete.confirmation' | translate }}</span>
+				<div
+					class="visible-md visible-lg visible-sm visible-xs"
+					style="text-align: right; margin-bottom: 0.75rem; margin-top: 1.5rem">
+					<a
+						class="btn-xs action-edit-btn action-yes-no"
+						[ngStyle]="{
+							'background-color': appService.whiteBrandingColor,
+							border: '0.5px solid' + appService.whiteBrandingColor,
+							color: 'white'
+						}"
+						style="margin-right: 2%; padding: 7px 20px"
+						(click)="onDeleteSubmit()"
+						>{{ 'Utils.yes' | translate }}</a
+					>
+					<a
+						class="btn-xs action-pause-btn action-yes-no"
+						[ngStyle]="{
+							color: appService.whiteBrandingColor,
+							border: '0.5px solid' + appService.whiteBrandingColor,
+						}"
+						style="padding: 7px 23px; margin-right: 1%"
+						(click)="cancelDeleteModal()"
+						>{{ 'Utils.no' | translate }}</a
+					>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,182 @@
+<div class="pageDiv" style="min-height: calc(100vh - 95px)">
+	<div style="margin-top: 2rem">
+		<div class="row">
+			<div class="col-md-3 head-title">
+				<span style="margin-left: 16px !important" class="mainTitle no-margin pageTitle_Main">{{
+					'Pages.Alerts.Home.pagetitle' | translate
+				}}</span>
+			</div>
+			<div class="col-md-9"></div>
+		</div>
+	</div>
+
+	<div style="margin-top: 2rem">
+		<div class="row">
+			<div class="panel panel-white">
+				<div class="sub table-responsive">
+					<table class="table table-striped table-hover">
+						<thead>
+							<tr>
+								<th
+									class="left tb-first-heading tb-line-height"
+									style="padding-left: 20px; word-wrap: break-word; width: 65vw">
+									{{ 'Pages.Alerts.Home.pagetitle' | translate }}
+								</th>
+								<th class="left tb-last-heading tb-line-height">{{ 'Pages.Alerts.Home.date' | translate }}</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr
+								*ngFor="
+									let item of notifcationList
+										| paginate
+											: {
+													itemsPerPage: limit == 'all' ? totalCount : limit,
+													currentPage: page,
+													totalItems: totalCount
+											  };
+									index as i
+								">
+								<td class="left" style="padding-left: 20px; padding-top: 15px" class="two-row-td-tag">
+									<div class="two-row-p-tag" style="display: flex; align-items: center">
+										<!-- <img
+											_ngcontent-c3=""
+											alt="read"
+											*ngIf="item.isRead"
+											src="assets/images/notif-read.png"
+											width="30px"
+											height="30px" /> -->
+										<div>
+											<img
+												_ngcontent-c3=""
+												alt="read"
+												*ngIf="item.isRead"
+												src="assets/images/notification_unread_icon.svg"
+												width="40px"
+												height="40px" />
+
+											<span *ngIf="!item.isRead" [innerHTML]="iconObject['bell_noticiation_icon_30']"></span>
+										</div>
+										<div>
+											<span style="margin-left: 10px" *ngIf="item.message.indexOf('{{Tag_Learner_Created}}') >= 0">
+												{{ item.message.replace('{{Tag_Learner_Created}}', '') }}
+												<span
+													*ngIf="downloadUploadFile"
+													style="cursor: pointer; text-decoration: underline; color: #6513e1"
+													(click)="downloadReport()"
+													>{{ 'Pages.Alerts.Home.SeeDetailsAndErrors' | translate }}</span
+												>
+											</span>
+
+											<span style="margin-left: 10px" *ngIf="item.message.indexOf('{{Tag_Learner_Updated}}') >= 0">
+												{{ item.message.replace('{{Tag_Learner_Updated}}', '') }}
+												<span
+													*ngIf="downloadUpdateFile"
+													style="cursor: pointer; text-decoration: underline; color: #6513e1"
+													(click)="downloadLearnerUpdateReport()"
+													>{{ 'Pages.Alerts.Home.SeeDetailsAndErrors' | translate }}</span
+												>
+											</span>
+
+											<span
+												style="margin-left: 10px"
+												*ngIf="
+													item.message.indexOf('{{Tag_Learner_Updated}}') == -1 &&
+													item.message.indexOf('{{Tag_Learner_Created}}') == -1
+												">
+												{{ item.message }}
+											</span>
+
+											<span style="margin-left: 2px" *ngIf="item.message.indexOf('Only on WhatsApp') >= 0">
+												<span
+													*ngIf="downloadonlyWhatsApp"
+													style="cursor: pointer; text-decoration: underline; color: #6513e1"
+													(click)="downloadOnlyOnWhatsAppReport('Only-On-WhatsApp')">
+													{{ 'Pages.Alerts.Home.SeeDetailsAndErrors' | translate }}
+												</span>
+											</span>
+
+											<span
+												style="margin-left: 2px"
+												*ngIf="item.message.indexOf('On Drip App with sharing on WhatsApp') >= 0">
+												<span
+													*ngIf="downloadWhatsAppWithDrip"
+													style="cursor: pointer; text-decoration: underline; color: #6513e1"
+													(click)="downloadDripAppWithWhatsAppReport('On-Drip-App-with-sharing-on-WhatsApp')">
+													{{ 'Pages.Alerts.Home.SeeDetailsAndErrors' | translate }}</span
+												>
+											</span>
+
+											<span
+												style="margin-left: 2px"
+												*ngIf="item.message.indexOf('On Drip App with sharing on Email') >= 0">
+												<span
+													*ngIf="downloademailWithDrip"
+													style="cursor: pointer; text-decoration: underline; color: #6513e1"
+													(click)="downloadDripAppWithEmailReport('On-Drip-App-with-sharing-on-Email')">
+													{{ 'Pages.Alerts.Home.SeeDetailsAndErrors' | translate }}</span
+												>
+											</span>
+
+											<span style="margin-left: 2px" *ngIf="item.message.indexOf('Only On Drip App') >= 0">
+												<span
+													*ngIf="downloadonlyDrip"
+													style="cursor: pointer; text-decoration: underline; color: #6513e1"
+													(click)="downloadOnDripAppReport('Only-On-Drip-App')">
+													{{ 'Pages.Alerts.Home.SeeDetailsAndErrors' | translate }}</span
+												>
+											</span>
+
+											<span style="margin-left: 2px" *ngIf="item.message.indexOf('Link bulk upload') >= 0">
+												<span
+													*ngIf="downloadLinks"
+													style="cursor: pointer; text-decoration: underline; color: #6513e1"
+													(click)="downloadLinkAssetReport()">
+													{{ 'Pages.Alerts.Home.Verifyrecentuploadshere' | translate }}</span
+												>
+											</span>
+										</div>
+
+										<!-- <img
+											_ngcontent-c3=""
+											alt="read"
+											*ngIf="!item.isRead"
+											src="assets/images/notif-unread2.png"
+											width="30px"
+											height="30px" /> -->
+									</div>
+								</td>
+								<td class="left" style="padding-left: 20px; padding-top: 15px" class="two-row-td-tag">
+									<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+										{{ item.createdAt != null ? (item.createdAt | DateFormat) : '-' }}
+									</p>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<!-- <div  class="no-data-found"
+                        style="margin-top: 18.5%;margin-bottom: 18.5%;">No Data Found</div> -->
+					<div
+						style="text-align: center; margin-top: 2rem; margin-bottom: 3rem"
+						*ngIf="notifcationList && notifcationList.length == 0 && isDataLoaded">
+						<img src="assets/images/No Results.svg" alt="" style="width: 25%" />
+						<h3>{{ 'Utils.nodataToShow' | translate }}</h3>
+						<p style="width: 50%; margin: 0 auto">{{ 'Utils.nodataAvaliable' | translate }}</p>
+					</div>
+					<div style="text-align: center; margin-top: 9rem; margin-bottom: 9rem" *ngIf="!isDataLoaded"></div>
+				</div>
+			</div>
+			<div style="padding: 0px 24px; width: 100%">
+				<div style="float: right">
+					<span> {{ 'Utils.perpage' | translate }}: &nbsp;</span>
+					<select class="default-dropdown" (change)="changeResult($event.target.value)">
+						<option *ngFor="let count of pageResultCount; let i = index" [selected]="i == 0">
+							{{ count }}
+						</option>
+					</select>
+				</div>
+				<pagination-controls (pageChange)="onPageChangeEvent($event)" style="float: right"> </pagination-controls>
+			</div>
+		</div>
+	</div>
+</div>

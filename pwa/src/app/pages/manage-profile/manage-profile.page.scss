@@ -1,0 +1,621 @@
+ion-main-row {
+	display: flex;
+	align-items: stretch; /* Ensures equal height columns */
+}
+
+ion-grid {
+	max-width: 97.6% !important;
+	width: 100% !important;
+	margin-top: 0 !important;
+	padding: 0 !important;
+}
+
+.left-column {
+	display: flex;
+	flex-direction: column;
+}
+
+///////////////// Equal height ////////////////
+
+.equal-height-row {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: stretch;
+}
+
+.equal-height-row ion-col {
+	display: flex;
+	flex-direction: column;
+}
+
+.left-column,
+.right-column {
+	flex: 1 !important;
+}
+
+.about-row {
+	flex: 1 !important;
+	display: flex !important;
+}
+
+.about-card {
+	flex: 1 !important;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	border: 0.125rem solid #eeece1;
+	padding: 1rem;
+	border-radius: 1rem;
+}
+
+///////////////// Equal height End ////////////////
+
+ion-toolbar {
+	padding: 0 1rem;
+}
+
+ion-toolbar.toolbar-head {
+	height: 4.063rem;
+}
+
+.header-logo {
+	height: 2.188rem;
+	vertical-align: middle;
+	margin-top: 0.625rem;
+	margin-bottom: 0.625rem;
+}
+
+.header-logo-drip {
+	height: 2.188rem;
+	margin: 0 auto;
+	vertical-align: middle;
+	margin-top: 0.625rem;
+	margin-bottom: 0.25rem;
+}
+
+// .profile-container {
+//   display: flex;
+//   flex-direction: column;
+//   flex-grow: 1;
+//   height: 100%;
+//   border-radius: 1rem;
+//   background-color: #e7eff0;
+//   margin: 0.5rem 0rem 0.5rem 0.5rem;
+// }
+
+.profile-container {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	border-radius: 1rem;
+	background-color: #e7eff0;
+	margin: 0.5rem 0rem 0.5rem 0.5rem;
+	// padding: 1rem;
+}
+
+.cards-wrapper {
+	flex-grow: 1; /* Allows it to take up available space */
+}
+
+.right-column {
+	display: flex;
+	flex-direction: column;
+}
+
+.stats-card,
+.about-card {
+	width: 100%;
+	border-radius: 1rem;
+	padding: 1rem;
+}
+
+.card-section {
+	// padding: 0.625rem;
+	// padding: 0rem 2rem 0rem 1rem;
+	padding: 0rem 2rem 0.5rem 1.5rem;
+}
+
+.card-stats-count {
+	font-size: 3.5rem;
+	font-weight: 600;
+	display: inline;
+}
+
+.card-title {
+	font-size: 1.4rem;
+	font-weight: 500;
+	// margin-top: 0rem;
+	margin: 0rem;
+}
+
+.stats-card {
+	background-color: #f2f2f2;
+	height: 100%;
+}
+
+.about-card {
+	border: 0.125rem solid #eeece1;
+}
+
+.achievement-card {
+	width: 100%;
+	border-radius: 1rem;
+	padding: 1.5rem;
+	background-color: #f2f2f2;
+	height: 100%;
+}
+
+.learner-name {
+	font-size: 1.35rem;
+	font-weight: 510;
+	margin: 0;
+	// white-space: nowrap;
+	word-break: break-all;
+	width: 6rem;
+	flex-grow: 1; /* Ensures it takes up available space */
+}
+
+.learner-id {
+	color: #808080;
+}
+
+.learner-id {
+	// font-size: 1rem;
+	// color: #666; /* Adjust color as needed */
+	margin-top: 0.2rem; /* Add spacing between Name and ID */
+}
+
+.contact-info {
+	font-size: 1rem;
+	font-weight: 510;
+}
+
+.account-details {
+	font-size: 1rem;
+	font-weight: 510;
+}
+
+.other-details {
+	font-size: 1rem;
+	font-weight: 510;
+}
+
+.achievement-card-title {
+	font-size: 1.4rem;
+	font-weight: 500;
+	// margin-top: 0rem;
+	margin: 0rem 0rem 0.5rem 0rem;
+}
+
+.achievement-card-content {
+	font-size: 0.95rem;
+}
+
+.about-card-title {
+	font-size: 1.4rem;
+	font-weight: 500;
+	margin: 0rem;
+}
+
+.about-card-description {
+	font-size: 0.92rem;
+}
+
+.about-card-footer {
+	font-size: 1.01rem;
+}
+
+.phone-label,
+.email-label,
+.account-label,
+.branch-label,
+.role-label,
+.location-label {
+	color: #808080;
+}
+
+.version,
+.learner-achievements-data,
+.about-card-footer,
+.card-stats-count {
+	color: var(--branding-color);
+}
+
+.learner-achievements-data {
+	cursor: pointer;
+}
+
+@media (max-width: 767px) {
+	//   .stats-row-card {
+	//     display: none;
+	//   }
+
+	.profile-container {
+		margin: 0.5rem 0.6rem 0.5rem 0.5rem;
+	}
+}
+
+ion-col {
+	// padding: 0.5rem;
+	padding: 0.65rem;
+}
+
+.exit-icon {
+	width: 2.5rem;
+	height: 2.5rem;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: #000000;
+	cursor: pointer; /* Makes it clickable */
+	flex-shrink: 0;
+}
+
+.exit-icon img {
+	width: 1.5rem;
+	height: 1.5rem;
+	border-radius: 50%;
+}
+
+.learner-card-section {
+	padding: 2rem 2rem 0rem 1.5rem;
+	display: flex;
+	flex-direction: column; /* Default to column layout */
+	width: 100%;
+}
+
+.learner-info-wrapper {
+	display: flex;
+	flex-direction: column; /* Ensures Learner ID is on the next row */
+	width: 100%;
+}
+
+.learner-info {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+	flex-wrap: wrap; /* Allows Exit Icon to wrap below if needed */
+	gap: 0.5rem; /* Adjust spacing */
+}
+
+ion-row {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.card-section:last-child {
+	margin-top: auto; /* Pushes this section to the bottom */
+	// text-align: center; /* Ensures version text is centered */
+}
+
+.achievement-title {
+	color: #000000;
+}
+
+ion-modal {
+	--width: 26%;
+	--height: 51%;
+	--border-radius: 0.3rem; /* Ensures rounded corners */
+}
+
+ion-modal::part(content) {
+	border-radius: 1rem; /* Ensures corners are rounded */
+	border: 0.313rem solid black; /* Adds a black border */
+	overflow: hidden; /* Prevents content from overflowing */
+}
+
+.modal-content {
+	background: #e7eff0;
+	padding: 1.25rem;
+	// border-radius: 0.3rem;
+	// border: 2px solid black;
+	text-align: center;
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	/* top: 50%; */
+	/* left: 50%; */
+	/* transform: translate(-50%, -50%); */
+	/* overflow-y: auto; */
+}
+
+/* Flexbox header for close button */
+.modal-header {
+	display: flex;
+	justify-content: flex-end;
+	padding: 0.5rem;
+}
+
+/* Circular close button */
+.close-button {
+	background: #fff;
+	border: 2px solid #ccc;
+	border-radius: 50%;
+	width: 2rem;
+	height: 2rem;
+	font-size: 1.2rem;
+	cursor: pointer;
+	color: black;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: background 0.3s ease, transform 0.2s ease;
+}
+
+/* Hover effect */
+.close-button:hover {
+	background: #f8d7da;
+	border-color: #f5c6cb;
+	transform: scale(1.1);
+}
+
+.selected-badge-title {
+	font-size: 1.5rem;
+	font-weight: 700;
+	color: white;
+	/* margin-bottom: 10px; */
+	background-color: black;
+	border-radius: 0.3rem;
+	padding: 0 1rem;
+	position: relative;
+}
+
+.badge-image {
+	/* display: flex
+; */
+	justify-content: center;
+	/* align-items: center; */
+	/* width: 100%; */
+	/* height: 71%; */
+	margin: 10px auto;
+	padding-bottom: 2rem;
+}
+
+.selected-badge-title::before,
+.selected-badge-title::after {
+	content: '•'; /* Unicode character for a dot */
+	color: white;
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+}
+
+.selected-badge-title::before {
+	left: 0.875rem; /* Adjust the position as needed */
+}
+
+.selected-badge-title::after {
+	right: 0.875rem; /* Adjust the position as needed */
+}
+
+.switch-account {
+	color: var(--branding-color);
+	margin-left: auto;
+	display: flex;
+	align-items: center;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+.switch-lang {
+	color: var(--branding-color);
+	margin-left: auto;
+	display: flex;
+	align-items: center;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+.icon {
+	position: absolute;
+	left: 0.6rem;
+	top: 50%;
+	transform: translateY(-50%);
+	pointer-events: none;
+	color: white;
+}
+
+/// Language Switcher /////////////
+
+.lang-popup-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.4);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 9999;
+}
+
+.lang-popup-box {
+	background: #fff;
+	width: auto;
+	max-width: 400px;
+	border-radius: 0.75rem;
+	padding: 2rem;
+	box-shadow: 0 0 1.25rem rgba(0, 0, 0, 0.2);
+	position: relative;
+}
+
+.lang-popup-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	font-weight: bold;
+	font-size: 1.125rem;
+	margin-bottom: 1rem;
+}
+
+.lang-close-icon {
+	font-size: 1.5rem;
+	background: #fff;
+	border: 1px solid #ccc;
+	border-radius: 50%;
+	font-size: 1.2rem;
+	cursor: pointer;
+	color: #000;
+	position: absolute;
+	right: 0.8rem;
+	top: 0.8rem;
+}
+
+.lang-popup-footer {
+	margin-top: 1rem;
+}
+
+//////////LAnguage Selector///////////
+
+.select-box {
+	text-align: right;
+	// padding: 1rem;
+	position: absolute;
+	top: 20px;
+	right: 20px;
+}
+
+.select-container {
+	position: relative;
+	display: inline-block;
+}
+
+.lang-select {
+	color: #000;
+	// padding: 0.5rem 6rem;
+	padding: 0.5rem 6rem 0.5rem 2rem;
+	border-radius: 0.4rem;
+	background-color: #fff;
+	-webkit-appearance: none;
+	appearance: none;
+	font-size: 1rem;
+	cursor: pointer;
+}
+
+.select-container::after {
+	content: '▾';
+	position: absolute;
+	right: 1rem;
+	top: 50%;
+	transform: translateY(-50%);
+	pointer-events: none;
+	color: #000;
+	font-size: 1rem;
+}
+
+.select-container.open::after {
+	content: '▴';
+}
+
+//////////LAnguage Selector ENd///////////
+
+@media (max-width: 767px) {
+	ion-modal {
+		--width: 45% !important;
+		--height: 25% !important;
+	}
+
+	.modal-content {
+		padding: 1rem !important;
+	}
+
+	ion-modal::part(content) {
+		border: 0.2rem solid black !important;
+	}
+
+	.selected-badge-title {
+		font-size: 0.75rem !important;
+		margin: 1rem 0rem 0rem 0rem !important;
+	}
+
+	.modal-header {
+		padding: 0rem !important;
+	}
+
+	.badge-image {
+		margin: 0rem auto;
+		padding-bottom: 0.5rem !important;
+		// width: 78%;
+		// height: 63%;
+	}
+
+	.achievement-title {
+		margin: 0 !important;
+		font-size: 0.8rem !important;
+	}
+
+	.selected-badge-title::before {
+		left: 0.5rem;
+	}
+
+	.selected-badge-title::after {
+		right: 0.5rem;
+	}
+
+	.close-button {
+		width: 1rem !important;
+		height: 1rem !important;
+		font-size: 1rem !important;
+	}
+
+	.lang-popup-box {
+		max-width: 350px;
+	}
+
+	.lang-select {
+		padding: 0.5rem 5rem 0.5rem 2.5rem;
+	}
+}
+
+@media (max-width: 400px) {
+	.lang-popup-box {
+		max-width: 300px;
+	}
+
+	.lang-select {
+		// padding: 0.5rem 3.5rem;
+		padding: 0.5rem 3.5rem 0.5rem 2.5rem;
+	}
+}
+
+@media only screen and (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+	.card-stats-count {
+		font-size: 2rem;
+	}
+
+	.card-title,
+	.achievement-card-title,
+	.about-card-title {
+		font-size: 1.1rem;
+	}
+
+	.left-panel-portrait-tab {
+		margin-right: -1.5rem !important;
+	}
+
+	ion-modal {
+		--width: 50%;
+		--height: 37%;
+	}
+}
+
+@media only screen and (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+	ion-modal {
+		--width: 38%;
+		--height: 50%;
+	}
+}
+
+@media only screen and (min-width: 1025px) and (max-width: 1366.98px) and (orientation: landscape) {
+	ion-modal {
+		--width: 38%;
+		--height: 50%;
+	}
+}
+
+/* iPad Pro - Adjusting height separately */
+@media only screen and (min-width: 1366px) and (max-width: 1366.98px) and (orientation: landscape) {
+}

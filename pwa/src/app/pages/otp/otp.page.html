@@ -1,0 +1,63 @@
+<ion-header>
+	<ion-toolbar>
+		<!-- *ngIf="!showCustomerRolls" -->
+		<ion-buttons slot="start">
+			<ion-back-button (click)="back()" text=""></ion-back-button>
+		</ion-buttons>
+	</ion-toolbar>
+</ion-header>
+
+<ion-content no-bounce has-bouncing="false" forceOverscroll="false">
+	<div *ngIf="!showCustomerRolls && !showClientList" class="main-login-section">
+		<div style="width: 100%" class="ion-text-center head-logo">
+			<img *ngIf="projectName== 'drip' " src="assets/icon/drip_logo.png" class="logo-icon" />
+			<img *ngIf="projectName== 'diwo' " src="assets/icon/diwo_logo.png" class="logo-icon" />
+		</div>
+		<form [formGroup]="form" (ngSubmit)="submit(form.value)" class="form-div">
+			<ion-label position="stacked" style="color: gray"> {{ 'Utils.enterOTP' | translate }} </ion-label>
+			<p style="font-size: 18px; color: gray" *ngIf="otpFlage">{{otp}}</p>
+
+			<input
+				class="otp_input ion-text-center"
+				autocomplete="off"
+				type="tel"
+				formControlName="otp4"
+				id="otp4"
+				#otp4
+				maxlength="4"
+				(input)="otpValue($event)" />
+
+			<div style="color: gray; font-size: 1rem; margin-top: 10%">{{otpSendText}}</div>
+			<ion-button
+				fill="clear"
+				type="button"
+				(click)="getResentlogin_otp()"
+				style="margin-top: 5%; --ion-color-base: var(--branding-color)">
+				{{ 'Utils.resentOTP' | translate }}
+			</ion-button>
+		</form>
+	</div>
+
+	<div *ngIf="showCustomerRolls" style="padding: 20px; height: 100%; background: #fff; border-radius: 2.4rem">
+		<div *ngFor="let item of customerRollData; let i=index">
+			<ion-row style="width: 100%">
+				<ion-col class="no__padding">
+					<ion-item class="no__padding" style="--background: white">
+						<div (click)="checkUserType(item)" class="list-group-item list-group-item-action" style="font-size: 1.7rem">
+							{{'Utils.loginAs' | translate}}
+							<span style="color: var(--branding-color)" *ngIf="item.type == 'Normal User'">
+								{{'Utils.accountHolder' | translate}}
+							</span>
+							<span style="color: var(--branding-color)" *ngIf="item.type == 'Care Giver'"
+								>{{'Utils.caregiver' | translate}}</span
+							>
+							<span style="color: var(--branding-color)" *ngIf="item.associated_user_name">
+								{{'Utils.for' | translate}} {{item.associated_user_name}}</span
+							>
+						</div>
+					</ion-item>
+				</ion-col>
+			</ion-row>
+		</div>
+	</div>
+</ion-content>

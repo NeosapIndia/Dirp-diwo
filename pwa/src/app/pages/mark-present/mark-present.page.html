@@ -1,0 +1,106 @@
+<ion-content
+  no-bounce
+  has-bouncing="false"
+  forceOverscroll="false"
+  style="--background: #f2f2f2"
+>
+  <div class="main-login-section" *ngIf="sessionData">
+    <div style="width: 100%" class="ion-text-center head-logo">
+      <img
+        *ngIf="appBranding"
+        [src]="imageBaseURL + appBranding[0].learner_app_icon_path"
+        class="logo-icon"
+      />
+      <img
+        *ngIf="!appBranding && appService.defaultPWALogo"
+        [src]="appService.defaultPWALogo"
+        class="logo-image"
+      />
+      <img
+        *ngIf="!appBranding && !appService.defaultPWALogo"
+        src="assets/icon/diwo_logo.png"
+        class="logo-icon-default"
+      />
+    </div>
+    <ion-row
+      [ngClass]="{ 'ion-main-row-desktop': isdesktopView || isTabletLandscapeView}"
+    >
+      <ion-col
+        size-sm="12"
+        size-md="9"
+        size-lg="7"
+        style="margin: 0 auto"
+        [ngClass]="{ 'ion-main-col-desktop': isdesktopView || isTabletLandscapeView}"
+      >
+        <ion-card class="main-card">
+          <ion-card-header>
+            <ion-card-title class="ion-card-heading"
+              >{{ 'Utils.WelcomeText' | translate }} {{ appService?.userPersonalData?.first }}!</ion-card-title
+            >
+          </ion-card-header>
+
+          <ion-card-content style="padding-bottom: 0 !important">
+            <div class="basic-info">
+              <span class="sessionUser-message"
+                >{{'Utils.confirmJoinSessionMessage' | translate}}</span
+              >
+              <div class="sessionUser-Img">
+                <img
+                  [src]="sessionUserImg"
+                  *ngIf="sessionData?.SessionUsers?.SessionAssets[0]"
+                  class="sessionUserImg"
+                />
+              </div>
+            </div>
+
+            <div
+              class="basic-info"
+              *ngIf="sessionData&&sessionData.Workbook && sessionData.Workbook.Courses&&sessionData.Workbook.Courses[0] && sessionData.SessionUsers&&sessionData.SessionUsers.DiwoModuleAssignId !=null && sessionData.SessionUsers.DiwoModuleAssignId !=undefined"
+            >
+              <span class="heading">{{'Utils.coursename' | translate}}</span>
+              <p>
+                {{sessionData ? sessionData.Workbook &&
+                sessionData.Workbook.Courses &&
+                sessionData.Workbook.Courses[0]?.title : '-'}}
+              </p>
+            </div>
+            <div class="basic-info">
+              <span class="heading">{{'Utils.workbookname' | translate}}</span>
+              <p>
+                {{sessionData ? sessionData.Workbook &&
+                sessionData.Workbook.title : '-'}}
+              </p>
+            </div>
+            <div class="basic-info">
+              <span class="heading"
+                >{{'Utils.sessionFacilitator' | translate}}</span
+              >
+              <p>{{sessionData ? sessionData.trainerName : '-'}}</p>
+            </div>
+            <!-- <div class="basic-info">
+							<span class="heading">{{'Utils.sessiondate' | translate}}</span>
+							<p>{{sessionData ? (sessionData.dateWithTime | date :'dd MMM yyyy hh:mm a') : '-'}}</p>
+						</div> -->
+            <div class="basic-info">
+              <span class="heading"
+                >{{'Utils.sessionLocation' | translate}}</span
+              >
+              <p>{{sessionData ? sessionData.location : '-'}}</p>
+            </div>
+            <div>
+              <!-- <p style="padding-top: 0.5rem">{{'Utils.markmePresentText' | translate}}</p> -->
+            </div>
+          </ion-card-content>
+        </ion-card>
+        <ion-button
+          [ngStyle]="appBrandingInfo && appBrandingInfo.accent_color ? {'--background' : appBrandingInfo.accent_color} : {'--background': ''}"
+          expand="block"
+          class="login"
+          (click)="submit()"
+        >
+          {{ 'Utils.yesMarkmePresent' | translate}}
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </div>
+</ion-content>

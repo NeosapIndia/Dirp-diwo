@@ -1,0 +1,227 @@
+<div class="pageDiv optin" style="min-height: calc(100vh - 95px)">
+	<div style="margin-top: 2rem">
+		<div class="row">
+			<div class="panel header-panel-white" style="display: flex">
+				<div class="col-md-3" style="padding-left: 0.5%">
+					<span class="mainTitle no-margin pageTitle_Main">{{ 'Pages.OptIns.Home.pagetitle' | translate }}</span>
+				</div>
+				<div class="col-md-9" style="padding-right: 0">
+					<a class="btn btn-info border_radius pull-right add-edit-btn" (click)="addPolicy()"
+						>{{ 'Pages.OptIns.Home.addpolicy' | translate }}
+					</a>
+					<a
+						class="btn btn-info border_radius pull-right add-edit-btn"
+						style="margin-right: 0.75rem"
+						(click)="openAcceptanceLog()"
+						>{{ 'Pages.OptIns.Home.acceptancelog' | translate }}
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<form [formGroup]="FilterOptInColumnForm">
+		<div style="margin-top: 2rem">
+			<div class="row">
+				<div class="panel panel-white" style="padding: 0.55% 0; display: flex">
+					<div class="col-md-4" style="padding-right: 0.55%">
+						<label>{{ 'Pages.OptIns.Home.Filter.Dropdown.title' | translate }}</label>
+						<div id="filterDiv" style="max-width: none; width: 100%; margin-left: 0">
+							<ng-multiselect-dropdown
+								[settings]="dropdownSettings"
+								class="mt-2 filter-search-columns"
+								placeholder="{{ 'Pages.OptIns.Home.Filter.Dropdown.placeholder' | translate }}"
+								[data]="FilterColumnArray"
+								formControlName="FilterColumn">
+							</ng-multiselect-dropdown>
+						</div>
+					</div>
+					<div class="col-md-8" style="padding-left: 0.5rem">
+						<label>{{ 'Utils.Filter.Search.title' | translate }}</label>
+						<input
+							id="searchbox"
+							class="form-control"
+							(input)="getOptInByFilter($event.target.value)"
+							type="text"
+							placeholder="{{
+								this.FilterOptInColumnForm.controls['FilterColumn'].value.length == 3
+									? ('Utils.Filter.Search.placeholder1' | translate)
+									: ('Utils.Filter.Search.placeholder2' | translate)
+							}}"
+							autocomplete="off"
+							[(ngModel)]="inputSearchTxt"
+							[ngModelOptions]="{ standalone: true }" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+
+	<div style="margin-top: 2rem">
+		<div class="row">
+			<div class="panel panel-white">
+				<div class="sub table-responsive">
+					<table class="table table-striped table-hover">
+						<thead *ngIf="!isApiCall">
+							<tr>
+								<th
+									class="left tb-first-heading tb-line-height"
+									style="word-wrap: break-word; width: 10vw; padding-left: 1rem">
+									{{ 'Pages.OptIns.Home.Table.Header.username' | translate }}
+								</th>
+								<th class="left tb-head-bg tb-line-height" style="word-wrap: break-word">
+									{{ 'Pages.OptIns.Home.Table.Header.market' | translate }}
+								</th>
+								<th class="left tb-head-bg tb-line-height" style="word-wrap: break-word">
+									{{ 'Pages.OptIns.Home.Table.Header.policytype' | translate }}
+								</th>
+								<th class="left tb-head-bg tb-line-height" style="word-wrap: break-word">
+									{{ 'Pages.OptIns.Home.Table.Header.changenotificationsent' | translate }}
+								</th>
+								<th class="left tb-head-bg tb-line-height" style="word-wrap: break-word">
+									{{ 'Pages.OptIns.Home.Table.Header.changenotificationaccepted' | translate }}
+								</th>
+								<th class="left tb-head-bg tb-line-height" style="word-wrap: break-word">
+									{{ 'Pages.OptIns.Home.Table.Header.policychangedate' | translate }}
+								</th>
+								<th class="left tb-last-heading tb-line-height" style="min-width: 90px; max-width: 90px; width: 90px">
+									{{ 'Pages.OptIns.Home.Table.Header.policydraft' | translate }}
+								</th>
+							</tr>
+						</thead>
+						<tbody *ngIf="!isApiCall">
+							<tr *ngFor="let item of OptInsData; let i = index">
+								<td class="left" style="padding-left: 1rem; padding-top: 15px" class="two-row-td-tag">
+									<p class="two-row-p-tag" style="-webkit-box-orient: vertical">{{ item.UserName }}</p>
+								</td>
+								<td class="left" style="padding-top: 15px" class="two-row-td-tag">
+									<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+										{{ item.Market.name }}
+									</p>
+								</td>
+								<td class="left" style="padding-top: 15px" class="two-row-td-tag">
+									<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+										{{ item.policyTitle }}
+									</p>
+								</td>
+								<td class="left" style="padding-top: 15px" class="two-row-td-tag">
+									<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+										{{ item.activeUserCount }}
+									</p>
+								</td>
+								<td class="left" style="padding-top: 15px" class="two-row-td-tag">
+									<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+										{{ item.acceptedPolicyCount }}
+									</p>
+								</td>
+
+								<td class="left" style="padding-top: 15px" class="two-row-td-tag">
+									<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+										{{ item.policyChangeDate != null ? (item.policyChangeDate | DateFormat) : '-' }}
+									</p>
+								</td>
+								<td class="left" style="padding: 13px 16px 15px 12px">
+									<div class="visible-md visible-lg visible-sm visible-xs">
+										<a class="btn-xs action-edit-btn" style="padding: 4px 20px" (click)="download(item)">{{
+											'Utils.Action.download' | translate
+										}}</a>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<div
+						style="text-align: center; margin-top: 2rem; margin-bottom: 3rem"
+						*ngIf="OptInsData && OptInsData.length == 0 && !isApiCall && isDataLoaded">
+						<img src="assets/images/No Results.svg" alt="" style="width: 25%" />
+						<h3>{{ 'Utils.nodataToShow' | translate }}</h3>
+						<p style="width: 50%; margin: 0 auto">{{ 'Utils.nodataAvaliable' | translate }}</p>
+					</div>
+					<div style="text-align: center; margin-top: 9rem; margin-bottom: 9rem" *ngIf="isApiCall">
+						<!-- <img class="asset-img" src="assets/images/Circle-1.gif" style="width: 3%" /> -->
+						<div [innerHTML]="iconObject['search_loader']" class="asset-img"></div>
+					</div>
+					<div style="text-align: center; margin-top: 9rem; margin-bottom: 9rem" *ngIf="!isDataLoaded"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div
+	class="modal fade credit-note"
+	id="addAcceptanceLogModal"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="myModalLabelarchive"
+	aria-hidden="true"
+	data-backdrop="static"
+	data-keyboard="false">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div
+				class="modal-header"
+				[ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="cancel()">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					<span>{{ 'Pages.OptIns.Home.Modal.AcceptanceLog.title' | translate }}</span>
+				</h4>
+			</div>
+			<div class="modal-body">
+				<span>{{ 'Pages.OptIns.Home.Modal.AcceptanceLog.title2' | translate }}</span>
+				<div class="row" style="margin-right: 0">
+					<div class="col-md-12">
+						<div class="form-group">
+							<label>{{ 'Pages.OptIns.Home.Modal.AcceptanceLog.clientaccount' | translate }}</label>
+							<ng-select
+								[items]="clientAccountList"
+								class="ng-select-wrap"
+								placeholder="{{ 'Pages.OptIns.Home.Modal.AcceptanceLog.placeholder' | translate }}"
+								[closeOnSelect]="true"
+								[searchable]="false"
+								[clearable]="false"
+								bindLabel="name"
+								bindValue="id"
+								(change)="selectClientAccount($event)">
+							</ng-select>
+						</div>
+					</div>
+				</div>
+				<div class="row" *ngIf="selectedClientIdForDownload">
+					<div class="col-md-12">
+						<div class="form-group" style="text-align: end">
+							<button
+								type="submit"
+								class="btn btn-xs action-edit-btn"
+								style="padding: 7px 28px; border-radius: 30px; font-size: 0.9rem"
+								(click)="downloadAcceptanceLogData()">
+								{{ 'Utils.Action.download' | translate }}
+							</button>
+						</div>
+					</div>
+				</div>
+				<div
+					class="visible-md visible-lg visible-sm visible-xs"
+					style="text-align: right; margin-bottom: 0.75rem; margin-top: 1.5rem">
+					<a
+						class="btn-xs action-pause-btn"
+						style="padding: 7px 23px; border-radius: 30px; font-size: 0.9rem; margin-right: 10px"
+						(click)="cancelPopUp()"
+						>{{ 'Utils.Action.cancel' | translate }}</a
+					>
+					<a
+						class="btn-xs action-edit-btn"
+						style="margin-right: 9px; padding: 7px 20px; border-radius: 30px; font-size: 0.9rem"
+						>{{ 'Utils.ok' | translate }}</a
+					>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

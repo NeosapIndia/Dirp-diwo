@@ -1,0 +1,606 @@
+<div class="container-fluid" style="margin: 2% 2% 2% 3%; min-height: calc(100vh - 110px)">
+	<div class="row add-edit-main-row">
+		<span>
+			<span
+				[routerLink]="['/assets-library']"
+				style="margin-left: 0.25rem; color: #637373; margin-right: 2px; cursor: pointer">
+				{{ 'Pages.Assets.AddEdit.pagetitle' | translate }}</span
+			>
+			<img src="assets/images/arrow_forward.svg" style="width: 27px" />
+			<span style="margin-left: 3px" [ngStyle]="{ color: appService.whiteBrandingColor }">{{
+				'Pages.Assets.AddEdit.subtitle' | translate
+			}}</span>
+		</span>
+	</div>
+
+	<div class="row section-wrapper" style="margin-top: 2rem" *ngIf="ownerClient">
+		<!-- <div class="form-title"><span>{{'Pages.Assets.AddEdit.GetStarted.title' | translate }}</span></div> -->
+		<div class="card-body">
+			<div class="row" style="font-size: 1.3rem; text-align: center; color: black" *ngIf="!isEdit">
+				{{ 'Pages.Assets.AddEdit.uploadingAssetsFor' | translate }} {{ ownerClient.name }}
+			</div>
+			<div class="row" style="font-size: 1.3rem; text-align: center; color: black" *ngIf="isEdit">
+				{{ 'Pages.Assets.AddEdit.editingAssetsFor' | translate }} {{ ownerClient.name }}
+			</div>
+		</div>
+	</div>
+
+	<div class="row section-wrapper" style="margin-top: 2rem">
+		<div class="form-title">
+			<span>{{ 'Pages.Assets.AddEdit.GetStarted.title' | translate }}</span>
+		</div>
+		<div class="card-body">
+			<div class="row">
+				<div class="col-md-6 form-group" style="margin-top: -5px">
+					<label [ngClass]="{ error: isAssetCategorySelected }">{{
+						'Pages.Assets.AddEdit.GetStarted.Category.title' | translate
+					}}</label>
+					<ng-select
+						[items]="assetCategory"
+						class="ng-select-wrap"
+						placeholder="{{ 'Pages.Assets.AddEdit.GetStarted.Category.placeholder' | translate }}"
+						bindLabel="name"
+						bindValue="name"
+						[multiple]="false"
+						[clearable]="false"
+						[closeOnSelect]="true"
+						[searchable]="false"
+						[(ngModel)]="selectedAssetCategory"
+						(change)="changeAssetCategory($event)">
+					</ng-select>
+					<div *ngIf="isAssetCategorySelected" class="error">
+						{{ 'Pages.Assets.AddEdit.GetStarted.Category.error' | translate }}
+					</div>
+				</div>
+				<div
+					class="col-md-6"
+					*ngIf="
+						((selectedAssetCategory == 'Media' && !isEdit) ||
+							(selectedAssetCategory == 'Media' && whatAppVideo && isEdit)) &&
+						appService?.configurable_feature?.whatsApp
+					">
+					<div style="display: flex">
+						<div class="form-group" style="margin-bottom: 0px; margin-top: 0px">
+							<label>{{ 'Pages.Assets.AddEdit.UploadYourLink.whatsappVideo' | translate }}</label>
+							<div>
+								<label class="switch">
+									<input
+										type="checkbox"
+										class="form-control js-switch"
+										[(ngModel)]="whatAppVideo"
+										[disabled]="isEdit" />
+									<span
+										class="slider round"
+										[ngStyle]="{ 'background-color': whatAppVideo ? appService.whiteBrandingColor : '#ccc' }"></span>
+								</label>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div *ngIf="selectedAssetCategory == 'Media' && !isEdit" class="row section-wrapper" style="margin-top: 2rem">
+		<div class="form-title">
+			<span>{{ 'Pages.Assets.AddEdit.UploadMedia.title' | translate }}</span>
+		</div>
+		<div class="card-body">
+			<div class="row">
+				<div class="col-md-12" *ngIf="!whatAppVideo">
+					<div style="display: flex; justify-content: center; margin-top: 10px">
+						<label
+							class="btn pad fileinput-button browse_lable big-button"
+							[ngStyle]="{
+								'background-color': appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+								color: 'white'
+							}">
+							<input
+								id="mediaWeb"
+								type="file"
+								accept=".jpg, .png, .pdf, .mp4"
+								(change)="uploadMedia($event, 'thumbnail')"
+								[multiple]="isMultipleSelected" />
+							{{ 'Pages.Assets.AddEdit.UploadMedia.SelectMediaButton' | translate }}
+						</label>
+					</div>
+					<div style="text-align: center; margin-top: 1.25rem">
+						<span>{{ 'Pages.Assets.AddEdit.UploadMedia.UploadMediaPlaceholder' | translate }}</span>
+					</div>
+					<div style="text-align: center; margin-top: 1rem">
+						<span [ngStyle]="{ color: appService.whiteBrandingColor }">{{
+							'Pages.Assets.AddEdit.UploadMedia.limitPlaceHolder' | translate
+						}}</span>
+					</div>
+				</div>
+				<div class="col-md-12" *ngIf="whatAppVideo">
+					<div style="display: flex; justify-content: center; margin-top: 10px">
+						<label
+							class="btn pad fileinput-button browse_lable big-button"
+							[ngStyle]="{
+								'background-color': appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+								color: 'white'
+							}">
+							<input
+								id="mediaWeb"
+								type="file"
+								accept=".mp4"
+								(change)="uploadMedia($event, 'whatappvideo')"
+								[multiple]="isMultipleSelected" />
+							{{ 'Pages.Assets.AddEdit.UploadMedia.SelectMediaButton' | translate }}
+						</label>
+					</div>
+					<div style="text-align: center; margin-top: 1.25rem">
+						<span>{{ 'Pages.Assets.AddEdit.UploadMedia.UploadMediaWhatAppVideoPlaceholder' | translate }}</span>
+					</div>
+					<div style="text-align: center; margin-top: 1.25rem">
+						<span style="font-size: 1.2rem" [ngStyle]="{ color: appService.whiteBrandingColor }">{{
+							'Pages.Assets.AddEdit.UploadMedia.limitWhatAppVideoPlaceHolder' | translate
+						}}</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div *ngIf="selectedAssetCategory == 'Link' && !isEdit" class="row section-wrapper" style="margin-top: 2rem">
+		<div class="form-title">
+			<span>{{ 'Pages.Assets.AddEdit.UploadYourLink.title' | translate }}</span>
+		</div>
+		<div class="card-body">
+			<div class="row">
+				<div class="col-md-12">
+					<div style="display: flex; justify-content: center; margin-top: 10px">
+						<a
+							class="btn pad fileinput-button browse_lable big-button"
+							(click)="pathFile.click()"
+							[ngStyle]="{
+								'background-color': appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+								color: 'white'
+							}">
+							{{ 'Pages.Assets.AddEdit.UploadYourLink.BrowseLinkButtin' | translate }}</a
+						>
+						<input
+							type="file"
+							style="display: none"
+							id="historyFile"
+							class="btn btn-info border_radius"
+							#pathFile
+							(change)="pathExcel($event)" />
+					</div>
+					<div style="text-align: center; margin-top: 1.25rem">
+						<!-- <span>{{'Pages.Assets.AddEdit.UploadYourLink.downloadTemplate' | translate }}</span> -->
+						<div style="text-align: center; margin-top: 1.25rem">
+							<a href="assets/file/Upload_link_asset_in_bulk.xlsx" id="download">
+								{{ 'Pages.Assets.AddEdit.UploadYourLink.downloadTemplate' | translate }}</a
+							>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div *ngIf="selectedAssetCategory == 'Link'">
+		<div class="row section-wrapper" style="margin-top: 2rem" *ngFor="let item of AssetLinks; let i = index">
+			<div class="form-title">
+				<span>{{ 'Pages.Assets.AddEdit.UploadYourLink.title' | translate }}</span>
+				<img
+					src="assets/images/cancel_icon.svg"
+					*ngIf="i !== 0"
+					(click)="removeAssetLinks(i)"
+					style="width: 26px; float: right; margin-top: 1px; cursor: pointer" />
+			</div>
+			<div class="card-body form-group">
+				<div class="row">
+					<div class="col-md-12">
+						<div style="display: flex">
+							<div class="form-group">
+								<label>{{ 'Pages.Assets.AddEdit.UploadYourLink.selfhostedVideo' | translate }}</label>
+								<div>
+									<label class="switch">
+										<input
+											type="checkbox"
+											class="form-control js-switch"
+											[(ngModel)]="item.selfHostedVideo"
+											[disabled]="isviewMode" />
+										<span
+											class="slider round"
+											[ngStyle]="{
+												'background-color': item.selfHostedVideo ? appService.whiteBrandingColor : '#ccc'
+											}"></span>
+									</label>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-6">
+						<label [ngClass]="{ error: item.AssetTitleError == true }">
+							{{ 'Pages.Assets.AddEdit.UploadYourLink.assettitle' | translate }}
+						</label>
+						<input
+							type="text"
+							class="form-control"
+							id="title"
+							placeholder="{{ 'Pages.Assets.AddEdit.UploadYourLink.assettitleplaceholder' | translate }}"
+							[(ngModel)]="item.title"
+							[ngModelOptions]="{ standalone: true }"
+							(keyup)="checkLinkAssetTitle(i, $event.target.value)" />
+						<div class="error invalid-feedback" *ngIf="item.AssetTitleError == true">
+							{{ 'Pages.Assets.AddEdit.UploadYourLink.assettitleError' | translate }}
+						</div>
+					</div>
+					<div class="col-md-6">
+						<label>{{ 'Pages.Assets.AddEdit.UploadYourLink.tags' | translate }}</label>
+						<input
+							type="text"
+							class="form-control"
+							id="title"
+							placeholder="{{ 'Pages.Assets.AddEdit.UploadYourLink.tagsplaceholder' | translate }}"
+							[(ngModel)]="item.tagName"
+							[ngModelOptions]="{ standalone: true }" />
+					</div>
+				</div>
+				<div class="row" style="margin-top: 0.75rem; margin-bottom: 1.25rem">
+					<div class="col-md-6">
+						<label>{{ 'Pages.Assets.AddEdit.UploadYourLink.assetdescription' | translate }}</label>
+						<textarea
+							class="form-control"
+							placeholder="{{
+								type === 'drip'
+									? ('Pages.Assets.AddEdit.UploadYourLink.assetdescriptioncontactplaceholder' | translate)
+									: ('Pages.Assets.AddEdit.UploadYourLink.assetdescriptionplaceholder' | translate)
+							}}"
+							[(ngModel)]="item.description"
+							[ngModelOptions]="{ standalone: true }">
+						</textarea>
+					</div>
+					<div class="col-md-6">
+						<label [ngClass]="{ error: item.UploadLinkError == true || item.UploadValidLinkError == true }">
+							{{ 'Pages.Assets.AddEdit.UploadYourLink.uploadthelinktitle' | translate }}
+						</label>
+						<textarea
+							class="form-control"
+							placeholder=""
+							[(ngModel)]="item.path"
+							[ngModelOptions]="{ standalone: true }"
+							(keyup)="checkUploadlink(i, $event.target.value)">
+						</textarea>
+						<div class="error invalid-feedback" *ngIf="item.UploadLinkError == true">
+							{{ 'Pages.Assets.AddEdit.UploadYourLink.uploadLinkError' | translate }}
+						</div>
+						<div class="error invalid-feedback" *ngIf="item.uploadValidLinkError == true">
+							{{ 'Pages.Assets.AddEdit.UploadYourLink.uploadValidLinkError' | translate }}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div style="margin-top: 1rem" class="text-right" *ngIf="updateAssets && !updateAssets.assetId">
+			<a style="font-size: 0.875rem; color: grey">
+				<!-- <span style="margin-right: 5px">{{ 'Pages.Assets.AddEdit.Addonemorelink' | translate }}</span>
+				<span class="text-right add-circle" style="cursor: pointer">
+					<img src="assets/images/add_icon.svg" style="width: 35px" (click)="addMoreLinks()" />
+				</span> -->
+
+				<div class="info-icon-div">
+					<div>
+						<span style="margin-right: 5px">{{ 'Pages.Assets.AddEdit.Addonemorelink' | translate }}</span>
+					</div>
+					<div>
+						<span
+							style="cursor: pointer"
+							class="info-icon"
+							[innerHTML]="iconObject['add_icon_35']"
+							(click)="addMoreLinks()"></span>
+					</div>
+				</div>
+			</a>
+		</div>
+	</div>
+
+	<div *ngIf="selectedAssetCategory == 'Media'">
+		<div *ngFor="let asset of selectedMediaAssetDetails; let i = index">
+			<div class="row section-wrapper" style="margin-top: 2rem" *ngIf="i <= showAssetAtATime">
+				<div class="form-title">
+					<span>
+						{{ 'Pages.Assets.AddEdit.ConfirmOrUpdate.title' | translate }} {{ asset.type }}
+						{{ 'Pages.Assets.AddEdit.ConfirmOrUpdate.title2' | translate }}
+					</span>
+					<img
+						src="assets/images/cancel_icon.svg"
+						style="width: 26px; float: right; margin-top: 1px; cursor: pointer"
+						*ngIf="selectedMediaAssetDetails.length > 1"
+						(click)="removeAsset(i)" />
+				</div>
+				<div class="card-body form-group">
+					<div class="row">
+						<div class="col-md-6" style="margin-top: -5px">
+							<label [ngClass]="{ error: asset.AssetTitleError == true }">
+								{{ 'Pages.Assets.AddEdit.UploadYourLink.assettitle' | translate }}
+							</label>
+							<input
+								type="text"
+								class="form-control"
+								id="title"
+								placeholder="{{ 'Pages.Assets.AddEdit.UploadYourLink.assettitleplaceholder' | translate }}"
+								(change)="asset.title = $event.target.value"
+								[value]="asset.title"
+								(keyup)="checkMediaAssetTitle(i, $event.target.value)" />
+							<div class="error invalid-feedback" *ngIf="asset.AssetTitleError == true">
+								{{ 'Pages.Assets.AddEdit.UploadYourLink.assettitleError' | translate }}
+							</div>
+						</div>
+						<div class="col-md-6" style="margin-top: -5px">
+							<label>{{ 'Pages.Assets.AddEdit.UploadYourLink.tags' | translate }}</label>
+							<input
+								type="text"
+								class="form-control"
+								id="title"
+								placeholder="{{ 'Pages.Assets.AddEdit.UploadYourLink.tagsplaceholder' | translate }}"
+								(change)="asset.tagName = $event.target.value"
+								[value]="asset.tagName" />
+						</div>
+					</div>
+					<div class="row" style="margin-top: 0.75rem">
+						<div class="col-md-12">
+							<label>{{ 'Pages.Assets.AddEdit.UploadYourLink.assetdescription' | translate }}</label>
+							<textarea
+								class="form-control"
+								placeholder="{{
+									type === 'drip'
+										? ('Pages.Assets.AddEdit.UploadYourLink.assetdescriptioncontactplaceholder' | translate)
+										: ('Pages.Assets.AddEdit.UploadYourLink.assetdescriptionplaceholder' | translate)
+								}}"
+								(change)="asset.description = $event.target.value"
+								[value]="asset.description">
+							</textarea>
+						</div>
+					</div>
+				</div>
+				<div style="margin: 20px" *ngIf="asset && asset.path && asset.type == 'Image'">
+					<img id="imgpreviewEdit" [src]="assetBasePath + asset.path" alt="Image" style="width: 20%; height: 140px" />
+				</div>
+				<div style="margin: 20px" *ngIf="asset && !asset.path && asset.type == 'Image'">
+					<img id="imgpreview" [src]="asset.Preview[0]" alt="Image" style="width: 20%; height: 140px" />
+				</div>
+
+				<div
+					style="margin: 20px; display: flex; justify-content: flex-start"
+					*ngIf="asset && asset.path && asset.type == 'Video' && asset.isTranscoding">
+					<app-video-player [VideoPath]="asset.path"></app-video-player>
+				</div>
+				<div style="margin: 20px" *ngIf="asset && asset.type == 'Video' && !asset.isTranscoding">
+					<img src="assets/images/transcoding.gif" style="width: 20%" />
+				</div>
+				<div
+					style="margin: 20px"
+					*ngIf="asset && asset.type == 'WhatsappVideo' && appService?.configurable_feature?.whatsApp">
+					<div *ngIf="asset.path && asset.isTranscoding">
+						<video style="width: 20%; height: 165px" controls>
+							<source [src]="assetBasePath + asset.path" />
+						</video>
+					</div>
+					<div style="margin: 20px" *ngIf="asset && !asset.isTranscoding">
+						<img src="assets/images/transcoding.gif" style="width: 20%" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div *ngIf="selectedAssetCategory == 'Media' && isEdit" class="row section-wrapper" style="margin-top: 2rem">
+		<div class="form-title">
+			<span>{{ 'Pages.Assets.AddEdit.UploadMedia.title' | translate }}</span>
+		</div>
+		<div class="card-body">
+			<div class="row">
+				<div class="col-md-12" *ngIf="!whatAppVideo">
+					<div style="display: flex; justify-content: center; margin-top: 10px">
+						<label
+							class="btn pad fileinput-button browse_lable big-button"
+							[ngStyle]="{
+								'background-color': appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+								color: 'white'
+							}">
+							<input
+								id="mediaWeb"
+								type="file"
+								accept=".jpg, .png, .pdf, .mp4"
+								(change)="uploadMedia($event, 'thumbnail')"
+								[multiple]="isMultipleSelected" />
+							{{ 'Pages.Assets.AddEdit.UploadMedia.SelectMediaButton' | translate }}
+						</label>
+					</div>
+					<div style="text-align: center; margin-top: 1.25rem">
+						<span>{{ 'Pages.Assets.AddEdit.UploadMedia.UploadMediaPlaceholder' | translate }}</span>
+					</div>
+					<div style="text-align: center; margin-top: 1rem">
+						<span [ngStyle]="{ color: appService.whiteBrandingColor }">{{
+							'Pages.Assets.AddEdit.UploadMedia.limitPlaceHolder' | translate
+						}}</span>
+					</div>
+				</div>
+
+				<div class="col-md-12" *ngIf="whatAppVideo">
+					<div style="display: flex; justify-content: center; margin-top: 10px">
+						<label
+							class="btn pad fileinput-button browse_lable big-button"
+							[ngStyle]="{
+								'background-color': appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+								color: 'white'
+							}">
+							<input
+								id="mediaWeb"
+								type="file"
+								accept=".mp4"
+								(change)="uploadMedia($event, 'whatappvideo')"
+								[multiple]="isMultipleSelected" />
+							{{ 'Pages.Assets.AddEdit.UploadMedia.SelectMediaButton' | translate }}
+						</label>
+					</div>
+					<div style="text-align: center; margin-top: 1.25rem">
+						<span style="font-size: 1.2rem" [ngStyle]="{ color: appService.whiteBrandingColor }">{{
+							'Pages.Assets.AddEdit.UploadMedia.limitWhatAppVideoPlaceHolder' | translate
+						}}</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div *ngIf="selectedAssetCategory == 'Link' && isEdit" class="row section-wrapper" style="margin-top: 2rem">
+		<div class="form-title">
+			<span>{{ 'Pages.Assets.AddEdit.UploadYourLink.title' | translate }}</span>
+		</div>
+		<div class="card-body">
+			<div class="row">
+				<div class="col-md-12">
+					<div style="display: flex; justify-content: center; margin-top: 10px">
+						<a
+							class="btn pad fileinput-button browse_lable big-button"
+							(click)="pathFile.click()"
+							[ngStyle]="{
+								'background-color': appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+								color: 'white'
+							}">
+							{{ 'Pages.Assets.AddEdit.UploadYourLink.BrowseLinkButtin' | translate }}</a
+						>
+						<input
+							type="file"
+							style="display: none"
+							id="historyFile"
+							class="btn btn-info border_radius"
+							#pathFile
+							(change)="pathExcel($event)" />
+					</div>
+					<div style="text-align: center; margin-top: 1.25rem">
+						<div style="text-align: center; margin-top: 1.25rem">
+							<a href="assets/file/Upload_link_asset_in_bulk.xlsx" id="download">
+								{{ 'Pages.Assets.AddEdit.UploadYourLink.downloadTemplate' | translate }}</a
+							>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div
+		*ngIf="selectedAssetCategory == 'Media' && selectedMediaAssetDetails.length > showAssetAtATime + 1"
+		style="margin-top: 2rem; text-align: center; cursor: pointer">
+		<div (click)="showMore()" style="font-size: 1.1rem">
+			{{ 'Pages.Assets.AddEdit.showmore' | translate }}
+		</div>
+	</div>
+
+	<div style="float: right; margin-top: 2rem; margin-right: -15px">
+		<a
+			class="btn btn-o btn-primary border_radius functionalBtn"
+			style="
+				margin-right: 20px;
+				background-color: lightgray !important;
+				color: black;
+				border: 1px solid lightgray !important;
+			"
+			(click)="cancel()"
+			>{{ 'Utils.cancel' | translate }}</a
+		>
+		<a
+			*ngIf="updateAssets && !updateAssets.assetId"
+			class="btn border_radius functionalBtn"
+			[ngStyle]="{
+				'background-color': appService.whiteBrandingColor,
+				border: '1px solid' + appService.whiteBrandingColor,
+				color: 'white'
+			}"
+			(click)="saveAsset()"
+			>{{ 'Pages.Assets.AddEdit.saveAsset' | translate }}</a
+		>
+		<a
+			*ngIf="updateAssets && updateAssets.assetId"
+			class="btn border_radius functionalBtn"
+			[ngStyle]="{
+				'background-color': appService.whiteBrandingColor,
+				border: '1px solid' + appService.whiteBrandingColor,
+				color: 'white'
+			}"
+			(click)="updateAsset()"
+			>{{ 'Pages.Assets.AddEdit.updateAsset' | translate }}</a
+		>
+	</div>
+</div>
+
+<!-- Select Client List -->
+<div
+	class="modal fade credit-note"
+	id="selecteClientList"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="myModalLabel"
+	aria-hidden="true"
+	data-backdrop="static"
+	data-keyboard="false">
+	<div class="modal-dialog" style="width: 34%; margin-top: 15%; margin-left: 34%">
+		<div class="modal-content">
+			<div
+				class="modal-header"
+				[ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="cancelClientlistPopUp()">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					<span>{{ 'Select Account ' | translate }}</span>
+				</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-12 form-group" style="margin-top: -5px">
+						<!-- <label [ngClass]="{'error':isAssetCategorySelected}">{{'Pages.Assets.AddEdit.GetStarted.Category.title' | translate }}</label> -->
+						<ng-select
+							[items]="clientList"
+							class="ng-select-wrap"
+							placeholder="{{ 'Pages.Assets.AddEdit.Modal.SelectClientForRole.Account.placeholder' | translate }}"
+							bindLabel="nameWithClientId"
+							bindValue="id"
+							[multiple]="false"
+							[clearable]="true"
+							[closeOnSelect]="true"
+							[searchable]="true"
+							[(ngModel)]="selectedClientId"
+							(change)="selctedClient($event)">
+						</ng-select>
+					</div>
+				</div>
+				<div
+					class="visible-md visible-lg visible-sm visible-xs"
+					style="text-align: right; margin-bottom: 0.75rem; margin-top: 1.5rem">
+					<a
+						class="btn-xs action-pause-btn action-yes-no"
+						style="padding: 7px 23px; margin-right: 10px"
+						(click)="cancelClientlistPopUp()"
+						>{{ 'Utils.Action.cancel' | translate }}</a
+					>
+					<a
+						class="btn-xs action-edit-btn action-yes-no"
+						(click)="selectClient()"
+						style="margin-right: 9px; padding: 7px 20px"
+						>{{ 'Utils.ok' | translate }}</a
+					>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

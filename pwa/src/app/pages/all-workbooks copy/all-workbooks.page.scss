@@ -1,0 +1,270 @@
+ion-toolbar {
+	padding: 0 1rem;
+}
+
+.header-logo {
+	height: 45px;
+	vertical-align: middle;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+ion-toolbar.toolbar-head {
+	height: 65px;
+}
+
+.sort-wrapper {
+	display: inline-flex;
+	vertical-align: middle;
+	float: right;
+}
+
+ion-grid {
+	padding: 0;
+}
+
+.page-wrapper {
+	// margin: 2px auto 0;
+	// padding: 0px;
+	display: flex;
+	margin-bottom: 2px;
+}
+
+.page-wrapper2 {
+	padding: 0px;
+	margin: 1rem auto 0;
+}
+.page-wrapper3 {
+	padding-bottom: 0px;
+	margin: 1rem auto 0;
+}
+
+.wb-for-fname {
+	font-size: 1.25rem;
+	margin: 0 0 0.5rem;
+}
+
+.wb-list {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 1rem;
+}
+
+.wb-name {
+	font-size: 1rem;
+	font-weight: 500;
+	line-height: 1.375rem;
+}
+
+.custom-card {
+	cursor: pointer;
+	outline: 1px solid darkgray;
+	width: 100%;
+}
+
+.wb-details {
+	padding: 0.5rem;
+}
+
+.back-to-top-btn {
+	background: var(--branding-color);
+	position: fixed;
+	border-radius: 50%;
+	width: 3rem;
+	height: 3rem;
+	color: #fff;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	transform: translateX(-50%);
+	right: 3%;
+	bottom: 5%;
+	z-index: 999;
+
+	#top-icon {
+		height: 45%;
+		width: 45%;
+	}
+}
+
+.wbImg {
+	// height: 335px;
+	width: 100%;
+	// object-fit: contain;
+	// border-radius: 1rem 1rem 0 0;
+}
+
+p {
+	margin: 0;
+}
+
+.course-name {
+	overflow: hidden;
+	display: -webkit-box;
+	-webkit-line-clamp: 1;
+	-webkit-box-orient: vertical;
+}
+
+.assigned-date {
+	color: #4e586e;
+	font-size: 0.75rem;
+	font-weight: bold;
+}
+
+.course-name {
+	color: var(--branding-color);
+	font-size: 0.75rem;
+}
+
+.wb-img {
+	display: flex;
+}
+
+@media only screen and (max-width: 425px) {
+	.wb-list {
+		grid-template-columns: 1fr 1fr;
+		gap: 0.7rem;
+	}
+
+	.assigned-date {
+		margin-top: 0.25rem;
+	}
+
+	.wb-name {
+		margin-top: 0.25rem;
+		width: 150px;
+	}
+
+	// .wbImg {
+	//     max-height: 291px;
+	//     object-fit: fill;
+	// }
+	.custom-card {
+		cursor: pointer;
+		max-height: 436px;
+		outline: 1px solid darkgray;
+	}
+}
+
+@media screen and (min-width: 600px) and (max-width: 1024px) and (orientation: landscape) {
+	// .wbImg {
+	//     height: 565px;
+	//     object-fit: contain;
+	// }
+	.custom-card {
+		cursor: pointer;
+		// min-height: 734px;
+	}
+}
+
+@media only screen and (min-width: 992px) and (orientation: portrait) {
+	.wb-list {
+		grid-template-columns: 1fr 1fr 1fr;
+		gap: 1rem;
+	}
+
+	// .wbImg {
+	//     height: 31vh;
+	//     object-fit: contain;
+	// }
+	.custom-card {
+		cursor: pointer;
+		// min-height: 42vh;
+		outline: 1px solid darkgray;
+	}
+}
+
+@media screen and (min-width: 1025px) and (orientation: landscape) {
+	.wb-list {
+		grid-template-columns: 1fr 1fr 1fr;
+		gap: 1rem;
+	}
+
+	.custom-card {
+		cursor: pointer;
+		// min-height: 450px;
+		outline: 1px solid darkgray;
+	}
+}
+
+.notLive {
+	opacity: 0.5;
+}
+
+.live {
+	opacity: 1;
+}
+
+.dot-live {
+	height: 8px;
+	width: 8px;
+	background-color: green;
+	border-radius: 50%;
+	display: inline-block;
+}
+
+.dot-startingsoon {
+	height: 8px;
+	width: 8px;
+	background-color: orange;
+	border-radius: 50%;
+	display: inline-block;
+}
+
+ion-select::part(icon) {
+	color: var(--branding-color) !important;
+}
+
+//WEB Optimization
+.ion-main-col-desktop {
+	max-width: 40% !important;
+	width: 100% !important;
+	margin-top: 0 !important;
+}
+
+.ion-main-row-desktop {
+	// display: flex;
+	// flex-direction: column;
+}
+
+.page-wrapper3-desktop {
+	margin: 0 auto;
+}
+
+@media (min-width: 1024px) {
+	// ion-col.main-col {
+	// 	max-width: 40% !important;
+	// 	width: 100% !important;
+	// 	margin-top: 0 !important;
+	// }
+	// ion-row.main-row {
+	// 	display: flex;
+	// 	flex-direction: column;
+	// }
+
+	.page-wrapper3 {
+		margin: 0 auto;
+	}
+}
+
+.ion-sort-mobile ion-item {
+	--background: #f7f7f7 !important;
+}
+
+.ion-sort-desktop {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	height: 5vh;
+	margin-top: 0.5rem;
+}
+
+.sort-wrapper-dekstop {
+	display: inline-flex;
+	vertical-align: middle;
+	float: right;
+	padding: 0px;
+}
+.ion-sort-desktop ion-item {
+	--background: var(--ion-dynamic-background-color);
+}

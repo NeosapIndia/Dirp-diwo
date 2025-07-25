@@ -1,0 +1,1700 @@
+<div class="pageDiv learner" style="min-height: calc(100vh - 95px)">
+	<div style="margin-top: 2rem">
+		<div class="row">
+			<div class="panel header-panel-white" style="display: flex">
+				<div class="col-md-3" style="padding-left: 0.5%">
+					<span class="mainTitle no-margin pageTitle_Main">{{
+						type === 'drip'
+							? ('Pages.Learners.Home.Contactpagetitle' | translate)
+							: ('Pages.Learners.Home.pagetitle' | translate)
+					}}</span>
+				</div>
+				<div class="col-md-9" style="padding-right: 0" *ngIf="canAddEditLearner">
+					<a
+						[ngClass]="{ 'edit-disabled': !writePermission }"
+						class="btn border_radius pull-right add-edit-btn"
+						[ngStyle]="{
+							'background-color': appService.whiteBrandingColor,
+							border: '1px solid' + appService.whiteBrandingColor,
+							color: 'white'
+						}"
+						style="margin-right: 0.75rem"
+						(click)="addLearner()"
+						>{{
+							type === 'drip'
+								? ('Pages.Learners.Home.addContact' | translate)
+								: ('Pages.Learners.Home.addlearners' | translate)
+						}}
+					</a>
+					<a
+						[ngClass]="{ 'edit-disabled': !writePermission }"
+						*ngIf="!writePermission"
+						[ngStyle]="{
+							'background-color': appService.whiteBrandingColor,
+							border: '1px solid' + appService.whiteBrandingColor,
+							color: 'white'
+						}"
+						class="btn border_radius pull-right uploadLearner"
+						(click)="notPermission()">
+						{{
+							type === 'drip'
+								? ('Pages.Learners.Home.uploadContacts' | translate)
+								: ('Pages.Learners.Home.uploadlearners' | translate)
+						}}</a
+					>
+					<a
+						*ngIf="writePermission"
+						class="btn border_radius pull-right uploadLearner"
+						[ngStyle]="{
+							'background-color': appService.whiteBrandingColor,
+							border: '1px solid' + appService.whiteBrandingColor,
+							color: 'white'
+						}"
+						(click)="triggerFileInput()">
+						{{
+							type === 'drip'
+								? ('Pages.Learners.Home.uploadContacts' | translate)
+								: ('Pages.Learners.Home.uploadlearners' | translate)
+						}}</a
+					>
+					<input
+						type="file"
+						style="display: none"
+						id="historyFile"
+						class="btn border_radius"
+						#pathFile
+						(change)="pathExcel($event)"
+						[ngStyle]="{
+							'background-color': appService.whiteBrandingColor,
+							border: '1px solid' + appService.whiteBrandingColor,
+							color: 'white'
+						}"
+						[(ngModel)]="excelLearnerUpload" />
+
+					<a
+						(click)="notPermission()"
+						id="download"
+						*ngIf="!writePermission"
+						[ngStyle]="{ color: appService.whiteBrandingColor }">
+						{{ 'Pages.Learners.Home.downlaodtemplate' | translate }}</a
+					>
+
+					<a
+						*ngIf="writePermission"
+						id="download"
+						(click)="downloadUploadTemplate()"
+						[ngStyle]="{ color: appService.whiteBrandingColor }">
+						<div class="info-icon-div">
+							<div>
+								{{ 'Pages.Learners.Home.downlaodtemplate' | translate }}
+							</div>
+							<div>
+								<span
+									class="info-icon"
+									[innerHTML]="iconObject['info_icon_20']"
+									style="width: 1.2rem; margin-left: 0.3rem; margin-right: 0rem; margin-top: -2px"
+									(click)="addMoreClient()"
+									[title]="'Pages.Learners.Home.dateMessage' | translate"></span>
+							</div>
+						</div>
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<form [formGroup]="FilterLearnerColumnForm">
+		<div style="margin-top: 2rem">
+			<div class="row">
+				<div class="panel panel-white" style="padding: 0.55% 0; display: flex">
+					<div class="col-md-4" style="padding-right: 0.55%">
+						<label>{{ 'Pages.Learners.Home.Filter.Dropdown.title' | translate }}</label>
+						<div id="filterDiv" style="max-width: none; width: 100%; margin-left: 0">
+							<ng-multiselect-dropdown
+								[settings]="dropdownSettings"
+								class="mt-2 filter-search-columns"
+								placeholder="{{
+									type === 'drip'
+										? ('Pages.Learners.Home.Filter.Dropdown.placeholderContact' | translate)
+										: ('Pages.Learners.Home.Filter.Dropdown.placeholder' | translate)
+								}}"
+								[data]="FilterColumnArray"
+								formControlName="FilterColumn">
+							</ng-multiselect-dropdown>
+						</div>
+					</div>
+
+					<div class="col-md-5" style="padding-left: 0.5rem; padding-right: 0px">
+						<label>{{ 'Utils.Filter.Search.title' | translate }}</label>
+						<input
+							id="search"
+							class="form-control"
+							(input)="getLearnerByFilter($event.target.value)"
+							type="text"
+							placeholder="{{
+								FilterLearnerColumnForm.value.FilterColumn.length == allLength
+									? ('Utils.Filter.Search.placeholder1' | translate)
+									: ('Utils.Filter.Search.placeholder2' | translate)
+							}}"
+							autocomplete="off"
+							[(ngModel)]="inputSearchTxt"
+							[ngModelOptions]="{ standalone: true }" />
+					</div>
+					<div class="col-md-3">
+						<label>{{ 'Utils.Filter.Search.datetitle' | translate }}</label>
+						<input
+							type="text"
+							ngxDaterangepickerMd
+							[showDropdowns]="true"
+							onkeydown="return false"
+							[(ngModel)]="selectedDate"
+							[showCustomRangeLabel]="true"
+							[alwaysShowCalendars]="true"
+							[ranges]="ranges"
+							[linkedCalendars]="true"
+							[isInvalidDate]="isInvalidDate"
+							[showClearButton]="true"
+							[showCancel]="true"
+							placeholder="DD-MM-YYYY - DD-MM-YYYY"
+							[autoApply]="false"
+							[locale]="{ applyLabel: 'ok', format: 'DD-MM-YYYY' }"
+							(startDateChanged)="startDateClicked($event)"
+							(endDateChanged)="endDateClicked($event)"
+							class="form-control"
+							autocomplete="off"
+							[ngModelOptions]="{ standalone: true }"
+							(change)="onSelectFilterDate($event)" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+
+	<div class="row">
+		<div class="panel header-panel-white" style="display: flex; align-items: center">
+			<div class="col-md-3" style="padding-left: 0.5%">
+				<a *ngIf="selectedLearnerIds.length == 0" style="font-size: 0.875rem">
+					{{ 'Utils.totalcount' | translate }} :
+					<span>{{ totalCount }}</span>
+				</a>
+			</div>
+
+			<div class="col-md-9" style="padding-right: 0">
+				<a
+					*ngIf="selectedLearnerIds.length == 0"
+					class="btn border_radius download-learners"
+					[ngStyle]="{
+						'background-color': appService.whiteBrandingColor,
+						border: '1px solid' + appService.whiteBrandingColor,
+						color: 'white'
+					}"
+					(click)="downloadLearners()">
+					{{
+						type === 'drip'
+							? ('Pages.Learners.Home.downloadContacts' | translate)
+							: ('Pages.Learners.Home.downloadlearners' | translate)
+					}}</a
+				>
+				<a
+					*ngIf="selectedLearnerIds.length == 0 && canAddEditLearner"
+					(click)="bulkUpdateLearnerPopup()"
+					id="download"
+					[ngStyle]="{ color: appService.whiteBrandingColor }"
+					style="right: 15px">
+					{{
+						type === 'drip'
+							? ('Pages.Learners.Home.bulkupdateContact' | translate)
+							: ('Pages.Learners.Home.bulkupdateLearner' | translate)
+					}}</a
+				>
+				<div class="bulk-action" *ngIf="selectedLearnerIds.length > 0">
+					<a style="margin-right: 2.5%">
+						{{ 'Utils.count' | translate }} :
+						<span>{{ selectedLearnerIds.length }}</span>
+					</a>
+					<a
+						class="btn-xs action-delete-btn"
+						(click)="cretedDripDiwoLearner('drip')"
+						*ngIf="type == 'drip' && isDiwoAccess">
+						{{ 'Utils.addforDiwo' | translate }}</a
+					>
+					<a
+						class="btn-xs action-delete-btn"
+						(click)="cretedDripDiwoLearner('diwo')"
+						*ngIf="type == 'diwo' && isDripAccess">
+						{{ 'Utils.addforDrip' | translate }}</a
+					>
+					<a
+						class="btn-xs action-delete-btn"
+						(click)="deleteLearner()"
+						[ngStyle]="{
+							color: appService.whiteBrandingColor,
+							border: '0.5px solid ' + appService.whiteBrandingColor
+						}">
+						{{ 'Utils.Action.delete' | translate }}</a
+					>
+					<a
+						class="btn-xs action-archive-btn"
+						[ngStyle]="{
+							color: appService.whiteBrandingColor,
+							border: '0.5px solid ' + appService.whiteBrandingColor
+						}"
+						(click)="archiveLearner('active')">
+						{{ 'Utils.Action.licensed' | translate }}</a
+					>
+					<a
+						class="btn-xs action-archive-btn"
+						[ngStyle]="{
+							color: appService.whiteBrandingColor,
+							border: '0.5px solid ' + appService.whiteBrandingColor
+						}"
+						(click)="archiveLearner('unlicensed')">
+						{{ 'Utils.Action.unlicensed' | translate }}</a
+					>
+					<a
+						class="btn-xs action-delete-btn"
+						[ngStyle]="{
+							color: appService.whiteBrandingColor,
+							border: '0.5px solid ' + appService.whiteBrandingColor
+						}"
+						(click)="moveLearner(userItem)">
+						{{ 'Utils.Action.move' | translate }}</a
+					>
+					<a
+						class="btn-xs action-delete-btn"
+						[ngStyle]="{
+							color: appService.whiteBrandingColor,
+							border: '0.5px solid ' + appService.whiteBrandingColor
+						}"
+						*ngIf="type == 'drip'"
+						(click)="optin()">
+						{{ 'Utils.Action.optin' | translate }}</a
+					>
+					<a
+						class="btn-xs action-delete-btn"
+						[ngStyle]="{
+							color: appService.whiteBrandingColor,
+							border: '0.5px solid ' + appService.whiteBrandingColor
+						}"
+						*ngIf="type === 'drip' && haveTeamSetup"
+						(click)="teamSync()">
+						{{ 'Utils.Action.SyncTeams' | translate }}</a
+					>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div style="margin-top: 2rem">
+		<div class="row">
+			<div class="panel panel-white">
+				<div class="sub table-responsive">
+					<table class="table table-striped table-hover">
+						<thead *ngIf="!isApiCall">
+							<tr>
+								<th class="left tb-first-heading tb-line-height" style="padding-left: 1rem">
+									<input
+										type="checkbox"
+										id="selectBoxId"
+										class="widthauto padTop5 purple_checkbox"
+										#selectAll
+										(change)="selectDeselct(selectAll.checked)" />
+								</th>
+								<th
+									class="left tb-head-bg tb-line-height"
+									style="padding-left: 20px; width: 12vw; word-wrap: break-word">
+									{{
+										type === 'drip'
+											? ('Pages.Learners.Home.Table.Header.usernamedrip' | translate)
+											: ('Pages.Learners.Home.Table.Header.username' | translate)
+									}}
+								</th>
+								<th class="left tb-head-bg tb-line-height" style="width: 12vw; word-wrap: break-word">
+									{{ 'Pages.Learners.Home.Table.Header.parentaccount' | translate }}
+								</th>
+								<th class="left tb-head-bg tb-line-height" style="width: 10vw; word-wrap: break-word">
+									{{ 'Pages.Learners.Home.Table.Header.jobrole' | translate }}
+								</th>
+								<th
+									class="left tb-head-bg tb-line-height"
+									style="word-wrap: break-word; width: 7vw; min-width: 7vw; max-width: 9vw">
+									{{ 'Pages.Learners.Home.Table.Header.createdAt' | translate }}
+								</th>
+								<th class="left tb-head-bg tb-line-height" style="max-width: 12vw; word-wrap: break-word">
+									{{
+										type === 'drip'
+											? ('Pages.Learners.Home.Table.Header.accountIdDrip' | translate)
+											: ('Pages.Learners.Home.Table.Header.accountId' | translate)
+									}}
+								</th>
+								<th class="left tb-head-bg tb-line-height" style="max-width: 10vw; word-wrap: break-word">
+									{{ 'Pages.Learners.Home.Table.Header.status' | translate }}
+								</th>
+								<th
+									class="left tb-head-bg tb-line-height"
+									*ngIf="type == 'drip' && haveTeamSetup && appService?.configurable_feature?.teams"
+									style="word-wrap: break-word; min-width: 10vw; max-width: 12vw; width: 10vw">
+									{{ 'Pages.Learners.Home.Table.Header.teamStatus' | translate }}
+								</th>
+								<th
+									class="left tb-head-bg tb-line-height"
+									style="word-wrap: break-word; min-width: 10vw; max-width: 12vw; width: 10vw"
+									*ngIf="type == 'drip' && appService?.configurable_feature?.whatsApp">
+									{{ 'Pages.Learners.Home.Table.Header.WhatsOptIn' | translate }}
+								</th>
+								<th class="left tb-last-heading tb-line-height" style="width: 0vw">
+									{{ 'Pages.Learners.Home.Table.Header.actions' | translate }}
+								</th>
+							</tr>
+						</thead>
+						<tbody *ngIf="!isApiCall">
+							<tr
+								*ngFor="
+									let userItem of clientAllLearners
+										| paginate
+											: {
+													itemsPerPage: limit == 'all' ? totalCount : limit,
+													currentPage: page,
+													totalItems: totalCount
+											  };
+									let i = index
+								">
+								<td class="left" style="padding-left: 1rem; padding-top: 8px">
+									<input
+										[id]="'checkbox-' + userItem.UserId + '-' + userItem.RoleId + '-' + userItem.ClientId"
+										[placeholder]="placeholder()"
+										type="checkbox"
+										class="widthauto padTop5 purple_checkbox"
+										(change)="onCheck($event.target.checked, userItem, i)" />
+								</td>
+								<td class="left two-row-td-tag" style="padding-left: 20px; padding-top: 15px">
+									<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+										{{ userItem.User.first }} {{ userItem.User.last }}
+									</p>
+								</td>
+								<td class="left two-row-td-tag" style="padding-top: 15px">
+									<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+										{{ userItem.Client.name }}
+									</p>
+								</td>
+								<td class="left two-row-td-tag" style="padding-top: 15px">
+									<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+										{{ userItem.job_role }}
+									</p>
+								</td>
+								<td class="left two-row-td-tag" style="padding-top: 15px">
+									<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+										<span>
+											{{ userItem.User.createdAt != null ? (userItem.User.createdAt | DateFormat) : '-' }}
+										</span>
+									</p>
+								</td>
+								<td class="left two-row-td-tag" style="padding-top: 15px">
+									<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+										{{ userItem.User.account_id }}
+									</p>
+								</td>
+
+								<td class="left two-row-td-tag" style="padding-top: 13px">
+									<span class="status-active" *ngIf="userItem.User.cStatus == 'Active'">
+										{{ 'Utils.Status.licensed' | translate }}
+									</span>
+									<span class="status-archive" *ngIf="userItem.User.cStatus == 'Archive'">
+										{{ 'Utils.Status.archive' | translate }}
+									</span>
+									<span class="status-unlicensed" *ngIf="userItem.User.cStatus == 'Unlicensed'">
+										{{ 'Utils.Status.unlicensed' | translate }}</span
+									>
+								</td>
+
+								<td
+									class="left"
+									style="padding-top: 13px"
+									*ngIf="type == 'drip' && haveTeamSetup && appService?.configurable_feature?.teams">
+									<span class="status-not-synced" *ngIf="userItem.User.team_id == null || userItem.User.team_id == ''">
+										{{ 'Utils.Status.NotAvilable' | translate }}</span
+									>
+									<span class="status-synced" *ngIf="userItem.User.team_id">
+										{{ 'Utils.Status.Synced' | translate }}</span
+									>
+								</td>
+
+								<td
+									class="left"
+									style="padding-top: 13px"
+									*ngIf="type == 'drip' && appService?.configurable_feature?.whatsApp">
+									<span class="status-pending" *ngIf="!userItem.User.opt_in && !userItem.User.opt_out">
+										{{ 'Utils.Status.pending' | translate }}</span
+									>
+									<span class="status-opted-in" *ngIf="userItem.User.opt_in && !userItem.User.opt_out">
+										{{ 'Utils.Status.optedin' | translate }}</span
+									>
+									<span class="status-opted-out" *ngIf="!userItem.User.opt_in && userItem.User.opt_out">
+										{{ 'Utils.Status.optedout' | translate }}</span
+									>
+								</td>
+								<!-- style="padding: 0.938rem 1rem 0.938rem 0.75rem" -->
+								<td class="left" style="padding: 0.75rem 1rem 0.938rem 0.75rem">
+									<div class="visible-md visible-lg visible-sm visible-xs">
+										<a
+											class="btn-xs action-edit-btn"
+											[ngStyle]="{
+												'background-color': appService.whiteBrandingColor,
+												border: '1px solid' + appService.whiteBrandingColor,
+												color: 'white'
+											}"
+											(click)="editLearner(userItem)"
+											style="padding: 0.25rem 1.25rem"
+											>{{ 'Utils.Action.edit' | translate }}
+										</a>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<div
+						style="text-align: center; margin-top: 2rem; margin-bottom: 3rem"
+						*ngIf="clientAllLearners && clientAllLearners.length == 0 && !isApiCall && isDataLoaded">
+						<img src="assets/images/No Results.svg" alt="" style="width: 25%" />
+						<h3>{{ 'Utils.nodataToShow' | translate }}</h3>
+						<p style="width: 50%; margin: 0 auto">
+							{{ type === 'drip' ? ('Utils.nodataAvaliable' | translate) : ('Utils.diwonodataAvaliable' | translate) }}
+						</p>
+					</div>
+					<div style="text-align: center; margin-top: 9rem; margin-bottom: 9rem" *ngIf="isApiCall">
+						<!-- <img class="asset-img" src="assets/images/Circle-1.gif" style="width: 3%" /> -->
+						<div [innerHTML]="iconObject['search_loader']" class="asset-img"></div>
+					</div>
+					<div style="text-align: center; margin-top: 9rem; margin-bottom: 9rem" *ngIf="!isDataLoaded"></div>
+				</div>
+			</div>
+			<div class="pagination-wrapper" style="width: 100%">
+				<div style="float: right">
+					<span> {{ 'Utils.perpage' | translate }} : &nbsp;</span>
+					<select class="default-dropdown" (change)="changeResult($event.target.value)">
+						<option *ngFor="let count of pageResultCount; let i = index" [selected]="i == 0">
+							{{ count }}
+						</option>
+					</select>
+				</div>
+				<pagination-controls (pageChange)="onPageChangeEvent($event)" style="float: right"> </pagination-controls>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- ADD Learner MODAL -->
+<div
+	class="modal fade credit-note"
+	id="addLearnerModal"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="myModalLabel"
+	aria-hidden="true"
+	data-backdrop="static"
+	data-keyboard="false">
+	<div class="modal-dialog modal-sm" style="top: 3%; width: 65%">
+		<div class="modal-content">
+			<div
+				class="modal-header"
+				[ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="cancel()">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					<span *ngIf="learnerForm && learnerForm.value.id == null">
+						{{
+							type === 'drip'
+								? ('Pages.Learners.AddEdit.pagetitleaddcontact' | translate)
+								: ('Pages.Learners.AddEdit.pagetitleadd' | translate)
+						}}
+					</span>
+					<span *ngIf="learnerForm.value.id != null">
+						{{
+							type === 'drip'
+								? ('Pages.Learners.AddEdit.pagetitleeditcontact' | translate)
+								: ('Pages.Learners.AddEdit.pagetitleedit' | translate)
+						}}
+					</span>
+				</h4>
+			</div>
+			<div class="modal-body" style="padding: 10px 15px">
+				<div class="row" style="margin-right: 0">
+					<div class="panel-white-popup col-md-12" style="margin: 0 8px">
+						<div style="padding: 4px 0px">
+							<form
+								name="learnerForm"
+								[formGroup]="learnerForm"
+								(ngSubmit)="checkReserveTagsAndSave()"
+								novalidate
+								autocomplete="off">
+								<div class="row">
+									<div class="col-md-6">
+										<div
+											class="form-group"
+											[ngClass]="{
+												'has-error': f.first.invalid && (f.first.dirty || f.first.touched),
+												'has-success': f.first.valid && (f.first.dirty || f.first.touched)
+											}">
+											<label>{{ 'Pages.Learners.AddEdit.PersonalInfo.FirstName.title' | translate }}</label>
+											<input
+												type="text"
+												class="form-control"
+												id="first"
+												placeholder="{{ 'Pages.Learners.AddEdit.PersonalInfo.FirstName.placeholder' | translate }}"
+												formControlName="first"
+												autocomplete="disabled" />
+											<div class="error" *ngIf="f.first.errors && f.first.touched">
+												<div *ngIf="f.first.errors.required">
+													{{ 'Pages.Learners.AddEdit.PersonalInfo.FirstName.error' | translate }}
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<div class="col-md-6">
+										<div
+											class="form-group"
+											[ngClass]="{
+												'has-error': f.country.invalid && (f.country.dirty || f.country.touched),
+												'has-success': f.country.valid && (f.country.dirty || f.country.touched)
+											}">
+											<label> {{ 'Pages.Learners.AddEdit.PersonalInfo.Country.title' | translate }} </label>
+											<ng-select
+												[items]="allCountryList"
+												class="ng-select-wrap"
+												placeholder="{{ 'Pages.Learners.AddEdit.PersonalInfo.Country.placeholder' | translate }}"
+												bindLabel="name"
+												bindValue="name"
+												[multiple]="false"
+												[closeOnSelect]="true"
+												[searchable]="true"
+												[clearable]="false"
+												formControlName="country"
+												(change)="changeCountry($event.name)">
+											</ng-select>
+											<div *ngIf="f.country.errors && f.country.touched" class="error invalid-feedback">
+												<div *ngIf="f.country.errors.required">
+													{{ 'Pages.Learners.AddEdit.PersonalInfo.Country.error' | translate }}
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-6">
+										<div
+											class="form-group"
+											[ngClass]="{
+												'has-error': f.last.invalid && (f.last.dirty || f.last.touched),
+												'has-success': f.last.valid && (f.last.dirty || f.last.touched)
+											}">
+											<label>{{ 'Pages.Learners.AddEdit.PersonalInfo.LastName.title' | translate }}</label>
+											<input
+												type="text"
+												class="form-control"
+												id="last"
+												placeholder="{{ 'Pages.Learners.AddEdit.PersonalInfo.LastName.placeholder' | translate }}"
+												formControlName="last"
+												autocomplete="disabled" />
+											<div *ngIf="f.last.errors && f.last.touched" class="error invalid-feedback">
+												<div *ngIf="f.last.errors.required">
+													{{ 'Pages.Learners.AddEdit.PersonalInfo.LastName.error' | translate }}
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<div class="col-md-6">
+										<div
+											class="form-group"
+											[ngClass]="{
+												'has-error': f.state.invalid && (f.state.dirty || f.state.touched),
+												'has-success': f.state.valid && (f.state.dirty || f.state.touched)
+											}">
+											<label> {{ 'Pages.Learners.AddEdit.PersonalInfo.State.title' | translate }} </label>
+											<ng-select
+												[items]="provinces"
+												class="ng-select-wrap"
+												placeholder="{{ 'Pages.Learners.AddEdit.PersonalInfo.State.placeholder' | translate }}"
+												bindLabel="name"
+												bindValue="name"
+												[multiple]="false"
+												[closeOnSelect]="true"
+												[searchable]="true"
+												[clearable]="false"
+												formControlName="state"></ng-select>
+											<div *ngIf="f.state.errors && f.state.touched" class="error invalid-feedback">
+												<div *ngIf="f.state.errors.required">
+													{{ 'Pages.Learners.AddEdit.PersonalInfo.State.error' | translate }}
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="row">
+									<div class="col-md-6">
+										<div
+											class="form-group"
+											[ngClass]="{
+												'has-error': f.email.invalid && (f.email.dirty || f.email.touched),
+												'has-success': f.email.valid && (f.email.dirty || f.email.touched)
+											}">
+											<label>{{ 'Pages.Learners.AddEdit.PersonalInfo.Email.title' | translate }}</label>
+											<input
+												type="text"
+												class="form-control"
+												id="email"
+												placeholder="{{ 'Pages.Learners.AddEdit.PersonalInfo.Email.placeholder' | translate }}"
+												formControlName="email"
+												[(ngModel)]="email"
+												autocomplete="disabled"
+												(keyup)="emailValidation($event)" />
+											<!-- <div *ngIf=" f.email.errors && f.email.touched"
+                                                class="error invalid-feedback">
+                                                <div *ngIf="f.email.errors.required">
+                                                    {{'Pages.Learners.AddEdit.PersonalInfo.Email.Error.required' |
+                                                    translate}}</div>
+                                                <div *ngIf="f.email.errors.email">
+                                                    {{'Pages.Learners.AddEdit.PersonalInfo.Email.Error.invalid' |
+                                                    translate}}
+                                                </div>
+                                            </div> -->
+											<div class="error" *ngIf="f.email.errors && f.email.touched">
+												<div *ngIf="f.email.errors.required">
+													{{ 'Pages.Learners.AddEdit.PersonalInfo.Email.Error.required' | translate }}
+												</div>
+												<div *ngIf="emailError">
+													{{ 'Pages.Learners.AddEdit.PersonalInfo.Email.Error.invalid' | translate }}
+												</div>
+											</div>
+											<div *ngIf="emailFlag" class="mat-text-warn" style="color: #a94442">
+												{{ 'Pages.Learners.AddEdit.PersonalInfo.Email.Error.registered' | translate }}
+											</div>
+										</div>
+									</div>
+
+									<div class="col-md-6">
+										<div
+											class="form-group"
+											[ngClass]="{
+												'has-error': f.city.invalid && (f.city.dirty || f.city.touched),
+												'has-success': f.city.valid && (f.city.dirty || f.city.touched)
+											}">
+											<label> {{ 'Pages.Learners.AddEdit.PersonalInfo.City.title' | translate }} </label>
+											<input
+												type="text"
+												class="form-control"
+												id="city"
+												placeholder="{{ 'Pages.Learners.AddEdit.PersonalInfo.City.placeholder' | translate }}"
+												formControlName="city"
+												autocomplete="disabled" />
+											<div *ngIf="f.city.errors && f.city.touched" class="error invalid-feedback">
+												<div *ngIf="f.city.errors.required">
+													{{ 'Pages.Learners.AddEdit.PersonalInfo.City.error' | translate }}
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="row">
+									<div class="col-md-6">
+										<div
+											class="form-group"
+											[ngClass]="{
+												'has-error': f.phone.invalid && (f.phone.dirty || f.phone.touched),
+												'has-success': f.phone.valid && (f.phone.dirty || f.phone.touched)
+											}">
+											<div class="row">
+												<div class="col-md-1"></div>
+												<div class="col-md-11">
+													<label> {{ 'Pages.Learners.AddEdit.PersonalInfo.Mobile.title' | translate }}</label>
+												</div>
+												<div class="col-md-1 phone_code">
+													<div>
+														<p>
+															{{ phoneCode }}
+														</p>
+													</div>
+												</div>
+												<div class="col-md-11">
+													<input
+														type="number"
+														class="form-control"
+														placeholder="{{ 'Pages.Learners.AddEdit.PersonalInfo.Mobile.placeholder' | translate }}"
+														formControlName="phone"
+														[(ngModel)]="phone"
+														(change)="mobilePost(true)"
+														autocomplete="disabled" />
+												</div>
+											</div>
+											<div *ngIf="f.phone.errors && f.phone.touched" class="error invalid-feedback">
+												<div *ngIf="f.phone.errors.required">
+													{{ 'Pages.Learners.AddEdit.PersonalInfo.Mobile.Error.required' | translate }}
+												</div>
+												<!-- <div *ngIf="f.phone.errors.maxlength ">Mobile No must be 10 characters</div> -->
+												<div *ngIf="isMobRequired">
+													{{ 'Pages.Learners.AddEdit.PersonalInfo.Mobile.Error.invalid' | translate }}
+												</div>
+												<div *ngIf="f.phone.errors.invalid">
+													{{ 'Pages.Learners.AddEdit.PersonalInfo.Mobile.Error.invalid' | translate }}
+												</div>
+												<div *ngIf="f.phone.errors.pattern">
+													{{ 'Pages.Learners.AddEdit.PersonalInfo.Mobile.Error.invalid' | translate }}
+												</div>
+											</div>
+											<div *ngIf="phoneFlag" class="mat-text-warn" style="color: #a94442">
+												{{ 'Pages.Learners.AddEdit.PersonalInfo.Mobile.Error.registered' | translate }}
+											</div>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-group">
+											<label>{{ 'Pages.Learners.AddEdit.PersonalInfo.ZipCode.title' | translate }}</label>
+											<input
+												type="text"
+												class="form-control"
+												id="zipCode"
+												placeholder="{{ 'Pages.Learners.AddEdit.PersonalInfo.ZipCode.placeholder' | translate }}"
+												formControlName="zipCode"
+												autocomplete="disabled" />
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-6">
+										<div class="form-group">
+											<label>{{ 'Pages.Learners.AddEdit.PersonalInfo.Tags.title' | translate }}</label>
+											<input
+												type="text"
+												class="form-control"
+												placeholder="{{ 'Pages.Learners.AddEdit.PersonalInfo.Tags.placeholder' | translate }}"
+												formControlName="tags"
+												autocomplete="disabled" />
+										</div>
+									</div>
+
+									<div class="col-md-6">
+										<div
+											class="form-group"
+											[ngClass]="{
+												'has-error':
+													f.clientIdForLearnerRole.invalid &&
+													(f.clientIdForLearnerRole.dirty || f.clientIdForLearnerRole.touched),
+												'has-success':
+													f.clientIdForLearnerRole.valid &&
+													(f.clientIdForLearnerRole.dirty || f.clientIdForLearnerRole.touched)
+											}">
+											<label>{{ 'Pages.Learners.AddEdit.PersonalInfo.BranchName.title' | translate }}</label>
+											<ng-select
+												[items]="lastLevelClientList"
+												class="ng-select-wrap"
+												placeholder="{{ 'Pages.Learners.AddEdit.PersonalInfo.BranchName.placeholder' | translate }}"
+												bindLabel="name"
+												bindValue="id"
+												[multiple]="false"
+												[closeOnSelect]="true"
+												[searchable]="true"
+												[clearable]="false"
+												formControlName="clientIdForLearnerRole"
+												(change)="changeClientForLearnerRole($event, false)">
+											</ng-select>
+											<div class="error" *ngIf="f.clientIdForLearnerRole.errors && f.clientIdForLearnerRole.touched">
+												<div *ngIf="f.clientIdForLearnerRole.errors.required">
+													{{ 'Pages.Learners.AddEdit.PersonalInfo.BranchName.error' | translate }}
+												</div>
+											</div>
+											<div class="row" *ngIf="lastLevelClientList.length == 0">
+												<div class="col-md-12">
+													{{
+														type === 'drip'
+															? ('Pages.Learners.AddEdit.ContactBranchAddingMessage' | translate)
+															: ('Pages.Learners.AddEdit.LearnerBranchAddingMessage' | translate)
+													}}
+												</div>
+												<div class="col-md-12">
+													<button
+														type="submit"
+														class="btn btn-xs action-edit-btn"
+														style="padding: 7px 28px; border-radius: 30px; font-size: 0.9rem"
+														(click)="redirctToAddAccountPage()">
+														{{ 'Pages.Learners.AddEdit.createBranchAccount' | translate }}
+													</button>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<!-- add Leaner To Learner Group -->
+								<div class="row">
+									<div class="col-md-6">
+										<div
+											class="form-group"
+											[ngClass]="{
+												'has-error': f.groupId.invalid && (f.groupId.dirty || f.groupId.touched),
+												'has-success': f.groupId.valid && (f.groupId.dirty || f.groupId.touched)
+											}">
+											<label *ngIf="type == 'drip'">{{
+												'Pages.Learners.AddEdit.PersonalInfo.Group.title' | translate
+											}}</label>
+											<label *ngIf="type == 'diwo'">{{
+												'Pages.Learners.AddEdit.PersonalInfo.Group.learnertitle' | translate
+											}}</label>
+											<ng-select
+												[items]="learnerGroupsList"
+												class="ng-select-wrap"
+												placeholder="{{ 'Pages.Learners.AddEdit.PersonalInfo.Group.placeholder' | translate }}"
+												bindLabel="title"
+												bindValue="id"
+												[multiple]="true"
+												[closeOnSelect]="true"
+												[searchable]="true"
+												[clearable]="false"
+												formControlName="groupId">
+											</ng-select>
+											<div class="error" *ngIf="f.groupId.errors && f.groupId.touched">
+												<div *ngIf="f.groupId.errors.required">
+													{{ 'Pages.Learners.AddEdit.PersonalInfo.Group.error' | translate }}
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<div
+										class="col-md-6"
+										*ngIf="
+											(type == 'drip' && f.email.valid && f.clientIdForLearnerRole.value && showTeamId) ||
+											f.team_id.value
+										">
+										<div class="row">
+											<div class="col-md-12">
+												<div class="form-group">
+													<label>{{ 'Pages.Learners.AddEdit.PersonalInfo.teamUserId.title' | translate }}</label>
+													<div style="display: flex; align-items: center">
+														<div style="width: 75%">
+															<input
+																type="text"
+																class="form-control"
+																formControlName="team_id"
+																placeholder="{{
+																	'Pages.Learners.AddEdit.PersonalInfo.teamUserId.placeholder' | translate
+																}}"
+																autocomplete="disabled" />
+														</div>
+														<div style="margin-left: 5%">
+															<a
+																class="btn-xs action-edit-btn"
+																[ngStyle]="{
+																	'background-color': appService.whiteBrandingColor,
+																	border: '1px solid' + appService.whiteBrandingColor,
+																	color: 'white'
+																}"
+																(click)="syncTeamSetup()"
+																style="margin-right: 2%; padding: 7px 20px; border-radius: 30px; font-size: 0.9rem"
+																>{{ 'Utils.Status.Synced' | translate }}</a
+															>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<div class="col-md-6" *ngIf="f.clientIdForLearnerRole.value">
+										<div
+											class="form-group"
+											[ngClass]="{
+												'has-error': f.job_role_id.invalid && (f.job_role_id.dirty || f.job_role_id.touched),
+												'has-success': f.job_role_id.valid && (f.job_role_id.dirty || f.job_role_id.touched)
+											}">
+											<label>{{ 'Pages.Learners.AddEdit.PersonalInfo.JobRole.title' | translate }}</label>
+											<ng-select
+												[items]="job_role"
+												class="ng-select-wrap"
+												placeholder="{{ 'Pages.Learners.AddEdit.PersonalInfo.JobRole.placeholder' | translate }}"
+												bindLabel="job_role_name"
+												bindValue="id"
+												[multiple]="false"
+												[closeOnSelect]="true"
+												[searchable]="false"
+												[clearable]="true"
+												formControlName="job_role_id">
+											</ng-select>
+											<div class="error" *ngIf="f.job_role_id.errors && f.job_role_id.touched">
+												<div *ngIf="f.job_role_id.errors.required">
+													{{ 'Pages.Learners.AddEdit.PersonalInfo.JobRole.error' | translate }}
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div
+									class="row"
+									*ngIf="
+										appService?.configurable_feature?.pwa_username || appService?.configurable_feature?.pwa_password
+									">
+									<div class="col-md-6" *ngIf="appService?.configurable_feature?.pwa_username">
+										<div
+											class="form-group"
+											[ngClass]="{
+												'has-error': f.username.invalid && (f.username.dirty || f.username.touched),
+												'has-success': f.username.valid && (f.username.dirty || f.username.touched)
+											}">
+											<label>{{ 'Pages.Learners.AddEdit.PersonalInfo.UserName.title' | translate }}</label>
+											<input
+												type="text"
+												class="form-control"
+												placeholder="{{ 'Pages.Learners.AddEdit.PersonalInfo.UserName.placeholder' | translate }}"
+												formControlName="username" />
+											<div class="error" *ngIf="f.username.errors && f.username.touched">
+												<div *ngIf="f.username.errors.required">
+													{{ 'Pages.Learners.AddEdit.PersonalInfo.UserName.error' | translate }}
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<div class="col-md-6" *ngIf="appService?.configurable_feature?.pwa_password">
+										<div class="form-group">
+											<label style="visibility: hidden">{{
+												'Pages.Learners.AddEdit.PersonalInfo.reserLockout' | translate
+											}}</label>
+											<div>
+												<a
+													[ngStyle]="{
+														'background-color': appService.whiteBrandingColor,
+														border: '1px solid' + appService.whiteBrandingColor,
+														color: 'white'
+													}"
+													class="btn border_radius functionalBtn"
+													(click)="resetLearnerLockOutFlag()"
+													*ngIf="isLearnerLockout"
+													>{{ 'Pages.Learners.AddEdit.PersonalInfo.reserLockout' | translate }}</a
+												>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="row">
+									<div class="col-md-6" *ngIf="f.clientIdForLearnerRole.value">
+										<!-- Unification -->
+										<div *ngIf="type == 'drip' && (isDiwoAccess || (f.forDiwo.value && isDiwoAccess))">
+											<div class="form-group">
+												<label style="vertical-align: top; margin-top: 3px; margin-right: 15px">{{
+													'Utils.addforDiwo' | translate
+												}}</label>
+												<div>
+													<label class="switch">
+														<input type="checkbox" class="form-control js-switch" formControlName="forDiwo" />
+														<span
+															class="slider round"
+															[ngStyle]="{
+																'background-color': f.forDiwo.value ? appService.whiteBrandingColor : '#ccc'
+															}"></span>
+													</label>
+												</div>
+											</div>
+										</div>
+
+										<div *ngIf="type == 'diwo' && (isDripAccess || (f.forDrip.value && isDripAccess))">
+											<div class="form-group">
+												<label style="vertical-align: top; margin-top: 3px; margin-right: 15px">{{
+													'Utils.addforDrip' | translate
+												}}</label>
+												<div>
+													<label class="switch">
+														<input type="checkbox" class="form-control js-switch" formControlName="forDrip" />
+														<span
+															class="slider round"
+															[ngStyle]="{
+																'background-color': f.forDrip.value ? appService.whiteBrandingColor : '#ccc'
+															}"></span>
+													</label>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-12" *ngIf="projectName == 'drip' && f.clientIdForLearnerRole.value">
+										<div
+											class="form-group"
+											[ngClass]="{
+												'has-error':
+													f.haveWhatsAppOptIn.invalid && (f.haveWhatsAppOptIn.dirty || f.haveWhatsAppOptIn.touched),
+												'has-success':
+													f.haveWhatsAppOptIn.valid && (f.haveWhatsAppOptIn.dirty || f.haveWhatsAppOptIn.touched)
+											}">
+											<label>{{ 'Pages.Learners.AddEdit.PersonalInfo.Toggle.whatsappmessage' | translate }}</label>
+											<div>
+												<label class="switch">
+													<input
+														type="checkbox"
+														class="form-control js-switch"
+														formControlName="haveWhatsAppOptIn"
+														(change)="changeToggleValue()" />
+													<span
+														class="slider round"
+														[ngStyle]="{
+															'background-color': f.haveWhatsAppOptIn.value ? appService.whiteBrandingColor : '#ccc'
+														}">
+													</span>
+												</label>
+											</div>
+											<div
+												*ngIf="f.haveWhatsAppOptIn.errors && f.haveWhatsAppOptIn.touched"
+												class="error invalid-feedback">
+												<div *ngIf="f.haveWhatsAppOptIn.errors.required">
+													{{ 'Pages.Learners.AddEdit.PersonalInfo.Toggle.error' | translate }}
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-12" *ngIf="projectName == 'drip' && f.clientIdForLearnerRole.value">
+										<div
+											class="form-group"
+											[ngClass]="{
+												'has-error': f.haveEmailPer.invalid && (f.haveEmailPer.dirty || f.haveEmailPer.touched),
+												'has-success': f.haveEmailPer.valid && (f.haveEmailPer.dirty || f.haveEmailPer.touched)
+											}">
+											<label>{{ 'Pages.Learners.AddEdit.PersonalInfo.Toggle.sendemail' | translate }}</label>
+											<div>
+												<label class="switch">
+													<input type="checkbox" class="form-control js-switch" formControlName="haveEmailPer" />
+													<span
+														class="slider round"
+														[ngStyle]="{
+															'background-color': f.haveEmailPer.value ? appService.whiteBrandingColor : '#ccc'
+														}">
+													</span>
+												</label>
+											</div>
+											<div *ngIf="f.haveEmailPer.errors && f.haveEmailPer.touched" class="error invalid-feedback">
+												<div *ngIf="f.haveEmailPer.errors.required">
+													{{ 'Pages.Learners.AddEdit.PersonalInfo.Toggle.error' | translate }}
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<div class="col-md-12" id="surveyForm" style="padding-left: 0px; padding-right: 0px"></div>
+									<!-- <div class="col-md-12" *ngIf="f.clientIdForLearnerRole.value">
+                                        <div class="form-group"
+                                            [ngClass]="{ 'has-error': f.triggerOptInMsg.invalid && (f.triggerOptInMsg.dirty || f.triggerOptInMsg.touched) ,'has-success': f.triggerOptInMsg.valid && ( f.triggerOptInMsg.dirty || f.triggerOptInMsg.touched)}">
+                                            <label>{{'Pages.Learners.AddEdit.PersonalInfo.Toggle.optinmessage'|translate}}</label>
+                                            <div>
+                                                <label class="switch">
+                                                    <input type="checkbox" class="form-control js-switch"
+                                                        formControlName="triggerOptInMsg" (click)="changeToggleValue()">
+                                                    <span class="slider round">
+                                                    </span>
+                                                </label>
+                                            </div>
+                                            <div *ngIf=" f.triggerOptInMsg.errors && f.triggerOptInMsg.touched"
+                                                class="error invalid-feedback">
+                                                <div *ngIf="f.triggerOptInMsg.errors.required">
+                                                    {{'Pages.Learners.AddEdit.PersonalInfo.Toggle.error'|translate}}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div> -->
+								</div>
+
+								<div class="row">
+									<div class="col-md-6"></div>
+									<div class="col-md-6">
+										<div
+											class="visible-md visible-lg visible-sm visible-xs form-group"
+											style="text-align: right; margin-bottom: 1rem">
+											<button
+												type="button"
+												class="btn btn-xs action-pause-btn"
+												(click)="cancel()"
+												[ngStyle]="{
+													border: '1px solid' + appService.whiteBrandingColor,
+													color: appService.whiteBrandingColor
+												}"
+												style="padding: 7px 20px; border-radius: 30px; font-size: 0.9rem; margin-right: 19px">
+												{{ 'Utils.cancel' | translate }}
+											</button>
+											<button
+												*ngIf="learnerForm.value.id && projectName !== 'drip'"
+												type="submit"
+												[ngStyle]="{
+													'background-color': appService.whiteBrandingColor,
+													border: '1px solid' + appService.whiteBrandingColor,
+													color: 'white'
+												}"
+												class="btn btn-xs action-edit-btn"
+												style="padding: 7px 28px; border-radius: 30px; font-size: 0.9rem">
+												{{ 'Pages.Learners.AddEdit.updateLearner' | translate }}
+											</button>
+											<button
+												*ngIf="learnerForm.value.id && projectName === 'drip'"
+												type="submit"
+												[ngStyle]="{
+													'background-color': appService.whiteBrandingColor,
+													border: '1px solid' + appService.whiteBrandingColor,
+													color: 'white'
+												}"
+												class="btn btn-xs action-edit-btn"
+												style="padding: 7px 28px; border-radius: 30px; font-size: 0.9rem">
+												{{ 'Pages.Learners.AddEdit.updateContact' | translate }}
+											</button>
+											<button
+												*ngIf="!learnerForm.value.id && projectName !== 'drip'"
+												type="submit"
+												class="btn btn-xs action-edit-btn"
+												[ngStyle]="{
+													'background-color': appService.whiteBrandingColor,
+													border: '1px solid' + appService.whiteBrandingColor,
+													color: 'white'
+												}"
+												style="padding: 7px 28px; border-radius: 30px; font-size: 0.9rem">
+												{{ 'Pages.Learners.AddEdit.saveLearner' | translate }}
+											</button>
+											<button
+												*ngIf="!learnerForm.value.id && projectName === 'drip'"
+												type="submit"
+												class="btn btn-xs action-edit-btn"
+												[ngStyle]="{
+													'background-color': appService.whiteBrandingColor,
+													border: '1px solid' + appService.whiteBrandingColor,
+													color: 'white'
+												}"
+												style="padding: 7px 28px; border-radius: 30px; font-size: 0.9rem">
+												{{ 'Pages.Learners.AddEdit.saveContact' | translate }}
+											</button>
+										</div>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- delete Learner MODAL -->
+<div
+	class="modal fade credit-note"
+	id="deleteLearnerModal"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="myModalLabel"
+	aria-hidden="true"
+	data-backdrop="static"
+	data-keyboard="false">
+	<div class="modal-dialog" style="width: 40%; margin-top: 20%; margin-left: auto; margin-right: auto">
+		<div class="modal-content">
+			<div
+				class="modal-header"
+				[ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}">
+				<button
+					type="button"
+					class="close"
+					data-dismiss="modal"
+					aria-label="Close"
+					(click)="canceldeleteLearnerModal()">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					<span>{{ 'Pages.Learners.Home.Modal.Delete.title' | translate }}</span>
+				</h4>
+			</div>
+			<div class="modal-body">
+				<span style="margin-left: 6px">{{
+					type === 'drip'
+						? ('Pages.Learners.Home.Modal.Delete.confirmationContact' | translate)
+						: ('Pages.Learners.Home.Modal.Delete.confirmation' | translate)
+				}}</span>
+				<div
+					class="visible-md visible-lg visible-sm visible-xs"
+					style="text-align: right; margin-bottom: 0.75rem; margin-top: 1.5rem">
+					<a
+						class="btn-xs action-edit-btn"
+						[ngStyle]="{
+							'background-color': appService.whiteBrandingColor,
+							border: '1px solid' + appService.whiteBrandingColor,
+							color: 'white'
+						}"
+						style="margin-right: 2%; padding: 7px 20px; border-radius: 30px; font-size: 0.9rem"
+						(click)="onStatusFormSubmit()"
+						>{{ 'Utils.yes' | translate }}</a
+					>
+					<a
+						class="btn-xs action-pause-btn"
+						[ngStyle]="{
+							color: appService.whiteBrandingColor,
+							border: '1px solid' + appService.whiteBrandingColor,
+						}"
+						style="padding: 7px 23px; border-radius: 30px; font-size: 0.9rem; margin-right: 1%"
+						(click)="canceldeleteLearnerModal()"
+						>{{ 'Utils.no' | translate }}</a
+					>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Archive Learner MODAL -->
+<div
+	class="modal fade credit-note"
+	id="archiveLearnerModal"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="myModalLabelarchive"
+	aria-hidden="true"
+	data-backdrop="static"
+	data-keyboard="false">
+	<div class="modal-dialog" style="width: 40%; margin-top: 20%; margin-left: auto; margin-right: auto">
+		<div class="modal-content">
+			<div
+				class="modal-header"
+				[ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}">
+				<button
+					type="button"
+					class="close"
+					data-dismiss="modal"
+					aria-label="Close"
+					(click)="cancelArchiveLearnerModal()">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabelarchive">
+					<span *ngIf="isArchive == 'active'">{{ 'Pages.Learners.Home.Modal.Archive.activetitle' | translate }}</span>
+					<span *ngIf="isArchive != 'active'">{{ 'Pages.Learners.Home.Modal.Archive.archivetitle' | translate }}</span>
+				</h4>
+			</div>
+			<div class="modal-body">
+				<!-- {{isArchive == 'active' ? 'This Learner will be activated. Are you sure you want to -->
+				<!-- activate it?' : -->
+				<!-- 'This Learner will be archived. Are you sure you want to archive it?' }} -->
+				<span *ngIf="isArchive == 'active'">{{
+					type === 'drip'
+						? ('Pages.Learners.Home.Modal.Archive.activeconfirmationContact' | translate)
+						: ('Pages.Learners.Home.Modal.Archive.activeconfirmation' | translate)
+				}}</span>
+				<span *ngIf="isArchive != 'active'">{{
+					type === 'drip'
+						? ('Pages.Learners.Home.Modal.Archive.archiveconfirmationContact' | translate)
+						: ('Pages.Learners.Home.Modal.Archive.archiveconfirmation' | translate)
+				}}</span>
+				<span style="margin-left: 6px"></span>
+				<div
+					class="visible-md visible-lg visible-sm visible-xs"
+					style="text-align: right; margin-bottom: 0.75rem; margin-top: 1.5rem">
+					<a
+						class="btn-xs action-edit-btn"
+						[ngStyle]="{
+							'background-color': appService.whiteBrandingColor,
+							border: '1px solid' + appService.whiteBrandingColor,
+							color: 'white'
+						}"
+						style="margin-right: 2%; padding: 7px 20px; border-radius: 30px; font-size: 0.9rem"
+						(click)="onArchiveFormSubmit()"
+						>{{ 'Utils.yes' | translate }}</a
+					>
+					<a
+						class="btn-xs action-pause-btn"
+						[ngStyle]="{
+							color: appService.whiteBrandingColor,
+							border: '1px solid' + appService.whiteBrandingColor,
+						}"
+						style="padding: 7px 23px; border-radius: 30px; font-size: 0.9rem; margin-right: 1%"
+						(click)="cancelArchiveLearnerModal()"
+						>{{ 'Utils.no' | translate }}</a
+					>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- move Learner MODAL -->
+<div
+	class="modal fade credit-note"
+	id="moveLearnerModal"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="myModalLabelarchive"
+	aria-hidden="true"
+	data-backdrop="static"
+	data-keyboard="false">
+	<div class="modal-dialog" style="width: 35%; margin-top: 23%; margin-left: 40%">
+		<div class="modal-content">
+			<div
+				class="modal-header"
+				[ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}">
+				<button
+					type="button"
+					class="close"
+					data-dismiss="modal"
+					aria-label="Close"
+					(click)="cancelArchiveLearnerModal()">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabelarchive">
+					<span>{{
+						type === 'drip'
+							? ('Pages.Learners.Home.Modal.Move.titleContact' | translate)
+							: ('Pages.Learners.Home.Modal.Move.title' | translate)
+					}}</span>
+				</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="form-group">
+							<label>{{ 'Pages.Learners.Home.Modal.Move.title2' | translate }}</label>
+							<ng-select
+								[items]="branchClientList"
+								class="ng-select-wrap"
+								placeholder="{{ 'Pages.Learners.Home.Modal.Move.placeholder' | translate }}"
+								bindLabel="name"
+								bindValue="id"
+								[multiple]="false"
+								[closeOnSelect]="true"
+								[searchable]="false"
+								[clearable]="false"
+								(change)="changeLearner($event)"
+								[(ngModel)]="moveLearners"
+								[ngModelOptions]="{ standalone: true }">
+							</ng-select>
+						</div>
+					</div>
+				</div>
+
+				<span style="margin-left: 6px"></span>
+				<div
+					class="visible-md visible-lg visible-sm visible-xs"
+					style="text-align: right; margin-bottom: 0.75rem; margin-top: 1.5rem">
+					<a
+						class="btn-xs action-edit-btn"
+						[ngStyle]="{
+							'background-color': appService.whiteBrandingColor,
+							border: '1px solid' + appService.whiteBrandingColor,
+							color: 'white'
+						}"
+						style="margin-right: 9px; padding: 7px 20px; border-radius: 30px; font-size: 0.9rem"
+						(click)="onSubmitMoveLearner()"
+						>{{ 'Utils.Action.move' | translate }}</a
+					>
+					<a
+						class="btn-xs action-pause-btn"
+						[ngStyle]="{
+							color: appService.whiteBrandingColor,
+							border: '1px solid' + appService.whiteBrandingColor,
+						}"
+						style="padding: 7px 23px; border-radius: 30px; font-size: 0.9rem; margin-right: 5px"
+						(click)="cancelMoveLearnerModal()"
+						>{{ 'Utils.Action.cancel' | translate }}</a
+					>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Not Found WhatsApp Setup -->
+<div
+	class="modal fade credit-note"
+	id="notFooundWhatsAppSetupModal"
+	tabindex="-1"
+	role="dialog"
+	aria-hidden="true"
+	data-backdrop="static"
+	data-keyboard="false">
+	<div class="modal-dialog" style="width: 35%; margin-top: 23%; margin-left: 40%">
+		<div class="modal-content">
+			<div
+				class="modal-header"
+				[ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}">
+				<button
+					type="button"
+					class="close"
+					data-dismiss="modal"
+					aria-label="Close"
+					(click)="canceldnotFooundWhatsAppSetupModal()">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					<span>{{ 'Pages.Learners.Home.Modal.notFoundWhatsAppSetup.title' | translate }}</span>
+				</h4>
+			</div>
+			<div class="modal-body">
+				<span style="margin-left: 6px">{{
+					'Pages.Learners.Home.Modal.notFoundWhatsAppSetup.message' | translate
+				}}</span>
+				<div
+					class="visible-md visible-lg visible-sm visible-xs"
+					style="text-align: right; margin-bottom: 0.75rem; margin-top: 1.5rem">
+					<a
+						class="btn-xs action-edit-btn"
+						[ngStyle]="{
+							'background-color': appService.whiteBrandingColor,
+							border: '1px solid' + appService.whiteBrandingColor,
+							color: 'white'
+						}"
+						style="padding: 7px 23px; border-radius: 30px; font-size: 0.9rem; margin-right: 5px"
+						(click)="canceldnotFooundWhatsAppSetupModal()"
+						>{{ 'Utils.ok' | translate }}</a
+					>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- OptIN -->
+<div
+	class="modal fade credit-note"
+	id="OptInLearnerModal"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="myModalLabel"
+	aria-hidden="true"
+	data-backdrop="static"
+	data-keyboard="false">
+	<div class="modal-dialog" style="width: 35%; margin-top: 23%; margin-left: 40%">
+		<div class="modal-content">
+			<div
+				class="modal-header"
+				[ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="cancelOptInLearnerModal()">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					<span>{{ 'Pages.Learners.Home.Modal.notFoundWhatsAppSetup.title' | translate }}</span>
+				</h4>
+			</div>
+			<div class="modal-body">
+				<span>{{ 'Pages.Learners.Home.Modal.notFoundWhatsAppSetup.message' | translate }}</span>
+				<div
+					class="visible-md visible-lg visible-sm visible-xs"
+					style="text-align: right; margin-bottom: 0.75rem; margin-top: 1.5rem">
+					<a
+						class="btn-xs action-edit-btn"
+						[ngStyle]="{
+							'background-color': appService.whiteBrandingColor,
+							border: '1px solid' + appService.whiteBrandingColor,
+							color: 'white'
+						}"
+						style="margin-right: 9px; padding: 7px 20px; border-radius: 30px; font-size: 0.9rem"
+						(click)="cancelOptInLearnerModal()"
+						>{{ 'Utils.ok' | translate }}</a
+					>
+					<!-- <a class="btn-xs action-pause-btn"
+                        style="padding: 7px 23px; border-radius: 30px; font-size: 16px; margin-right: 5px;"
+                        (click)="cancelOptInLearnerModal()">{{'Utils.no'| translate}}</a> -->
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div
+	class="modal fade credit-note"
+	id="LernerbulkUploadpopup"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="myModalLabel"
+	aria-hidden="true"
+	data-backdrop="static"
+	data-keyboard="false">
+	<div class="modal-dialog" style="width: 40%; margin-top: 15%; margin-left: auto; margin-right: auto">
+		<div class="modal-content">
+			<div
+				class="modal-header"
+				[ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}">
+				<button
+					type="button"
+					class="close"
+					data-dismiss="modal"
+					aria-label="Close"
+					(click)="cancelLernerbulkUploadModal()">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel" *ngIf="!isFileSelecteToUpdate">
+					<span>{{
+						type === 'drip'
+							? ('Pages.Learners.Home.Modal.bulkUpdateLearner.titleContact' | translate)
+							: ('Pages.Learners.Home.Modal.bulkUpdateLearner.title' | translate)
+					}}</span>
+				</h4>
+				<h4 class="modal-title" id="myModalLabel" *ngIf="isFileSelecteToUpdate">
+					<span>{{
+						type === 'drip'
+							? ('Pages.Learners.Home.Modal.bulkUpdateLearner.titleContact' | translate)
+							: ('Pages.Learners.Home.Modal.bulkUpdateLearner.title' | translate)
+					}}</span>
+				</h4>
+			</div>
+			<div class="modal-body">
+				<div *ngIf="!isFileSelecteToUpdate">
+					<span>{{
+						type === 'drip'
+							? ('Pages.Learners.Home.Modal.bulkUpdateLearner.messageContact' | translate)
+							: ('Pages.Learners.Home.Modal.bulkUpdateLearner.message' | translate)
+					}}</span>
+					<div
+						class="visible-md visible-lg visible-sm visible-xs"
+						style="text-align: center; margin-bottom: 0.75rem; margin-top: 1.5rem">
+						<a
+							class="btn btn-info border_radius uploadLearner uploadLearner2"
+							style="float: none"
+							[style.--whiteBrandingColor]="appService.whiteBrandingColor"
+							(click)="pathFile2.click()">
+							{{
+								type === 'drip'
+									? ('Pages.Learners.Home.updateContacts' | translate)
+									: ('Pages.Learners.Home.updatelearners' | translate)
+							}}</a
+						>
+						<input
+							type="file"
+							style="display: none"
+							id="historyFile"
+							class="btn btn-info border_radius"
+							#pathFile2
+							[(ngModel)]="excelLearnerUpdate"
+							(change)="SelectFileToUpdateLearner($event)" />
+					</div>
+				</div>
+
+				<div *ngIf="isFileSelecteToUpdate">
+					<span>{{
+						type === 'drip'
+							? ('Pages.Learners.Home.Modal.bulkUpdateLearner.confirmUpdatemessageContact' | translate)
+							: ('Pages.Learners.Home.Modal.bulkUpdateLearner.confirmUpdatemessage' | translate)
+					}}</span>
+					<div
+						class="visible-md visible-lg visible-sm visible-xs"
+						style="text-align: right; margin-bottom: 0.75rem; margin-top: 1.5rem">
+						<a
+							class="btn-xs action-edit-btn action-yes-no"
+							[ngStyle]="{
+								'background-color': appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+								color: 'white'
+							}"
+							style="margin-right: 9px; padding: 7px 20px"
+							(click)="bulkUpdateLearner()"
+							>{{ 'Utils.yes' | translate }}</a
+						>
+						<a
+							class="btn-xs action-pause-btn action-yes-no"
+							[ngStyle]="{
+								color: appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+							}"
+							style="margin-right: 5px; padding: 7px 23px"
+							(click)="cancelLernerbulkUploadModal()"
+							>{{ 'Utils.no' | translate }}</a
+						>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- delete Learner MODAL -->
+<div
+	class="modal fade credit-note"
+	id="createDripDiwoLearner"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="myModalLabel"
+	aria-hidden="true"
+	data-backdrop="static"
+	data-keyboard="false">
+	<div class="modal-dialog" style="width: 40%; margin-top: 20%; margin-left: auto; margin-right: auto">
+		<div class="modal-content">
+			<div
+				class="modal-header"
+				[ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}">
+				<button
+					type="button"
+					class="close"
+					data-dismiss="modal"
+					aria-label="Close"
+					(click)="canceldripdiwoLearnerModal()">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					<span>{{ 'Pages.Learners.Home.Modal.addLearnertoDripDiwo.title' | translate }}</span>
+				</h4>
+			</div>
+			<div class="modal-body">
+				<span style="margin-left: 6px">{{
+					type === 'drip'
+						? ('Pages.Learners.Home.Modal.addLearnertoDripDiwo.confirmationContact' | translate)
+						: ('Pages.Learners.Home.Modal.addLearnertoDripDiwo.confirmation' | translate)
+				}}</span>
+				<div
+					class="visible-md visible-lg visible-sm visible-xs"
+					style="text-align: right; margin-bottom: 0.75rem; margin-top: 1.5rem">
+					<a
+						class="btn-xs action-edit-btn"
+						[ngStyle]="{
+							'background-color': appService.whiteBrandingColor,
+							border: '1px solid' + appService.whiteBrandingColor,
+							color: 'white'
+						}"
+						style="margin-right: 2%; padding: 7px 20px; border-radius: 30px; font-size: 0.9rem"
+						(click)="onCreateDripDiwoSubmit()"
+						>{{ 'Utils.yes' | translate }}</a
+					>
+					<a
+						class="btn-xs action-pause-btn"
+						[ngStyle]="{
+							color: appService.whiteBrandingColor,
+							border: '1px solid' + appService.whiteBrandingColor,
+						}"
+						style="padding: 7px 23px; border-radius: 30px; font-size: 0.9rem; margin-right: 1%"
+						(click)="canceldripdiwoLearnerModal()"
+						>{{ 'Utils.no' | translate }}</a
+					>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

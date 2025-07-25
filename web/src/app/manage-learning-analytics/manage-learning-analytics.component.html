@@ -1,0 +1,1356 @@
+<div class="pageDiv analytics" style="min-height: calc(100vh - 95px)">
+	<!-- <div style="margin-top: 2rem">
+		<div class="row">
+			<div class="panel header-panel-white">
+				<div class="col-md-3" style="padding-left: 0.5%">
+					<span class="mainTitle no-margin pageTitle_Main">{{ 'Pages.Analytics.Home.pagetitle' | translate }}</span>
+				</div>
+				<div class="col-md-3" style="float: right; padding-right: 0">
+					<ng-select
+						[items]="allSubClientList"
+						class="ng-select-wrap"
+						placeholder="{{ 'Pages.Analytics.Home.DripActivity.placeholder2' | translate }}"
+						bindLabel="name"
+						bindValue="id"
+						[multiple]="false"
+						[closeOnSelect]="true"
+						[searchable]="false"
+						[clearable]="false"
+						(change)="selectClient($event)"
+						[ngModelOptions]="{ standalone: true }"
+						[(ngModel)]="selectedClientId">
+					</ng-select>
+				</div>
+			</div>
+		</div>
+	</div> -->
+	<div style="margin-top: 3rem">
+		<div class="row">
+			<div class="panel panel-white-2" *ngFor="let item of AllCount">
+				<div class="col-md-3" style="padding-left: 0; padding-right: 1.25rem">
+					<div class="sub-card">
+						<!-- <img src="assets/images/groups.svg" alt="" /> -->
+						<div [innerHTML]="iconObject['groups']"></div>
+
+						<div class="total-count">{{ item.activeLearer }}</div>
+						<p class="title">{{ 'Pages.Analytics.Home.nofactivelearners' | translate }}</p>
+					</div>
+				</div>
+				<div class="col-md-3" style="padding-left: 0.625rem">
+					<div class="sub-card">
+						<!-- <img src="assets/images/family_history.svg" alt="" /> -->
+						<div [innerHTML]="iconObject['family_history']"></div>
+						<div class="total-count">{{ item.LiveDripFlow }}</div>
+						<p class="title">{{ 'Pages.Analytics.Home.noflivedripflows' | translate }}</p>
+					</div>
+				</div>
+				<div class="col-md-3" style="padding-right: 0.625rem">
+					<div class="sub-card">
+						<!-- <img src="assets/images/water_drop.svg" alt="" /> -->
+						<div [innerHTML]="iconObject['water_drop']"></div>
+
+						<div class="total-count">{{ item.UniqueDrips }}</div>
+						<p class="title">{{ 'Pages.Analytics.Home.nofuniquedrips' | translate }}</p>
+					</div>
+				</div>
+				<div class="col-md-3" style="padding-right: 0; padding-left: 1.25rem">
+					<div class="sub-card">
+						<!-- <img src="assets/images/perm_media.svg" alt="" /> -->
+						<div [innerHTML]="iconObject['perm_media']"></div>
+
+						<div class="total-count">{{ item.UniqueAssets }}</div>
+						<p class="title">{{ 'Pages.Analytics.Home.nofuniqueassets' | translate }}</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<app-drip-analytics-chart></app-drip-analytics-chart>
+	<!-- <div style="margin-top: 3rem">
+		<div class="row">
+			<div class="panel panel-white-3">
+				<div class="report-header">
+					{{ 'Pages.HomePage.DripActivity.title' | translate }}
+				</div>
+				<div style="padding: 20px" #container>
+					<div class="row">
+						<div class="col-md-12">
+							<div class="col-md-9" style="padding-left: 0; padding-right: 0">
+								<div class="form-group" style="margin-top: 2rem; display: flex">
+									<div style="min-width: 85px; max-width: 130px">
+										<label>{{ 'Pages.Analytics.Home.Filter.filterby' | translate }}</label>
+										<img
+											(click)="onclickFilterDropDownModal()"
+											src="/assets/images/expand_more_icon.svg"
+											alt=""
+											style="width: 30%; cursor: pointer" />
+									</div>
+								</div>
+							</div>
+							<div class="col-md-3 filter-date" style="padding-right: 0">
+								<div class="form-group" style="margin-top: 0">
+									<label style="min-width: 94px; margin: 0"
+										>{{ 'Pages.Analytics.Home.Filter.filterDate' | translate }}
+									</label>
+									<input
+										type="text"
+										ngxDaterangepickerMd
+										[showDropdowns]="true"
+										onkeydown="return false"
+										[showCustomRangeLabel]="true"
+										[alwaysShowCalendars]="true"
+										[ranges]="ranges"
+										[maxDate]="maxDate"
+										[linkedCalendars]="true"
+										[isInvalidDate]="isInvalidDate"
+										[showClearButton]="false"
+										[showCancel]="true"
+										placeholder="DD-MM-YYYY"
+										[autoApply]="true"
+										[locale]="{ applyLabel: 'ok', format: 'DD-MM-YYYY' }"
+										(startDateChanged)="startFilterDateClicked($event)"
+										(endDateChanged)="endFilterDateClicked($event)"
+										class="form-control"
+										autocomplete="off"
+										(change)="onDateChange($event)"
+										[(ngModel)]="selectedFilterDate"
+										[ngModelOptions]="{ standalone: true }" />
+								</div>
+							</div>
+							<div class="col-md-12" style="padding-left: 0">
+								<div style="margin-top: 2px">
+									<span *ngFor="let item of filterArrayData; let i = index">
+										<a
+											*ngFor="let item_ of item.selectedData; let j = index"
+											class="btn-xs action-clear-btn"
+											style="margin-right: 5px">
+											<span *ngIf="item.filterType == 'Drips'">
+												{{ item.filterType }}: {{ item_.drip_title ? item_.drip_title : '' }}
+											</span>
+
+											<span *ngIf="item.filterType == 'Drip Flows'">
+												{{ item.filterType }}: {{ item_.title ? item_.title : '' }}
+											</span>
+
+											<span *ngIf="item.filterType == 'Job Role'">
+												{{ item.filterType }}: {{ item_.job_role_name ? item_.job_role_name : '' }}
+											</span>
+
+											<span *ngIf="['Drips', 'Drip Flows', 'Job Role'].indexOf(item.filterType) == -1">
+												{{ item.filterType }}:
+												{{ item_.name ? item_.name : '' }}
+											</span>
+
+											<span class="clear-filter" (click)="clearFilter(i, j)">&times;</span>
+										</a>
+										<a *ngIf="item?.searchByText" class="btn-xs action-clear-btn" style="margin-right: 5px">
+											<span>
+												{{ item.filterType }}:
+												{{ item.searchByText ? item.searchByText : '' }}
+											</span>
+
+											<span class="clear-filter" (click)="clearFilter(i)">&times;</span>
+										</a>
+									</span>
+									<span
+										*ngIf="filterArrayData && filterArrayData.length > 0"
+										(click)="clearAllFilter()"
+										style="margin: 0; padding-left: 0.2rem">
+										{{ 'Pages.Analytics.Home.Filter.clearAll' | translate }}
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="row" style="margin-top: 1.5rem">
+						<div class="col-md-12">
+							<div
+								class="col-md-3 btn-tab btn btn-o"
+								style="padding-right: 0px; text-align: left"
+								[(ngModel)]="selectedDripScheduledTab"
+								[ngModelOptions]="{ standalone: true }"
+								ngDefaultControl
+								[ngClass]="{ 'selected-Drip-ScheduledTab': selectedDripScheduledTab }"
+								(click)="dripTab('Drips Scheduled', selectedDripScheduledTab)">
+								<p style="margin: 0">{{ 'Pages.Analytics.Home.DripsScheduled' | translate }}</p>
+								<p style="margin: 0">{{ totalDripScheduled }}</p>
+							</div>
+							<div
+								class="col-md-3 btn-tab btn btn-o"
+								style="padding-right: 0px; text-align: left; border-left: 0px"
+								[(ngModel)]="seletedDripSentTab"
+								[ngModelOptions]="{ standalone: true }"
+								ngDefaultControl
+								(click)="dripTab('Drips Sent', seletedDripSentTab)"
+								[ngClass]="{ 'selected-Drip-SentTab': seletedDripSentTab }">
+								<p style="margin: 0">{{ 'Pages.Analytics.Home.DripsSent' | translate }}</p>
+								<p style="margin: 0">{{ totalDripSent }}</p>
+							</div>
+							<div
+								class="col-md-3 btn-tab btn btn-o"
+								style="padding-right: 0px; text-align: left; border-left: 0px"
+								[(ngModel)]="seletedDripDeliveredTab"
+								[ngModelOptions]="{ standalone: true }"
+								ngDefaultControl
+								(click)="dripTab('Drips Delivered', seletedDripDeliveredTab)"
+								[ngClass]="{ 'selected-Drip-DeliveredTab': seletedDripDeliveredTab }">
+								<p style="margin: 0">{{ 'Pages.Analytics.Home.DripsDelivered' | translate }}</p>
+								<p style="margin: 0">{{ totalDripDelivered }}</p>
+							</div>
+							<div
+								class="col-md-3 btn-tab btn btn-o"
+								style="text-align: left; border-left: 0px"
+								[ngClass]="{ 'selected-Drip-EngagedTab': seletedDripEngagedTab }"
+								[(ngModel)]="seletedDripEngagedTab"
+								[ngModelOptions]="{ standalone: true }"
+								ngDefaultControl
+								(click)="dripTab('Drips Engaged', seletedDripEngagedTab)">
+								<p style="margin: 0">{{ 'Pages.Analytics.Home.DripsEngaged' | translate }}</p>
+								<p style="margin: 0">{{ totalDripEngaged }}</p>
+							</div>
+						</div>
+					</div>
+
+					<div class="chart-header">
+						<div class="row" style="margin-top: 2rem; margin-bottom: -4rem" *ngIf="!isApiCall">
+							<ngx-charts-line-chart
+								[view]="view"
+								[scheme]="{
+									domain: this.colorArray,
+								}"
+								[showXAxisLabel]="showXAxisLabel"
+								[showYAxisLabel]="showYAxisLabel"
+								[xAxis]="xAxis"
+								[yAxis]="yAxis"
+								[timeline]="timeline"
+								[results]="selectedDataToShow"
+								(select)="onSelect($event)"
+								(activate)="onActivate($event)"
+								(deactivate)="onDeactivate($event)">
+							</ngx-charts-line-chart>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div> -->
+
+	<div style="margin-top: 0.2rem">
+		<div class="row">
+			<div class="panel panel-white-3">
+				<div class="report-header">
+					{{ 'Pages.Analytics.Home.DripFlow.title' | translate }}
+				</div>
+				<div style="padding: 20px">
+					<div class="row" style="margin-top: 0.5rem">
+						<div class="col-md-6">
+							<ng-select
+								[items]="campaignList"
+								class="ng-select-wrap"
+								placeholder="{{ 'Pages.Analytics.Home.DripFlow.placeholder' | translate }}"
+								bindLabel="campaign_id_title"
+								bindValue="id"
+								[multiple]="false"
+								[closeOnSelect]="true"
+								[searchable]="true"
+								[clearable]="false"
+								(change)="selectedDripFlow($event)"
+								[(ngModel)]="selectedCampaign"
+								[ngModelOptions]="{ standalone: true }">
+							</ng-select>
+						</div>
+
+						<!-- <div class="col-md-3"></div> -->
+						<!-- <div class="col-md-3 head-title" *ngIf="learnerCount">
+							<div class="total-count">
+								{{ learnerCount ? learnerCount : 0 }}
+							</div>
+							<p>{{ 'Pages.Analytics.Home.DripFlow.totalLearnersTargated' | translate }}</p>
+						</div> -->
+
+						<div class="col-md-3 head-title" style="display: flex; align-items: center">
+							<div class="drip-flow-status">{{ 'Pages.Analytics.Home.DripFlow.status' | translate }}:</div>
+
+							<div style="padding-top: 8px; padding-left: 8px" *ngIf="CampaignData">
+								<p
+									class="btn-xs campaign-status-running"
+									style="width: fit-content"
+									*ngIf="CampaignData.campaign_status == 'Running'">
+									{{ 'Utils.Status.running' | translate }}
+								</p>
+								<p
+									class="btn-xs campaign-status-finished"
+									style="width: fit-content"
+									*ngIf="CampaignData.campaign_status == 'Finished'">
+									{{ 'Utils.Status.finished' | translate }}
+								</p>
+								<p
+									class="btn-xs campaign-status-paused"
+									style="width: fit-content"
+									*ngIf="CampaignData.campaign_status == 'Paused'">
+									{{ 'Utils.Status.paused' | translate }}
+								</p>
+								<p
+									class="btn-xs campaign-status-Draft"
+									style="width: fit-content"
+									*ngIf="CampaignData.campaign_status == 'Draft'">
+									{{ 'Utils.Status.draft' | translate }}
+								</p>
+								<p
+									class="btn-xs campaign-status-expired"
+									style="width: fit-content"
+									*ngIf="CampaignData.campaign_status == 'Expired'">
+									{{ 'Utils.Status.expired' | translate }}
+								</p>
+								<p
+									class="btn-xs campaign-status-scheduled"
+									style="width: fit-content"
+									*ngIf="CampaignData.campaign_status == 'Scheduled'">
+									{{ 'Utils.Status.scheduled' | translate }}
+								</p>
+							</div>
+						</div>
+
+						<div class="col-md-3"></div>
+					</div>
+
+					<!-- Key successMetrics label boxes -->
+					<div style="margin-top: 2rem">
+						<div class="row">
+							<div class="panel panel-white-2" style="margin: 0 1.2% 1.9% 1.2%; display: flex; flex-wrap: wrap">
+								<div
+									class="col-md-2"
+									style="
+										padding-left: 0;
+										padding-right: 1.25rem;
+										display: flex;
+										flex-direction: row;
+										justify-content: stretch;
+									"
+									*ngFor="let metric of successMetrics">
+									<div class="sub-card" style="min-height: 100px; word-wrap: break-word; width: 100%">
+										<div class="total-count">{{ metric.value }}</div>
+										<p style="margin: 0px" class="title">{{ metric.label }}</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div style="margin-top: 1rem">
+					<div class="row">
+						<div class="panel header-panel-white" style="display: flex; align-items: center">
+							<div class="col-md-11 basic-dripflow">
+								<span>{{ 'Pages.Analytics.Home.DripFlow.startDate' | translate }}: </span>
+								<span style="padding-top: 10px">
+									{{
+										CampaignData?.campaign_start_date != null ? (CampaignData.campaign_start_date | DateFormat) : '-'
+									}},
+								</span>
+								&nbsp;
+								<span>{{ 'Pages.Analytics.Home.DripFlow.expiryDate' | translate }}: </span>
+								<span style="padding-top: 10px">
+									{{ CampaignData?.campaign_end_date != null ? (CampaignData.campaign_end_date | DateFormat) : '-' }},
+								</span>
+								&nbsp;
+								<span>{{ 'Pages.Analytics.Home.DripFlow.groupsTargeted' | translate }}: </span>
+								<span
+									style="padding-top: 10px; cursor: pointer"
+									class="ellipsisWidth"
+									data-toggle="tooltip"
+									data-placement="top"
+									title="{{ CampaignData?.leranerGroupName ? CampaignData.leranerGroupName : 'Self' }}"
+									style="width: 140px">
+									{{ CampaignData?.leranerGroupName ? CampaignData.leranerGroupName : 'Self' }}
+								</span>
+							</div>
+
+							<div class="col-md-1" style="float: right">
+								<a
+									class="btn pull-right export"
+									[ngStyle]="{ color: appService.whiteBrandingColor }"
+									(click)="exportToCsv()"
+									>{{ 'Pages.Analytics.Home.DripFlow.export' | translate }}
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!--table start -->
+				<div style="margin-top: 0.5rem">
+					<div class="row">
+						<div class="panel panel-white" style="margin-bottom: 2rem; margin: 0 3% 2% 3%">
+							<div class="sub table-responsive">
+								<table class="table table-striped table-hover">
+									<thead>
+										<tr style="height: 80px">
+											<th
+												class="left tb-first-heading tb-line-height"
+												style="padding-left: 1rem; word-wrap: break-word; width: 10vw">
+												{{ 'Pages.Analytics.Home.Table.Header.nodename' | translate }}
+											</th>
+											<th class="left tb-head-bg tb-line-height" style="word-wrap: break-word; width: 10vw">
+												{{ 'Pages.Analytics.Home.Table.Header.nodestatus' | translate }}
+											</th>
+											<th class="left tb-head-bg tb-line-height" style="word-wrap: break-word; width: 9vw">
+												{{ 'Pages.Analytics.Home.Table.Header.senddatetime' | translate }}
+											</th>
+											<th class="left tb-head-bg tb-line-height" style="word-wrap: break-word; width: 9vw">
+												{{ 'Pages.Analytics.Home.Table.Header.dripscheduled' | translate }}
+												<!-- <img
+													src="assets/images/info_icon.svg"
+													title="{{ 'Pages.Analytics.Home.Table.Tooltip.dripscheduled' | translate }}"
+													style="width: 15px" /> -->
+												<div
+													[innerHTML]="iconObject['info_icon_anlytics']"
+													title="{{ 'Pages.Analytics.Home.Table.Tooltip.dripscheduled' | translate }}"
+													style="width: 15px"></div>
+											</th>
+											<th class="left tb-head-bg tb-line-height" style="word-wrap: break-word">
+												{{ 'Pages.Analytics.Home.Table.Header.dripsent' | translate }}
+												<!-- <img
+													src="assets/images/info_icon.svg"
+													title="{{ 'Pages.Analytics.Home.Table.Tooltip.dripsent' | translate }}"
+													style="width: 15px" /> -->
+												<span
+													[innerHTML]="iconObject['info_icon_anlytics']"
+													title="{{ 'Pages.Analytics.Home.Table.Tooltip.dripsent' | translate }}"
+													style="width: 15px"></span>
+											</th>
+											<th class="left tb-head-bg tb-line-height">
+												{{ 'Pages.Analytics.Home.Table.Header.dripdelivered' | translate }}
+												<!-- <img
+													src="assets/images/info_icon.svg"
+													title="{{ 'Pages.Analytics.Home.Table.Tooltip.dripdelivered' | translate }}"
+													style="width: 15px" /> -->
+												<span
+													[innerHTML]="iconObject['info_icon_anlytics']"
+													title="{{ 'Pages.Analytics.Home.Table.Tooltip.dripdelivered' | translate }}"
+													style="width: 15px"></span>
+											</th>
+											<th class="left tb-head-bg tb-line-height">
+												{{ 'Pages.Analytics.Home.Table.Header.dripreadonchannel' | translate }}
+												<!-- <img
+													src="assets/images/info_icon.svg"
+													title="{{ 'Pages.Analytics.Home.Table.Tooltip.dripreadonchannel' | translate }}"
+													style="width: 15px" /> -->
+												<span
+													[innerHTML]="iconObject['info_icon_anlytics']"
+													title="{{ 'Pages.Analytics.Home.Table.Tooltip.dripreadonchannel' | translate }}"
+													style="width: 15px"></span>
+											</th>
+
+											<th class="left tb-head-bg tb-line-height">
+												{{ 'Pages.Analytics.Home.Table.Header.readrateonchannel' | translate }}
+												<!-- <img
+													src="assets/images/info_icon.svg"
+													title="{{ 'Pages.Analytics.Home.Table.Tooltip.readrateonchannel' | translate }}"
+													style="width: 15px" /> -->
+												<span
+													[innerHTML]="iconObject['info_icon_anlytics']"
+													title="{{ 'Pages.Analytics.Home.Table.Tooltip.readrateonchannel' | translate }}"
+													style="width: 15px"></span>
+											</th>
+
+											<th class="left tb-head-bg tb-line-height">
+												{{ 'Pages.Analytics.Home.Table.Header.dripreadondripapp' | translate }}
+												<!-- <img
+													src="assets/images/info_icon.svg"
+													title="{{ 'Pages.Analytics.Home.Table.Tooltip.dripreadondripapp' | translate }}"
+													style="width: 15px" /> -->
+												<span
+													[innerHTML]="iconObject['info_icon_anlytics']"
+													title="{{ 'Pages.Analytics.Home.Table.Tooltip.dripreadondripapp' | translate }}"
+													style="width: 15px"></span>
+											</th>
+
+											<th class="left tb-head-bg tb-line-height">
+												{{ 'Pages.Analytics.Home.Table.Header.readrateondripapp' | translate }}
+												<!-- <img
+													src="assets/images/info_icon.svg"
+													title="{{ 'Pages.Analytics.Home.Table.Tooltip.readrateondripapp' | translate }}"
+													style="width: 15px" /> -->
+												<span
+													[innerHTML]="iconObject['info_icon_anlytics']"
+													title="{{ 'Pages.Analytics.Home.Table.Tooltip.readrateondripapp' | translate }}"
+													style="width: 15px"></span>
+											</th>
+
+											<th class="left tb-head-bg tb-line-height">
+												{{ 'Pages.Analytics.Home.Table.Header.dripactionintent' | translate }}
+												<!-- <img
+													src="assets/images/info_icon.svg"
+													title="{{ 'Pages.Analytics.Home.Table.Tooltip.dripactionintent' | translate }}"
+													style="width: 15px" /> -->
+												<span
+													[innerHTML]="iconObject['info_icon_anlytics']"
+													title="{{ 'Pages.Analytics.Home.Table.Tooltip.dripactionintent' | translate }}"
+													style="width: 15px"></span>
+											</th>
+											<th class="left tb-head-bg tb-line-height">
+												{{ 'Pages.Analytics.Home.Table.Header.dripactiontaken' | translate }}
+												<!-- <img
+													src="assets/images/info_icon.svg"
+													title="{{ 'Pages.Analytics.Home.Table.Tooltip.dripactiontaken' | translate }}"
+													style="width: 15px" /> -->
+												<span
+													[innerHTML]="iconObject['info_icon_anlytics']"
+													title="{{ 'Pages.Analytics.Home.Table.Tooltip.dripactiontaken' | translate }}"
+													style="width: 15px"></span>
+											</th>
+											<th class="left tb-head-bg tb-line-height">
+												{{ 'Pages.Analytics.Home.Table.Header.dripactionrate' | translate }}
+												<!-- <img
+													src="assets/images/info_icon.svg"
+													title="{{ 'Pages.Analytics.Home.Table.Tooltip.dripactionrate' | translate }}"
+													style="width: 15px" /> -->
+												<span
+													[innerHTML]="iconObject['info_icon_anlytics']"
+													title="{{ 'Pages.Analytics.Home.Table.Tooltip.dripactionrate' | translate }}"
+													style="width: 15px"></span>
+											</th>
+											<th class="left tb-head-bg tb-line-height">
+												{{ 'Pages.Analytics.Home.Table.Header.mediascore' | translate }}
+												<!-- <img
+													src="assets/images/info_icon.svg"
+													title="{{ 'Pages.Analytics.Home.Table.Tooltip.mediascore' | translate }}"
+													style="width: 15px" /> -->
+												<span
+													[innerHTML]="iconObject['info_icon_anlytics']"
+													title="{{ 'Pages.Analytics.Home.Table.Tooltip.mediascore' | translate }}"
+													style="width: 15px"></span>
+											</th>
+											<th class="left tb-last-heading tb-line-height">
+												{{ 'Pages.Analytics.Home.Table.Header.export' | translate }}
+											</th>
+										</tr>
+									</thead>
+									<tbody *ngIf="AllCampaignDrip && AllCampaignDrip.length > 0">
+										<tr *ngFor="let dripData of AllCampaignDrip; let i = index">
+											<td class="left" style="padding-left: 1rem; padding-top: 15px" class="two-row-td-tag">
+												<p class="two-row-p-tag" style="-webkit-box-orient: vertical; width: 7vw">
+													<span
+														style="cursor: pointer; display: inline-grid"
+														*ngIf="!dripData.isTotal"
+														(click)="filesDownloadFromNodeView(dripData)">
+														<!-- <img src="assets/images/node_view.svg" style="width: 15px" /> -->
+														<div [innerHTML]="iconObject['node_view']" style="width: 15px"></div>
+													</span>
+
+													<span
+														style="padding-top: 10px; cursor: pointer"
+														data-toggle="tooltip"
+														data-placement="top"
+														[title]="dripData.node_name">
+														{{ dripData.node_name }}
+													</span>
+												</p>
+											</td>
+											<td class="left" style="padding-top: 15px" class="two-row-td-tag">
+												<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+													{{ dripData.node_status }}
+												</p>
+											</td>
+											<td class="left" style="padding-top: 15px" class="two-row-td-tag">
+												<p class="two-row-p-tag" style="-webkit-box-orient: vertical" [title]="dripData.node_send_date">
+													{{ dripData.node_send_date }}
+												</p>
+											</td>
+											<td class="left" style="padding-top: 15px" class="two-row-td-tag">
+												<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+													{{ dripData.scheduled }}
+												</p>
+											</td>
+											<td class="left" style="padding-top: 15px" class="two-row-td-tag">
+												<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+													<span class="status-pending"> {{ dripData.sent }}</span>
+												</p>
+											</td>
+
+											<td class="left" style="padding-top: 15px" class="two-row-td-tag">
+												<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+													{{ dripData.delivered }}
+												</p>
+											</td>
+											<td class="left" style="padding-top: 15px" class="two-row-td-tag">
+												<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+													{{ dripData.read_on_every_day_channel ? dripData.read_on_every_day_channel : 0 }}
+												</p>
+											</td>
+											<td class="left" style="padding-top: 15px" class="two-row-td-tag">
+												<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+													{{
+														dripData.read_rate_on_every_day_channel
+															? dripData.read_rate_on_every_day_channel + '%'
+															: '0%'
+													}}
+												</p>
+											</td>
+											<td class="left" style="padding-top: 15px" class="two-row-td-tag">
+												<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+													{{ dripData.read_on_drip_app ? dripData.read_on_drip_app : 0 }}
+												</p>
+											</td>
+											<td class="left" style="padding-top: 15px" class="two-row-td-tag">
+												<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+													{{ dripData.read_rate_on_drip_app ? dripData.read_rate_on_drip_app + '%' : '0%' }}
+												</p>
+											</td>
+											<td class="left" style="padding-top: 15px" class="two-row-td-tag">
+												<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+													{{ dripData.action_intent_displayed }}
+												</p>
+											</td>
+											<td class="left" style="padding-top: 15px" class="two-row-td-tag">
+												<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+													{{ dripData.action_taken }}
+												</p>
+											</td>
+											<td class="left" style="padding-top: 15px" class="two-row-td-tag">
+												<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+													{{ dripData.rate_action_taken ? dripData.rate_action_taken + '%' : '0%' }}
+												</p>
+											</td>
+											<td class="left" style="padding-top: 15px" class="two-row-td-tag">
+												<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+													{{ dripData.average_action_score ? dripData.average_action_score : 0 }}
+												</p>
+											</td>
+											<td *ngIf="!dripData.isTotal" class="left" style="padding: 0.938rem 0.75rem 0.938rem 0.75rem">
+												<div class="visible-md visible-lg visible-sm visible-xs">
+													<a
+														[ngClass]="
+															[
+																'Quiz',
+																'Quiz (Randomised)',
+																'Survey',
+																'Poll',
+																'Offline Task',
+																'Video',
+																'Carousel',
+																'Single Image',
+																'Spin The Wheel',
+																'Custom Template'
+															].indexOf(dripData.template_type) > -1 ||
+															(dripData.drip_type == 'Only WhatsApp' && dripData.have_quick_replay)
+																? 'enabled'
+																: 'disabled'
+														"
+														style="margin-left: 0; text-decoration: underline !important"
+														[ngStyle]="{ color: appService.whiteBrandingColor }"
+														(click)="reportDownload(dripData)"
+														>{{ 'Utils.Action.report' | translate }}</a
+													>
+
+													<a
+														[ngClass]="
+															['Survey'].indexOf(dripData.template_type) > -1 ||
+															(['Offline Task'].indexOf(dripData.template_type) > -1 &&
+																dripData?.downloadFileForOfflineTask)
+																? 'enabled'
+																: 'disabled'
+														"
+														[ngStyle]="{ color: appService.whiteBrandingColor }"
+														style="padding-left: 0.5rem; margin-left: 0; text-decoration: underline !important"
+														(click)="filesDownload(dripData)"
+														>{{ 'Utils.Action.files' | translate }}</a
+													>
+												</div>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+								<div
+									style="text-align: center; margin-top: 2rem; margin-bottom: 3rem"
+									*ngIf="AllCampaignDrip && AllCampaignDrip.length == 0 && isDataLoaded">
+									<!-- <img src="assets/images/No Results.svg" alt="" style="width: 25%" /> -->
+									<span [innerHTML]="iconObject['Results']" style="width: 25%"></span>
+									<h3>{{ 'Utils.nodataToShow' | translate }}</h3>
+									<p style="width: 50%; margin: 0 auto">
+										{{
+											type === 'drip'
+												? ('Utils.nodataAvaliable' | translate)
+												: ('Utils.diwonodataAvaliable' | translate)
+										}}
+									</p>
+								</div>
+								<div style="text-align: center; margin-top: 9rem; margin-bottom: 9rem" *ngIf="!isDataLoaded"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Report Section -->
+	<div style="margin-top: 0.2rem; margin-bottom: 1rem">
+		<div class="row">
+			<div class="panel panel-white-3">
+				<div class="report-header">
+					{{ 'Pages.Analytics.Home.ReportDownload.title' | translate }}
+				</div>
+				<div style="padding: 20px">
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group" style="margin-top: 0">
+								<label>{{ 'Pages.Analytics.Home.ReportDownload.Pickyourreport.title' | translate }}</label>
+								<ng-select
+									[items]="Reportdata"
+									class="ng-select-wrap"
+									placeholder="{{ 'Pages.Analytics.Home.ReportDownload.Pickyourreport.placeholder' | translate }}"
+									bindLabel="name"
+									bindValue="id"
+									[multiple]="false"
+									[closeOnSelect]="true"
+									[searchable]="false"
+									[clearable]="false"
+									(change)="selectedReport($event)"
+									[ngModelOptions]="{ standalone: true }"
+									[(ngModel)]="selectedReportName">
+								</ng-select>
+							</div>
+						</div>
+
+						<div class="col-md-6">
+							<div class="form-group" style="margin-top: 0">
+								<label>{{ 'Pages.Analytics.Home.ReportDownload.PickUpAccount.title' | translate }}</label>
+								<ng-select
+									[items]="branchList"
+									class="ng-select-wrap"
+									placeholder="{{ 'Pages.Analytics.Home.ReportDownload.PickUpAccount.placeholder' | translate }}"
+									bindLabel="account_name_with_id"
+									bindValue="id"
+									[multiple]="false"
+									[closeOnSelect]="true"
+									[searchable]="true"
+									[clearable]="false"
+									[ngModelOptions]="{ standalone: true }"
+									[(ngModel)]="selectedClientId"
+									(change)="onChnageClient($event)">
+								</ng-select>
+							</div>
+						</div>
+						<div
+							class="col-md-6 head-title report-date"
+							*ngIf="(selectedReportName == 6 && selectedDripType) || (selectedReportName && selectedReportName != 6)">
+							<div
+								class="form-group"
+								style="margin-top: 0"
+								[ngClass]="{ 'has-error': isdateRangeSelected, 'has-success': !isdateRangeSelected }">
+								<label>{{ 'Pages.Analytics.Home.ReportDownload.Pickyourperiod.title' | translate }}</label>
+								<input
+									type="text"
+									ngxDaterangepickerMd
+									[showDropdowns]="true"
+									onkeydown="return false"
+									[(ngModel)]="selectedDate"
+									[showCustomRangeLabel]="true"
+									[alwaysShowCalendars]="true"
+									[ranges]="ranges"
+									[linkedCalendars]="true"
+									[isInvalidDate]="isInvalidDate"
+									[showClearButton]="true"
+									[showCancel]="true"
+									placeholder="DD-MM-YYYY - DD-MM-YYYY"
+									[autoApply]="false"
+									[locale]="{ applyLabel: 'apply', format: 'DD-MM-YYYY' }"
+									(startDateChanged)="startDateClicked($event)"
+									(endDateChanged)="endDateClicked($event)"
+									(change)="onReportDateChange()"
+									class="form-control"
+									autocomplete="off"
+									[ngModelOptions]="{ standalone: true }" />
+							</div>
+							<div *ngIf="isdateRangeSelected" class="error" style="color: #a94442">
+								{{ 'Pages.Analytics.Home.ReportDownload.Pickyourperiod.error' | translate }}
+							</div>
+						</div>
+						<div class="col-md-6" *ngIf="selectedReportName == 7">
+							<div class="form-group" style="margin-top: 0">
+								<label>{{ 'Pages.Analytics.Home.ReportDownload.CustomReport.title' | translate }}</label>
+								<ng-select
+									[items]="customReportNameList"
+									class="ng-select-wrap"
+									placeholder="{{ 'Pages.Analytics.Home.ReportDownload.CustomReport.placeholder' | translate }}"
+									bindLabel="report_name"
+									bindValue="report_name"
+									[multiple]="false"
+									[closeOnSelect]="true"
+									[searchable]="false"
+									[clearable]="false"
+									[ngModelOptions]="{ standalone: true }"
+									[(ngModel)]="selectedCustomReportName">
+								</ng-select>
+							</div>
+						</div>
+						<div class="col-md-12" *ngIf="selectedReportName == 6">
+							<div class="row">
+								<div class="form-group col-md-6" style="margin-top: 0">
+									<label>{{ 'Pages.Analytics.Home.ReportDownload.Pickyourreport.driptype' | translate }}</label>
+									<ng-select
+										*ngIf="haveMicrosoftTeamsAccess"
+										[items]="dripTypes"
+										class="ng-select-wrap"
+										placeholder="{{
+											'Pages.Analytics.Home.ReportDownload.Pickyourreport.driptypeplaceholder' | translate
+										}}"
+										bindLabel="name"
+										bindValue="id"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										[clearable]="false"
+										(change)="selectedReport($event)"
+										[ngModelOptions]="{ standalone: true }"
+										[(ngModel)]="selectedDripType">
+									</ng-select>
+									<ng-select
+										*ngIf="!haveMicrosoftTeamsAccess"
+										[items]="dripTypesWithoutTeams"
+										class="ng-select-wrap"
+										placeholder="{{
+											'Pages.Analytics.Home.ReportDownload.Pickyourreport.driptypeplaceholder' | translate
+										}}"
+										bindLabel="name"
+										bindValue="id"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										[clearable]="false"
+										(change)="selectedReport($event)"
+										[ngModelOptions]="{ standalone: true }"
+										[(ngModel)]="selectedDripType">
+									</ng-select>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row" style="text-align: end; margin-top: 2rem">
+						<a
+							class="btn border_radius functionalBtn"
+							[ngStyle]="{
+								'background-color': appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+								color: 'white'
+							}"
+							style="margin-right: 15px"
+							(click)="downloadReport()"
+							>{{ 'Utils.Action.download' | translate }}</a
+						>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div
+	class="modal fade credit-note"
+	id="showResultModel"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="myModalLabel"
+	aria-hidden="true"
+	data-backdrop="static"
+	data-keyboard="false">
+	<div class="modal-dialog" style="width: 96vw">
+		<div class="modal-content">
+			<div
+				class="modal-header"
+				[ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					<span>{{ 'Pages.Analytics.Home.DripFlow.showresult' | translate }}</span>
+				</h4>
+			</div>
+			<!-- *ngIf="worksheetType == 'Poll'"  -->
+			<!-- *ngFor="let question of allQuestion;let i=index;"
+            (click)="refreshShowResult()" -->
+
+			<div class="modal-body" style="min-height: 84vh" (click)="refreshShowResult()">
+				<div style="text-align: right">
+					<img src="assets/images/refresh_icon.svg" />
+					<span [innerHTML]="iconObject['refresh_icon']"></span>
+				</div>
+				<div class="row" *ngFor="let question of allQuestion; let i = index">
+					<div class="col-md-1"></div>
+					<div class="col-md-10" style="text-align: center">
+						<div>
+							<p style="font-size: 1.3rem; color: black">
+								<!-- {{question.question}} -->
+								{{ question.question }}
+							</p>
+						</div>
+
+						<div style="display: flex; justify-content: center">
+							<ngx-charts-bar-horizontal
+								[view]="horizontalView"
+								[scheme]="colorScheme"
+								[results]="selectedDripAllData"
+								[gradient]="gradient"
+								[xAxis]="showXAxis"
+								[yAxis]="showYAxis"
+								[showXAxisLabel]="showXAxisLabel"
+								[showYAxisLabel]="showYAxisLabel"
+								[xAxisLabel]="xAxisLabel"
+								[yAxisLabel]="yAxisLabel"
+								(select)="onSelect($event)"
+								trimYAxisTicks="false"
+								maxYAxisTickLength="1000">
+							</ngx-charts-bar-horizontal>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div
+	class="modal fade credit-note"
+	id="showResultForQuizModel"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="myModalLabel"
+	aria-hidden="true"
+	data-backdrop="static"
+	data-keyboard="false">
+	<div class="modal-dialog" style="width: 96vw">
+		<div class="modal-content">
+			<div
+				class="modal-header"
+				[ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					<span>{{ 'Pages.Analytics.Home.DripFlow.showresult' | translate }}</span>
+				</h4>
+			</div>
+
+			<div class="modal-body" style="min-height: 84vh">
+				<div style="text-align: right">
+					<!-- <img src="assets/images/refresh_icon.svg" (click)="refreshSeeResult()" /> -->
+					<span [innerHTML]="iconObject['refresh_icon']" (click)="refreshSeeResult()"></span>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<p style="text-align: center; font-size: 1.1rem; color: black; margin-bottom: 1rem">
+							{{ 'Pages.Analytics.Home.DripFlow.quizsummary' | translate }}
+						</p>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-1"></div>
+					<div class="col-md-2">
+						<div>
+							<div class="show-result-box">
+								<p class="show-result-box-text">{{ totalQuestionCount }}</p>
+							</div>
+							<div style="margin-top: 0.5rem">
+								<p class="show-result-box-title">
+									{{ 'Pages.Analytics.Home.DripFlow.totalquestion' | translate }}
+								</p>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-2">
+						<div>
+							<div class="show-result-box">
+								<p class="show-result-box-text">{{ totalResponses }}</p>
+							</div>
+							<div style="margin-top: 0.5rem">
+								<p class="show-result-box-title">
+									{{ 'Pages.Analytics.Home.DripFlow.totalresponses' | translate }}
+								</p>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-2">
+						<div>
+							<div class="show-result-box">
+								<p class="show-result-box-text">{{ maxPossibleScore }}</p>
+							</div>
+							<div style="margin-top: 0.5rem">
+								<p class="show-result-box-title">
+									{{ 'Pages.Analytics.Home.DripFlow.maxPossibleScore' | translate }}
+								</p>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-2">
+						<div>
+							<div class="show-result-box">
+								<p class="show-result-box-text">{{ avaregeScore }}</p>
+							</div>
+							<div style="margin-top: 0.5rem">
+								<p class="show-result-box-title">
+									{{ 'Pages.Analytics.Home.DripFlow.averageScore' | translate }}
+								</p>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-2">
+						<div>
+							<div class="show-result-box">
+								<p class="show-result-box-text">{{ topScore }}</p>
+							</div>
+							<div style="margin-top: 0.5rem">
+								<p class="show-result-box-title">
+									{{ 'Pages.Analytics.Home.DripFlow.topScore' | translate }}
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-4"></div>
+					<div class="col-md-4">
+						<div class="panel panel-white" style="margin-bottom: 2rem; margin-top: 2rem">
+							<div class="sub table-responsive">
+								<table class="table table-striped table-hover">
+									<thead>
+										<tr>
+											<th class="center tb-first-heading">
+												{{ 'Pages.Analytics.Home.DripFlow.rank' | translate }}
+											</th>
+											<th class="left tb-head-bg" style="word-wrap: break-word">
+												{{ 'Pages.Analytics.Home.DripFlow.participant' | translate }}
+											</th>
+											<th class="center tb-last-heading">
+												{{ 'Pages.Analytics.Home.DripFlow.score' | translate }}
+											</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr *ngFor="let participant of toppers; let i = index">
+											<td class="center" style="padding-top: 7px">{{ participant.rank }}</td>
+											<td class="left" style="padding-left: 10x; padding-top: 15px" class="two-row-td-tag">
+												<p class="two-row-p-tag" style="-webkit-box-orient: vertical; font-size: 1.1rem">
+													{{ participant.fullName }}
+												</p>
+											</td>
+											<td class="center" style="padding-top: 7px">
+												<p style="font-size: 1.1rem">
+													{{ participant.total }}
+												</p>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div
+	class="modal fade credit-note"
+	id="viewuploadsmodel"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="myModalLabel"
+	aria-hidden="true"
+	data-backdrop="static"
+	data-keyboard="false">
+	<div class="modal-dialog" style="width: 96vw">
+		<div class="modal-content">
+			<div
+				class="modal-header"
+				[ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					<span *ngIf="selectedDripDetails?.type == 'Offline Task'">{{
+						'Pages.Analytics.Home.DripFlow.viewuploads' | translate
+					}}</span>
+					<span *ngIf="selectedDripDetails?.type != 'Offline Task'">{{
+						'Pages.Analytics.Home.DripFlow.Downloads' | translate
+					}}</span>
+				</h4>
+			</div>
+
+			<div class="modal-body" style="height: 84vh; overflow: hidden; padding: 0px 0px 40px 0px">
+				<div class="row p-15" *ngIf="selectedDripDetails?.type == 'Offline Task'">
+					<div class="col-md-9" style="margin-bottom: 1rem">
+						<p style="font-size: 1rem; color: black; margin-bottom: 0.3px">
+							{{ 'Pages.Analytics.Home.DripFlow.taskbrief' | translate }}
+						</p>
+						<p class="text-brief-para" data-toggle="tooltip" data-placement="top" [title]="briefText">
+							{{ briefText }}
+						</p>
+					</div>
+					<div class="col-md-3" style="text-align: right">
+						<button
+							class="btn border_radius"
+							[ngStyle]="{
+								'background-color': appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+								color: 'white'
+							}"
+							style="margin-right: 0.7rem; padding-left: 0.8rem; padding-right: 0.8rem"
+							(click)="submitGraded()"
+							*ngIf="isediGraded">
+							{{ 'Pages.Analytics.Home.DripFlow.submitgrades' | translate }}
+						</button>
+						<button
+							class="btn border_radius"
+							[ngStyle]="{
+								'background-color': appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+								color: 'white'
+							}"
+							style="margin-right: 0.7rem; padding-left: 1.35rem; padding-right: 1.35rem"
+							(click)="editGraded()"
+							*ngIf="!isediGraded">
+							{{ 'Pages.Analytics.Home.DripFlow.editgrades' | translate }}
+						</button>
+						<!-- <img
+							src="assets/images/refresh_icon.svg"
+							(click)="ShowPopupForViewuplaods({ otherDetails: selectedOfflineTaskDetails }, false)" /> -->
+						<span
+							[innerHTML]="iconObject['refresh_icon']"
+							(click)="ShowPopupForViewuplaods({ otherDetails: selectedOfflineTaskDetails }, false)"></span>
+					</div>
+				</div>
+				<div class="row" style="padding: 0px 15px" *ngIf="selectedDripDetails?.type == 'Offline Task'">
+					<div class="col-md-6">
+						<div style="width: 50%">
+							<input
+								class="form-control"
+								(input)="getAssetsFilter($event.target.value)"
+								type="text"
+								placeholder="
+								{{
+									type === 'drip'
+										? ('Pages.Analytics.Home.DripFlow.searchContacts' | translate)
+										: ('Pages.Analytics.Home.DripFlow.search' | translate)
+								}}"
+								autocomplete="off" />
+						</div>
+					</div>
+					<div class="col-md-6" *ngIf="selectedDripDetails?.type == 'Offline Task'">
+						<div style="text-align: right; padding-right: 15px">
+							<p style="color: #333; margin-bottom: 0.3px">{{ gradedCount }}/{{ totalGradedableCount }}</p>
+							<p style="color: #333">{{ 'Pages.Analytics.Home.DripFlow.responsesgraded' | translate }}</p>
+						</div>
+					</div>
+				</div>
+				<div style="height: 100%; overflow-y: scroll; overflow-x: hidden">
+					<div class="row p-15">
+						<div class="col-md-4" *ngFor="let que of questionList; let i = index" style="margin-bottom: 1rem">
+							<div
+								class="asset-title"
+								(click)="selectedQuestion(que, i)"
+								style="cursor: pointer"
+								[ngClass]="selectedQuestionText == que.question ? 'border-bottom' : 'no-border'">
+								<p
+									class="asset-popup-title"
+									[ngClass]="selectedQuestionText == que.question ? 'active' : 'not-active'"
+									data-toggle="tooltip"
+									data-placement="top"
+									*ngIf="que.title"
+									[title]="que.title">
+									{{ que.title }}
+								</p>
+							</div>
+						</div>
+					</div>
+					<hr style="margin: 0rem 1rem 1rem 1rem; height: auto; border: 0.1px solid rgba(211, 211, 211, 0.231372549)" />
+					<div class="row" style="padding: 0px 15px 7rem 15px; margin-bottom: 3rem">
+						<div
+							class="col-md-2"
+							*ngFor="
+								let item of questionUploadedAsset
+									| paginate
+										: { itemsPerPage: limit == 'all' ? totalCount : limit, currentPage: page, totalItems: totalCount };
+								index as i
+							">
+							<div class="asset-card">
+								<!-- For Image -->
+								<div
+									*ngIf="item.fileType == 'Image' && item?.UploadedOnS3"
+									style="cursor: pointer"
+									[innerHTML]="iconObject['image_thumbnail']"
+									(click)="downloadLearnerUploadedFile(item, i)"></div>
+
+								<img
+									[src]="assetBasePath + item.path"
+									*ngIf="item.fileType == 'Image' && !item.UploadedOnS3"
+									style="height: 17vh"
+									(click)="downloadLearnerUploadedFile(item, i)" />
+
+								<!-- ---For PDF -->
+
+								<div
+									*ngIf="item.fileType == 'PDF' && item?.UploadedOnS3"
+									style="cursor: pointer"
+									[innerHTML]="iconObject['pdf_thumbnail']"
+									(click)="downloadLearnerUploadedFile(item, i)"></div>
+
+								<img
+									[src]="assetBasePath + item.thumbnail"
+									*ngIf="item.fileType == 'PDF' && !item?.UploadedOnS3"
+									style="height: 17vh"
+									(click)="downloadLearnerUploadedFile(item, i)" />
+
+								<!-- For Video  -->
+
+								<div
+									*ngIf="item.fileType == 'Video' && item?.UploadedOnS3"
+									style="cursor: pointer"
+									[innerHTML]="iconObject['video_thumbnail']"
+									(click)="downloadLearnerUploadedFile(item, i)"></div>
+
+								<!-- <iframe
+									[src]="transform(item.path)"
+									frameborder="0"
+									*ngIf="item && item.fileType == 'Video' && item.isTranscoding && !item?.UploadedOnS3"
+									style="width: 100%; height: 17vh"
+									allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+									allowfullscreen></iframe> -->
+								<app-video-player
+									style="width: 100%; height: 17vh"
+									[VideoPath]="item.path"
+									*ngIf="
+										item && item.fileType == 'Video' && item.isTranscoding && !item?.UploadedOnS3
+									"></app-video-player>
+								<img
+									src="assets/images/transcoding.gif"
+									*ngIf="item && item.fileType == 'Video' && !item.isTranscoding && !item?.UploadedOnS3"
+									style="height: 17vh; object-fit: contain" />
+
+								<div class="image-wrapper">
+									<div class="learner-details">
+										<p>{{ item.User.account_id }}</p>
+										<p>{{ item.User.fullName }}</p>
+									</div>
+									<div class="submit-div" *ngIf="selectedDripDetails?.type == 'Offline Task'">
+										<input
+											type="text"
+											class="form-control"
+											placeholder="{{ 'Pages.Analytics.Home.DripFlow.entergrades' | translate }}"
+											[disabled]="!isediGraded"
+											[(ngModel)]="item.grade"
+											style="font-size: 0.813rem !important" />
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="pagination-wrapper" style="width: 100%; position: absolute; bottom: 0">
+							<div class="pagination-wrapper" style="width: 100%">
+								<pagination-controls (pageChange)="onPageChangeEvent($event)" style="float: right">
+								</pagination-controls>
+							</div>
+							<div style="float: right" *ngIf="showDownloadButton && questionUploadedAsset.length > 0">
+								<button
+									class="btn border_radius"
+									[ngStyle]="{
+										'background-color': appService.whiteBrandingColor,
+										border: '1px solid' + appService.whiteBrandingColor,
+										color: 'white'
+									}"
+									style="margin-right: 0.5rem"
+									(click)="downLoadAwsS3Data()">
+									{{ 'Pages.Analytics.Home.DripFlow.downloadall' | translate }}
+								</button>
+							</div>
+						</div>
+					</div>
+					<!-- <div style="padding: 0px 15px 7rem 15px; margin-bottom: 3rem" *ngIf="!questionUploadOnVimeo">
+						<button
+							class="btn border_radius"
+							[ngStyle]="{
+								'background-color': appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+								color: 'white'
+							}"
+							style="margin-right: 0.7rem; padding-left: 1.35rem; padding-right: 1.35rem"
+							(click)="downLoadAwsS3Data()">
+							{{ 'Pages.Analytics.Home.DripFlow.downloadAllFiles' | translate }}
+						</button>
+					</div> -->
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div
+	class="modal fade credit-note"
+	id="viewuonlywhatsappquickreplaynotes"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="myModalLabel"
+	aria-hidden="true"
+	data-backdrop="static"
+	data-keyboard="false">
+	<div class="modal-dialog" style="width: 34%; margin-top: 15%; margin-left: 34%">
+		<div class="modal-content">
+			<div
+				class="modal-header"
+				[ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					<span>{{ 'Pages.Analytics.Home.ReportDownload.notetitle' | translate }}</span>
+				</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-12 form-group" style="margin-top: -5px">
+						<p>
+							{{ 'Pages.Analytics.Home.ReportDownload.note1' | translate }}
+						</p>
+						<br />
+						<p>
+							{{ 'Pages.Analytics.Home.ReportDownload.note2' | translate }}
+						</p>
+					</div>
+				</div>
+				<div
+					class="visible-md visible-lg visible-sm visible-xs"
+					style="text-align: right; margin-bottom: 0.75rem; margin-top: 1.5rem">
+					<a
+						class="btn-xs action-pause-btn"
+						[ngStyle]="{
+							color: appService.whiteBrandingColor,
+							border: '0.5px solid' + appService.whiteBrandingColor,
+						}"
+						(click)="cancelNotePopUp()"
+						style="padding: 7px 23px; border-radius: 30px; font-size: 1rem; margin-right: 10px"
+						>{{ 'Utils.ok' | translate }}</a
+					>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

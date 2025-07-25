@@ -1,0 +1,498 @@
+<p-confirmDialog header="Confirmation" icon="fa fa-question-circle" width="425" appendTo="body"></p-confirmDialog>
+<div class="row" style="margin-right: 0.7%;">
+    <div class="col-md-12 pl-zero">
+        <div class="tabbable">
+            <div class="tab-content">
+                <div id="panel_overview" style="padding-top: 0px;padding-right: 0px;"
+                    [ngClass]='userIsCustomer ? "paddingZero tab-pane fade in active" : "padddingTwenty tab-pane fade in active"'>
+                    <div class="row">
+                        <div class="col-sm-5 col-md-4">
+                            <div class="user-left">
+                                <div class="row itemCenter">
+                                    <div class="col-md-11">
+                                        <div class="white-box-title">
+                                            {{'Account.Manage.MainTitle.ACCOUNTHOLDER' | translate}}</div>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <div class="text-right add-circle" style="visibility: hidden;">
+                                            <img src="assets/images/home/plusIco.svg" alt="" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="white-color">
+                                    <div class="center">
+                                        <div class="fileinput fileinput-new" data-provides="fileinput">
+                                            <div class="user-image">
+                                                <div
+                                                    [ngClass]="userInfo.imagePath ? 'fileinput-new thumbnail userProfileBack' : 'fileinput-new thumbnail camera-image'">
+                                                    <img class="photoIcon" *ngIf="userInfo.imagePath"
+                                                        [src]="appService.getImageUrl(userInfo.imagePath,'assets/images/default-user.png')"
+                                                        alt="">
+                                                    <img class="photoIcon" *ngIf="!userInfo.imagePath"
+                                                        src="assets/images/customer/add_a_photo.svg" alt="">
+                                                </div>
+                                                <div class="user-image-buttons">
+                                                    <span class="btn btn-azure btn-file btn-sm btn-edit-profile">
+                                                        <span class="fileinput-exists">
+                                                            <i class="fa fa-pencil" style="color: white"></i>
+                                                        </span>
+                                                        <input id="profilePic" type="file" accept="image/*"
+                                                            (change)="updateUserProfilePic($event)">
+                                                    </span>
+                                                    <a class="btn fileinput-exists btn-red btn-sm"
+                                                        data-dismiss="fileinput" *ngIf="userInfo.imagePath != null"
+                                                        (click)="removeUserProfilePic()"
+                                                        style="padding: 4px 8px; margin-left: 5px; margin-right: 15px;">
+                                                        <i class="fa fa-times" style="color: white"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <hr>
+                                    </div>
+                                    <form role="form" [formGroup]="userInfoForm" novalidate>
+                                        <div class="row contactInfo">
+                                            <div
+                                                style="display: inline-block; padding-left: 15px; color: #5b5b60 !important; font-weight: 700; font-size: 15px;">
+                                                {{'Account.Manage.MainTitle.PRIMARYINFORMATION' | translate}}</div>
+                                            <div
+                                                style="display: inline-block; position: absolute; right: 45px; margin-top: 7px;">
+                                                <a *ngIf="!editUserForm" class="show-tab"
+                                                    (click)="editUserInformation()">
+                                                    <i class="fa fa-pencil editAddressIcon"
+                                                        style="float: right;top:-8px"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+
+                                        <div class="row"
+                                            [ngClass]="{'div-style': !editUserForm, 'div-style-edit': editUserForm}"
+                                            style="height: 65px;">
+                                            <div class="col-md-4 div-top ">
+                                                {{'Account.Manage.Profile.ContactInfo.Account.number' | translate}}
+                                            </div>
+                                            <div *ngIf="!editUserForm" class="data col-md-8 div-top ellipsisWidth"
+                                                style="width: 66% !important;">
+                                                <span data-toggle="tooltip" data-placement="top"
+                                                    [title]="userInfo.account_id"> {{userInfo.account_id }}</span>
+                                            </div>
+                                            <div *ngIf="editUserForm" class="form-group data col-md-8  edit-div-top"
+                                                [ngClass]="{ 'has-error': f.name.invalid && (f.name.dirty || f.name.touched) ,'has-success': f.name.valid && ( f.name.dirty || f.name.touched)}">
+                                                <input type="text" disabled class="form-control underline fontsize12"
+                                                    style="font-size: 14px;" [ngClass]="{ 'font-edit': editPhone }"
+                                                    id="first" placeholder="Account Id" [value]="userInfo.account_id">
+                                            </div>
+                                        </div>
+                                        <div class="row"
+                                            [ngClass]="{'div-style': !editUserForm, 'div-style-edit': editUserForm}"
+                                            style="padding-top: 5px;">
+                                            <div class="col-md-4 div-top ">
+                                                {{'Account.Manage.Profile.ContactInfo.Name.title' | translate}}
+                                            </div>
+                                            <div *ngIf="!editUserForm" class="data col-md-8 div-top ellipsisWidth"
+                                                style="width: 66% !important;">
+                                                <span data-toggle="tooltip" data-placement="top"
+                                                    [title]="userInfo.first+' '+ userInfo.last"> {{userInfo.first }}
+                                                    {{userInfo.last }}
+                                                </span>
+                                            </div>
+                                            <div *ngIf="editUserForm" class="form-group data col-md-8  edit-div-top"
+                                                [ngClass]="{ 'has-error': f.name.invalid && (f.name.dirty || f.name.touched) ,'has-success': f.name.valid && ( f.name.dirty || f.name.touched),'top-edit-name' : editPhone}">
+                                                <input type="text" class="form-control underline fontsize12"
+                                                    [ngClass]="{ 'font-edit': editPhone }" id="first" placeholder="Name"
+                                                    formControlName="name" [ngModel]="userInfo.name">
+                                                <div class="error small" *ngIf="f.name.errors && f.name.touched">
+                                                    <div *ngIf="f.name.errors.required">
+                                                        {{'Account.Manage.Profile.ContactInfo.Name.error' | translate}}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row"
+                                            [ngClass]="{'div-style': !editUserForm, 'div-style-edit': editUserForm}"
+                                            style="padding-top: 5px;">
+                                            <div class="col-md-4 div-top">
+                                                {{'Account.Manage.Profile.ContactInfo.Phone.title' | translate}}
+                                            </div>
+                                            <div class="col-md-8 div-top">
+                                                <span class="data" *ngIf="!editUserForm ">{{callingCode}}
+                                                    {{userInfo.phone}}
+                                                </span>
+                                            </div>
+                                            <div *ngIf="editUserForm " class="form-group col-md-2  edit-div-top"
+                                                style="padding-right: 0px;">
+                                                <input disabled type="text" [ngClass]="{ 'font-edit': editPhone }"
+                                                    class="form-control underline fontsize " [value]="callingCode"
+                                                    style="padding-left: 0px !important; padding-right: 0px !important;">
+                                            </div>
+                                            <div *ngIf="editUserForm " class="form-group col-md-6  edit-div-top"
+                                                [ngClass]="{ 'has-error': f.phone.invalid && (f.phone.dirty || f.phone.touched) ,'has-success': f.phone.valid && ( f.phone.dirty || f.phone.touched)}"
+                                                style="padding-left: 10px;">
+                                                <input type="number" [ngClass]="{ 'font-edit': editPhone }"
+                                                    class="form-control underline fontsize font-edi12" id="phone"
+                                                    placeholder="Mobile No." formControlName="phone"
+                                                    [ngModel]="userInfo.phone" (change)="mobilePost(userInfo.phone)">
+                                                <div *ngIf="phoneFlag" class="mat-text-warn" style="color:#a94442;">
+                                                    {{'Signup.Mobile.Error.registered' | translate}}
+                                                </div>
+                                                <div *ngIf=" f.phone.errors && f.phone.touched"
+                                                    class="error small invalid-feedback">
+                                                    <div *ngIf="f.phone.errors.required">
+                                                        {{'Account.Manage.Profile.ContactInfo.Phone.error' | translate}}
+                                                    </div>
+                                                </div>
+                                                <div *ngIf=" f.phone.errors && f.phone.touched"
+                                                    class="error small invalid-feedback">
+                                                    <div *ngIf="f.phone.errors.incorrect">
+                                                        {{'Account.Manage.Profile.ContactInfo.Phone.inValid' |
+                                                        translate}}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row"
+                                            [ngClass]="{'div-style': !editUserForm, 'div-style-edit': editUserForm}"
+                                            style="padding-top: 5px;">
+                                            <div class="col-md-4 div-top ">
+                                                {{'Account.Manage.Profile.ContactInfo.Email.title' | translate}}
+                                            </div>
+                                            <div class="col-md-8 div-top" *ngIf="!editUserForm">
+                                                <span class="ellipsisWidth data"
+                                                    style="padding:0px;font-size:15px;text-align: left;"
+                                                    data-toggle="tooltip" data-placement="top" [title]="userInfo.email">
+                                                    {{userInfo.email}}
+                                                </span>
+                                            </div>
+                                            <div *ngIf="editUserForm" class="form-group col-md-8 edit-div-top "
+                                                [ngClass]="{ 'has-error': f.email.invalid && (f.email.dirty || f.email.touched) ,'has-success': f.email.valid && ( f.email.dirty || f.email.touched)}">
+                                                <input type="text" [ngClass]="{ 'font-edit': editPhone }"
+                                                    class="form-control underline fontsize font-edi12" id="email"
+                                                    placeholder="Email ID" formControlName="email"
+                                                    [ngModel]="userInfo.email" (change)="emailPost(userInfo.email)">
+                                                <div *ngIf=" f.email.errors && f.email.touched || emailFlag"
+                                                    class="error small invalid-feedback">
+                                                    <div *ngIf="f.email.errors.required">
+                                                        {{'Account.Manage.Profile.ContactInfo.Email.Error.required' |
+                                                        translate}}
+                                                    </div>
+                                                    <div *ngIf="f.email.errors.email">
+                                                        {{'Account.Manage.Profile.ContactInfo.Email.Error.invalid' |
+                                                        translate}}
+                                                    </div>
+                                                </div>
+                                                <div *ngIf="emailFlag" class="mat-text-warn" style="color:#a94442;">
+                                                    Email ID is already registered
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row"
+                                            [ngClass]="{'div-style': !editUserForm, 'div-style-edit': editUserForm}"
+                                            style="padding-top: 5px;">
+                                            <div class="col-md-4 div-top ">
+                                                {{'Account.Manage.Profile.ContactInfo.City.title' | translate}}
+                                            </div>
+                                            <div class="col-md-8 div-top" *ngIf="!editUserForm">
+                                                <span class="data ellipsisWidth" data-toggle="tooltip"
+                                                    data-placement="top" [title]="userInfo.city"> {{userInfo.city}}
+                                                </span>
+                                            </div>
+                                            <div *ngIf="editUserForm" class="form-group col-md-8 "
+                                                style="padding-top: 3px;"
+                                                [ngClass]="{ 'has-error': f.city.invalid && (f.city.dirty || f.city.touched) ,'has-success': f.city.valid && ( f.city.dirty || f.city.touched)}">
+                                                <input type="text" [ngClass]="{ 'font-edit': editPhone }"
+                                                    class="form-control underline fontsize12 font-edi" id="city"
+                                                    placeholder="City" formControlName="city" [ngModel]="userInfo.city">
+                                                <div *ngIf=" f.city.errors && f.city.touched"
+                                                    class="error small invalid-feedback">
+                                                    <div *ngIf="f.city.errors.required">
+                                                        {{'Account.Manage.Profile.ContactInfo.City.error' | translate}}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row"
+                                            [ngClass]="{'div-style': !editUserForm, 'div-style-edit': editUserForm}"
+                                            style="height: 65px;">
+                                            <div class="col-md-4 div-top">
+                                                {{'Account.Manage.Profile.ContactInfo.Zip.title' | translate}}
+                                            </div>
+                                            <div class="col-md-8 div-top" *ngIf="!editUserForm">
+                                                <span class="data"> {{userInfo.zipCode}}
+                                                </span>
+                                            </div>
+                                            <div *ngIf="editUserForm" class="form-group col-md-8"
+                                                style="padding-top: 3px;"
+                                                [ngClass]="{ 'has-error': f.zipCode.invalid && (f.zipCode.dirty || f.zipCode.touched) ,'has-success': f.zipCode.valid && ( f.zipCode.dirty || f.zipCode.touched)}">
+                                                <input type="text" [ngClass]="{ 'font-edit': editPhone }"
+                                                    class="form-control underline fontsize font-edi12" id="zipCode"
+                                                    placeholder="Zip Code" [ngModel]="userInfo.zipCode"
+                                                    formControlName="zipCode">
+                                                <div *ngIf=" f.zipCode.errors && f.zipCode.touched"
+                                                    class="error small invalid-feedback">
+                                                    <div *ngIf="f.zipCode.errors.required">
+                                                        {{'Account.Manage.Profile.ContactInfo.Zip.error' | translate}}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row"
+                                            [ngClass]="{'div-style': !editUserForm, 'div-style-edit': editUserForm}"
+                                            style="padding-top: 5px;">
+                                            <div class="col-md-4 div-top">
+                                                {{'Account.Manage.Profile.ContactInfo.State.title' | translate}}
+                                            </div>
+                                            <div class="col-md-8 div-top" *ngIf="!editUserForm">
+                                                <span class="ellipsisWidth data"
+                                                    style="padding:0px;font-size:15px;text-align:left"
+                                                    data-toggle="tooltip" data-placement="top" [title]="userInfo.state">
+                                                    {{userInfo.state}}
+                                                </span>
+                                            </div>
+                                            <div *ngIf="editUserForm" class="form-group col-md-8 "
+                                                style="padding-top: 3px;"
+                                                [ngClass]="{ 'has-error': f.state.invalid && (f.state.dirty || f.state.touched) ,'has-success': f.state.valid && ( f.state.dirty || f.state.touched),'top-edit': editPhone}">
+                                                <select name="state" class="form-control" formControlName="state">
+                                                    <option value="">
+                                                        {{'Signup.State.placeholder' | translate}} </option>
+                                                    <option *ngFor="let item of provinces" value="{{item.name}}">
+                                                        {{item.name}}</option>
+                                                </select>
+                                                <div *ngIf=" f.state.errors && f.state.touched"
+                                                    class="error small invalid-feedback">
+                                                    <div *ngIf="f.state.errors.required">
+                                                        {{'Account.Manage.Profile.ContactInfo.State.error' | translate}}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row"
+                                            [ngClass]="{'div-style': !editUserForm, 'div-style-edit': editUserForm}">
+                                            <div class="col-md-4 div-top ">
+                                                {{'Account.Manage.Profile.ContactInfo.Country.title' | translate}}
+                                            </div>
+                                            <div class="col-md-8 div-top" *ngIf="!editUserForm">
+                                                <span class="data"> {{countryName}} </span>
+                                            </div>
+                                            <div *ngIf="editUserForm" class="form-group col-md-8  "
+                                                style="padding-top: 3px;"
+                                                [ngClass]="{ 'has-error': f.country.invalid && (f.country.dirty || f.country.touched) ,'has-success': f.country.valid && ( f.country.dirty || f.country.touched),'top-edit': editPhone}">
+                                                <select id="country" name="country"
+                                                    class="form-control underline fontsize12" formControlName="country"
+                                                    disabled>
+                                                    <option *ngFor="let item of countryList" value="{{item.name}}">
+                                                        {{item.name}}</option>
+                                                </select>
+                                                <div *ngIf=" f.country.errors && f.country.touched"
+                                                    class="error small invalid-feedback">
+                                                    <div *ngIf="f.country.errors.required">
+                                                        {{'Account.Manage.Profile.ContactInfo.Country.error' |
+                                                        translate}}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row" *ngIf="editUserForm">
+                                            <div class="td-bb-none td-action">
+                                                <span type="button"
+                                                    class="close button-css-opacity btn btn-o btn-primary"
+                                                    (click)="saveUserInfo()" aria-label="Close"
+                                                    style="margin-right: 5px;">
+                                                    {{'Utils.save' | translate}}
+                                                </span>
+                                                <span type="button"
+                                                    class="close button-css-opacity btn btn-primary cancel"
+                                                    data-dismiss="modal" aria-label="Close" (click)="cancelUserEdit()">
+                                                    {{'Utils.cancel' | translate}}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div>
+                                    <div *ngIf="responseFlag1 && userAddressInfo.length < 1"
+                                        style="color: red;padding-left: 3px;">
+                                        {{'UserAddress.noAddress' | translate}}</div>
+                                    <div class="row white-color" *ngFor="let item of userAddressInfo;let i =index"
+                                        style="margin: 0 0 25px 0;position: relative;">
+                                        <i class="fa fa-pencil editAddressIcon" (click)="editUserPopup(item)"></i>
+                                        <img *ngIf="!item.isDefault && !item.isBilling"
+                                            style="width: 30px; margin-right: 25px; float: right; cursor: pointer;"
+                                            src="assets/images/customer/delete_black_24dp.svg" alt="Clip-Two"
+                                            (click)="deletAddress(item)" data-toggle="tooltip" data-placement="bottom"
+                                            title="Delete">
+                                        <div class="shipAdd" *ngIf="item.isDefault && i==0"
+                                            style=" margin-bottom: 5px;">
+                                            {{'UserAddress.shippingAddressTitle' | translate}}</div>
+                                        <div class="shipAdd" *ngIf="item.isBilling" style="margin-bottom: 5px;">
+                                            {{'UserAddress.billingAddressTitle' | translate}}</div>
+                                        <div class="shipAdd" *ngIf="!item.isDefault && !item.isBilling"
+                                            style="padding-top:10px;padding-bottom:5px;">
+                                            {{'UserAddress.otherAddressTitle' | translate}}</div>
+                                        <div>
+                                            <div class="col-md-9 addressBox">
+                                                <p class="addDesign"
+                                                    style="font-weight: bold;color: #5b5b60;margin-bottom: 15px;">
+                                                    {{item.fullName}}</p>
+                                                <p class="addDesign">{{item.addressLine1}}</p>
+                                                <p class="addDesign" style="margin-bottom: 15px;">{{item.addressLine2}}
+                                                </p>
+                                                <p class="addDesign">{{item.city}},&nbsp; {{item.pinCode}} &nbsp;
+                                                    {{item.state}}
+                                                </p>
+                                                <p class="addDesign">{{item.country}}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-7 col-md-8" style="padding: 1.5rem;">
+                            <!-- <app-user-more-info *ngIf="showMoreInfo"> </app-user-more-info> -->
+                            <div class="row itemCenter">
+                                <div class="white-box-title">
+                                    {{ 'Clients' | translate}}
+                                </div>
+                            </div>
+                            <div class="white-color" style="padding-bottom: 15px; min-height: 150px;">
+                                <div class="row" *ngIf="showBaby">
+                                    <div class="col-md-12">
+                                        <div class="col-md-9 pl-0">
+                                            <div class="white-title-main">{{showBaby.name}}</div>
+                                            <div class="img-test-line">
+                                                <div class="left-img">
+                                                    <img class="baby-care" src="assets/images/customer/babyCare.svg"
+                                                        alt="Clip-Two" data-toggle="tooltip" data-placement="top"
+                                                        [title]="'Account.Manage.Profile.Babies.ProfileIcon.BabyProfile.babyAge.tooltip' | translate">
+                                                </div>
+                                                <div class="img-title">
+                                                    {{ showBaby.dateofbirth | DurationFormat : 'months' }}
+                                                </div>
+                                            </div>
+                                            <div class="img-test-line">
+                                                <div class="left-img">
+                                                    <img class="gift"
+                                                        src="assets/images/customer/Name on Certificate.svg"
+                                                        alt="Clip-Two" data-toggle="tooltip" data-placement="top"
+                                                        [title]="'Account.Manage.Profile.Babies.ProfileIcon.BabyProfile.certificateName.tooltip' | translate">
+                                                </div>
+                                                <div class="img-title">
+                                                    <span *ngIf="showBaby">{{showBaby.child_name_for_certificate
+                                                        }}</span>
+                                                </div>
+                                            </div>
+                                            <div class="img-test-line">
+                                                <div class="left-img">
+                                                    <img class="gift" src="assets/images/customer/Material Box_gray.svg"
+                                                        alt="Clip-Two" data-toggle="tooltip" data-placement="top"
+                                                        [title]="'Account.Manage.Profile.Babies.ProfileIcon.BabyProfile.packageName.tooltip' | translate">
+                                                </div>
+                                                <div class="img-title">
+                                                    <span
+                                                        *ngIf="showBaby && showBaby.Package">{{showBaby.Package.Package.name
+                                                        }}</span>
+                                                </div>
+                                            </div>
+                                            <div class="img-test-line">
+                                                <div class="left-img">
+                                                    <img class="gift" src="assets/images/customer/calender.svg"
+                                                        alt="Clip-Two" data-toggle="tooltip" data-placement="top"
+                                                        [title]="'Account.Manage.Profile.Babies.ProfileIcon.BabyProfile.addBaby.tooltip' | translate">
+                                                </div>
+                                                <div class="img-title">
+                                                    <span *ngIf="showBaby && showBaby.Package == null"> - </span>
+                                                    <span *ngIf="showBaby && showBaby.Package != null">{{
+                                                        showBaby.Package.renewal_date |
+                                                        DateFormat}}</span>
+                                                </div>
+                                            </div>
+                                            <div class="img-test-line">
+                                                <div class="left-img">
+                                                    <img class="peopleImg" src="assets/images/customer/peopleIcon.svg"
+                                                        alt="Clip-Two" data-toggle="tooltip" data-placement="top"
+                                                        [title]="'Account.Manage.Profile.Babies.ProfileIcon.BabyProfile.careGiverNames.tooltip' | translate">
+                                                </div>
+                                                <div class="img-title" *ngIf="showBaby">
+                                                    <span *ngFor="let care of showBaby.Users; let i=index"
+                                                        style="font-family: Poppins-Regular;">
+                                                        <span *ngIf="i > 0"> , </span> {{ care.first }}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 text-right pr-0">
+                                            <div class="fileinput fileinput-new" data-provides="fileinput">
+                                                <div class="user-image">
+                                                    <div
+                                                        [ngClass]="showBaby.imagePath ? 'fileinput-new thumbnail userProfileBack' : 'fileinput-new thumbnail camera-image'">
+                                                        <img class="photoIcon" *ngIf="showBaby.imagePath"
+                                                            [src]="appService.getImageUrl(showBaby.imagePath,'assets/images/default-user.png')"
+                                                            alt="">
+                                                        <img class="photoIcon" *ngIf="!showBaby.imagePath"
+                                                            src="assets/images/customer/add_a_photo.svg" alt=""
+                                                            data-toggle="tooltip" data-placement="bottom"
+                                                            title="Add Baby Photo">
+                                                    </div>
+                                                    <div class="user-image-buttons">
+                                                        <span class="btn btn-azure btn-file btn-sm btn-edit-profile">
+                                                            <span class="fileinput-exists">
+                                                                <i class="fa fa-pencil" style="color: white"></i>
+                                                            </span>
+                                                            <input id="profilePic" type="file" accept="image/*"
+                                                                (change)="updateBabyProfilePic($event)">
+                                                        </span>
+                                                        <a class="btn fileinput-exists btn-red btn-sm"
+                                                            data-dismiss="fileinput" *ngIf="showBaby.imagePath != null"
+                                                            style="padding: 4px 8px; margin-left: 5px; margin-right: 15px;"
+                                                            (click)="removeBabyProfilePic()">
+                                                            <i class="fa fa-times" style="color: white"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row" *ngIf="showBaby">
+                                    <div class="col-md-12">
+                                        <div class="col-md-9 pl-0">
+                                            <ul class="icons">
+                                                <li>
+                                                    <div class="">
+                                                        <img style="width: 30px;margin-right: 20px;"
+                                                            src="assets/images/customer/delete_black_24dp.svg"
+                                                            alt="Clip-Two" (click)="deletUserChild(showBaby)"
+                                                            data-toggle="tooltip" data-placement="bottom"
+                                                            title="Delete">
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="">
+                                                        <img style="width: 37px;"
+                                                            src="assets/images/customer/watch_later_black_24dp.svg"
+                                                            alt="Clip-Two" (click)="routine(showBaby)"
+                                                            data-toggle="tooltip" data-placement="bottom"
+                                                            title="Routine">
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <i class="fa fa-pencil editAddressI"
+                                                        (click)="editUserChild(showBaby)"></i>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-md-3 text-right pr-0  arrow right-mr">
+                                            <i class="fa fa-angle-left" (click)="changeBaby('back')"></i>
+                                            <span class="arrow-text">{{currentShowBabyNumber}} OF {{children.length}}
+                                            </span>
+                                            <i class="fa fa-angle-right" (click)="changeBaby('next')"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

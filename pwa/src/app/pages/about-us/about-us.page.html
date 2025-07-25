@@ -1,0 +1,33 @@
+<ion-header>
+	<ion-toolbar>
+		<ion-title class="ion-text-center">
+			<img *ngIf="clientBranding" [src]="imageBaseURL + clientBranding.learner_app_icon_path" class="header-logo" />
+			<img *ngIf="!clientBranding && appService.defaultPWALogo" [src]="appService.defaultPWALogo" class="header-logo" />
+			<img
+				*ngIf="!clientBranding &&!appService.defaultPWALogo"
+				src="assets/icons/icon-128x128.png"
+				class="header-logo" />
+		</ion-title>
+		<ion-buttons slot="start">
+			<ion-back-button (click)="back()" text=""></ion-back-button>
+		</ion-buttons>
+	</ion-toolbar>
+</ion-header>
+
+<ion-content>
+	<div style="padding: 6%">
+		<div class="center" style="margin-top: 4rem; margin-bottom: 3rem">
+			<ion-img
+				*ngIf="aboutUsInfo"
+				[src]="imageBaseURL + aboutUsInfo.theme_image_path"
+				class="ion-align-self-end"></ion-img>
+			<ion-img *ngIf="!aboutUsInfo" src="assets/icons/icon-128x128.png" class="ion-align-self-end"></ion-img>
+		</div>
+		<div>
+			<p *ngIf="aboutUsInfo" style="text-align: center; font-size: 1.5rem">{{aboutUsInfo.about_text}}</p>
+		</div>
+	</div>
+</ion-content>
+<footer>
+	<div class="appVersion">{{'Utils.appVersion' | translate}} {{appVersion}}</div>
+</footer>

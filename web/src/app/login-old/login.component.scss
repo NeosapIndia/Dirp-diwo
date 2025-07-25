@@ -1,0 +1,254 @@
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+$topnav-background-color: #222;
+:host {
+	display: block;
+}
+
+.login-logo-new {
+	width: 100%;
+	margin: auto;
+	a {
+		position: relative;
+		bottom: 22px;
+	}
+}
+
+.sendotp {
+	color: red;
+	// position: absolute;
+	right: 10px;
+	cursor: pointer;
+	top: 106%;
+}
+
+.login-page {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	overflow: auto;
+	background: $topnav-background-color;
+	text-align: center;
+	color: #fff;
+	padding: 3em;
+	.col-lg-4 {
+		padding: 0;
+	}
+	.input-lg {
+		height: 46px;
+		padding: 10px 16px;
+		font-size: 1.125rem;
+		line-height: 1.3333333;
+		border-radius: 0;
+	}
+	.input-underline {
+		background: 0 0;
+		border: none;
+		box-shadow: none;
+		border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+		color: #fff;
+		border-radius: 0;
+	}
+	.input-underline:focus {
+		border-bottom: 2px solid #fff;
+		box-shadow: none;
+	}
+	.rounded-btn {
+		-webkit-border-radius: 50px;
+		border-radius: 50px;
+		color: rgba(255, 255, 255, 0.8);
+		background: $topnav-background-color;
+		border: 2px solid rgba(255, 255, 255, 0.8);
+		font-size: 1.125rem;
+		line-height: 40px;
+		padding: 0 25px;
+	}
+	.rounded-btn:hover,
+	.rounded-btn:focus,
+	.rounded-btn:active,
+	.rounded-btn:visited {
+		color: rgba(255, 255, 255, 1);
+		border: 2px solid rgba(255, 255, 255, 1);
+		outline: none;
+	}
+	h1 {
+		font-weight: 300;
+		margin-top: 20px;
+		margin-bottom: 10px;
+		font-size: 2.25rem;
+		small {
+			color: rgba(255, 255, 255, 0.7);
+		}
+	}
+	.form-group {
+		padding: 8px 0;
+		input::-webkit-input-placeholder {
+			color: rgba(255, 255, 255, 0.6) !important;
+		}
+		input:-moz-placeholder {
+			/* Firefox 18- */
+			color: rgba(255, 255, 255, 0.6) !important;
+		}
+		input::-moz-placeholder {
+			/* Firefox 19+ */
+			color: rgba(255, 255, 255, 0.6) !important;
+		}
+		input:-ms-input-placeholder {
+			color: rgba(255, 255, 255, 0.6) !important;
+		}
+	}
+	.form-content {
+		padding: 40px 0;
+	}
+	.user-avatar {
+		-webkit-border-radius: 50%;
+		border-radius: 50%;
+		border: 2px solid #fff;
+	}
+}
+
+.textAlign {
+	text-align: center;
+}
+
+.marginLeft {
+	margin-left: 2%;
+	font-size: 1.188rem;
+	margin-top: 2%;
+}
+
+.country-input {
+	height: 50px;
+	width: 100%;
+	border-radius: 25px;
+	padding: 10px 15px !important;
+}
+
+.country-input2 {
+	height: 50px;
+	width: 100%;
+	border-radius: 25px 25px 0px 0px;
+	padding: 10px 15px !important;
+}
+
+.country-input3 {
+	height: 50px;
+	width: 100%;
+	border-radius: 25px;
+	padding: 10px 15px 10px 80px !important;
+}
+
+.country_list {
+	height: 200px;
+	overflow: scroll;
+	position: absolute;
+	z-index: 99;
+	background: #f2f2f2;
+	top: 50px;
+	width: 100%;
+	border-bottom: solid 1px;
+	border-left: solid 1px;
+	border-right: solid 1px;
+	padding: 14px 14px 14px 14px;
+	display: none;
+	border-radius: 0px 0px 24px 24px;
+}
+
+.country_list2 {
+	min-height: 210px;
+	max-height: 315px;
+	overflow: scroll;
+	position: absolute;
+	z-index: 99;
+	background: #f2f2f2;
+	top: 50px;
+	width: 100%;
+	border-bottom: solid 1px;
+	border-left: solid 1px;
+	border-right: solid 1px;
+	padding: 14px 14px 14px 14px;
+	display: block;
+	border-radius: 0px 0px 24px 24px;
+}
+
+.m-bottom tbody tr {
+	margin-bottom: 15px;
+}
+
+//Message board css
+.whiteBox {
+	font-family: 'Poppins-Regular' !important;
+	padding: 6%;
+	margin-bottom: 0px;
+	margin-top: 5%;
+	background-color: #fff !important;
+	border-radius: 24px !important;
+	cursor: pointer;
+	box-shadow: 0 4px 8px 0 #00000033, 0 6px 20px 0 #00000030 !important;
+}
+
+.cardTitle {
+	font-family: 'Poppins-Regular' !important;
+	font-size: 1rem;
+	font-weight: bold;
+	padding-left: 5%;
+}
+
+.cardDis {
+	font-family: 'Poppins-Regular' !important;
+	font-size: 1rem;
+	margin-top: 2%;
+	padding-left: 5%;
+}
+
+.banner-images {
+	width: 100%;
+	height: auto;
+	margin-top: 5%;
+	box-shadow: 0 4px 8px 0 #00000033, 0 6px 20px 0 #00000030 !important;
+	border-radius: 24px !important;
+}
+
+.bottom-text {
+	font-family: 'Poppins-Regular' !important;
+	margin-top: 1%;
+	font-size: 1rem;
+	font-weight: bold;
+	margin-left: 30%;
+	margin-right: 30%;
+	cursor: pointer;
+}
+
+.next-button {
+	font-family: 'Poppins-Regular' !important;
+	background-color: #6513e1;
+	width: 70px;
+	height: 70px;
+	border-radius: 50%;
+	box-shadow: 0 4px 8px 0 #00000033, 0 6px 20px 0 #00000030 !important;
+	text-align: center;
+	border: solid 1px #6513e1;
+}
+
+.error {
+	font-family: 'Poppins-Regular' !important;
+}
+
+.content .form-group label {
+	font-size: 1.25rem;
+}
+
+.placeHolder_font input::-webkit-input-placeholder {
+	font-size: 1rem !important;
+	padding-bottom: 3px;
+}
+
+.red-border {
+	border-color: red !important;
+}

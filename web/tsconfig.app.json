@@ -1,0 +1,39 @@
+/* To learn more about this file see: https://angular.io/config/tsconfig. */
+
+
+// this is default 
+// {
+//   "extends": "./tsconfig.json",
+//   "compilerOptions": {
+//     "outDir": "./out-tsc/app",
+//     "types": []
+//   },
+//   "files": [
+//     "src/main.ts"
+//   ],
+//   "include": [
+//     "src/**/*.d.ts"
+//   ]
+// }
+
+
+{
+  "extends": "./tsconfig.json",
+  "resolveJsonModule": true, 
+  "compilerOptions": {
+    "outDir": "../out-tsc/app",
+    "types": ["node"],
+    "baseUrl": "./",
+    "module": "es2020",
+    "skipLibCheck": true,
+    "noImplicitAny": false,
+  },
+  "lib": [
+    "es2020",
+    "dom"
+  ],
+  "exclude": [
+    "test.ts",
+    "**/*.spec.ts"
+  ]
+}

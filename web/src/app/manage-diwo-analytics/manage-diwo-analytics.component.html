@@ -1,0 +1,408 @@
+<div class="pageDiv" style="min-height: calc(100vh - 95px)">
+	<div style="margin-top: 2rem">
+		<div class="row">
+			<div class="panel header-panel-white">
+				<div class="col-md-3" style="padding-left: 0.5%">
+					<span class="mainTitle no-margin pageTitle_Main">{{ 'Pages.DiwoAnalytics.Home.pagetitle' | translate }}</span>
+				</div>
+				<!-- <div class="col-md-3" style="float: right; padding-right: 0">
+					<ng-select
+						[items]="allSubClientList"
+						class="ng-select-wrap"
+						placeholder="{{ 'Pages.DiwoAnalytics.Home.DripActivity.placeholder2' | translate }}"
+						bindLabel="name"
+						bindValue="id"
+						[multiple]="false"
+						[closeOnSelect]="true"
+						[searchable]="false"
+						[clearable]="false"
+						(change)="selectClient($event)"
+						[ngModelOptions]="{ standalone: true }"
+						[(ngModel)]="selectedClientId">
+					</ng-select>
+				</div> -->
+			</div>
+		</div>
+	</div>
+	<div style="margin-top: 2rem">
+		<div class="row">
+			<div class="panel panel-white-2" style="display: flex; flex-wrap: wrap; margin: 0 1% 1.9% 1%">
+				<div class="col-md-2 count-container">
+					<div class="sub-card count-container-wrap" [routerLink]="['/learners']">
+						<div class="total-count">{{ AllCount.activeLearer }}</div>
+						<p class="title">{{ 'Pages.DiwoAnalytics.Home.nofactivelearners' | translate }}</p>
+					</div>
+				</div>
+				<div class="col-md-2 count-container">
+					<div class="sub-card count-container-wrap" [routerLink]="['/module']">
+						<div class="total-count">{{ AllCount.workbookCount }}</div>
+						<p class="title">{{ 'Pages.DiwoAnalytics.Home.totalmodules' | translate }}</p>
+					</div>
+				</div>
+				<div class="col-md-2 count-container">
+					<div class="sub-card count-container-wrap" [routerLink]="['/diwo-courses']">
+						<div class="total-count">{{ AllCount.courseCount }}</div>
+						<p class="title">{{ 'Pages.DiwoAnalytics.Home.totalcourses' | translate }}</p>
+					</div>
+				</div>
+				<div class="col-md-2 count-container">
+					<div class="sub-card count-container-wrap" [routerLink]="['/diwo-pathways']">
+						<div class="total-count">{{ AllCount.pathwayCount }}</div>
+						<p class="title">{{ 'Pages.DiwoAnalytics.Home.publishpathways' | translate }}</p>
+					</div>
+				</div>
+				<div class="col-md-2 count-container">
+					<div class="sub-card count-container-wrap">
+						<div class="total-count">{{ AllCount.assignedCertificateCount }}</div>
+						<p class="title">{{ 'Pages.DiwoAnalytics.Home.certificatesawarded' | translate }}</p>
+					</div>
+				</div>
+				<div class="col-md-2 count-container">
+					<div class="sub-card count-container-wrap">
+						<div class="total-count">{{ AllCount.assignedBadgeCount }}</div>
+						<p class="title">{{ 'Pages.DiwoAnalytics.Home.badgeerarned' | translate }}</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- <div class="row">
+			<div class="panel panel-white-2" style="display: flex; flex-wrap: wrap; margin: 0 1% 1.9% 1%">
+				<div class="col-md-3 count-container">
+					<div class="sub-card count-container-wrap" [routerLink]="['/learners']">
+						<div class="total-count">{{ AllCount.sessionCount }}</div>
+						<p class="title">{{ 'Pages.DiwoAnalytics.Home.sessionconducted' | translate }}</p>
+					</div>
+				</div>
+				<div class="col-md-3 count-container">
+					<div class="sub-card count-container-wrap">
+						<div class="total-count">{{ AllCount.certifiedLearners }}</div>
+						<p class="title">{{ 'Pages.DiwoAnalytics.Home.certifiedlearners' | translate }}</p>
+					</div>
+				</div>
+				<div class="col-md-3 count-container">
+					<div class="sub-card count-container-wrap">
+						<div class="total-count">{{ AllCount.assignedCertificateCount }}</div>
+						<p class="title">{{ 'Pages.DiwoAnalytics.Home.certificatesawarded' | translate }}</p>
+					</div>
+				</div>
+				<div class="col-md-3 count-container">
+					<div class="sub-card count-container-wrap">
+						<div class="total-count">{{ AllCount.assignedBadgeCount }}</div>
+						<p class="title">{{ 'Pages.DiwoAnalytics.Home.badgeerarned' | translate }}</p>
+					</div>
+				</div>
+			</div>
+		</div> -->
+	</div>
+
+	<app-diwo-analytics-chart></app-diwo-analytics-chart>
+
+	<div style="margin-top: 0.2rem">
+		<div class="row">
+			<div class="panel panel-white-4">
+				<div class="report-header">
+					{{ 'Pages.DiwoAnalytics.Home.ActivityDeepDive.title' | translate }}
+				</div>
+				<div style="padding: 1rem 20px 0rem 20px">
+					<div class="row" style="display: flex; align-items: center">
+						<div class="col-md-2">
+							<div class="form-group" style="margin-top: 0">
+								<label>{{ 'Pages.DiwoAnalytics.Home.ActivityDeepDive.dropdown.title' | translate }}</label>
+								<ng-select
+									[items]="viewedByList"
+									class="ng-select-wrap"
+									placeholder="{{ 'Pages.DiwoAnalytics.Home.ActivityDeepDive.dropdown.placeholder' | translate }}"
+									bindLabel="name"
+									bindValue="value"
+									[multiple]="false"
+									[closeOnSelect]="true"
+									[searchable]="true"
+									[clearable]="false"
+									(change)="onChangeViewedBy($event)"
+									[(ngModel)]="selectedViewedBy"
+									[ngModelOptions]="{ standalone: true }">
+								</ng-select>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group" style="margin-top: 0">
+								<label style="visibility: hidden">{{
+									'Pages.DiwoAnalytics.Home.ActivityDeepDive.dropdown.title' | translate
+								}}</label>
+								<ng-select
+									[items]="AllModuleCoursePathwayList"
+									class="ng-select-wrap"
+									placeholder="{{ 'Pages.DiwoAnalytics.Home.ActivityDeepDive.placeholder' | translate }}"
+									bindLabel="IdTitle"
+									bindValue="id"
+									[multiple]="false"
+									[closeOnSelect]="true"
+									[searchable]="true"
+									[clearable]="false"
+									(change)="selecteModuleCoursePathway($event)"
+									[(ngModel)]="selectedModuleCoursePathway"
+									[ngModelOptions]="{ standalone: true }">
+								</ng-select>
+							</div>
+						</div>
+						<div class="col-md-3"></div>
+						<div class="col-md-1" style="float: right; margin-top: 2rem">
+							<a
+								class="btn pull-right export"
+								[ngStyle]="{ color: appService.whiteBrandingColor }"
+								(click)="exportToCsv()"
+								>{{ 'Pages.DiwoAnalytics.Home.ActivityDeepDive.export' | translate }}
+							</a>
+						</div>
+					</div>
+				</div>
+
+				<!--table start -->
+				<div style="margin-top: 1rem">
+					<div class="row">
+						<div class="panel panel-white" style="margin-bottom: 2rem; margin: 0 3% 2% 3%">
+							<div class="sub table-responsive">
+								<table class="table table-striped table-hover">
+									<thead>
+										<tr style="height: 80px">
+											<th
+												class="left tb-first-heading tb-line-height"
+												style="padding-left: 1rem; word-wrap: break-word; width: 8vw">
+												{{ 'Pages.DiwoAnalytics.Home.Table.Header.assignmentid' | translate }}
+											</th>
+											<th class="left tb-head-bg tb-line-height" style="word-wrap: break-word; width: 8vw">
+												{{ 'Pages.DiwoAnalytics.Home.Table.Header.status' | translate }}
+											</th>
+											<th class="left tb-head-bg tb-line-height" style="word-wrap: break-word; width: 10vw">
+												{{ 'Pages.DiwoAnalytics.Home.Table.Header.learnergroup' | translate }}
+											</th>
+											<th class="left tb-head-bg tb-line-height" style="word-wrap: break-word; width: 8vw">
+												{{ 'Pages.DiwoAnalytics.Home.Table.Header.start' | translate }}
+											</th>
+											<th class="left tb-head-bg tb-line-height" style="word-wrap: break-word; width: 8vw">
+												{{ 'Pages.DiwoAnalytics.Home.Table.Header.end' | translate }}
+											</th>
+											<th class="left tb-head-bg tb-line-height" style="word-wrap: break-word; width: 8vw">
+												{{ 'Pages.DiwoAnalytics.Home.Table.Header.assign' | translate }}
+											</th>
+											<th class="left tb-head-bg tb-line-height" style="word-wrap: break-word; width: 8vw">
+												{{ 'Pages.DiwoAnalytics.Home.Table.Header.learninginprogress' | translate }}
+											</th>
+
+											<th class="left tb-head-bg tb-line-height" style="word-wrap: break-word; width: 8vw">
+												{{ 'Pages.DiwoAnalytics.Home.Table.Header.completed' | translate }}
+											</th>
+
+											<th class="left tb-head-bg tb-line-height" style="word-wrap: break-word; width: 8vw">
+												{{ 'Pages.DiwoAnalytics.Home.Table.Header.certified' | translate }}
+											</th>
+
+											<th class="left tb-last-heading tb-line-height" style="word-wrap: break-word; width: 8vw">
+												{{ 'Pages.DiwoAnalytics.Home.Table.Header.badgesearned' | translate }}
+											</th>
+										</tr>
+									</thead>
+									<tbody *ngIf="learningDeepDiveData && learningDeepDiveData.length > 0">
+										<tr *ngFor="let item of learningDeepDiveData">
+											<td class="left" style="padding-left: 1rem; padding-top: 15px" class="two-row-td-tag">
+												<p class="two-row-p-tag" style="-webkit-box-orient: vertical; width: 7vw">
+													<span style="padding-top: 10px; cursor: pointer">
+														{{ item.DiwoAssignmentId }}
+													</span>
+												</p>
+											</td>
+											<td class="left" style="padding-top: 15px" class="two-row-td-tag">
+												<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+													{{ item.status }}
+												</p>
+											</td>
+											<td class="left" style="padding-top: 15px" class="two-row-td-tag">
+												<p
+													class="two-row-p-tag"
+													style="-webkit-box-orient: vertical"
+													data-toggle="tooltip"
+													data-placement="top"
+													[title]="item.userGroupTitle">
+													{{ item.userGroupTitle }}
+												</p>
+											</td>
+											<td class="left" style="padding-top: 15px" class="two-row-td-tag">
+												<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+													{{ item.StartDate | DateFormat }}
+												</p>
+											</td>
+											<td class="left" style="padding-top: 15px" class="two-row-td-tag">
+												<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+													<span class="status-pending"> {{ item.EndDate | DateFormat }}</span>
+												</p>
+											</td>
+
+											<td class="left" style="padding-top: 15px" class="two-row-td-tag">
+												<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+													{{ item.nominatedlearnercount }}
+												</p>
+											</td>
+											<td class="left" style="padding-top: 15px" class="two-row-td-tag">
+												<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+													{{ item.learnerinprogresscount }}
+												</p>
+											</td>
+											<td class="left" style="padding-top: 15px" class="two-row-td-tag">
+												<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+													{{ item.learnercompletedcount }}
+												</p>
+											</td>
+											<td class="left" style="padding-top: 15px" class="two-row-td-tag">
+												<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+													{{ item.learnercertifiedcount }}
+												</p>
+											</td>
+											<td class="left" style="padding-top: 15px" class="two-row-td-tag">
+												<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+													{{ item.badgeCount ? item.badgeCount : '-' }}
+												</p>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+								<div
+									style="text-align: center; margin-top: 2rem; margin-bottom: 3rem"
+									*ngIf="learningDeepDiveData && learningDeepDiveData.length == 0 && isDataLoaded">
+									<span [innerHTML]="iconObject['Results']" style="width: 25%"></span>
+									<h3>{{ 'Utils.nodataToShow' | translate }}</h3>
+									<p style="width: 50%; margin: 0 auto">
+										{{ 'Utils.diwonodataAvaliable' | translate }}
+									</p>
+								</div>
+								<div style="text-align: center; margin-top: 9rem; margin-bottom: 9rem" *ngIf="!isDataLoaded"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div style="margin-top: 1rem">
+		<div class="row">
+			<div class="panel panel-white-4">
+				<div class="report-header">
+					{{ 'Pages.DiwoAnalytics.Home.PostSessionReport.title' | translate }}
+				</div>
+				<div style="padding: 20px">
+					<div class="row">
+						<div class="col-md-12">
+							<div>
+								{{ 'Pages.DiwoAnalytics.Home.PostSessionReport.text' | translate }}
+							</div>
+						</div>
+						<div class="col-md-12" style="text-align: end; margin-top: 2rem">
+							<a
+								class="btn border_radius functionalBtn"
+								[ngStyle]="{
+									'background-color': appService.whiteBrandingColor,
+									border: '1px solid' + appService.whiteBrandingColor,
+									color: 'white'
+								}"
+								(click)="showReport()"
+								>{{ 'Pages.DiwoAnalytics.Home.PostSessionReport.viewReportButton' | translate }}</a
+							>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div style="margin-top: 1rem">
+		<div class="row">
+			<div class="panel panel-white-4">
+				<div class="report-header">
+					{{ 'Pages.DiwoAnalytics.Home.ReportDownload.title' | translate }}
+				</div>
+				<div style="padding: 20px">
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group" style="margin-top: 0">
+								<label> {{ 'Pages.DiwoAnalytics.Home.ReportDownload.Pickyourreport.title' | translate }}</label>
+								<ng-select
+									[items]="Reportdata"
+									class="ng-select-wrap"
+									placeholder="{{ 'Pages.DiwoAnalytics.Home.ReportDownload.Pickyourreport.placeholder' | translate }}"
+									bindLabel="lable"
+									bindValue="name"
+									[multiple]="false"
+									[closeOnSelect]="true"
+									[searchable]="false"
+									[clearable]="false"
+									[ngModelOptions]="{ standalone: true }"
+									[(ngModel)]="selectedReportName">
+								</ng-select>
+							</div>
+						</div>
+
+						<!-- Show sub-options only for SCORM Report -->
+						<div class="col-md-6" *ngIf="selectedReportName === 'SCORM_Report'">
+							<div class="form-group" style="margin-top: 0">
+								<label>{{ 'Pages.DiwoAnalytics.Home.selectScromType.title' | translate }}</label>
+								<ng-select
+									[items]="scormSubReports"
+									bindLabel="label"
+									bindValue="value"
+									[(ngModel)]="selectedScormReportType"
+									[ngModelOptions]="{ standalone: true }"
+									class="ng-select-wrap"
+									placeholder="{{ 'Pages.DiwoAnalytics.Home.selectScromType.placeholder' | translate }}"
+									[clearable]="false">
+								</ng-select>
+							</div>
+						</div>
+
+
+						<div
+							class="col-md-6 home head-title"
+							*ngIf="selectedReportName != 'Learnerwise_Badges_&_Certificates_Report'">
+							<div class="form-group" style="margin-top: 0">
+								<label>{{ 'Pages.DiwoAnalytics.Home.ReportDownload.Pickyourperiod.title' | translate }}</label>
+								<input
+									type="text"
+									ngxDaterangepickerMd
+									[showDropdowns]="true"
+									onkeydown="return false"
+									[(ngModel)]="selectedDate"
+									[showCustomRangeLabel]="true"
+									[alwaysShowCalendars]="true"
+									[ranges]="ranges"
+									[linkedCalendars]="true"
+									[isInvalidDate]="isInvalidDate"
+									[showClearButton]="false"
+									[showCancel]="true"
+									placeholder="DD-MM-YYYY - DD-MM-YYYY"
+									[autoApply]="true"
+									[locale]="{ applyLabel: 'ok', format: 'DD-MM-YYYY' }"
+									(startDateChanged)="startDateClicked($event)"
+									(endDateChanged)="endDateClicked($event)"
+									class="form-control"
+									autocomplete="off"
+									[ngModelOptions]="{ standalone: true }" />
+							</div>
+						</div>
+					</div>
+					<div class="row" style="text-align: end; margin-top: 2rem">
+						<a
+							class="btn border_radius functionalBtn"
+							[ngStyle]="{
+								'background-color': appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+								color: 'white'
+							}"
+							style="margin-right: 15px"
+							(click)="downloadReport()"
+							>{{ 'Utils.Action.download' | translate }}</a
+						>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

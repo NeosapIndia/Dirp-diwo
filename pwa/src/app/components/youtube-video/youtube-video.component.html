@@ -1,0 +1,12 @@
+<div class="video-container" #youtube_video_container>
+	<youtube-player
+		[videoId]="youtubeVideoId"
+		(stateChange)="stateChange($event)"
+		[startSeconds]="currentPlayTime"
+		[endSeconds]="endSeconds"
+		[width]="screenWidth"
+		[height]=""
+		screenHeight
+		#youtubePlayer>
+	</youtube-player>
+</div>

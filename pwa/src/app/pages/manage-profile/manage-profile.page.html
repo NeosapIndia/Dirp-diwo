@@ -1,0 +1,299 @@
+<ion-header *ngIf="projectType == 'drip' && isMobile && isMobileView">
+	<ion-toolbar class="toolbar-head-drip">
+		<ion-title class="ion-text-center drip">
+			<img
+				*ngIf="appBrandingInfo"
+				[src]="imageBaseURL + appBrandingInfo.learner_app_icon_path"
+				class="header-logo-drip" />
+			<img
+				*ngIf="!appBrandingInfo && appService.defaultPWALogo"
+				[src]="appService.defaultPWALogo"
+				class="header-logo-drip" />
+			<img
+				*ngIf="!appBrandingInfo &&!appService.defaultPWALogo"
+				src="assets/icons/icon-128x128.png"
+				class="header-logo-drip" />
+		</ion-title>
+	</ion-toolbar>
+</ion-header>
+
+<ion-header *ngIf="projectType == 'diwo' && isMobile && isMobileView">
+	<ion-toolbar class="toolbar-head">
+		<ion-title class="ion-text-center">
+			<img *ngIf="appBrandingInfo" [src]="imageBaseURL + appBrandingInfo.learner_app_icon_path" class="header-logo" />
+			<img
+				*ngIf="!appBrandingInfo && appService.defaultPWALogo"
+				[src]="appService.defaultPWALogo"
+				class="header-logo" />
+			<img
+				*ngIf="!appBrandingInfo &&!appService.defaultPWALogo"
+				src="assets/icon/diwo_full_logo.png"
+				class="header-logo" />
+		</ion-title>
+	</ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding-horizontal">
+	<ion-grid>
+		<ion-row class="ion-main-row equal-height-row">
+			<!-- Left Column - 4 -->
+			<ion-col size-sm="12" size-md="4" size-lg="4" class="left-column">
+				<div class="profile-container">
+					<div class="learner-card-section">
+						<div class="learner-info-wrapper">
+							<div class="learner-info">
+								<p class="learner-name">{{ learnerName }}</p>
+								<div class="exit-icon" (click)="onLogout()" matTooltip="Logout">
+									<img src="assets/images/landrover/logout_icon.png" alt="Exit Icon" title="Logout" />
+								</div>
+							</div>
+							<p class="learner-id" *ngIf="projectType == 'diwo'">
+								{{ 'Utils.learnerId' | translate }}: {{ learnerId }}
+							</p>
+							<p class="learner-id" *ngIf="projectType == 'drip'">
+								{{ 'Utils.contactId' | translate }}: {{ learnerId }}
+							</p>
+						</div>
+					</div>
+
+					<!-- Wrapper for all content except version -->
+					<div class="cards-wrapper">
+						<div class="card-section">
+							<p class="contact-info">{{ 'Utils.contactInfo' | translate }}</p>
+							<p class="phone" *ngIf="phone">
+								<span class="phone-label">{{ 'Utils.phone' | translate }}</span>:
+								<span class="phone-number"> {{ phone }}</span>
+							</p>
+							<p class="email" *ngIf="email">
+								<span class="email-label">{{ 'Utils.email' | translate }}</span>:
+								<span class="email-value">{{ email }}</span>
+							</p>
+						</div>
+
+						<div class="card-section">
+							<p class="account-details" *ngIf="parentClientName || branchName">
+								{{ 'Utils.accountdetails' | translate }}
+							</p>
+							<p class="parent-clientname" *ngIf="parentClientName">
+								<span class="account-label">{{ 'Utils.account' | translate }}</span>:
+								<span class="account-value">{{ parentClientName }}</span>
+							</p>
+							<!-- <p class="branch-name" *ngIf="branchName">
+								<span class="branch-label">{{ 'Utils.branch' | translate }}</span>:
+								<span class="branch-value">{{ branchName }}</span>
+							</p> -->
+						</div>
+
+						<div class="card-section">
+							<p class="other-details" *ngIf="roleList?.[0] || location">{{ 'Utils.otherInfo' | translate }}</p>
+							<p class="role" *ngIf="roleList?.[0]">
+								<span class="role-label">{{ 'Utils.role' | translate }}</span>:
+								<span class="role-value">{{ roleList[0]?.role }}</span>
+							</p>
+							<p class="location" *ngIf="location">
+								<span class="location-label">{{ 'Utils.location' | translate }}</span>:
+								<span class="location-value">{{ location }}</span>
+							</p>
+
+							<p *ngIf="showSwitchAccount" class="switch-account" (click)="gotToSwitchAccount()">
+								{{'Utils.switchaccountprofile' | translate}}
+							</p>
+
+							<p class="switch-lang" (click)="openLangModal()">{{'Utils.switchlanguage' | translate}}</p>
+						</div>
+					</div>
+
+					<!-- This remains at the bottom -->
+					<div class="card-section" *ngIf="appVerion">
+						<p class="version">{{appVerion}}</p>
+					</div>
+				</div>
+			</ion-col>
+
+			<!-- Right Column - 8 -->
+			<ion-col size-sm="12" size-md="8" size-lg="8" class="right-column">
+				<!-- First Row - Four Cards -->
+				<!-- projectType === 'diwo' && !(isMobile && isMobileView) -->
+				<ion-row class="stats-row-card" *ngIf="projectType === 'diwo' && (isdesktopView || isResizeTabLandScapView)">
+					<ion-col size="6" size-md="3" size-lg="3">
+						<div class="stats-card">
+							<div class="card-header">
+								<p class="card-title">{{ 'Utils.modulesCompleted' | translate }}</p>
+							</div>
+							<div class="card-content">
+								<p class="card-stats-count">
+									{{ WorkbooksCoursesPathwaysCertisBadgesCountListData?.workbooksCount || 0 }}
+								</p>
+							</div>
+						</div>
+					</ion-col>
+
+					<ion-col size="6" size-md="3" size-lg="3">
+						<div class="stats-card">
+							<div class="card-header">
+								<p class="card-title">{{ 'Utils.coursesCompleted' | translate }}</p>
+							</div>
+							<div class="card-content">
+								<p class="card-stats-count">
+									{{ WorkbooksCoursesPathwaysCertisBadgesCountListData?.coursesCount || 0 }}
+								</p>
+							</div>
+						</div>
+					</ion-col>
+
+					<ion-col size="6" size-md="3" size-lg="3">
+						<div class="stats-card">
+							<div class="card-header">
+								<p class="card-title">{{ 'Utils.pathwaysCompleted' | translate }}</p>
+							</div>
+							<div class="card-content">
+								<p class="card-stats-count">
+									{{ WorkbooksCoursesPathwaysCertisBadgesCountListData?.pathwaysCount || 0 }}
+								</p>
+							</div>
+						</div>
+					</ion-col>
+
+					<ion-col size="6" size-md="3" size-lg="3">
+						<div class="stats-card">
+							<div class="card-header">
+								<p class="card-title">{{ 'Utils.totalLearningMinutes' | translate }}</p>
+							</div>
+							<div class="card-content">
+								<p class="card-stats-count">
+									{{ WorkbooksCoursesPathwaysCertisBadgesCountListData?.totalLearningMinutes || 0 }}
+								</p>
+							</div>
+						</div>
+					</ion-col>
+				</ion-row>
+
+				<!-- Second Row - Two Columns -->
+				<ion-row *ngIf="projectType == 'diwo'">
+					<ion-col size="12" size-md="6" size-lg="6">
+						<div class="achievement-card">
+							<div class="achievement-card-header">
+								<p class="achievement-card-title">{{ 'Utils.mycertificate' | translate }}</p>
+							</div>
+
+							<div *ngFor="let certificate of certificateList;let i=index" class="achievement-card-content">
+								<a class="learner-achievements-data" (click)="downloadCertification(certificate.learnerAchivmentId)">
+									<u>{{certificate.data.CertificateLine2}}</u>
+								</a>
+							</div>
+
+							<!-- <div *ngFor="let certificate of certificateList;let i=index" class="certificates">
+								<span class="index">{{ i + 1 }}.</span>
+								<a (click)="downloadCertification(certificate.learnerAchivmentId)">
+									{{certificate.data.CertificateLine2}}
+								</a>
+							</div> -->
+						</div>
+					</ion-col>
+
+					<ion-col size="12" size-md="6" size-lg="6">
+						<div class="achievement-card">
+							<div class="achievement-card-header">
+								<p class="achievement-card-title">{{ 'Utils.mybadges' | translate }}</p>
+							</div>
+
+							<!-- <div class="achievement-card-content"  *ngFor="let badge of badgeList; let i = index">
+								<a class="learner-achievements-data"
+									href="https://cloud.google.com/learn/training/credentials" target="_blank"
+									rel="noopener noreferrer">
+									Champion Operator
+								</a>
+							</div> -->
+
+							<div class="achievement-card-content" *ngFor="let badge of badgeList; let i = index">
+								<a class="learner-achievements-data" (click)="openModal(badge)">
+									<span class="badge-title">
+										<u>{{ badge.BadgeData?.title }}</u>
+									</span>
+								</a>
+							</div>
+
+							<!-- Modal for Badge Details -->
+
+							<ion-modal [isOpen]="isModalOpen" (didDismiss)="closeModal()">
+								<ng-template class="model-template">
+									<div class="modal-content">
+										<!-- Close Button -->
+										<div class="modal-header">
+											<button class="close-button" (click)="closeModal()">✖</button>
+										</div>
+
+										<div
+											*ngIf="selectedBadge?.BadgeData?.finalIcon"
+											class="badge-image"
+											[innerHTML]="selectedBadge.BadgeData.finalIcon"></div>
+
+										<!-- <p class="achievement-title">{{ 'Utils.achievementUnlocked' | translate }}</p> -->
+										<p class="selected-badge-title">{{ selectedBadge?.BadgeData?.title }}</p>
+									</div>
+								</ng-template>
+							</ion-modal>
+
+							<!-- <div class="badge-grid">
+								<div class="badge-item" *ngFor="let badge of badgeList; let i = index">
+									<div [innerHTML]="badge.BadgeData?.finalIcon" class="badge-image"></div>
+									<span class="badge-title">{{ badge.BadgeData?.title }}</span>
+								</div>
+							</div> -->
+						</div>
+					</ion-col>
+				</ion-row>
+
+				<!-- Third Row About card- Full Width -->
+				<ion-row class="about-row">
+					<ion-col size="12">
+						<div class="about-card">
+							<div class="about-card-header">
+								<p class="about-card-title">{{ 'Utils.aboutLeapByTataAdvancedSystems' | translate }}</p>
+							</div>
+							<div class="about-card-content">
+								<p class="about-card-description">{{appBrandingInfo ? appBrandingInfo.about_text : '-'}}</p>
+							</div>
+							<div class="about-card-content" style="flex: 1 !important; display: flex; flex-direction: column">
+								<div class="about-card-footer">
+									<a (click)="goToToS()" [ngStyle]="{color:appService.whiteBrandingColor, cursor: 'pointer'}"
+										>{{'Utils.tearmofService' | translate}}</a
+									>
+
+									<a (click)="goPrivacyPolicy()" [ngStyle]="{color:appService.whiteBrandingColor, cursor: 'pointer'}">
+										{{'Utils.privacyPolicy' | translate}}
+									</a>
+								</div>
+							</div>
+						</div>
+					</ion-col>
+				</ion-row>
+			</ion-col>
+		</ion-row>
+	</ion-grid>
+
+	<div>
+		<!-- Simple Div Popup -->
+		<div *ngIf="isLangModalOpen" class="lang-popup-overlay">
+			<div class="lang-popup-box">
+				<div class="lang-popup-header">
+					<span>{{ 'Utils.selectlanguage' | translate }}</span>
+					<ion-icon name="close-outline" (click)="closeLangModal()" class="lang-close-icon"></ion-icon>
+				</div>
+
+				<div class="lang-popup-content">
+					<div class="select-container" [class.open]="isLangOpen">
+						<select
+							class="lang-select"
+							(change)="changeLang($event)"
+							[(ngModel)]="selectedLang"
+							(mousedown)="onLangOpen()"
+							(blur)="onLangClose()">
+							<option *ngFor="let lang of languages" [value]="lang.code">{{ lang.label }}</option>
+						</select>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</ion-content>

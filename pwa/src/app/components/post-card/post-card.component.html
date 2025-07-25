@@ -1,0 +1,207 @@
+<ion-card class="ion-no-margin" style="border-radius: 10px; border: 2px solid lightgray">
+	<ion-card-title style="padding-left: 0.2rem">
+		<ion-item lines="none" class="ion-no-padding">
+			<ion-avatar slot="start" class="avtar">
+				<img [src]="imageHost + avatar" class="card-image" />
+			</ion-avatar>
+			<ion-label>
+				<h2 class="item-title">{{ title }}</h2>
+				<p class="item-subtitle">{{ createdAt | humanizeDate }}</p>
+			</ion-label>
+		</ion-item>
+	</ion-card-title>
+
+	<ion-card-content class="ion-no-padding">
+		<ion-slides [pager]="pagerValue" [options]="imgConfig" (ionSlideDidChange)="ionSlideDidChange()" #slides>
+			<ion-slide
+				*ngFor="let item of asset_details"
+				[ngStyle]="{ 'max-height': item.displayType == 'Video' ? '75vh' : '56vh' }">
+				<img
+					*ngIf="item.displayType == 'Image'"
+					[src]="imageHost + item.path"
+					class="card-image"
+					style="cursor: pointer"
+					(click)="navigateToDetail(postId)" />
+				<img
+					*ngIf="item.displayType == 'Default Image'"
+					[src]="item.path"
+					class="card-image"
+					style="cursor: pointer"
+					(click)="navigateToDetail(postId)" />
+
+				<div
+					*ngIf="item.displayType == 'Video' || (item.displayType == 'Link' && item.selfHostedVideo)"
+					class="wrap-element"
+					style="padding-top: 0%; width: 100%; padding-top: 0rem">
+					<!------------- Vimeo Video --------------->
+					<app-vimeo-video
+						*ngIf="item.displayType == 'Video' && appService?.configurable_feature?.vimeo"
+						[video_asset]="item"
+						[UserId]="userId"
+						[assignPostId]="id"
+						videoType="Asset"
+						[isDripClickAction]="isDripClickAction"
+						[currentPlayTime]="consumed"
+						updateTime="true">
+					</app-vimeo-video>
+
+					<!--------Media CSM Video----------->
+					<app-cms-video
+						*ngIf="item.displayType == 'Video' && appService?.configurable_feature?.mediaCMS"
+						[video_asset]="item"
+						[UserId]="userId"
+						[assignPostId]="id"
+						videoType="Asset"
+						[isDripClickAction]="isDripClickAction"
+						[currentPlayTime]="consumed"
+						updateTime="true">
+					</app-cms-video>
+
+					<!------------- Youtube Video --------------->
+					<app-youtube-video
+						class="full-width-height"
+						*ngIf="item.displayType == 'Link' && item.selfHostedVideo"
+						[video_asset]="item"
+						[UserId]="userId"
+						videoType="Asset"
+						[assignPostId]="id"
+						[isDripClickAction]="isDripClickAction"
+						[currentPlayTime]="consumed"
+						updateTime="true">
+					</app-youtube-video>
+				</div>
+				<!-- <app-youtube-video
+					class="full-width-height"
+					*ngIf="item.displayType == 'Link' && item.selfHostedVideo"
+					[video_asset]="item"
+					[UserId]="userId"
+					videoType="Asset"></app-youtube-video> -->
+
+				<!-- -------------Link With Vimeo Video------- -->
+				<span *ngIf="item.displayType == 'Link' && item.path.includes('player.vimeo.com')">
+					<iframe
+						[src]="transform(item.path)"
+						width="100%"
+						frameborder="0"
+						allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+						allowfullscreen></iframe>
+				</span>
+			</ion-slide>
+		</ion-slides>
+
+		<!-- Prev and Next Buttons with Icons -->
+		<div *ngIf="(isdesktopView || isTabletLandscapeView) && tempType == 'Carousel'">
+			<ion-button fill="clear" (click)="prevSlide()" class="prev-button">
+				<img src="assets/images/workbook/arrow_left.svg" style="max-width: 100px" />
+			</ion-button>
+			<ion-button fill="clear" (click)="nextSlide()" class="next-button">
+				<img src="assets/images/workbook/arrow_right.svg" style="max-width: 100px" />
+			</ion-button>
+		</div>
+
+		<div class="worksheet-data">
+			<div class="flag-div">
+				<div class="activity-type">
+					<img
+						*ngIf="tempType == 'Quiz' || tempType == 'Quiz (Randomised)'"
+						src="assets/images/workbook/quiz_icon.svg"
+						class="worksheet-type-icon" />
+					<img
+						*ngIf="
+							tempType == 'Carousel' ||
+							tempType == 'Single Image' ||
+							tempType == 'Video' ||
+							tempType == 'HTML' ||
+							tempType == 'Custom Template'
+						"
+						src="assets/images/workbook/content_icon.svg"
+						class="learning-content-icon" />
+					<img *ngIf="tempType == 'Poll'" src="assets/images/workbook/poll_icon.svg" class="worksheet-type-icon" />
+					<img
+						*ngIf="tempType == 'Offline Task'"
+						src="assets/images/workbook/offline_task_icon.svg"
+						class="worksheet-type-icon" />
+					<img *ngIf="tempType == 'Survey'" src="assets/images/workbook/survey_icon.svg" class="worksheet-type-icon" />
+
+					<img
+						*ngIf="tempType == 'Spin The Wheel'"
+						src="assets/images/workbook/spin-the-wheel.svg"
+						class="worksheet-type-icon" />
+
+					<P
+						class="worksheet-type-text"
+						*ngIf="
+							tempType == 'Quiz' ||
+							tempType == 'Quiz (Randomised)' ||
+							tempType == 'Poll' ||
+							tempType == 'Offline Task' ||
+							tempType == 'Survey' ||
+							tempType == 'Spin The Wheel'
+						"
+						style="cursor: pointer"
+						(click)="navigateToDetail(postId)"
+						>{{ tempType == 'Quiz (Randomised)' ? 'Quiz' : tempType }}</P
+					>
+					<P
+						class="worksheet-type-text"
+						*ngIf="tempType == 'Carousel' || tempType == 'Single Image' || tempType == 'Video'"
+						style="cursor: pointer"
+						(click)="navigateToDetail(postId)"
+						>{{ 'Learning Content' }}
+					</P>
+					<P
+						class="worksheet-type-text"
+						*ngIf="tempType == 'HTML'"
+						style="cursor: pointer"
+						(click)="navigateToDetail(postId)"
+						>{{ 'HTML' }}
+					</P>
+					<P
+						class="worksheet-type-text"
+						*ngIf="tempType == 'Custom Template'"
+						style="cursor: pointer"
+						(click)="navigateToDetail(postId)"
+						>{{ 'Custom Template' }}
+					</P>
+				</div>
+				<div class="flag-group" style="display: flex">
+					<img src="assets/images/workbook/favorite.svg" *ngIf="!isLiked" (click)="onLike()" class="flag-icons" />
+					<!-- <img
+						src="assets/images/workbook/favorite_selected_icon.svg"
+						*ngIf="isLiked"
+						(click)="onLike()"
+						class="flag-icons" /> -->
+					<div *ngIf="isLiked" (click)="onLike()" class="flag-icons fav-icon-select"></div>
+					<img
+						src="assets/images/workbook/bookmark.svg"
+						*ngIf="!isBookmarked"
+						(click)="onBookmark()"
+						class="flag-icons" />
+
+					<!-- <img
+						src="assets/images/workbook/bookmark_selected_icon.svg"
+						*ngIf="isBookmarked"
+						(click)="onBookmark()"
+						class="flag-icons" /> -->
+					<div *ngIf="isBookmarked" (click)="onBookmark()" class="flag-icons bookmark-icon-select"></div>
+				</div>
+			</div>
+
+			<p class="description" (click)="navigateToDetail(postId)">{{ description }}</p>
+
+			<div *ngIf="externalLink && externalLinkLabel" style="margin: 1rem 0 0">
+				<!-- <ion-button fill="outline" size="small" (click)="goToexternalLink()"></ion-button> -->
+				<ion-button
+					(click)="goToexternalLink()"
+					class="submit-btn"
+					[ngStyle]="
+						appBrandingInfo && appBrandingInfo.accent_color
+							? { '--background': appBrandingInfo.accent_color }
+							: { '--background': '' }
+					">
+					{{ externalLinkLabel }}</ion-button
+				>
+			</div>
+		</div>
+	</ion-card-content>
+</ion-card>

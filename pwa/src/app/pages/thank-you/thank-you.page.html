@@ -1,0 +1,60 @@
+<ion-header>
+	<ion-toolbar class="toolbar-head">
+		<ion-buttons slot="start">
+			<ion-back-button (click)="back()" text=""></ion-back-button>
+		</ion-buttons>
+
+		<ion-title class="ion-text-center">
+			<img *ngIf="appBrandingInfo" [src]="imageBaseURL + appBrandingInfo.learner_app_icon_path" class="header-logo" />
+			<img
+				*ngIf="!appBrandingInfo && appService.defaultPWALogo"
+				[src]="appService.defaultPWALogo"
+				class="header-logo" />
+			<img
+				*ngIf="!appBrandingInfo &&!appService.defaultPWALogo"
+				src="assets/icons/icon-128x128.png"
+				class="header-logo" />
+		</ion-title>
+
+		<ion-buttons slot="end" style="visibility: hidden">
+			<ion-back-button (click)="back()" text=""></ion-back-button>
+		</ion-buttons>
+	</ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding-horizontal">
+	<ion-grid>
+		<ion-row [ngClass]="{ 'ion-main-row-desktop': isdesktopView || isTabletLandscapeView}">
+			<ion-col
+				size-sm="12"
+				size-md="9"
+				size-lg="7"
+				class="main-col"
+				[ngClass]="{ 'ion-main-col-desktop': isdesktopView || isTabletLandscapeView}">
+				<div>
+					<h1 style="text-align: center">{{'Utils.thankyouheader' | translate}}</h1>
+					<p>{{'Utils.thankyoupara' | translate}}</p>
+				</div>
+				<div>
+					<ion-button
+						[ngStyle]="appBrandingInfo && appBrandingInfo.accent_color ? {'--background' : appBrandingInfo.accent_color} : {'--background': ''}"
+						(click)="back()"
+						style="width: 100%">
+						{{'Utils.done' | translate}}
+					</ion-button>
+				</div>
+			</ion-col>
+		</ion-row>
+	</ion-grid>
+
+	<ion-refresher
+		ion-refresh-native
+		slot="fixed"
+		disabled="false"
+		(ionRefresh)="doRefresh($event)"
+		pullFactor="0.1"
+		pullMin="50"
+		pullMax="200">
+		<ion-refresher-content></ion-refresher-content>
+	</ion-refresher>
+</ion-content>

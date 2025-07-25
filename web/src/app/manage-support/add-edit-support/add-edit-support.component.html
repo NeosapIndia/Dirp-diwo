@@ -1,0 +1,128 @@
+<div class="container-fluid" style="margin: 2% 2% 2% 3%">
+	<div class="row add-edit-main-row">
+		<span>
+			<span
+				[routerLink]="['/support']"
+				style="margin-left: 0.25rem; color: #637373; margin-right: 2px; cursor: pointer"
+				>{{ 'Pages.Support.AddEdit.pagetitle' | translate }}</span
+			>
+			<img src="assets/images/arrow_forward.svg" style="width: 27px" />
+			<span style="margin-left: 3px" [ngStyle]="{ color: appService.whiteBrandingColor }">{{
+				'Pages.Support.AddEdit.subtitle' | translate
+			}}</span>
+		</span>
+	</div>
+
+	<form [formGroup]="supportTicketForm">
+		<div class="row section-wrapper" style="margin-top: 2rem">
+			<div class="form-title">
+				<span>{{ 'Pages.Support.AddEdit.RaiseSupportTicket.title' | translate }}</span>
+			</div>
+			<div class="row card-body">
+				<div class="row" style="margin-top: -15px">
+					<div class="col-md-6">
+						<div
+							class="form-group"
+							[ngClass]="{
+								'has-error': f.subject.invalid && (f.subject.dirty || f.subject.touched),
+								'has-success': f.subject.valid && (f.subject.dirty || f.subject.touched)
+							}">
+							<label>{{ 'Pages.Support.AddEdit.RaiseSupportTicket.Subject.title' | translate }}</label>
+							<ng-select
+								[items]="subjectList"
+								class="ng-select-wrap"
+								placeholder="{{ 'Pages.Support.AddEdit.RaiseSupportTicket.Subject.placeholder' | translate }}"
+								bindLabel="name"
+								bindValue="id"
+								[multiple]="false"
+								[closeOnSelect]="true"
+								[searchable]="false"
+								[clearable]="false"
+								formControlName="subject">
+							</ng-select>
+							<div class="error" *ngIf="f.subject.errors && f.subject.touched">
+								<div *ngIf="f.subject.errors.required">
+									{{ 'Pages.Support.AddEdit.RaiseSupportTicket.Subject.error' | translate }}
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-12">
+						<div
+							class="form-group"
+							[ngClass]="{
+								'has-error': f.description.invalid && (f.description.dirty || f.description.touched),
+								'has-success': f.description.valid && (f.description.dirty || f.description.touched)
+							}">
+							<label>{{ 'Pages.Support.AddEdit.RaiseSupportTicket.Description.title' | translate }}</label>
+							<textarea
+								class="form-control"
+								placeholder="{{ 'Pages.Support.AddEdit.RaiseSupportTicket.Description.placeholder' | translate }}"
+								formControlName="description"></textarea>
+							<div class="error" *ngIf="f.description.errors && f.description.touched">
+								<div *ngIf="f.description.errors.required">
+									{{ 'Pages.Support.AddEdit.RaiseSupportTicket.Description.error' | translate }}
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- <div class="col-md-6">
+                        <div class="form-group"
+                            [ngClass]="{'has-error': f.email.invalid && (f.email.dirty || f.email.touched) ,'has-success': f.email.valid && ( f.email.dirty || f.email.touched)}">
+                            <label>{{'Pages.Support.AddEdit.RaiseSupportTicket.Email.title' | translate}}</label>
+                            <input type="text" class="form-control"
+                                placeholder="{{'Pages.Support.AddEdit.RaiseSupportTicket.Email.placeholder' | translate}}"
+                                formControlName="email">
+                            <div class="error" *ngIf="f.email.errors && f.email.touched">
+                                <div *ngIf="f.email.errors.required">
+                                    {{'Pages.Support.AddEdit.RaiseSupportTicket.Email.error' | translate}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group"
+                            [ngClass]="{ 'has-error': f.phone.invalid && (f.phone.dirty || f.phone.touched) ,'has-success': f.phone.valid && ( f.phone.dirty || f.phone.touched)}">
+                            <label>{{'Pages.Support.AddEdit.RaiseSupportTicket.MobileNumber.title' | translate}}</label>
+                            <input type="number" class="form-control"
+                                placeholder="{{'Pages.Support.AddEdit.RaiseSupportTicket.MobileNumber.placeholder' | translate}}"
+                                formControlName="phone" autocomplete="disabled">
+                            <div *ngIf=" f.phone.errors && f.phone.touched" class="error invalid-feedback">
+                                <div *ngIf="f.phone.errors.required">
+                                    {{'Pages.Support.AddEdit.RaiseSupportTicket.MobileNumber.error' | translate}}</div>
+                            </div>
+                        </div>
+                    </div> -->
+				</div>
+			</div>
+		</div>
+	</form>
+
+	<div class="row">
+		<div class="row card-body" style="margin: 0px">
+			<div style="float: right; margin-top: 2rem">
+				<a
+					class="btn btn-o btn-primary border_radius functionalBtn"
+					style="
+						margin-right: 20px;
+						background-color: lightgray !important;
+						color: black;
+						border: 1px solid lightgray !important;
+					"
+					(click)="cancel()"
+					>Cancel</a
+				>
+				<a
+					class="btn border_radius functionalBtn"
+					style="margin-right: 0px"
+					[ngStyle]="{
+						'background-color': appService.whiteBrandingColor,
+						border: '1px solid' + appService.whiteBrandingColor,
+						color: 'white'
+					}"
+					(click)="saveTicket()"
+					>{{ 'Pages.Support.Home.addticket' | translate }}</a
+				>
+			</div>
+		</div>
+	</div>
+</div>

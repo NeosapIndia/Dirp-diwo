@@ -1,0 +1,323 @@
+ion-toolbar {
+	padding: 0 1rem;
+}
+
+.header-logo {
+	height: 2.188rem;;
+	vertical-align: middle;
+	margin-top: 0.625rem;
+	margin-bottom: 0.625rem;
+}
+
+ion-toolbar.toolbar-head {
+	height: 4.0625rem;
+}
+
+ion-grid {
+	padding: 0;
+}
+
+.page-wrapper {
+	display: flex;
+	margin-bottom: 0.125rem;
+}
+
+.page-wrapper2 {
+	padding: 0;
+	margin: 1rem auto 0;
+}
+
+.custom-card {
+	cursor: pointer;
+	// outline: 0.0625rem solid darkgray;
+	border: 1px solid darkgray;
+	width: 100%;
+	border-radius: 0.7rem;
+	overflow: hidden;
+	background-color: #e7eff0;
+}
+
+.wb-details {
+	padding: 0.5rem;
+}
+
+.back-to-top-btn {
+	background: var(--branding-color);
+	position: fixed;
+	border-radius: 50%;
+	width: 3rem;
+	height: 3rem;
+	color: #fff;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	transform: translateX(-50%);
+	right: 3%;
+	bottom: 5%;
+	z-index: 999;
+
+	#top-icon {
+		height: 45%;
+		width: 45%;
+	}
+}
+
+.wbImg {
+	width: 100%;
+}
+
+.wb-img {
+	width: 100%;
+	aspect-ratio: 16 / 9;
+	overflow: hidden;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background: #ddd;
+}
+
+.wb-img img {
+	// object-fit: cover;
+	object-fit: contain;
+	height: 100%;
+}
+
+.wbImg {
+	width: 100%;
+	object-fit: contain;
+}
+
+img {
+	max-width: 100%;
+}
+
+.wb-details {
+	padding: 0.825rem;
+}
+
+.wb-name {
+	font-size: 1rem;
+	font-weight: 500;
+	margin-bottom: 0.825rem;
+	overflow: hidden;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	word-wrap: break-word;
+	text-overflow: ellipsis;
+}
+
+progress {
+	width: 100%;
+	height: 0.35rem;
+	border-radius: 0.3125rem;
+	background-color: #e0e0e0;
+}
+
+progress::-webkit-progress-bar {
+	background-color: #e0e0e0;
+	border-radius: 0.3125rem;
+}
+
+progress::-webkit-progress-value {
+	background-color: #000000;
+	border-radius: 0.3125rem;
+}
+
+progress::-moz-progress-bar {
+	background-color: var(--branding-color);
+	border-radius: 0.3125rem;
+}
+
+//WEB Optimization
+.ion-main-col-desktop {
+	// max-width: 40% !important;
+	max-width: 95% !important;
+	width: 100% !important;
+	margin-top: 0 !important;
+}
+
+.ion-main-row-desktop {
+	display: flex;
+	flex-direction: column;
+	margin-top: 1rem;
+}
+
+.courseandmodulecount {
+	font-size: 0.813rem;
+	color: var(--branding-color);
+	font-weight: 475;
+}
+
+.ion-title-desktop {
+	width: 50%;
+	margin: 0 auto;
+}
+
+.learnerstatus {
+	font-size: 0.835rem;
+
+	font-weight: 600;
+}
+
+.ion-sort-desktop {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	height: 9vh;
+}
+
+p {
+	margin: 0;
+}
+
+.custom-gutter {
+	margin: 0 -0.5rem;
+}
+
+.custom-gutter ion-col {
+	padding: 0 0.5rem;
+	margin-bottom: 1rem;
+}
+
+.ion-sort-desktop ion-item {
+	--background: var(--ion-dynamic-background-color);
+}
+
+.mycourses {
+	font-size: 1.1rem;
+	padding-left: 0.2rem;
+	font-weight: 700;
+}
+
+/////////////////////////////
+
+.custom-search-container {
+	display: flex;
+	align-items: center;
+	border: 1px solid #ccc; /* Adjust border as needed */
+	border-radius: 8px; /* Rounded corners */
+	padding: 10px 15px; /* Inner padding */
+	margin: -0.5rem 0 1rem;
+	background-color: #fff; /* Background color */
+	width: 100%; /* Adjust width as needed */
+}
+
+.custom-search-input {
+	flex-grow: 1;
+	border: none;
+	outline: none;
+	// padding: 8px;
+	font-size: 1rem;
+}
+
+.custom-search-icon {
+	color: #666; /* Adjust icon color */
+	font-size: 20px;
+	cursor: pointer;
+}
+
+.no-padding {
+	padding: 0.21rem !important;
+}
+
+.header-md::after {
+	display: none !important;
+}
+
+@media only screen and (max-width: 425px) {
+	.wb-name {
+		margin-top: 0.25rem;
+		-webkit-line-clamp: 1;
+	}
+
+	.custom-card {
+		cursor: pointer;
+		max-height: 27.25rem; // 436px → rem
+		// outline: 0.0625rem solid darkgray;
+		border: 1px solid darkgray;
+	}
+}
+
+@media screen and (min-width: 600px) and (max-width: 1024px) and (orientation: landscape) {
+	.custom-card {
+		cursor: pointer;
+	}
+}
+
+@media only screen and (min-width: 992px) and (orientation: portrait) {
+	.custom-card {
+		cursor: pointer;
+		// outline: 0.0625rem solid darkgray;
+		border: 1px solid darkgray;
+	}
+}
+
+@media screen and (min-width: 1025px) and (orientation: landscape) {
+	.custom-card {
+		cursor: pointer;
+		// outline: 0.0625rem solid darkgray;
+		border: 1px solid darkgray;
+	}
+}
+
+// mobile responsive
+@media (max-width: 767px) {
+	.ion-sort-desktop {
+		height: 4vh !important;
+		margin-top: 0rem !important;
+		// margin-bottom: 1.35rem !important;
+		margin-bottom: 0.2rem !important;
+	}
+
+	.custom-search-container {
+		margin: 0.2rem 0 1rem !important;
+	}
+
+	.wb-name {
+		-webkit-line-clamp: 1;
+		font-size: 0.8rem !important;
+		font-weight: 501 !important;
+	}
+
+	.courseandmodulecount,
+	.learnerstatus {
+		font-size: 0.6rem !important;
+		font-weight: unset !important;
+	}
+}
+
+@media (min-width: 768px) {
+	.wb-name {
+		-webkit-line-clamp: 2;
+		height: 07vh;
+	}
+
+	.custom-gutter {
+		margin: 0 -0.5rem;
+	}
+	.custom-gutter ion-col {
+		padding: 0 0.75rem;
+		margin-bottom: 1.5rem;
+	}
+}
+
+@media only screen and (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+	.wb-name {
+		height: unset !important;
+		-webkit-line-clamp: 2 !important;
+	}
+}
+
+@media only screen and (min-width: 1024px) and (max-width: 1366.98px) and (orientation: landscape) {
+	.wb-name {
+		height: unset !important;
+		-webkit-line-clamp: 2 !important;
+	}
+}
+
+/* iPad Pro - Adjusting height separately */
+@media only screen and (min-width: 1366px) and (max-width: 1366.98px) and (orientation: landscape) {
+	.wb-name-pathways-courses {
+		height: 5vh !important;
+	}
+}

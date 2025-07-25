@@ -1,0 +1,627 @@
+<div class="container-fluid" style="margin: 2% 2% 2% 3%">
+	<div class="row add-edit-main-row">
+		<div class="col-md-6">
+			<span>
+				<span
+					[routerLink]="['/user']"
+					style="margin-left: 0.25rem; color: #637373; margin-right: 2px; cursor: pointer"
+					>{{ 'Pages.AdminUsers.AddEdit.pagetitle' | translate }}</span
+				>
+				<img src="assets/images/arrow_forward.svg" style="width: 27px" />
+				<span style="margin-left: 3px" [ngStyle]="{ color: appService.whiteBrandingColor }">{{
+					'Pages.AdminUsers.AddEdit.subtitle' | translate
+				}}</span>
+			</span>
+		</div>
+		<div class="col-md-6" style="padding-right: 0px">
+			<div
+				style="cursor: pointer; text-align: right"
+				*ngIf="isShowUseExistingUser"
+				style="width: 100%; text-align: end">
+				<a (click)="addLearnerAsAdminPopUp()" style="color: #637373; font-size: 12px">
+					{{
+						type === 'drip'
+							? ('Pages.AdminUsers.AddEdit.PersonalInfo.FirstName.useexistingcontact' | translate)
+							: ('Pages.AdminUsers.AddEdit.PersonalInfo.FirstName.useexistinglearner' | translate)
+					}}
+				</a>
+			</div>
+		</div>
+	</div>
+
+	<form [formGroup]="userForm" (ngSubmit)="saveUser()">
+		<div class="row section-wrapper" style="margin-top: 2rem">
+			<div class="form-title">
+				<span>{{ 'Pages.AdminUsers.AddEdit.PersonalInfo.title' | translate }}</span>
+			</div>
+			<div class="row card-body">
+				<div class="row" style="margin-top: -5px">
+					<!-- First Name -->
+					<div class="col-md-6">
+						<div
+							class="form-group"
+							style="margin-top: 0"
+							[ngClass]="{
+								'has-error': f.first.invalid && (f.first.dirty || f.first.touched),
+								'has-success': f.first.valid && (f.first.dirty || f.first.touched)
+							}">
+							<label>{{ 'Pages.AdminUsers.AddEdit.PersonalInfo.FirstName.title' | translate }}</label>
+							<input
+								type="text"
+								class="form-control"
+								id="first"
+								placeholder="{{ 'Pages.AdminUsers.AddEdit.PersonalInfo.FirstName.placeholder' | translate }}"
+								formControlName="first"
+								autocomplete="disabled" />
+							<div class="error" *ngIf="f.first.errors && f.first.touched">
+								<div *ngIf="f.first.errors.required">
+									{{ 'Pages.AdminUsers.AddEdit.PersonalInfo.FirstName.error' | translate }}
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- Country -->
+					<div class="col-md-6">
+						<div
+							class="form-group"
+							style="margin-top: 0"
+							[ngClass]="{
+								'has-error': f.country.invalid && (f.country.dirty || f.country.touched),
+								'has-success': f.country.valid && (f.country.dirty || f.country.touched)
+							}">
+							<label>{{ 'Pages.AdminUsers.AddEdit.PersonalInfo.Country.title' | translate }}</label>
+							<ng-select
+								[items]="allCountryList"
+								class="ng-select-wrap"
+								placeholder="{{ 'Pages.AdminUsers.AddEdit.PersonalInfo.Country.placeholder' | translate }}"
+								bindLabel="name"
+								bindValue="name"
+								[multiple]="false"
+								[closeOnSelect]="true"
+								[searchable]="true"
+								[clearable]="false"
+								formControlName="country"
+								(change)="changeCountry($event.name)">
+							</ng-select>
+							<div *ngIf="f.country.errors && f.country.touched" class="error invalid-feedback">
+								<div *ngIf="f.country.errors.required">
+									{{ 'Pages.AdminUsers.AddEdit.PersonalInfo.Country.error' | translate }}
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<!-- Last Name -->
+					<div class="col-md-6">
+						<div
+							class="form-group"
+							[ngClass]="{
+								'has-error': f.last.invalid && (f.last.dirty || f.last.touched),
+								'has-success': f.last.valid && (f.last.dirty || f.last.touched)
+							}">
+							<label> {{ 'Pages.AdminUsers.AddEdit.PersonalInfo.LastName.title' | translate }} </label>
+							<input
+								type="text"
+								class="form-control"
+								id="last"
+								placeholder="{{ 'Pages.AdminUsers.AddEdit.PersonalInfo.LastName.placeholder' | translate }}"
+								formControlName="last"
+								autocomplete="disabled" />
+							<div *ngIf="f.last.errors && f.last.touched" class="error invalid-feedback">
+								<div *ngIf="f.last.errors.required">
+									{{ 'Pages.AdminUsers.AddEdit.PersonalInfo.LastName.error' | translate }}
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- State -->
+					<div class="col-md-6">
+						<div
+							class="form-group"
+							[ngClass]="{
+								'has-error': f.state.invalid && (f.state.dirty || f.state.touched),
+								'has-success': f.state.valid && (f.state.dirty || f.state.touched)
+							}">
+							<label>{{ 'Pages.AdminUsers.AddEdit.PersonalInfo.State.title' | translate }} </label>
+							<ng-select
+								[items]="provinces"
+								class="ng-select-wrap"
+								placeholder="{{ 'Pages.AdminUsers.AddEdit.PersonalInfo.State.placeholder' | translate }}"
+								bindLabel="name"
+								bindValue="name"
+								[multiple]="false"
+								[closeOnSelect]="true"
+								[searchable]="true"
+								[clearable]="false"
+								formControlName="state">
+							</ng-select>
+							<div *ngIf="f.state.errors && f.state.touched" class="error invalid-feedback">
+								<div *ngIf="f.state.errors.required">
+									{{ 'Pages.AdminUsers.AddEdit.PersonalInfo.State.error' | translate }}
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<!-- Email -->
+					<div class="col-md-6">
+						<div
+							class="form-group"
+							[ngClass]="{
+								'has-error': f.email.invalid && (f.email.dirty || f.email.touched),
+								'has-success': f.email.valid && (f.email.dirty || f.email.touched)
+							}">
+							<label>{{ 'Pages.AdminUsers.AddEdit.PersonalInfo.Email.title' | translate }}</label>
+							<input
+								type="text"
+								class="form-control"
+								[ngClass]="{ 'red-border': emailError == true }"
+								id="email"
+								placeholder="{{ 'Pages.AdminUsers.AddEdit.PersonalInfo.Email.placeholder' | translate }}"
+								formControlName="email"
+								[(ngModel)]="email"
+								(change)="emailPost(email)"
+								(keyup)="emailValidation($event)"
+								autocomplete="disabled" />
+							<!-- <div *ngIf=" f.email.errors && f.email.touched" class="error invalid-feedback">
+                                <div *ngIf="f.email.errors.required">
+                                    {{'Pages.AdminUsers.AddEdit.PersonalInfo.Email.Error.required' | translate }}
+                                </div>
+                                <div *ngIf="f.email.errors.pattern">
+                                    {{'Pages.AdminUsers.AddEdit.PersonalInfo.Email.Error.invalid' | translate }}
+                                </div>
+                            </div> -->
+
+							<div class="error" *ngIf="f.email.errors && f.email.touched">
+								<div *ngIf="f.email.errors.required">
+									{{ 'Pages.AdminUsers.AddEdit.PersonalInfo.Email.Error.required' | translate }}
+								</div>
+								<div *ngIf="emailError">
+									{{ 'Pages.AdminUsers.AddEdit.PersonalInfo.Email.Error.invalid' | translate }}
+								</div>
+							</div>
+							<div *ngIf="emailFlag" class="mat-text-warn" style="color: #a94442">
+								{{ 'Pages.AdminUsers.AddEdit.PersonalInfo.Email.Error.registered' | translate }}
+							</div>
+						</div>
+					</div>
+
+					<!-- City -->
+					<div class="col-md-6">
+						<div
+							class="form-group"
+							[ngClass]="{
+								'has-error': f.city.invalid && (f.city.dirty || f.city.touched),
+								'has-success': f.city.valid && (f.city.dirty || f.city.touched)
+							}">
+							<label>{{ 'Pages.AdminUsers.AddEdit.PersonalInfo.City.title' | translate }}</label>
+							<input
+								type="text"
+								class="form-control"
+								id="city"
+								placeholder="{{ 'Pages.AdminUsers.AddEdit.PersonalInfo.City.placeholder' | translate }}"
+								formControlName="city"
+								autocomplete="disabled" />
+							<div *ngIf="f.city.errors && f.city.touched" class="error invalid-feedback">
+								<div *ngIf="f.city.errors.required">
+									{{ 'Pages.AdminUsers.AddEdit.PersonalInfo.City.error' | translate }}
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<!-- Phone -->
+					<div class="col-md-6">
+						<div
+							class="form-group"
+							[ngClass]="{
+								'has-error': f.phone.invalid && (f.phone.dirty || f.phone.touched),
+								'has-success': f.phone.valid && (f.phone.dirty || f.phone.touched)
+							}">
+							<div class="row">
+								<div class="col-md-1"></div>
+								<div class="col-md-11">
+									<label>{{ 'Pages.AdminUsers.AddEdit.PersonalInfo.Mobile.title' | translate }}</label>
+								</div>
+								<div class="col-md-1 phone_code">
+									<div>
+										<p>
+											{{ phoneCode }}
+										</p>
+									</div>
+								</div>
+								<div class="col-md-11">
+									<input
+										type="number"
+										class="form-control"
+										id="phone"
+										placeholder="{{ 'Pages.AdminUsers.AddEdit.PersonalInfo.Mobile.placeholder' | translate }}"
+										formControlName="phone"
+										[(ngModel)]="phone"
+										(change)="mobilePost(true)"
+										autocomplete="off" />
+								</div>
+							</div>
+
+							<div *ngIf="f.phone.errors && f.phone.touched" class="error invalid-feedback">
+								<div *ngIf="f.phone.errors.required">
+									{{ 'Pages.AdminUsers.AddEdit.PersonalInfo.Mobile.Error.required' | translate }}
+								</div>
+								<!-- <div *ngIf="f.phone.errors.maxlength ">Mobile No must be 10 characters</div> -->
+								<div *ngIf="isMobRequired">
+									{{ 'Pages.AdminUsers.AddEdit.PersonalInfo.Mobile.Error.invalid' | translate }}
+								</div>
+								<div *ngIf="f.phone.errors.invalid">
+									{{ 'Pages.Learners.AddEdit.PersonalInfo.Mobile.Error.invalid' | translate }}
+								</div>
+								<div *ngIf="f.phone.errors.pattern">
+									{{ 'Pages.AdminUsers.AddEdit.PersonalInfo.Mobile.Error.invalid' | translate }}
+								</div>
+							</div>
+							<div *ngIf="phoneFlag" class="mat-text-warn" style="color: #a94442">
+								{{ 'Pages.AdminUsers.AddEdit.PersonalInfo.Mobile.Error.registered' | translate }}
+							</div>
+						</div>
+					</div>
+
+					<!-- Zip Code -->
+					<div class="col-md-6">
+						<div class="form-group">
+							<label>{{ 'Pages.AdminUsers.AddEdit.PersonalInfo.ZipCode.title' | translate }}</label>
+							<input
+								type="text"
+								class="form-control"
+								id="zipCode"
+								placeholder="{{ 'Pages.AdminUsers.AddEdit.PersonalInfo.ZipCode.placeholder' | translate }}"
+								formControlName="zipCode"
+								autocomplete="disabled" />
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="row section-wrapper" style="margin-top: 2rem">
+			<div class="form-title">
+				<span>{{ 'Pages.AdminUsers.AddEdit.AccountInfo.AccTitle' | translate }}</span>
+			</div>
+			<div class="card-body">
+				<div class="row">
+					<div class="col-md-12">
+						<div *ngFor="let item of userClientRoleForm; let i = index">
+							<div class="row">
+								<div class="form-group col-md-6" [ngStyle]="{ 'margin-top': i == 0 ? '-5px' : '12px' }">
+									<img
+										src="assets/images/cancel_icon.svg"
+										*ngIf="i !== 0"
+										(click)="removeClient(i)"
+										style="width: 26px; float: right; margin-top: 1px; cursor: pointer" />
+									<label *ngIf="i == 0" [ngClass]="{ error: item.isParentError == true }">
+										{{ 'Pages.AdminUsers.AddEdit.AccountInfo.ParentAccount.title' | translate }}</label
+									>
+									<label *ngIf="i !== 0" [ngClass]="{ error: item.isParentError == true }">
+										{{ 'Pages.AdminUsers.AddEdit.AccountInfo.ParentAccount.title' | translate }}
+										{{ i + 1 }}</label
+									>
+									<ng-select
+										[items]="clientListForForm"
+										class="ng-select-wrap"
+										[(ngModel)]="item.clientId"
+										[ngModelOptions]="{ standalone: true }"
+										placeholder="{{ 'Pages.AdminUsers.AddEdit.AccountInfo.ParentAccount.placeholder' | translate }}"
+										bindLabel="name"
+										bindValue="id"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="true"
+										[clearable]="false"
+										(change)="changeAccount($event, i)">
+									</ng-select>
+									<div class="error invalid-feedback" *ngIf="item.isParentError == true">
+										{{ 'Pages.AdminUsers.AddEdit.AccountInfo.ParentAccount.error' | translate }}
+									</div>
+								</div>
+								<div class="col-md-6" style="margin-top: 1.5rem">
+									<!-- Unification -->
+									<div *ngIf="item.showAccess || (item.isAccess && item.showAccess)">
+										<div class="form-group" style="float: right; margin-bottom: -14px; margin-right: 14px">
+											<label style="vertical-align: top; margin-top: 3px; margin-right: 15px" *ngIf="type === 'diwo'">{{
+												'Utils.addforDrip' | translate
+											}}</label>
+											<label style="vertical-align: top; margin-top: 3px; margin-right: 15px" *ngIf="type === 'drip'">
+												{{ 'Utils.addforDiwo' | translate }}</label
+											>
+											<label class="switch">
+												<input
+													type="checkbox"
+													class="form-control js-switch"
+													[(ngModel)]="item.isAccess"
+													(change)="onChangeDiwoAdminAccess(item.isAccess)"
+													[ngModelOptions]="{ standalone: true }" />
+												<span class="slider round"></span>
+											</label>
+										</div>
+									</div>
+								</div>
+
+								<!-- <div *ngIf="item.parentSubClientList.length > 0" class="form-group col-md-6"
+                                    [ngStyle]="{'margin-top': i == 0 ? '-5px' : '12px' }">
+                                    <label>{{'Pages.AdminUsers.AddEdit.AccountInfo.BranchName.title' | translate
+                                        }}</label>
+                                    <ng-select [items]="item.parentSubClientList"
+                                        style="font-size: 1em; position: relative;" [(ngModel)]="item.branchClientId"
+                                        [ngModelOptions]="{standalone: true}"
+                                        placeholder="{{'Pages.AdminUsers.AddEdit.AccountInfo.BranchName.placeholder' | translate }}"
+                                        bindLabel="name" bindValue="id" [multiple]="false" [closeOnSelect]="true"
+                                        [searchable]="false" [clearable]="false"
+                                        (change)="selectedSubChildClient($event,i)">
+                                    </ng-select>
+                                </div> -->
+
+								<div
+									class="col-md-12 form-group"
+									[ngClass]="{
+										'has-error': f.role.invalid && (f.role.dirty || f.role.touched),
+										'has-success': f.role.valid && (f.role.dirty || f.role.touched)
+									}">
+									<label [ngClass]="{ error: item.isRoleError == true }">
+										{{ 'Pages.AdminUsers.AddEdit.AccountInfo.Roles.title' | translate }}
+									</label>
+									<div *ngIf="!item.showAccess && !item.isAccess">
+										<ng-select
+											[items]="allRoles"
+											(change)="changeRole($event, i)"
+											class="ng-select-wrap"
+											[(ngModel)]="item.role"
+											[ngModelOptions]="{ standalone: true }"
+											placeholder="{{ 'Pages.AdminUsers.AddEdit.AccountInfo.Roles.placeholder' | translate }}"
+											bindLabel="name"
+											bindValue="id"
+											[multiple]="true"
+											[closeOnSelect]="false"
+											[searchable]="false">
+										</ng-select>
+									</div>
+									<div *ngIf="item.showAccess && item.isAccess">
+										<ng-select
+											[items]="tempUnificationAllRoles"
+											(change)="changeRole($event, i)"
+											class="ng-select-wrap"
+											[(ngModel)]="item.role"
+											[ngModelOptions]="{ standalone: true }"
+											placeholder="{{ 'Pages.AdminUsers.AddEdit.AccountInfo.Roles.placeholder' | translate }}"
+											bindLabel="name"
+											bindValue="id"
+											[multiple]="true"
+											[closeOnSelect]="false"
+											[searchable]="false">
+										</ng-select>
+									</div>
+									<div *ngIf="item.showAccess && !item.isAccess">
+										<ng-select
+											[items]="allRoles"
+											(change)="changeRole($event, i)"
+											class="ng-select-wrap"
+											[(ngModel)]="item.role"
+											[ngModelOptions]="{ standalone: true }"
+											placeholder="{{ 'Pages.AdminUsers.AddEdit.AccountInfo.Roles.placeholder' | translate }}"
+											bindLabel="name"
+											bindValue="id"
+											[multiple]="true"
+											[closeOnSelect]="false"
+											[searchable]="false">
+										</ng-select>
+									</div>
+									<div class="error invalid-feedback" *ngIf="item.isRoleError == true">
+										{{ 'Pages.AdminUsers.AddEdit.AccountInfo.Roles.error' | translate }}
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="form-group" style="margin-bottom: -2px">
+							<div class="text-right add-circle" style="margin-right: 0px; margin-top: 15px; cursor: pointer">
+								<div class="info-icon-div">
+									<div>
+										<span>{{ 'Pages.AdminUsers.AddEdit.AccountInfo.addbtnplaceholder' | translate }}</span>
+									</div>
+									<div>
+										<div
+											class="info-icon"
+											[innerHTML]="iconObject['add_icon_30']"
+											(click)="addMoreClient()"
+											title="{{ 'Pages.AdminUsers.AddEdit.AccountInfo.addbtntooltip' | translate }}"></div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div
+							*ngIf="clientListForLearnerRole.length > 0"
+							class="form-group"
+							[ngClass]="{
+								'has-error':
+									f.clientIdForLearnerRole.invalid &&
+									(f.clientIdForLearnerRole.dirty || f.clientIdForLearnerRole.touched),
+								'has-success':
+									f.clientIdForLearnerRole.valid && (f.clientIdForLearnerRole.dirty || f.clientIdForLearnerRole.touched)
+							}">
+							<label>{{
+								type === 'drip'
+									? ('Pages.AdminUsers.AddEdit.AccountInfo.ClientLearnerRole.contacttitle' | translate)
+									: ('Pages.AdminUsers.AddEdit.AccountInfo.ClientLearnerRole.title' | translate)
+							}}</label>
+							<ng-select
+								[items]="clientListForLearnerRole"
+								(ngModelChange)="changeClientforLearnerRole($event)"
+								class="ng-select-wrap"
+								placeholder="{{
+									type === 'drip'
+										? ('Pages.AdminUsers.AddEdit.AccountInfo.ClientLearnerRole.contactplaceholder' | translate)
+										: ('Pages.AdminUsers.AddEdit.AccountInfo.ClientLearnerRole.placeholder' | translate)
+								}}"
+								bindLabel="name"
+								bindValue="id"
+								[multiple]="false"
+								[closeOnSelect]="true"
+								[searchable]="false"
+								formControlName="clientIdForLearnerRole">
+							</ng-select>
+
+							<div
+								*ngIf="f.clientIdForLearnerRole.errors && f.clientIdForLearnerRole.touched"
+								class="error invalid-feedback">
+								<div *ngIf="f.clientIdForLearnerRole.errors.required">
+									{{
+										type === 'drip'
+											? ('Pages.AdminUsers.AddEdit.AccountInfo.ClientLearnerRole.contacterror' | translate)
+											: ('Pages.AdminUsers.AddEdit.AccountInfo.ClientLearnerRole.error' | translate)
+									}}
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="row" style="float: right; margin-top: 2rem">
+			<a
+				class="btn btn-o btn-primary border_radius functionalBtn"
+				style="
+					margin-right: 20px;
+					background-color: lightgray !important;
+					color: black;
+					border: 1px solid lightgray !important;
+				"
+				(click)="cancel()"
+				>{{ 'Utils.cancel' | translate }}</a
+			>
+			<a
+				[ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}"
+				class="btn border_radius functionalBtn"
+				(click)="submit.click()"
+				*ngIf="this.editUserId && !selectedLearnerId"
+				>{{ 'Pages.AdminUsers.AddEdit.updateadminUser' | translate }}</a
+			>
+			<a
+				class="btn border_radius functionalBtn"
+				[ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}"
+				(click)="submit.click()"
+				*ngIf="!this.editUserId"
+				>{{ 'Pages.AdminUsers.AddEdit.saveadminUser' | translate }}</a
+			>
+			<a
+				[ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}"
+				class="btn border_radius functionalBtn"
+				(click)="submit.click()"
+				*ngIf="editUserId && selectedLearnerId"
+				>{{ 'Pages.AdminUsers.AddEdit.saveadminUser' | translate }}</a
+			>
+			<button type="submit" #submit style="display: none"></button>
+		</div>
+	</form>
+</div>
+
+<!-- Add Learner As Admin User MODAL -->
+<div
+	class="modal fade credit-note"
+	id="addLearnerAsAdminModal"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="myModalLabel"
+	aria-hidden="true"
+	data-backdrop="static"
+	data-keyboard="false">
+	<div class="modal-dialog" style="width: 40%; margin-top: 15%; margin-left: auto; margin-right: auto">
+		<div class="modal-content">
+			<div
+				class="modal-header"
+				[ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}">
+				<button
+					type="button"
+					class="close"
+					data-dismiss="modal"
+					aria-label="Close"
+					(click)="canceladdLearnerAsAdminPopUp()">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					<span>{{
+						type === 'drip'
+							? ('Pages.AdminUsers.Home.Modal.UseExistingContacts.title' | translate)
+							: ('Pages.AdminUsers.Home.Modal.UseExistingContacts.titleLearner' | translate)
+					}}</span>
+				</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="form-group">
+							<input
+								type="text"
+								class="form-control"
+								id="AccountId"
+								placeholder="{{
+									type === 'drip'
+										? ('Pages.AdminUsers.Home.Modal.UseExistingContacts.placeholder' | translate)
+										: ('Pages.AdminUsers.Home.Modal.UseExistingContacts.placeholderLearner' | translate)
+								}}"
+								[(ngModel)]="selectedLearnerId"
+								autocomplete="off" />
+						</div>
+					</div>
+				</div>
+				<div
+					class="visible-md visible-lg visible-sm visible-xs"
+					style="text-align: right; margin-bottom: 0.75rem; margin-top: 1.5rem">
+					<a
+						class="btn-xs action-edit-btn action-yes-no"
+						style="margin-right: 2%; padding: 7px 20px"
+						[ngStyle]="{
+							'background-color': appService.whiteBrandingColor,
+							border: '0.5px solid' + appService.whiteBrandingColor,
+							color: 'white'
+						}"
+						(click)="addLearnerAsAdminUser()"
+						>{{ 'Utils.Action.add' | translate }}</a
+					>
+					<a
+						class="btn-xs action-pause-btn action-yes-no"
+						style="margin-right: 1%; padding: 7px 23px"
+						[ngStyle]="{
+							color : appService.whiteBrandingColor,
+							border: '1px solid' + appService.whiteBrandingColor,
+						}"
+						(click)="canceladdLearnerAsAdminPopUp()"
+						>{{ 'Utils.cancel' | translate }}</a
+					>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

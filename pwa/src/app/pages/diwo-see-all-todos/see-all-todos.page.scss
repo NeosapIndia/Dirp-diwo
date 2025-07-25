@@ -1,0 +1,388 @@
+ion-toolbar {
+	padding: 0 1rem;
+}
+
+.header-logo {
+	height: 2.188rem;
+	vertical-align: middle;
+	margin-top: 0.625rem;
+	margin-bottom: 0.625rem;
+}
+
+ion-toolbar.toolbar-head {
+	height: 4.063rem;
+}
+
+ion-grid {
+	padding: 0;
+}
+
+.page-wrapper {
+	display: flex;
+	margin-bottom: 0.125;
+}
+
+.page-wrapper2 {
+	padding: 0px;
+	margin: 1rem auto 0;
+}
+
+.custom-card {
+	cursor: pointer;
+	// outline: 0.0625rem solid darkgray;
+	border: 1px solid darkgray;
+	width: 100%;
+	border-radius: 0.7rem;
+	overflow: hidden;
+	background-color: #e7eff0;
+}
+
+// .wb-details {
+// 	padding: 0.5rem;
+// }
+
+.wb-details {
+	// padding: 0.725rem;
+	padding: 0.825rem;
+}
+
+.back-to-top-btn {
+	background: var(--branding-color);
+	position: fixed;
+	border-radius: 50%;
+	width: 3rem;
+	height: 3rem;
+	color: #fff;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	transform: translateX(-50%);
+	right: 3%;
+	bottom: 5%;
+	z-index: 999;
+
+	#top-icon {
+		height: 45%;
+		width: 45%;
+	}
+}
+
+.wbImg {
+	width: 100%;
+	object-fit: contain;
+}
+
+p {
+	margin: 0;
+}
+
+.wb-img {
+	width: 100%; /* Adjust as per your layout */
+	aspect-ratio: 16 / 9;
+	overflow: hidden;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background: #ddd; /* Optional: Placeholder for empty spaces */
+}
+
+.wb-img img {
+	// object-fit: cover;
+	object-fit: contain;
+	height: 100%;
+}
+
+.assigned-date {
+	color: black;
+	font-size: 0.8rem;
+	font-weight: 600;
+}
+
+.notLive,
+.notLive2 {
+	opacity: 0.5 !important;
+}
+
+.live {
+	opacity: 1;
+}
+
+.dot-live {
+	height: 8px;
+	width: 8px;
+	background-color: green;
+	border-radius: 50%;
+	display: inline-block;
+}
+
+.dot-startingsoon {
+	height: 8px;
+	width: 8px;
+	background-color: orange;
+	border-radius: 50%;
+	display: inline-block;
+}
+
+.ion-main-col-desktop {
+	// max-width: 40% !important;
+	max-width: 95% !important;
+	width: 100% !important;
+	margin-top: 0 !important;
+}
+
+.ion-main-row-desktop {
+	display: flex;
+	flex-direction: column;
+}
+
+///////////////////////////////NEW LMS CSS//////////////////////////////
+
+.moduletype-name {
+	color: var(--branding-color); /* Default color if the variable is not set */
+	font-size: 0.835rem;
+	font-weight: 475;
+}
+
+.wb-name {
+	font-size: 1rem;
+	font-weight: 500;
+	margin-bottom: 0.825rem;
+	overflow: hidden;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	word-wrap: break-word;
+	text-overflow: ellipsis;
+	// height: 16vh;
+}
+
+.ion-title-desktop {
+	width: 50%;
+	margin: 0 auto;
+}
+
+.ion-sort-desktop {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	height: 9vh;
+}
+
+.ion-sort-desktop ion-item {
+	--background: var(--ion-dynamic-background-color);
+}
+
+// .todos,
+// .mymodules {
+// 	font-size: 1rem;
+// 	padding-left: 0.2rem;
+// }
+
+.todos,
+.mymodules {
+	font-size: 1.1rem;
+	padding-left: 0.2rem;
+	font-weight: 700;
+}
+
+.learnerstatus {
+	font-size: 0.8rem;
+	// color: #4e586e;
+	font-weight: 600;
+}
+
+.custom-gutter {
+	/* Negative horizontal margin to offset the column paddings */
+	margin: 0 -0.5rem;
+}
+
+/* Apply padding to each column for horizontal gutter and margin-bottom for vertical spacing */
+.custom-gutter ion-col {
+	padding: 0 0.5rem;
+	margin-bottom: 1rem; /* Adjust vertical spacing as needed */
+}
+
+/* Adjust the search icon */
+// ::ng-deep .searchbar-search-icon.sc-ion-searchbar-md {
+//     left: unset !important;
+// 	right: 1rem !important;
+// }
+
+// .ion-input-searchbar-desktop {
+// 	--background: var(--ion-dynamic-background-color) !important;
+// 	padding-left: 0px !important;
+// }
+
+// ::ng-deep .searchbar-clear-button.sc-ion-searchbar-md{
+// 	padding-right: 1.875rem !important;
+// }
+
+// ::ng-deep .searchbar-input .sc-ion-searchbar-md{
+// 	padding-left: 0.25rem !important;
+// }
+
+.custom-search-container {
+	display: flex;
+	align-items: center;
+	border: 1px solid #ccc; /* Adjust border as needed */
+	border-radius: 8px; /* Rounded corners */
+	padding: 10px 15px; /* Inner padding */
+	margin: -0.5rem 0 1rem;
+	background-color: #fff; /* Background color */
+	width: 100%; /* Adjust width as needed */
+}
+
+.custom-search-input {
+	flex-grow: 1;
+	border: none;
+	outline: none;
+	// padding: 8px;
+	font-size: 1rem;
+}
+
+.custom-search-icon {
+	color: #666; /* Adjust icon color */
+	font-size: 20px;
+	cursor: pointer;
+}
+
+.no-padding {
+	padding: 0.21rem !important;
+}
+
+.header-md::after {
+	display: none !important;
+}
+
+/* Optional: If you want to adjust the gutter responsively */
+@media (min-width: 768px) {
+	.wb-name {
+		// -webkit-line-clamp: 3;
+		// height: 10vh;
+		-webkit-line-clamp: 2;
+		height: 7vh;
+	}
+
+	.custom-gutter {
+		margin: 0 -0.5rem;
+	}
+	.custom-gutter ion-col {
+		padding: 0 0.75rem;
+		margin-bottom: 1.5rem;
+	}
+}
+
+@media (max-width: 767px) {
+	.wb-name {
+		-webkit-line-clamp: 1 !important;
+		margin-top: 0.25rem !important;
+		font-size: 0.8rem !important;
+		font-weight: 501 !important;
+	}
+
+	.moduletype-name {
+		font-size: 0.6rem !important;
+		font-weight: unset !important;
+	}
+
+	.assigned-date {
+		margin-top: 0.25rem;
+		overflow: hidden;
+		display: -webkit-box;
+		-webkit-line-clamp: 1;
+		-webkit-box-orient: vertical;
+		font-size: 0.6rem !important;
+		font-weight: unset !important;
+	}
+
+	.learnerstatus {
+		margin-top: 0.25rem;
+		overflow: hidden;
+		display: -webkit-box;
+		-webkit-line-clamp: 1;
+		-webkit-box-orient: vertical;
+		font-size: 0.6rem !important;
+		font-weight: unset !important;
+	}
+
+	.custom-card {
+		cursor: pointer;
+		max-height: 27.25rem;
+		// outline: 1px solid darkgray;
+		border: 1px solid darkgray;
+	}
+
+	.ion-sort-desktop {
+		height: 4vh !important;
+		margin-top: 0rem !important;
+		// margin-bottom: 1.35rem !important;
+		margin-bottom: 0.2rem !important;
+	}
+
+	.custom-search-container {
+		margin: 0.2rem 0 1rem !important;
+	}
+}
+
+@media screen and (min-width: 600px) and (max-width: 1024px) and (orientation: landscape) {
+	.custom-card {
+		cursor: pointer;
+	}
+}
+
+@media only screen and (min-width: 992px) and (orientation: portrait) {
+	.custom-card {
+		cursor: pointer;
+		// outline: 0.0625rem solid darkgray;
+		border: 1px solid darkgray;
+	}
+}
+
+@media screen and (min-width: 1025px) and (orientation: landscape) {
+	.custom-card {
+		cursor: pointer;
+		// outline: 0.0625rem solid darkgray;
+		border: 1px solid darkgray;
+	}
+}
+
+@media only screen and (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+	.wb-name {
+		height: unset !important;
+		-webkit-line-clamp: 2 !important;
+	}
+}
+
+@media only screen and (min-width: 1024px) and (max-width: 1366.98px) and (orientation: landscape) {
+	.wb-name {
+		height: unset !important;
+		-webkit-line-clamp: 2 !important;
+	}
+}
+
+/* iPad Pro - Adjusting height separately */
+@media only screen and (min-width: 1366px) and (max-width: 1366.98px) and (orientation: landscape) {
+	.wb-name-pathways-courses {
+		height: 5vh !important;
+	}
+}
+
+
+.no-todos-card {
+	border-radius: 0.75rem;
+	border: 0.07rem solid darkgray;
+	// padding: 1rem;
+	padding: 2.8rem 1rem;
+	box-sizing: border-box; 
+	display: flex;	
+	flex-direction: column;
+	align-items: center;		
+	margin: -1rem 0rem -1rem 0rem;
+}
+
+.no-todos-card > span {
+	margin-bottom: 1.5rem !important; 
+  }
+  
+  .no-todos-card > span:last-child {
+	margin-bottom: 0; 
+  }

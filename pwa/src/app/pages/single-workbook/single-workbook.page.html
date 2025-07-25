@@ -1,0 +1,130 @@
+<ion-header *ngIf="!showNotesInput">
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-back-button (click)="back()" text=""></ion-back-button>
+        </ion-buttons>
+        <ion-title *ngIf="wsData && wsData[0]">{{wsData[0].SessionUser.title}}</ion-title>
+        <!-- <ion-buttons slot="end">
+      <ion-button>
+        <ion-icon slot="icon-only" name="ellipsis-horizontal"></ion-icon>
+      </ion-button>
+    </ion-buttons> -->
+    </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf="!showNotesInput" [fullscreen]="true" class="ion-padding-horizontal"
+    (ionScroll)="getScrollPos($event)" [scrollEvents]="true">
+    <ion-grid style="margin: 1rem auto 0; padding: 0;">
+        <ion-row style="display: grid;">
+            <ion-col size-sm="12" size-md="9" size-lg="7">
+
+                <div *ngFor="let item of wsData; index as i;">
+                    <p class="ws-index">{{'Utils.worksheet' | translate}} {{i+1}}/{{wsData.length}}</p>
+                    <div class="ws-wrapper">
+                        <img *ngIf="item.SessionAssets.length > 0" [src]="imageHost + item.SessionAssets[0].path"
+                            class="ws-img" (click)="navigateToWorksheet(item.id)">
+
+                        <div class="worksheet-data">
+                            <div class="flag-div">
+                                <div class="activity-type">
+                                    <!-- <p>{{i+1}}/{{wsData.length}}</p> -->
+                                    <img *ngIf="item.type == 'Quiz'" src="assets/images/workbook/quiz_icon.svg"
+                                        class="worksheet-type-icon">
+                                    <img *ngIf="item.type == 'Learning Content'"
+                                        src="assets/images/workbook/content_icon.svg" class="learning-content-icon">
+                                    <img *ngIf="item.type == 'Poll'" src="assets/images/workbook/poll_icon.svg"
+                                        class="worksheet-type-icon">
+                                    <img *ngIf="item.type == 'Word Cloud'"
+                                        src="assets/images/workbook/word_cloud_icon.svg" class="worksheet-type-icon">
+                                    <P class="worksheet-type-text">{{item.type}}</P>
+                                </div>
+
+                                <div class="flag-group" style="display: flex;">
+                                    <img src="assets/images/workbook/trainerNote.svg" (click)="showTrainerNote(i)"
+                                        *ngIf="item.trainerInst !== null && !item.isShowTrainerNote && isTrainer"
+                                        class="flag-icons">
+                                    <img src="assets/images/workbook/trainerNoteShow.svg" (click)="showTrainerNote(i)"
+                                        *ngIf="item.trainerInst !== null && item.isShowTrainerNote && isTrainer"
+                                        class="flag-icons">
+
+                                    <img src="assets/images/workbook/favorite.svg" *ngIf="item.flgFav && !item.isFav"
+                                        (click)="changeFlag(i);" class="flag-icons">
+                                    <img src="assets/images/workbook/favorite_selected_icon.svg"
+                                        *ngIf="item.flgFav && item.isFav" (click)="changeFlag(i);" class="flag-icons">
+
+
+                                    <img src="assets/images/workbook/important.svg" *ngIf="item.flgImp "
+                                        class="flag-icons">
+
+                                    <img src="assets/images/workbook/group_activity.svg" *ngIf="item.flgGroupActivty "
+                                        class="flag-icons">
+                                </div>
+                            </div>
+
+                            <p class="description" *ngIf="item.description" (click)="navigateToWorksheet(item.id)">
+                                {{item.description}}</p>
+                            <p class="trainer-note" *ngIf="item.trainerInst && item.isShowTrainerNote">
+                                {{item.trainerInst}}</p>
+
+                            <div class="edit-learner-div" *ngIf="item.userNote">
+                                <div class="show-learner-note">
+                                    <p class="learner-note">{{item.userNote}}</p>
+                                </div>
+                                <div style="width: 9%; cursor: pointer;" (click)="addEditLearnerNote(item, i)">
+                                    <img src="assets/images/workbook/edit_learner_note.svg"
+                                        style="margin-bottom: 0.3rem;">
+                                </div>
+                            </div>
+
+                            <div id="add-notes-label" (click)="addEditLearnerNote(item, i)" *ngIf="!item.userNote">
+                                <p style="color: darkgray;">{{'Utils.taptoaddyournotes' | translate}}</p>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </ion-col>
+        </ion-row>
+
+        <!-- <ion-infinite-scroll *ngIf="!showNotesInput" (ionInfinite)="loadMore($event)">
+        <ion-infinite-scroll-content loadingSpinner="circles" loadingText="Loading more data...">
+        </ion-infinite-scroll-content>
+        </ion-infinite-scroll> -->
+
+        <div class="back-to-top-btn" *ngIf="backToTop" (click)="gotToTop()">
+            <ion-icon id="top-icon" name="chevron-up-outline"></ion-icon>
+        </div>
+    </ion-grid>
+
+    <ion-refresher *ngIf="!showNotesInput" ion-refresh-native slot="fixed" disabled="false"
+        (ionRefresh)="doRefresh($event)" pullFactor="0.1" pullMin="50" pullMax="200">
+        <ion-refresher-content></ion-refresher-content>
+    </ion-refresher>
+</ion-content>
+
+<ion-content *ngIf="showNotesInput" [fullscreen]="true" class="ion-padding-horizontal">
+    <ion-grid>
+        <ion-row style="height: 92vh; background-color: white;">
+            <ion-col size-sm="12" size-md="9" size-lg="7">
+                <div class="modal-action-btn-div">
+                    <a (click)="cancel()" style="align-self: center;">{{'Utils.cancel' | translate}}</a>
+                    <ion-button shape="round" (click)="saveLearnerNote()">{{'Utils.save' | translate}}</ion-button>
+                </div>
+
+                <textarea rows="10" placeholder="What have you learned today?" [(ngModel)]="userNote"
+                    class="learner-input"></textarea>
+
+                <!-- <div class="note-modal-icons">
+          <div class="icon-border">
+            <img src="assets/images/workbook/mic.svg" style="height: 35px;">
+          </div>
+
+          <div class="icon-border" style="margin-left: 0.5rem;">
+            <img src="assets/images/workbook/camera.svg" style="height: 35px;">
+          </div>
+        </div> -->
+
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+</ion-content>

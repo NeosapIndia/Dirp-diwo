@@ -1,0 +1,579 @@
+<div class="pageDiv drip" style="min-height: calc(100vh - 95px); padding-left: 1.5rem; padding-right: 0.7rem">
+	<div style="margin-top: 2rem">
+		<div class="row">
+			<div class="panel header-panel-white" style="display: flex">
+				<div class="col-md-3" style="padding-left: 0.5%">
+					<span class="mainTitle no-margin pageTitle_Main">{{ 'Pages.Drips.Home.pagetitle' | translate }}</span>
+				</div>
+				<div class="col-md-9" style="padding-right: 0">
+					<a
+						class="btn border_radius pull-right add-edit-btn"
+						[ngStyle]="{
+							'background-color': appService.whiteBrandingColor,
+							border: '1px solid' + appService.whiteBrandingColor,
+							color: 'white'
+						}"
+						(click)="addDrips()"
+						>{{ 'Pages.Drips.Home.addadrip' | translate }}
+					</a>
+					<a
+						*ngIf="writePermission"
+						class="btn border_radius pull-right uploadLearner"
+						[ngStyle]="{
+							'background-color': appService.whiteBrandingColor,
+							border: '1px solid' + appService.whiteBrandingColor,
+							color: 'white'
+						}"
+						(click)="pathFile.click()">
+						{{ 'Pages.Drips.Home.uploaddripexcel' | translate }}</a
+					>
+
+					<a
+						class="btn btn-info border_radius pull-right uploadLearner"
+						*ngIf="appService?.configurable_feature?.google_drive"
+						(click)="gmailLogin()"
+						>{{ 'Pages.Drips.AddEdit.Modal.signinwithgoogle' | translate }}</a
+					>
+
+					<input
+						type="file"
+						style="display: none"
+						id="historyFile"
+						class="btn border_radius"
+						#pathFile
+						(change)="uploadDripExcel($event)"
+						[(ngModel)]="excelDripsUpload" />
+					<a
+						(click)="notPermission()"
+						id="download"
+						[ngStyle]="{ color: appService.whiteBrandingColor }"
+						*ngIf="!writePermission">
+						{{ 'Pages.Learners.Home.downlaodtemplate' | translate }}</a
+					>
+					<a
+						href="assets/file/Upload_Drip_In_Bulk.xlsx"
+						[ngStyle]="{ color: appService.whiteBrandingColor }"
+						id="download"
+						*ngIf="writePermission">
+						{{ 'Pages.Learners.Home.downlaodtemplate' | translate }}</a
+					>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<form [formGroup]="FilterDripsColumnForm">
+		<div style="margin-top: 2rem">
+			<div class="row">
+				<div class="panel panel-white" style="padding: 0.55% 0; display: flex">
+					<div class="col-md-2" style="padding-right: 0.55%">
+						<label>{{ 'Utils.Filter.Search.filterbyclient' | translate }}</label>
+						<ng-select
+							[items]="clientList"
+							class="ng-select-wrap"
+							placeholder="{{ 'Utils.Filter.Search.filterbyclientplaceholder' | translate }}"
+							bindLabel="name"
+							bindValue="name"
+							[multiple]="false"
+							[closeOnSelect]="true"
+							[searchable]="true"
+							[clearable]="false"
+							[(ngModel)]="selectedClientName"
+							(change)="changeBuyer($event)"
+							[ngModelOptions]="{ standalone: true }">
+						</ng-select>
+					</div>
+					<div class="col-md-4" style="padding-left: 0.5rem; padding-right: 0.5rem">
+						<label>{{ 'Pages.Drips.Home.Filter.Dropdown.title' | translate }}</label>
+						<div id="filterDiv" style="max-width: none; width: 100%; margin-left: 0">
+							<ng-multiselect-dropdown
+								[settings]="dropdownSettings"
+								class="mt-2 filter-search-columns"
+								placeholder="{{ 'Pages.Drips.Home.Filter.Dropdown.placeholder' | translate }}"
+								[data]="FilterColumnArray"
+								formControlName="FilterColumn">
+							</ng-multiselect-dropdown>
+						</div>
+					</div>
+					<div class="col-md-3" style="padding-left: 0.5rem; padding-right: 0px">
+						<label>{{ 'Utils.Filter.Search.title' | translate }}</label>
+						<input
+							id="search"
+							class="form-control"
+							(input)="getPostsByFilter($event.target.value)"
+							type="text"
+							placeholder="{{
+								this.FilterDripsColumnForm.controls['FilterColumn'].value.length == 6
+									? ('Utils.Filter.Search.placeholder1' | translate)
+									: ('Utils.Filter.Search.placeholder2' | translate)
+							}}"
+							autocomplete="off"
+							[(ngModel)]="inputSearchTxt"
+							[ngModelOptions]="{ standalone: true }" />
+					</div>
+					<div class="col-md-3">
+						<label>{{ 'Utils.Filter.Search.datetitle' | translate }}</label>
+						<input
+							type="text"
+							ngxDaterangepickerMd
+							[showDropdowns]="true"
+							onkeydown="return false"
+							[(ngModel)]="selectedDate"
+							[showCustomRangeLabel]="true"
+							[alwaysShowCalendars]="true"
+							[ranges]="ranges"
+							[linkedCalendars]="true"
+							[isInvalidDate]="isInvalidDate"
+							[showClearButton]="true"
+							[showCancel]="true"
+							placeholder="DD-MM-YYYY - DD-MM-YYYY"
+							[autoApply]="false"
+							[locale]="{ applyLabel: 'ok', format: 'DD-MM-YYYY' }"
+							(startDateChanged)="startDateClicked($event)"
+							(endDateChanged)="endDateClicked($event)"
+							class="form-control"
+							autocomplete="off"
+							[ngModelOptions]="{ standalone: true }"
+							(change)="onSelectFilterDate($event)" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+
+	<div class="row">
+		<div class="panel header-panel-white" style="display: flex; align-items: center">
+			<div class="col-md-3" style="padding-left: 2px"></div>
+
+			<div class="col-md-9" style="padding-right: 0">
+				<a *ngIf="selectedDripsIds.length == 0" class="total-Count">
+					{{ 'Utils.totalcount' | translate }} :
+					<span>{{ totalCount }}</span>
+				</a>
+
+				<div class="bulk-action" *ngIf="selectedDripsIds.length > 0">
+					<a style="margin-right: 2.5%">
+						{{ 'Utils.count' | translate }} :
+						<span>{{ this.selectedDripsIds.length }}</span>
+					</a>
+					<a
+						class="btn-xs action-delete-btn"
+						[ngStyle]="{
+						color: appService.whiteBrandingColor,
+						border: '1px solid' + appService.whiteBrandingColor,
+					}"
+						style="padding: 4px 19px"
+						title="Inactive"
+						(click)="removePost()"
+						>{{ 'Utils.Action.delete' | translate }}</a
+					>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div style="margin-top: 2rem">
+		<div class="row">
+			<div class="panel panel-white" style="margin-bottom: 2rem">
+				<div class="sub table-responsive">
+					<table class="table table-striped table-hover">
+						<thead *ngIf="!isApiCall">
+							<tr style="height: 80px">
+								<th class="left tb-first-heading tb-line-height" style="padding-left: 1rem">
+									<input
+										type="checkbox"
+										id="selectBoxId"
+										class="widthauto padTop5 purple_checkbox"
+										#selectAll
+										(change)="selectDeselct(selectAll.checked)" />
+								</th>
+								<th class="left tb-head-bg tb-line-height" style="padding-left: 20px; word-wrap: break-word">
+									{{ 'Pages.Drips.Home.Table.Header.dripname' | translate }}
+								</th>
+								<th class="left tb-head-bg tb-line-height" style="word-wrap: break-word">
+									{{ 'Pages.Drips.Home.Table.Header.type' | translate }}
+								</th>
+								<th class="left tb-head-bg tb-line-height" style="word-wrap: break-word">
+									{{ 'Pages.Drips.Home.Table.Header.createdby' | translate }}
+								</th>
+								<th class="left tb-head-bg tb-line-height" style="word-wrap: break-word">
+									{{ 'Pages.Drips.Home.Table.Header.createddate' | translate }}
+								</th>
+								<th class="left tb-head-bg tb-line-height">
+									{{ 'Pages.Drips.Home.Table.Header.dripId' | translate }}
+								</th>
+								<th class="left tb-head-bg tb-line-height" style="width: 10vw">
+									{{ 'Pages.Drips.Home.Table.Header.templatestatus' | translate }}
+								</th>
+								<th class="left tb-head-bg tb-line-height">
+									{{ 'Pages.Drips.Home.Table.Header.dripstatus' | translate }}
+								</th>
+								<th
+									class="left tb-last-heading tb-line-height"
+									style="min-width: 262px; max-width: 262px; width: 262px">
+									{{ 'Pages.Drips.Home.Table.Header.actions' | translate }}
+								</th>
+							</tr>
+						</thead>
+						<tbody *ngIf="!isApiCall">
+							<tr
+								*ngFor="
+									let item of allPostList
+										| paginate
+											: {
+													itemsPerPage: limit == 'all' ? totalCount : limit,
+													currentPage: page,
+													totalItems: totalCount
+											  };
+									let i = index
+								">
+								<td class="left" style="padding-left: 1rem; padding-top: 8px">
+									<input
+										[id]="'checkbox-' + item.id"
+										[placeholder]="placeholder()"
+										type="checkbox"
+										class="widthauto padTop5 purple_checkbox"
+										(change)="onCheck($event.target.checked, item, i)" />
+								</td>
+								<td class="left" style="padding-left: 20px; padding-top: 15px" class="two-row-td-tag">
+									<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+										{{ item.drip_title }}
+									</p>
+								</td>
+								<td class="left" style="padding-top: 15px" class="two-row-td-tag">
+									<p
+										data-toggle="tooltip"
+										data-placement="top"
+										[title]="item.drip_type"
+										class="two-row-p-tag"
+										style="-webkit-box-orient: vertical">
+										{{ item.drip_type.replaceAll('DripApp', 'Drip App') }}
+									</p>
+								</td>
+								<td class="left" style="padding-top: 15px" class="two-row-td-tag">
+									<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+										{{ item.User.first }} {{ item.User.last }}
+									</p>
+								</td>
+								<td class="left" style="padding-top: 15px" class="two-row-td-tag">
+									<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+										{{ item.createdAt != null ? (item.createdAt | DateFormat) : '-' }}
+									</p>
+								</td>
+								<td class="left" style="padding-top: 15px" class="two-row-td-tag">
+									<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+										{{ item.id }}
+									</p>
+								</td>
+
+								<td class="left" style="padding: 0.75rem 0.313rem; min-width: 12vw">
+									<span class="btn-xs whatsApp-status-na" *ngIf="item.templateStatus == 'NA'">{{
+										'Utils.Status.na' | translate
+									}}</span>
+									<span class="btn-xs whatsApp-status-enabled" *ngIf="item.templateStatus == 'Enabled'">{{
+										'Utils.Status.enabled' | translate
+									}}</span>
+									<span class="btn-xs whatsApp-status-pending" *ngIf="item.templateStatus == 'Pending'">{{
+										'Utils.Status.pending' | translate
+									}}</span>
+									<span class="btn-xs whatsApp-status-flagged" *ngIf="item.templateStatus == 'Flagged'">{{
+										'Utils.Status.flagged' | translate
+									}}</span>
+									<span class="btn-xs whatsApp-status-rejected" *ngIf="item.templateStatus == 'Rejected'">{{
+										'Utils.Status.rejected' | translate
+									}}</span>
+									<span class="btn-xs whatsApp-status-disabled" *ngIf="item.templateStatus == 'Disabled'">{{
+										'Utils.Status.disabled' | translate
+									}}</span>
+									<span class="btn-xs whatsApp-status-not-created" *ngIf="item.templateStatus == 'Not Created'">{{
+										'Utils.Status.notcreated' | translate
+									}}</span>
+								</td>
+								<td class="left" style="padding: 0.75rem 0.313rem">
+									<!-- <span class=" btn-xs status-active" style="padding: 6px 17px;">Published</span> -->
+									<span class="btn-xs status-draft" *ngIf="item.drip_status == 'Draft'">
+										{{ 'Utils.Status.draft' | translate }}
+									</span>
+									<span class="btn-xs status-pfa" *ngIf="item.drip_status == 'PFA'">
+										{{ 'Utils.Status.pfa' | translate }}</span
+									>
+									<span class="btn-xs status-published" *ngIf="item.drip_status == 'Published'">
+										{{ 'Utils.Status.published' | translate }}</span
+									>
+									<span class="btn-xs status-deleted" *ngIf="item.drip_status == 'Deleted'">
+										{{ 'Utils.Status.deleted' | translate }}</span
+									>
+								</td>
+								<td class="left" style="padding: 0.75rem 0.625rem">
+									<div class="visible-md visible-lg visible-sm visible-xs">
+										<a
+											class="btn-xs action-edit-btn"
+											[ngStyle]="{
+												'background-color': appService.whiteBrandingColor,
+												border: '1px solid' + appService.whiteBrandingColor,
+												color: 'white'
+											}"
+											[ngClass]="{ 'edit-disabled': item.drip_status == 'Deleted' }"
+											(click)="editPost(item)"
+											style="padding: 0.25rem 1.75rem">
+											{{ 'Utils.Action.edit' | translate }}</a
+										>
+										<a
+											class="btn-xs action-pause-btn"
+											[ngStyle]="{
+												border: '1px solid' + appService.whiteBrandingColor,
+												color: appService.whiteBrandingColor
+											}"
+											*ngIf="item.drip_type != 'Only WhatsApp'"
+											[ngClass]="{ 'delete-disabled': item.drip_status == 'Deleted' }"
+											style="margin-left: 5px; padding: 0.25rem 0.813rem"
+											(click)="copyText(item)">
+											{{ 'Utils.Action.getlink' | translate }}</a
+										>
+										<a
+											class="btn-xs action-pause-btn"
+											[ngStyle]="{
+												border: '1px solid' + appService.whiteBrandingColor,
+												color: appService.whiteBrandingColor
+											}"
+											*ngIf="item.drip_type == 'Only WhatsApp'"
+											[ngClass]="{
+												'delete-disabled': item.drip_status == 'Deleted' || item.drip_type == 'Only WhatsApp'
+											}"
+											style="margin-left: 5px; padding: 0.25rem 0.813rem">
+											{{ 'Utils.Action.getlink' | translate }}</a
+										>
+										<a
+											class="btn-xs action-pause-btn"
+											[ngStyle]="{
+												border: '1px solid' + appService.whiteBrandingColor,
+												color: appService.whiteBrandingColor
+											}"
+											[ngClass]="{ 'delete-disabled': item.drip_status == 'Deleted' }"
+											style="margin-left: 5px; padding: 0.25rem 0.813rem"
+											(click)="copyDrip(item)">
+											{{ 'Utils.Action.copy' | translate }}
+										</a>
+										<!-- <a class="btn-xs action-delete-btn"
+                                            [ngClass]="{'delete-disabled':  item.drip_status == 'Deleted' }"
+                                            style=" padding: 4px 19px;" title="Inactive"
+                                            (click)="removePost(item)">Delete</a> -->
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<div
+						style="text-align: center; margin-top: 2rem; margin-bottom: 3rem"
+						*ngIf="allPostList && allPostList.length == 0 && !isApiCall && isDataLoaded">
+						<img src="assets/images/No Results.svg" alt="" style="width: 25%" />
+						<h3>{{ 'Utils.nodataToShow' | translate }}</h3>
+						<p style="width: 50%; margin: 0 auto">{{ 'Utils.nodataAvaliable' | translate }}</p>
+					</div>
+					<div style="text-align: center; margin-top: 9rem; margin-bottom: 9rem" *ngIf="isApiCall">
+						<!-- <img class="asset-img" src="assets/images/Circle-1.gif" style="width: 3%" /> -->
+						<div [innerHTML]="iconObject['search_loader']" class="asset-img"></div>
+					</div>
+					<div style="text-align: center; margin-top: 9rem; margin-bottom: 9rem" *ngIf="!isDataLoaded"></div>
+				</div>
+			</div>
+
+			<div class="pagination-wrapper" style="width: 100%">
+				<div style="float: right">
+					<span>{{ 'Utils.perpage' | translate }}: &nbsp;</span>
+					<select class="default-dropdown" (change)="changeResult($event.target.value)">
+						<option *ngFor="let count of pageResultCount; let i = index" [selected]="i == 0">
+							{{ count }}
+						</option>
+					</select>
+				</div>
+				<pagination-controls (pageChange)="onPageChangeEvent($event)" style="float: right"> </pagination-controls>
+			</div>
+			<!-- Copy Hyper Link Code -->
+			<div class="col-md-2" *ngIf="copyFlag">
+				<input type="text" [value]="copyHyperLinkData" id="hyper_link" />
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- delete Drip MODAL -->
+<div
+	class="modal fade credit-note"
+	id="deleteDripModal"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="myModalLabel"
+	aria-hidden="true"
+	data-backdrop="static"
+	data-keyboard="false">
+	<div class="modal-dialog" style="width: 40%; margin-top: 20%; margin-left: auto; margin-right: auto">
+		<div class="modal-content">
+			<div
+				class="modal-header"
+				[ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="cancelDripDeletePopUp()">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					<span>{{ 'Pages.Drips.Home.Modal.Delete.title' | translate }}</span>
+				</h4>
+			</div>
+			<div class="modal-body">
+				<div *ngIf="dripUsedData && dripUsedData.length == 0">
+					<span>{{ 'Pages.Drips.Home.Modal.Delete.confirmation' | translate }}</span>
+					<div
+						class="visible-md visible-lg visible-sm visible-xs"
+						style="text-align: right; margin-bottom: 0.75rem; margin-top: 1.5rem">
+						<a
+							class="btn-xs action-edit-btn action-yes-no"
+							[ngStyle]="{
+								'background-color': appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+								color: 'white'
+							}"
+							style="margin-right: 2%; padding: 7px 20px"
+							(click)="deleteDrip()"
+							>{{ 'Utils.yes' | translate }}</a
+						>
+						<a
+							class="btn-xs action-pause-btn action-yes-no"
+							[ngStyle]="{
+								color: appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+							}"
+							style="padding: 7px 23px; margin-right: 1%"
+							(click)="cancelDripDeletePopUp()"
+							>{{ 'Utils.no' | translate }}</a
+						>
+					</div>
+				</div>
+				<div
+					*ngIf="
+						dripUsedData && dripUsedData.length >= 1 && seletedDripIdForDelete && seletedDripIdForDelete.length == 1
+					">
+					<span>{{ 'Pages.Drips.Home.Modal.Delete.confirmation2' | translate }}</span>
+					<div class="row">
+						<div class="col-md-2"></div>
+						<div class="col-md-8">
+							<div class="row">
+								<div class="col-md-2">Sr</div>
+								<div class="col-md-4">Drip flow id</div>
+								<div class="col-md-6">Drip flow title</div>
+							</div>
+							<div class="row" *ngFor="let item of dripUsedData; let i = index">
+								<div class="col-md-2">
+									{{ i + 1 }}
+								</div>
+								<div class="col-md-4">
+									{{ item.id }}
+								</div>
+								<div class="col-md-6">
+									{{ item.title }}
+								</div>
+							</div>
+						</div>
+					</div>
+					<div
+						class="visible-md visible-lg visible-sm visible-xs"
+						style="text-align: right; margin-bottom: 0.75rem; margin-top: 1.5rem">
+						<a
+							class="btn-xs action-edit-btn action-yes-no"
+							[ngStyle]="{
+								'background-color': appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+								color: 'white'
+							}"
+							style="margin-right: 2%; padding: 7px 20px"
+							(click)="deleteDrip()"
+							>{{ 'Utils.yes' | translate }}</a
+						>
+						<a
+							class="btn-xs action-pause-btn action-yes-no"
+							[ngStyle]="{
+								color: appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+							}"
+							style="padding: 7px 23px; margin-right: 1%"
+							(click)="cancelDripDeletePopUp()"
+							>{{ 'Utils.no' | translate }}</a
+						>
+					</div>
+				</div>
+				<div
+					*ngIf="
+						dripUsedData && dripUsedData.length >= 1 && seletedDripIdForDelete && seletedDripIdForDelete.length > 1
+					">
+					<span>{{ 'Pages.Drips.Home.Modal.Delete.confirmation3' | translate }}</span>
+					<div
+						class="visible-md visible-lg visible-sm visible-xs"
+						style="text-align: right; margin-bottom: 0.75rem; margin-top: 1.5rem">
+						<a
+							class="btn-xs action-edit-btn"
+							[ngStyle]="{
+								'background-color': appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+								color: 'white'
+							}"
+							style="margin-right: 9px; padding: 7px 20px; border-radius: 30px; font-size: 0.9rem"
+							(click)="cancelDripDeletePopUp()"
+							>{{ 'Utils.ok' | translate }}</a
+						>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Edit Drip MODAL -->
+<div
+	class="modal fade credit-note"
+	id="editDripModal"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="myModalLabel"
+	aria-hidden="true"
+	data-backdrop="static"
+	data-keyboard="false">
+	<div class="modal-dialog" style="width: 40%; margin-top: 20%; margin-left: auto; margin-right: auto">
+		<div class="modal-content">
+			<div
+				class="modal-header"
+				[ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="cancelDripEditPopUp()">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					<span>{{ 'Pages.Drips.Home.Modal.Edit.title' | translate }}</span>
+				</h4>
+			</div>
+			<div class="modal-body">
+				<span>{{ 'Pages.Drips.Home.Modal.Edit.canNotEdit' | translate }}</span>
+				<div
+					class="visible-md visible-lg visible-sm visible-xs"
+					style="text-align: right; margin-bottom: 0.75rem; margin-top: 1.5rem">
+					<a
+						class="btn-xs action-edit-btn"
+						[ngStyle]="{
+							'background-color': appService.whiteBrandingColor,
+							border: '1px solid' + appService.whiteBrandingColor,
+							color: 'white'
+						}"
+						style="margin-right: 9px; padding: 7px 20px; border-radius: 30px; font-size: 0.9rem"
+						(click)="cancelDripEditPopUp()"
+						>{{ 'Utils.ok' | translate }}</a
+					>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

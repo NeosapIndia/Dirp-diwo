@@ -1,0 +1,129 @@
+<div class="breadcrumb-wrapper" style="padding: 10px 35px;">
+    <div class="row container">
+        <div class="col-md-3 head-title">
+            <h4 class="mainTitle no-margin">Manage User Groups </h4>
+        </div>
+        <div class="col-md-1"></div>
+        <div class="col-md-8">
+            <div class="col-md-8 col-sm-8 textField-M" style="margin-top:-10px;">
+                <input id="search" class="form-control" type="text" placeholder="Search">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid container-fullw">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-white">
+                <div class="row" style="height: 60px;">
+                    <div class="col-md-12">
+                        <div style="margin-top: 10px; margin-left: 20px;">
+                            <ng-select [items]="clientList" style="font-size: 1em; width: 30%; position: relative;"
+                                placeholder="Select Client" bindLabel="name" bindValue="name" [multiple]="false"
+                                [closeOnSelect]="true" [searchable]="false" [clearable]="false"
+                                [(ngModel)]="selectedClientName" (change)="changeClient($event)">
+                            </ng-select>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-body user-details-manage table-responsive" style="height: 70vh;">
+                    <table class="table table-striped table-hover" id="tbUser" style="padding: 0px 10px;">
+                        <thead>
+                            <tr>
+                                <th style="text-align: left;">Title</th>
+                                <th style="text-align: left;">Description</th>
+                                <th style="text-align: left;">Type</th>
+                                <th style="text-align: left;">Created On</th>
+                                <th style="text-align: center;">Status</th>
+                                <th style="text-align: center;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody *ngIf="clientsAllUsers.length !== 0">
+                            <!-- <ng-container *ngFor="let userItem of clientsAllUsers ">
+                                <tr>
+                                    <td>
+                                        <span class="ellipsisWidth">
+                                            <i  class="fa fa-user"
+                                                aria-hidden="true"
+                                                style="font-size: 15px;padding-right: 5px;font-weight: 600;"></i>
+                                            <span data-toggle="tooltip" data-placement="top"
+                                                [title]="userItem.account_id" style="width: 100px;">
+                                                {{userItem.account_id}}
+                                            </span>
+                                        </span>
+
+                                    </td>
+                                    <td style="cursor:pointer;">
+                                        <span class="ellipsisWidth">
+                                            <span  data-toggle="tooltip"
+                                                data-placement="top"
+                                                [title]="userItem.first+' '+ userItem.last">{{userItem.first}}
+                                                {{userItem.last }}</span>
+                                        </span>
+
+                                    </td>
+                                    <td style="cursor:pointer;">
+                                        <span class="ellipsisWidth" data-toggle="tooltip" data-placement="top" [title]="userItem.email">
+                                            {{userItem.email}}
+                                        </span>
+
+                                    </td>
+                                    <td>
+                                        <span class="ellipsisWidth" data-toggle="tooltip" data-placement="top" [title]="userItem.phone" style="width: 100px; text-align: right;">
+                                            {{userItem.phone}}
+                                        </span>
+
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="ellipsisWidth" data-toggle="tooltip" data-placement="top" [title]="userItem.country" style="width: 100px; padding-left: 15px; text-align: left;">
+                                            {{userItem.country}}
+                                        </span>
+                                    </td>
+                                    <td style="text-align: left;">
+                                        <span class="ellipsisWidth" data-toggle="tooltip" data-placement="top" [title]="userItem.city" style="width: 100px;">
+                                            {{userItem.city}}
+                                        </span>
+                                    </td>
+                                    <td style="text-align: left;">
+                                        <span>
+                                            {{ userItem.createdAt!=null ? (userItem.createdAt | DateFormat) : '-' }}
+                                        </span>
+                                    </td>
+                                    <td class="center">
+                                        <span href="#" rel="nofollow" target="_blank" class="status-a" *ngIf="userItem.status"> Active</span>
+                                        <span href="#" rel="nofollow" target="_blank" class="status-i" *ngIf="!userItem.status"> Suspended</span>
+                                    </td>
+                                    <td class="center">
+                                        <div>
+                                            <a (click)="editUser(userItem)" class="btn btn-transparent btn-xs" data-toggle="tooltip" data-placement="top" title="Edit">
+                                                <i class="fa ti-pencil-alt"></i>
+                                            </a>
+                                            <a class=" btn btn-transparent btn-xs tooltips" data-toggle="tooltip" data-placement="top" title="{{userItem.status ? 'Suspend': 'Active'}}" (click)="suspendUser(userItem.id,userItem.status)">
+                                                <i *ngIf="userItem.status" class="fa fa-user-times fa-white"></i>
+                                                <i *ngIf="!userItem.status" class="fa fa-user fa-white"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </ng-container> -->
+                        </tbody>
+                    </table>
+                    <div *ngIf="clientsAllUsers.length == 0"
+                        style="width: 100%; text-align: center; font-size: 1.25rem; margin-top: 16%;">No Data Found</div>
+                </div>
+                <!-- <div style="position: absolute; right: 20px; padding: 10px 20px; width: 100%;">
+                    <div style="float:right;">
+                        <span> Per page: &nbsp;</span>
+                        <select class="default-dropdown" (change)="changeResult($event.target.value)">
+                            <option *ngFor="let count of pageResultCount;let i = index" [selected]="i == 0"
+                                [disabled]="(count==limit) || (count > totalUserCount &&  totalUserCount < limit )">
+                                {{count}}</option>
+                        </select>
+                    </div>
+                    <pagination-controls (pageChange)="onPageChangeEvent($event)" style="float:right;">
+                    </pagination-controls>
+                </div> -->
+            </div>
+        </div>
+    </div>
+</div>

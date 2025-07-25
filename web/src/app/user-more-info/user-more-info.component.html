@@ -1,0 +1,945 @@
+<div class="row space20" id="notification" style="display: flex">
+	<div style="width: 20%; margin: 0px 5px 0px 15px">
+		<button
+			class="btn btn-icon margin-bottom-5 margin-bottom-5 btn-block"
+			data-toggle="modal"
+			data-target="#activityLogHistory"
+			(click)="getActivityLogHistory()">
+			<i class="ti-layers-alt block text-primary text-extra-large margin-bottom-10"></i>
+			Activity Log
+		</button>
+	</div>
+	<div style="width: 20%; margin: 0px 5px">
+		<button
+			class="btn btn-icon margin-bottom-5 btn-block"
+			data-toggle="modal"
+			data-target="#subscrictionHistory"
+			(click)="getPurchaseHistoryForUser()">
+			<i class="ti-comments block text-primary text-extra-large margin-bottom-10"></i>
+			Purchase <br />History
+		</button>
+	</div>
+	<div style="width: 20%; margin: 0px 5px">
+		<button
+			class="btn btn-icon margin-bottom-5 btn-block"
+			data-toggle="modal"
+			data-target="#notificationsModel"
+			(click)="getNotifications()">
+			<i class="ti-calendar block text-primary text-extra-large margin-bottom-10"></i>
+			Notifications
+		</button>
+	</div>
+	<div style="width: 20%; margin: 0px 5px">
+		<button
+			class="btn btn-icon margin-bottom-5 btn-block"
+			data-toggle="modal"
+			data-target="#expertCallHistory"
+			(click)="getExpertCallHistory()">
+			<i class="ti-comments block text-primary text-extra-large margin-bottom-10"></i>
+			Callbacks <br />History
+		</button>
+	</div>
+	<div style="width: 20%; margin: 0px 15px 0px 5px">
+		<button
+			class="btn btn-icon margin-bottom-5 btn-block"
+			data-toggle="modal"
+			data-target="#supportCallHistory"
+			(click)="getSupportTicketHistory()">
+			<i class="ti-comments block text-primary text-extra-large margin-bottom-10"></i>
+			Support <br />History
+		</button>
+	</div>
+</div>
+
+<!-- Manage role button -->
+<div class="row" style="margin-bottom: 30px">
+	<div class="col-md-2">
+		<div *ngIf="roleSetFlage">
+			<button class="btn btn-primary" (click)="ManageRole()">Manage Role</button>
+		</div>
+	</div>
+	<div class="col-md-4"></div>
+	<div class="col-md-6" style="padding: 0px">
+		<div class="col-md-8" style="padding-top: 3px">
+			<span class="pull-right table-head"> SET USER AS INTERNAL</span>
+		</div>
+		<div class="col-md-4" style="text-align: right">
+			<label class="switch" data-toggle="tooltip" title="Set user as Internal">
+				<input
+					type="checkbox"
+					#is_internal
+					id="is_internal"
+					[checked]="is_internals"
+					(change)="isInternal(is_internal.checked)" />
+				<span class="slider round"></span>
+			</label>
+		</div>
+	</div>
+</div>
+
+<!-- Subscriction History Modal -->
+<div
+	class="modal fade credit-note"
+	id="subscrictionHistory"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="myModalLabel"
+	aria-hidden="true">
+	<div class="modal-dialog modal-sm" style="top: 10%; width: 80%; margin: 0 auto">
+		<div class="modal-content">
+			<div
+				class="modal-header"
+				[ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">Package Purchase History</h4>
+			</div>
+			<div class="modal-body table-responsive" style="max-height: 700px">
+				<h4>Package Details</h4>
+				<table class="table table-striped table-hover" id="tbUser">
+					<thead>
+						<tr>
+							<th class="center" style="text-align: left">Invoice Id</th>
+							<th class="center" style="text-align: left">Package Name</th>
+							<th class="center">Assigned To</th>
+							<th class="center">Purchase Date</th>
+							<th class="center">Activation Date</th>
+							<th class="center">Renewal Date</th>
+							<th class="center">Cancel Date</th>
+							<th class="center">Price</th>
+							<th class="center">Invoice</th>
+							<th class="center">Action</th>
+						</tr>
+					</thead>
+					<tbody>
+						<ng-container *ngFor="let item of purchaseHistoryForUser">
+							<tr>
+								<td class="center" style="text-align: left">
+									<span>{{ item.orderId != null ? item.orderId : '-' }}</span>
+								</td>
+								<td class="center" style="cursor: pointer" style="text-align: left">
+									<i
+										*ngIf="!item.isOpenMore && item.User_box_deliveries.length"
+										(click)="item.isOpenMore = !item.isOpenMore"
+										class="fa ti-plus"
+										aria-hidden="true"
+										style="font-size: 15px; padding-right: 5px; font-weight: 600"></i>
+									<i
+										*ngIf="item.isOpenMore"
+										(click)="item.isOpenMore = !item.isOpenMore"
+										class="fa ti-minus"
+										aria-hidden="true"
+										style="font-size: 15px; padding-right: 5px; font-weight: 600"></i>
+									<i
+										onclick="goUserProfile()"
+										class="fa ti-package"
+										aria-hidden="true"
+										style="font-size: 15px; padding-right: 5px; font-weight: 600"></i>
+									{{ item.Package.name }}
+								</td>
+								<td class="center">
+									<span *ngIf="item.Child == null"> - </span>
+									<span *ngIf="item.Child != null">{{ item.Child.name != null ? item.Child.name : '-' }}</span>
+								</td>
+								<td class="center">
+									<span *ngIf="item.purchase_date == null"> - </span>
+									<span *ngIf="item.purchase_date != null">{{
+										item.purchase_date != null ? (item.purchase_date | DateFormat) : '-'
+									}}</span>
+								</td>
+								<td class="center">
+									<span *ngIf="item.activation_date != null">
+										{{ item.activation_date != null ? (item.activation_date | DateFormat) : '-' }}</span
+									>
+									<span *ngIf="item.activation_date == null">-</span>
+								</td>
+								<td class="center">
+									<span *ngIf="item.renewal_date != null">
+										{{ item.renewal_date != null ? (item.renewal_date | DateFormat) : '-' }}</span
+									>
+									<span *ngIf="item.renewal_date == null">-</span>
+								</td>
+								<td class="center">
+									<span *ngIf="item.cancellation_date != null">
+										{{ item.cancellation_date != null ? (item.cancellation_date | DateFormat) : '-' }}</span
+									>
+									<span *ngIf="item.cancellation_date == null">-</span>
+								</td>
+								<td class="center">
+									<span *ngIf="item.Package != null">{{ symbol }} {{ item.Package.price | AmountFilter }}</span>
+									<span *ngIf="item.Package == null">-</span>
+								</td>
+								<td class="center">
+									<span *ngIf="item.Package && item.payment_type != 'In App Purchase'">
+										<a
+											class="btn btn-transparent btn-xs tooltips"
+											data-placement="top"
+											[title]="'Download Invoice' | translate"
+											(click)="downloadInvoice(item)"
+											><i class="fa fa-download fa-white"></i
+										></a>
+									</span>
+								</td>
+								<td class="center" *ngIf="!item.Package.is_payment_colection">
+									<a
+										class="btn btn-transparent btn-xs tooltips"
+										data-toggle="tooltip"
+										data-placement="top"
+										title="Package Setting"
+										(click)="pakageSetting(item)"
+										><i class="fa fa-cogs"></i
+									></a>
+									<a
+										*ngIf="item.cancellation_date == null"
+										class="btn btn-transparent btn-xs tooltips"
+										data-toggle="tooltip"
+										data-placement="top"
+										title="Cancel Package"
+										(click)="DeletePakagePopup(item)"
+										><i class="fa ti-close fa fa-white"></i
+									></a>
+									<!-- <a class="btn btn-transparent btn-xs tooltips" data-toggle="modal" data-toggle="tooltip" data-placement="top" title="Download Invoice" (click)="downloadInvoice(item)"><i class="fa fa-file-text-o"></i></a> -->
+									<a
+										*ngIf="item.cancellation_date"
+										class="btn btn-transparent btn-xs tooltips"
+										data-toggle="tooltip"
+										data-placement="top"
+										title="Download Refund Advice"
+										(click)="downloadRefund(item)"
+										><i class="fa fa-file-excel-o"></i
+									></a>
+								</td>
+							</tr>
+							<tr class="detailInfo" *ngIf="item.isOpenMore">
+								<th class="center">Box Name</th>
+								<th class="center">Courier Name</th>
+								<th class="center">Box Details</th>
+								<th class="center">Box Shipping Date</th>
+								<th class="center">Box Delivery Date</th>
+								<th class="center">Expected Delivery Date</th>
+								<th class="center">Box Required Date</th>
+								<th class="center">Status</th>
+								<th class="center">Bill No</th>
+								<th class="center">Action</th>
+								<th></th>
+							</tr>
+							<ng-container *ngFor="let box of item.User_box_deliveries">
+								<tr class="detailInfo" *ngIf="item.isOpenMore">
+									<td class="center">
+										<span *ngIf="box.name != null"> {{ box.name }}</span>
+										<span *ngIf="box.name == null">-</span>
+									</td>
+									<td class="center">
+										<span *ngIf="box.courier != null"
+											><a href="#">{{ box.courier }}</a></span
+										>
+										<span *ngIf="box.courier == null">-</span>
+									</td>
+									<td class="center">
+										<span
+											*ngIf="box.box_details != null"
+											class="ellipsisWidth"
+											data-toggle="tooltip"
+											data-placement="top"
+											[title]="box.box_details">
+											{{ box.box_details }}
+										</span>
+										<span *ngIf="box.box_details == null">-</span>
+									</td>
+									<td class="center">
+										<span *ngIf="box.box_shipping_date != null">
+											{{ box.box_shipping_date != null ? (box.box_shipping_date | DateFormat) : '-' }}</span
+										>
+										<span *ngIf="box.box_shipping_date == null">-</span>
+									</td>
+									<td class="center">
+										<span *ngIf="box.actual_delivery_date != null">
+											{{ box.actual_delivery_date != null ? (box.actual_delivery_date | DateFormat) : '-' }}</span
+										>
+										<span *ngIf="box.actual_delivery_date == null">-</span>
+									</td>
+									<td class="center">
+										<span *ngIf="box.customer_delivery_date != null">
+											{{ box.customer_delivery_date != null ? (box.customer_delivery_date | DateFormat) : '-' }}</span
+										>
+										<span *ngIf="box.customer_delivery_date == null">-</span>
+									</td>
+									<td class="center">
+										<span *ngIf="box.box_required_date != null">
+											{{ box.box_required_date != null ? (box.box_required_date | DateFormat) : '-' }}</span
+										>
+										<span *ngIf="box.box_required_date == null">-</span>
+									</td>
+									<td class="center">
+										<span *ngIf="box.status != null"> {{ box.status }}</span>
+										<span *ngIf="box.status == null">-</span>
+									</td>
+									<td class="center" id="billNo">
+										<span *ngIf="box.bill_no != null"> {{ box.bill_no }}</span>
+										<span *ngIf="box.bill_no == null">-</span>
+									</td>
+									<td class="align-center">
+										<div class="visible-md visible-lg hidden-sm hidden-xs center">
+											<a
+												*ngIf="box.status == 'pending'"
+												class="btn btn-transparent btn-xs"
+												data-toggle="modal"
+												data-target="#assignto"
+												data-toggle="tooltip"
+												data-placement="top"
+												title="Update"
+												(click)="boxStatusPopup(box)">
+												<i class="fa ti-share" style="font-size: 20px"></i>
+											</a>
+											<a
+												class="btn btn-transparent btn-xs"
+												data-toggle="tooltip"
+												data-placement="top"
+												title="Details"
+												(click)="addressInfoModal(item, box)">
+												<i class="fa fa-file-text-o" style="font-size: 20px"></i
+											></a>
+										</div>
+										<div class="visible-xs visible-sm hidden-md hidden-lg">
+											<div class="btn-group dropdown" style="margin-right: 0px">
+												<button
+													type="button"
+													class="btn btn-primary btn-o btn-sm dropdown-toggle"
+													data-toggle="dropdown">
+													<i class="fa fa-cog"></i>&nbsp;<span class="caret"></span>
+												</button>
+												<ul class="dropdown-menu pull-right dropdown-light" role="menu">
+													<li *ngIf="box.status == 'pending'">
+														<a href="#" data-toggle="modal" data-target="#assignto" (click)="boxStatusPopup(box)">
+															Update
+														</a>
+													</li>
+													<li>
+														<a href="#" data-toggle="modal" (click)="addressInfoModal(item, box)">Details</a>
+													</li>
+												</ul>
+											</div>
+										</div>
+									</td>
+								</tr>
+							</ng-container>
+						</ng-container>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Notifications Modal -->
+<div
+	class="modal fade credit-note"
+	id="notificationsModel"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="myModalLabel"
+	aria-hidden="true">
+	<div class="modal-dialog modal-sm" style="top: 10%; width: 80%; margin: 0 auto">
+		<div class="modal-content">
+			<div
+				class="modal-header"
+				[ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">Notifications</h4>
+			</div>
+			<div class="modal-body table-responsive" style="height: 500px; overflow-y: auto">
+				<table class="table table-striped table-hover" id="sample-table-3">
+					<thead>
+						<tr>
+							<th class="center" style="text-align: left">Description</th>
+							<th class="center">Date</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr *ngFor="let item of notifications">
+							<td class="center" style="text-align: left">
+								<span>{{ item.notification }}</span>
+							</td>
+							<td class="center">
+								<span>{{ item.createdAt | date : 'dd MMM yyyy hh:mm a' }} </span>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Expert Call Modal -->
+<div
+	class="modal fade credit-note"
+	id="expertCallHistory"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="myModalLabel"
+	aria-hidden="true">
+	<div class="modal-dialog modal-sm" style="top: 10%; width: 80%; margin: 0 auto">
+		<div class="modal-content">
+			<div
+				class="modal-header"
+				[ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">Callback History</h4>
+			</div>
+			<div class="modal-body table-responsive">
+				<table class="table table-striped table-hover" id="sample-table-3">
+					<thead>
+						<tr>
+							<th class="center" style="text-align: left">User Name</th>
+							<th class="center">Expert Name</th>
+							<th class="center">User Feedback</th>
+							<th class="center">Expert Feedback</th>
+							<th class="center">Call Requested Date</th>
+							<th class="center">Called Date</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr *ngFor="let item of userExpertCallHistory">
+							<td class="center" style="text-align: left">
+								<i class="fa fa-user" aria-hidden="true" style="padding-right: 5px"></i>{{ item.created.first
+								}}{{ item.created.last }}
+							</td>
+							<td class="center">
+								<span *ngIf="item.expert != null">{{ item.expert.first }}{{ item.expert.last }}</span>
+								<span *ngIf="item.expert == null">-</span>
+							</td>
+							<td class="center">
+								<span *ngIf="item.customerFeedback == null">-</span>
+								<span *ngIf="item.customerFeedback != null">{{ item.customerFeedback }}</span>
+							</td>
+							<td class="center">
+								<span *ngIf="item.expertFeedback == null">-</span>
+								<span *ngIf="item.expertFeedback != null">{{ item.expertFeedback }}</span>
+							</td>
+							<td class="center">
+								<span *ngIf="item.Expert_ticket_timings.length <= 0">-</span>
+								<span *ngIf="item.Expert_ticket_timings.length > 0">{{
+									item.Expert_ticket_timings[0].date | DateFormat
+								}}</span>
+							</td>
+							<td class="center">
+								<span *ngIf="item.Expert_ticket_logs.length <= 0">-</span>
+								<span *ngIf="item.Expert_ticket_logs.length > 0">{{
+									item.Expert_ticket_logs[0].date | DateFormat
+								}}</span>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Activity Log Modal -->
+<div
+	class="modal fade credit-note"
+	id="activityLogHistory"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="myModalLabel"
+	aria-hidden="true">
+	<div class="modal-dialog modal-sm" style="top: 10%; width: 80%; margin: 0 auto">
+		<div class="modal-content">
+			<div
+				class="modal-header"
+				[ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">Activity Log</h4>
+			</div>
+			<div class="modal-body table-responsive" style="height: 500px; overflow-y: auto">
+				<table class="table table-striped table-hover" id="sample-table-3">
+					<thead>
+						<tr>
+							<th class="center" style="text-align: left">Description</th>
+							<th class="center">Created Date</th>
+							<th class="center">User Name</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr *ngFor="let item of userActivityLogHistory">
+							<td class="center" style="text-align: left">
+								<span *ngIf="item.description == null">-</span>
+								<span *ngIf="item.description != null">{{ item.description }}</span>
+							</td>
+							<td class="center">
+								<span *ngIf="item.createdAt == null">-</span>
+								<span *ngIf="item.createdAt != null">{{
+									item.createdAt != null ? (item.createdAt | DateFormat) : '-'
+								}}</span>
+							</td>
+							<td class="center">
+								<span *ngIf="item.User != null">{{ item.User.first }} {{ item.User.last }}</span>
+								<span *ngIf="item.User == null">-</span>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Support Call Modal -->
+<div
+	class="modal fade credit-note"
+	id="supportCallHistory"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="myModalLabel"
+	aria-hidden="true">
+	<div class="modal-dialog modal-sm" style="top: 10%; width: 80%; margin: 0 auto">
+		<div class="modal-content">
+			<div
+				class="modal-header"
+				[ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">Support Ticket History</h4>
+			</div>
+			<div class="modal-body table-responsive" style="height: 500px; overflow-y: auto">
+				<table class="table table-striped table-hover" id="sample-table-3">
+					<thead>
+						<tr>
+							<th class="center" style="text-align: left">Created Date</th>
+							<th class="center">Mobile Number</th>
+							<th class="center">Email</th>
+							<th class="center">Subject</th>
+							<th class="center">Status</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr *ngFor="let item of userSupportCallHistory">
+							<td class="center" style="text-align: left">
+								{{ item.createdate != null ? (item.createdate | DateFormat) : '-' }}
+							</td>
+							<td class="center">
+								{{ item.phone }}
+							</td>
+							<td class="center">
+								{{ item.email }}
+							</td>
+							<td class="center">
+								{{ item.subject }}
+							</td>
+							<td class="center">
+								<span
+									href="#"
+									rel="nofollow"
+									target="_blank"
+									class="status-a"
+									*ngIf="item.status != '4' || item.status != 4">
+									Open</span
+								>
+								<span
+									href="#"
+									rel="nofollow"
+									target="_blank"
+									class="status-i"
+									*ngIf="item.status == '4' || item.status == 4">
+									Closed</span
+								>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div
+	class="modal fade credit-note"
+	id="reasonModal"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="myModalLabel"
+	aria-hidden="true "
+	data-backdrop="static "
+	data-keyboard="false ">
+	<div class="modal-dialog modal-sm" style="top: 10%; width: 40%; margin: 0 auto">
+		<div class="modal-content">
+			<div
+				class="modal-header"
+				[ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="cancelReason()">
+					<span aria-hidden="true ">&times;</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel ">
+					<span>{{ 'Account.Manage.Account.Packages.CancelPackage.title' | translate }}</span>
+				</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row" style="margin-top: 20px">
+					<div class="col-md-12">
+						<div style="margin: 10px 0px">
+							<span>Total Amount Paid : </span>
+							<span class="pull-right" style="color: black">{{ symbol + ' ' + (+total_cost | AmountFilter) }}</span>
+						</div>
+						<table class="table table-condensed">
+							<thead>
+								<tr>
+									<th>Product Name</th>
+									<th style="text-align: right">Amount</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr *ngFor="let item of deductions">
+									<td>{{ item.product_name }}</td>
+									<td style="text-align: right">
+										{{ symbol + ' ' + (+item.product_price | AmountFilter) }}
+									</td>
+								</tr>
+							</tbody>
+							<tfoot>
+								<tr>
+									<td>{{ 'Total deductions' }}:</td>
+									<td>
+										<b class="pull-right">{{ symbol + ' ' + (+total_deductions | AmountFilter) }}</b>
+									</td>
+								</tr>
+								<tr>
+									<td>{{ 'Total Refund Amount' }}:</td>
+									<td>
+										<b class="pull-right">{{ symbol + ' ' + (+total_refunds | AmountFilter) }}</b>
+									</td>
+								</tr>
+							</tfoot>
+						</table>
+					</div>
+				</div>
+				<div class="row subscription">
+					<div class="col-md-12">
+						<form name="reasonForm" [formGroup]="reasonForm">
+							<div class="col-md-12">
+								<div class="form-group">
+									<p>
+										<label>
+											{{ 'Account.Manage.Account.Packages.CancelPackage.Reason.title' | translate }}
+										</label>
+									</p>
+									<textarea
+										type="text "
+										class="form-control"
+										[placeholder]="'Account.Manage.Account.Packages.CancelPackage.Reason.placeholder' | translate"
+										formControlName="reason"></textarea>
+								</div>
+								<div class="form-group">
+									<a class="btn btn-o btn-primary mr-20" style="margin-top: 10px" (click)="onCancelPackage()">
+										{{ 'Account.Manage.Account.Packages.CancelPackage.title' | translate }}
+									</a>
+									<a class="btn btn-primary cancel" style="margin-top: 10px" (click)="cancelReason()">
+										{{ 'Utils.close' | translate }}
+									</a>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade top200" id="updateDeliveryDate" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header background">
+				<button type="button" class="close" data-dismiss="modal" style="color: black">&times;</button>
+				<h4 class="modal-title" style="color: black">Specify package shipping date</h4>
+			</div>
+			<div class="modal-body">
+				<form role="form" [formGroup]="updateShippingData" novalidate>
+					<div
+						class="form-group"
+						[ngClass]="{
+							'has-error': f1.dateofshipping.invalid && (f1.dateofshipping.dirty || f1.dateofshipping.touched),
+							'has-success': f1.dateofshipping.valid && (f1.dateofshipping.dirty || f1.dateofshipping.touched)
+						}">
+						<label>Actual Date Of Shipping </label>
+						<!-- <my-date-picker name="dateofshipping" [options]="dateofShippingOptions" formControlName="dateofshipping" placeholder="Enter Actual Date of shipping" required>
+                        </my-date-picker> -->
+						<div class="error" *ngIf="f1.dateofshipping.errors && f1.dateofshipping.touched">
+							<div *ngIf="f1.dateofshipping.errors.required">Date of Shipping is required</div>
+						</div>
+					</div>
+					<div
+						class="form-group"
+						[ngClass]="{
+							'has-error': f1.couriername.invalid && (f1.couriername.dirty || f1.couriername.touched),
+							'has-success': f1.couriername.valid && (f1.couriername.dirty || f1.couriername.touched)
+						}">
+						<label> Courier Name. </label>
+						<select class="form-control" placeholder="Courier Name" formControlName="couriername">
+							<option *ngFor="let courier of courierList" [value]="courier.id">{{ courier.name }}</option>
+						</select>
+						<div class="error" *ngIf="f1.couriername.errors && f1.couriername.touched">
+							<div *ngIf="f1.couriername.errors.required">Courier Name is required</div>
+						</div>
+					</div>
+
+					<div
+						class="form-group"
+						[ngClass]="{
+							'has-error': f1.material_set.invalid && (f1.material_set.dirty || f1.material_set.touched),
+							'has-success': f1.material_set.valid && (f1.material_set.dirty || f1.material_set.touched)
+						}">
+						<label> Select Material Set Number.</label>
+						<select class="form-control" placeholder="Material Set Number" formControlName="material_set">
+							<option *ngFor="let set of materialSetList" [value]="set">{{ set }}</option>
+						</select>
+						<div class="error" *ngIf="f1.material_set.errors && f1.material_set.touched">
+							<div *ngIf="f1.material_set.errors.required">Material Set Number is required</div>
+						</div>
+					</div>
+
+					<div
+						class="form-group"
+						[ngClass]="{
+							'has-error': f1.bill_no.invalid && (f1.bill_no.dirty || f1.bill_no.touched),
+							'has-success': f1.bill_no.valid && (f1.bill_no.dirty || f1.bill_no.touched)
+						}">
+						<label> Tracking No. </label>
+						<input type="text" class="form-control" placeholder="Bill No" formControlName="bill_no" />
+						<div class="error" *ngIf="f1.bill_no.errors && f1.bill_no.touched">
+							<div *ngIf="f1.bill_no.errors.required">Tracking no is required</div>
+						</div>
+					</div>
+					<button
+						type="button"
+						style="width: 75px; background-color: #6513e1; border-color: #6513e1; color: #ffffff"
+						class="btn btn-default .btn-info"
+						(click)="updateShippingDateById()">
+						Submit
+					</button>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div
+	class="modal fade credit-note"
+	id="addressInfoModal"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="myModalLabel"
+	aria-hidden="true">
+	<div class="modal-dialog modal-sm" style="top: 25%; width: 34%; margin: 0 auto">
+		<div class="modal-content">
+			<div
+				class="modal-header"
+				[ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}">
+				<button type="button" class="close" (click)="cancelAddressInfoModal()" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title">Box Details</h4>
+			</div>
+			<div class="modal-body">
+				<div>
+					<p style="color: black; font-weight: bold">Box Details:</p>
+					<p>{{ boxDetails }}</p>
+				</div>
+				<div>
+					<p style="color: black; font-weight: bold">Shipping Address:</p>
+					<p class="addDesign" *ngIf="userAddress" style="font-weight: bold">
+						{{ userAddress.fullName }}
+					</p>
+					<p class="addDesign" *ngIf="userAddress">
+						{{ userAddress.phone }}
+					</p>
+					<p class="addDesign" *ngIf="userAddress">
+						{{ userAddress.addressLine1 }}
+					</p>
+					<p class="addDesign" *ngIf="userAddress">
+						{{ userAddress.addressLine2 }}
+					</p>
+					<p class="addDesign" *ngIf="userAddress">
+						{{ userAddress.city }},&nbsp; {{ userAddress.pinCode }},&nbsp;
+						{{ userAddress.state }}
+					</p>
+					<p class="addDesign" *ngIf="userAddress && userAddress.Country">
+						{{ userAddress.Country.name }}
+					</p>
+				</div>
+			</div>
+			<div class="modal-footer" style="text-align: center">
+				<button type="button" style="font-size: 16px" class="btn btn-primary" (click)="cancelAddressInfoModal()">
+					Ok
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div
+	class="modal fade credit-note"
+	id="packageSettingModel"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="myModalLabel"
+	aria-hidden="true">
+	<div class="modal-dialog modal-sm" style="top: 25%; width: 35%; margin: 0 auto">
+		<div class="modal-content">
+			<div
+				class="modal-header"
+				[ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}">
+				<button type="button" class="close" (click)="cancelpackageSettingModel()" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title">Package Setting</h4>
+			</div>
+			<div *ngIf="settingPackageFlage" class="modal-body">
+				<div style="margin-bottom: 25px">
+					<span style="color: black; font-weight: bold">Package Name:&nbsp;&nbsp;</span>
+					<span> {{ settingPackageData.Package.name }}</span>
+				</div>
+				<div class="row">
+					<div class="col-md-3">
+						<span style="color: black; font-weight: bold">{{
+							'Account.Manage.Account.Packages.EditPackage.Baby.placeholder' | translate
+						}}</span>
+					</div>
+					<div class="col-md-8">
+						<select class="form-control" style="margin-bottom: 50px" (change)="changeResult($event.target.value)">
+							<option value="">
+								--
+								{{ 'Account.Manage.Account.Packages.EditPackage.Baby.placeholder' | translate }}
+								-- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							</option>
+							<option *ngFor="let child of childList" value="{{ child?.id }}">{{ child?.name }}</option>
+						</select>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<button
+							type="button"
+							style="font-size: 16px; width: 100%"
+							class="btn btn-primary"
+							(click)="clickOnAssignPackage(settingPackageData.id, childId, settingPackageData)">
+							Assign Package
+						</button>
+					</div>
+					<div class="col-md-6">
+						<button
+							type="button"
+							style="font-size: 16px; width: 100%"
+							class="btn btn-primary"
+							(click)="clickOnRemovePackage(settingPackageData.id, childId, settingPackageData)">
+							Remove Package
+						</button>
+					</div>
+				</div>
+				<div class="row" style="margin-top: 10px">
+					<div class="col-md-6">
+						<button
+							type="button"
+							style="font-size: 16px; width: 100%"
+							class="btn btn-primary"
+							(click)="clickOnReservePackage(settingPackageData.id, childId, settingPackageData)">
+							Reserve Package
+						</button>
+					</div>
+					<div class="col-md-6">
+						<button
+							type="button"
+							style="font-size: 16px; width: 100%"
+							class="btn btn-primary"
+							(click)="clickOnRemoveReservePackage(settingPackageData.id, childId, settingPackageData)">
+							Remove Reserve Package
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div
+	class="modal fade credit-note"
+	id="RoleModal"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="myModalLabel"
+	aria-hidden="true">
+	<div class="modal-dialog modal-sm" style="top: 10%; width: 40%; margin: 0 auto">
+		<div class="modal-content" style="align-content: center">
+			<div class="row" style="margin: 0px 0px 0px 0px">
+				<div
+					class="modal-header"
+					[ngStyle]="{
+						'background-color': appService.whiteBrandingColor,
+						border: '1px solid' + appService.whiteBrandingColor,
+						color: 'white'
+					}">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<label style="color: #ffffff">Roles:</label>
+				</div>
+				<div class="modal-body">
+					<ng-select
+						[items]="allRoles"
+						bindLabel="name"
+						bindValue="id"
+						[multiple]="true"
+						[closeOnSelect]="false"
+						[clearable]="false"
+						[searchable]="false"
+						[(ngModel)]="selectedRole">
+					</ng-select>
+				</div>
+				<div class="modal-footer" style="align-content: center; text-align: center">
+					<button class="btn btn-primary" (click)="checkList()">Change Role</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

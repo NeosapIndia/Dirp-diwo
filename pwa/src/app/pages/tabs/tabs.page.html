@@ -1,0 +1,75 @@
+<ion-tabs *ngIf="!isdesktopView && !isTabletLandscapeView && !isTablet">
+	<ion-tab-bar slot="bottom" style="background: #f7f7f7">
+		<ion-tab-button *ngIf="projectName == 'drip'" tab="all-drips" (click)="appService.pauseVideo()">
+			<ion-icon name="home-outline"></ion-icon>
+		</ion-tab-button>
+
+		<ion-tab-button *ngIf="projectName == 'diwo'" tab="all-modules" (click)="appService.pauseVideo()">
+			<ion-icon name="home-outline"></ion-icon>
+		</ion-tab-button>
+
+		<ion-tab-button *ngIf="projectName == 'drip'" tab="search" (click)="appService.pauseVideo()">
+			<ion-icon name="search-outline"></ion-icon>
+		</ion-tab-button>
+
+		<ion-tab-button *ngIf="projectName == 'diwo'" tab="diwo-search" (click)="appService.pauseVideo()">
+			<ion-icon name="search-outline"></ion-icon>
+		</ion-tab-button>
+
+		<ion-tab-button tab="notifications" (click)="appService.pauseVideo()">
+			<ion-icon name="notifications-outline"></ion-icon>
+		</ion-tab-button>
+
+		<ion-tab-button tab="manage-profile" (click)="appService.pauseVideo()">
+			<ion-icon name="person-circle-outline"></ion-icon>
+		</ion-tab-button>
+	</ion-tab-bar>
+</ion-tabs>
+
+<ion-tabs *ngIf="isdesktopView || isTabletLandscapeView || isTablet">
+	<ion-tab-bar slot="top" class="main-panel-desktop" style="background: #f7f7f7">
+		<div class="left-panel-desktop" [ngClass]="{'left-panel-portrait-tab': isTabletPortraitView}">
+			<img *ngIf="appBrandingInfo" [src]="imageBaseURL + appBrandingInfo.learner_app_icon_path" class="header-logo" />
+			<img
+				*ngIf="!appBrandingInfo && appService.defaultPWALogo"
+				[src]="appService.defaultPWALogo"
+				class="header-logo" />
+			<img
+				*ngIf="!appBrandingInfo &&!appService.defaultPWALogo"
+				src="assets/icons/icon-128x128.png"
+				class="header-logo" />
+		</div>
+
+		<div class="right-panel-desktop">
+			<ion-tab-button *ngIf="projectName == 'drip'" tab="all-drips" (click)="appService.pauseVideo()">
+				<ion-icon name="home-outline"></ion-icon>
+				<ion-label>{{ 'Utils.home'| translate }}</ion-label>
+			</ion-tab-button>
+
+			<ion-tab-button *ngIf="projectName == 'diwo'" tab="all-modules" (click)="appService.pauseVideo()">
+				<ion-icon name="home-outline"></ion-icon>
+				<ion-label>{{ 'Utils.home'| translate }}</ion-label>
+			</ion-tab-button>
+
+			<ion-tab-button *ngIf="projectName == 'drip'" tab="search" (click)="appService.pauseVideo()">
+				<ion-icon name="search-outline"></ion-icon>
+				<ion-label>{{ 'Utils.search'| translate }}</ion-label>
+			</ion-tab-button>
+
+			<ion-tab-button *ngIf="projectName == 'diwo'" tab="diwo-search" (click)="appService.pauseVideo()">
+				<ion-icon name="search-outline"></ion-icon>
+				<ion-label>{{ 'Utils.search'| translate }}</ion-label>
+			</ion-tab-button>
+
+			<ion-tab-button tab="notifications" (click)="appService.pauseVideo()">
+				<ion-icon name="notifications-outline"></ion-icon>
+				<ion-label>{{ 'Utils.notifications'| translate }}</ion-label>
+			</ion-tab-button>
+
+			<ion-tab-button tab="manage-profile" (click)="appService.pauseVideo()">
+				<ion-icon name="person-circle-outline"></ion-icon>
+				<ion-label>{{ 'Utils.profile'| translate }}</ion-label>
+			</ion-tab-button>
+		</div>
+	</ion-tab-bar>
+</ion-tabs>

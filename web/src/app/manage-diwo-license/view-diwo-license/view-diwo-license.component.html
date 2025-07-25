@@ -1,0 +1,263 @@
+<div class="container-fluid" style="margin: 2% 2% 2% 3%">
+	<div class="row add-edit-main-row">
+		<span>
+			<span
+				[routerLink]="['/licenses']"
+				style="margin-left: 0.25rem; color: #637373; margin-right: 2px; cursor: pointer">
+				{{ 'Pages.DiwoLicense.ViewLicense.pagetitle' | translate }}</span
+			>
+			<img src="assets/images/arrow_forward.svg" style="width: 27px" />
+			<span style="color: #6513e1; margin-left: 3px">{{ 'Pages.DiwoLicense.ViewLicense.subtitle' | translate }}</span>
+		</span>
+	</div>
+
+	<div class="row section-wrapper" style="margin-top: 2rem">
+		<div class="form-title">
+			<span>{{ 'Pages.DiwoLicense.ViewLicense.ClientProfile.title' | translate }}</span>
+		</div>
+		<div class="row card-body">
+			<div class="row">
+				<div class="col-md-2">
+					<div class="form-group">
+						<label>{{ 'Pages.DiwoLicense.ViewLicense.ClientProfile.id' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-4 valueCss">
+					{{
+						clientData && clientData.client_id
+							? clientData.client_id
+							: ('Pages.DiwoLicense.ViewLicense.realtimedatanotavailabel' | translate)
+					}}
+				</div>
+				<div class="col-md-2">
+					<div class="form-group">
+						<label>{{ 'Pages.DiwoLicense.ViewLicense.ClientProfile.name' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-4 valueCss">
+					{{
+						clientData && clientData.name
+							? clientData.name
+							: ('Pages.DiwoLicense.ViewLicense.realtimedatanotavailabel' | translate)
+					}}
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-2">
+					<div class="form-group">
+						<label>{{ 'Pages.DiwoLicense.ViewLicense.ClientProfile.status' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-4 valueCss">
+					{{
+						clientData && clientData.status
+							? clientData.status
+							: ('Pages.DiwoLicense.ViewLicense.realtimedatanotavailabel' | translate)
+					}}
+				</div>
+				<div class="col-md-2">
+					<div class="form-group">
+						<label>{{ 'Pages.DiwoLicense.ViewLicense.ClientProfile.parentAccount' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-4 valueCss">
+					{{
+						clientData && clientData.Parent_client && clientData.Parent_client.name
+							? clientData.Parent_client.name
+							: ('Pages.DiwoLicense.ViewLicense.realtimedatanotavailabel' | translate)
+					}}
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-2">
+					<div class="form-group">
+						<label>{{ 'Pages.DiwoLicense.ViewLicense.ClientProfile.category' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-4 valueCss">
+					{{
+						clientData && clientData.Parent_client && clientData.Parent_client.category
+							? clientData.Parent_client.category
+							: ('Pages.DiwoLicense.ViewLicense.realtimedatanotavailabel' | translate)
+					}}
+				</div>
+				<div class="col-md-2">
+					<div class="form-group">
+						<label>{{ 'Pages.DiwoLicense.ViewLicense.ClientProfile.country' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-4 valueCss">
+					{{
+						clientData &&
+						clientData.Parent_client &&
+						clientData.Parent_client.Countries &&
+						clientData.Parent_client.Countries[0].name
+							? clientData.Parent_client.Countries[0].name
+							: ('Pages.DiwoLicense.ViewLicense.realtimedatanotavailabel' | translate)
+					}}
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row section-wrapper" style="margin-top: 2rem" *ngIf="SubscriptionData">
+		<div class="form-title">
+			<span>
+				{{ 'Pages.DiwoLicense.ViewLicense.Subscription.title' | translate }}
+			</span>
+			<span style="float: right; text-transform: capitalize; font-size: 0.9rem">
+				<span *ngIf="SubscriptionData.status != 'Expired'">
+					{{ 'Pages.DiwoLicense.ViewLicense.Subscription.expireson' | translate }}
+				</span>
+				<span *ngIf="SubscriptionData.status == 'Expired'">
+					{{ 'Pages.DiwoLicense.ViewLicense.Subscription.expiredon' | translate }}
+				</span>
+				{{
+					SubscriptionData && SubscriptionData.endDate != null
+						? (SubscriptionData && SubscriptionData.endDate | DateFormat)
+						: '-'
+				}}
+			</span>
+		</div>
+		<div class="row card-body">
+			<div class="row">
+				<div class="col-md-12 mb-3 mt-2 text-right">
+					<div class="mb-3 text-danger" *ngIf="SubscriptionData.status == 'Suspended'">
+						{{ 'Pages.DiwoLicense.ViewLicense.Subscription.temporarilysuspended' | translate }}
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-3">
+					<div class="form-group"></div>
+				</div>
+				<div class="col-md-3">
+					<div class="form-group">
+						<label> {{ 'Pages.DiwoLicense.ViewLicense.Subscription.totalcount' | translate }}</label>
+					</div>
+				</div>
+
+				<div class="col-md-3">
+					<div class="form-group">
+						<label>{{ 'Pages.DiwoLicense.ViewLicense.Subscription.use' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-3">
+					<div class="form-group">
+						<label>{{ 'Pages.DiwoLicense.ViewLicense.Subscription.available' | translate }}</label>
+					</div>
+				</div>
+			</div>
+
+			<!-- ---------------------------------------------------- Learner Count -------------------------- -->
+
+			<div class="row">
+				<div class="col-md-3">
+					<div class="form-group">
+						<label>{{ 'Pages.DiwoLicense.ViewLicense.Subscription.learnercount' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-3 valueCss">
+					{{
+						SubscriptionData.unlimitedLearner == true
+							? ('Pages.DiwoLicense.ViewLicense.unlimited' | translate)
+							: SubscriptionData.learnerCount
+					}}
+				</div>
+				<div class="col-md-3 valueCss">
+					{{
+						SubscriptionData.unlimitedLearner == true
+							? ('Pages.DiwoLicense.ViewLicense.unlimited' | translate)
+							: SubscriptionData.liveLearnerCount
+					}}
+				</div>
+				<div class="col-md-3 valueCss">
+					{{
+						SubscriptionData.unlimitedLearner == true
+							? ('Pages.DiwoLicense.ViewLicense.unlimited' | translate)
+							: SubscriptionData.learnerCount - SubscriptionData.liveLearnerCount
+					}}
+				</div>
+			</div>
+
+			<!-- ---------------------------------------------------- WorkBook Count -------------------------- -->
+
+			<div class="row" style="margin-top: 1rem">
+				<div class="col-md-3">
+					<div class="form-group">
+						<label>{{ 'Pages.DiwoLicense.ViewLicense.Subscription.Workbookcredit' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-3 valueCss">
+					{{
+						SubscriptionData.unlimitedWorkbook == true
+							? ('Pages.DiwoLicense.ViewLicense.unlimited' | translate)
+							: SubscriptionData.workbookCount
+					}}
+				</div>
+				<div class="col-md-3 valueCss">
+					{{
+						SubscriptionData.unlimitedWorkbook == true
+							? ('Pages.DiwoLicense.ViewLicense.unlimited' | translate)
+							: SubscriptionData.liveWorkbookCount
+					}}
+				</div>
+				<div class="col-md-3 valueCss">
+					{{
+						SubscriptionData.unlimitedWorkbook == true
+							? ('Pages.DiwoLicense.ViewLicense.unlimited' | translate)
+							: SubscriptionData.workbookCount - SubscriptionData.liveWorkbookCount
+					}}
+				</div>
+			</div>
+
+			<!-- ---------------------------------------------------- Data Storage Count -------------------------- -->
+
+			<div class="row" style="margin-top: 1rem">
+				<div class="col-md-3">
+					<div class="form-group">
+						<label>{{ 'Pages.DiwoLicense.ViewLicense.Subscription.serverstorage' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-3 valueCss">
+					{{
+						SubscriptionData.unlimitedDataTransfer == true
+							? ('Pages.DiwoLicense.ViewLicense.unlimited' | translate)
+							: SubscriptionData.DataTransferCount
+					}}
+				</div>
+				<div class="col-md-3 valueCss">
+					{{ 'Pages.DiwoLicense.ViewLicense.realtimedatanotavailabel' | translate }}
+				</div>
+				<div class="col-md-3 valueCss">
+					{{ 'Pages.DiwoLicense.ViewLicense.realtimedatanotavailabel' | translate }}
+				</div>
+			</div>
+
+			<!-- ---------------------------------------------------- Data Transfer Count -------------------------- -->
+
+			<div class="row" style="margin-top: 1rem">
+				<div class="col-md-3">
+					<div class="form-group">
+						<label>{{ 'Pages.DiwoLicense.ViewLicense.Subscription.datatransfer' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-3 valueCss">
+					{{
+						SubscriptionData.UnlimitedServerStor == true
+							? ('Pages.DiwoLicense.ViewLicense.unlimited' | translate)
+							: SubscriptionData.serverStorageCount
+					}}
+				</div>
+				<div class="col-md-3 valueCss">
+					{{ 'Pages.DiwoLicense.ViewLicense.realtimedatanotavailabel' | translate }}
+				</div>
+				<div class="col-md-3 valueCss">
+					{{ 'Pages.DiwoLicense.ViewLicense.realtimedatanotavailabel' | translate }}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

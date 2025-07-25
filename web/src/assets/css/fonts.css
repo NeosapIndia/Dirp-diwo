@@ -1,0 +1,136 @@
+/* @import url('https://fonts.googleapis.com/css?family=Acme|Biryani|Boogaloo|Bubblegum+Sans|Bungee+Shade|Chau+Philomene+One|Chewy|Codystar|Eater|Fredericka+the+Great|Gloria+Hallelujah|Griffy|Maiden+Orange|Merriweather|Playfair+Display|Rammetto+One|Ruda|Shadows+Into+Light+Two'); */
+@import url('../assets/css/googleFonts.css');
+/* 
+@font-face {
+    font-family: 'Bubblegum Sans';
+    font-style: normal;
+    font-weight: 400;
+    src: url(./fonts/bubblegum-sans.ttf), format('truetype');
+}
+
+@font-face {
+    font-family: 'Acme';
+    font-style: normal;
+    font-weight: 400;
+    src: url(./fonts/acme.ttf), format('truetype');
+}
+
+
+@font-face {
+    font-family: 'Biryani';
+    font-style: normal;
+    font-weight: 400;
+    src: url(./fonts/Biryani.ttf) format('truetype');
+}
+
+@font-face {
+    font-family: 'Boogaloo';
+    font-style: normal;
+    font-weight: 400;
+    src: url(./fonts/boogaloo.ttf) format('truetype');
+}
+
+@font-face {
+    font-family: 'Bungee Shade';
+    font-style: normal;
+    font-weight: 400;
+    src: url(./fonts/bungee-shade.ttf),format('truetype');
+}
+
+@font-face {
+    font-family: 'Chau Philomene One';
+    font-style: normal;
+    font-weight: 400;
+    src: url(./fonts/chau-philomene-one.ttf),format('truetype');
+}
+
+@font-face {
+    font-family: 'Fredericka the Great';
+    font-style: normal;
+    font-weight: 400;
+    src: url(./fonts/fredericka-the-great.ttf), format('truetype');
+}
+
+@font-face {
+    font-family: 'Chewy';
+    font-style: normal;
+    font-weight: 400;
+    src: url(./fonts/chewy.ttf), format('truetype');
+}
+
+@font-face {
+    font-family: 'Codystar';
+    font-style: normal;
+    font-weight: 400;
+    src: url(./fonts/codystar.ttf), format('truetype');
+}
+
+@font-face {
+    font-family: 'Eater';
+    font-style: normal;
+    font-weight: 400;
+    src: url(./fonts/eater.ttf), format('truetype');
+}
+
+@font-face {
+    font-family: 'Maiden Orange';
+    font-style: normal;
+    font-weight: 400;
+    src: url(./fonts/maiden-orange.ttf),format('truetype');
+}
+
+@font-face {
+    font-family: 'Merriweather';
+    font-style: normal;
+    font-weight: 400;
+    src: url(./fonts/merriweather.ttf),format('truetype');
+}
+
+@font-face {
+    font-family: 'Playfair Display';
+    font-style: normal;
+    font-weight: 400;
+    src: url(./fonts/playfair-display.ttf),format('truetype');
+}
+
+@font-face {
+    font-family: 'Rammetto One';
+    font-style: normal;
+    font-weight: 400;
+    src: url(./fonts/rammetto-one.ttf), format('truetype');
+}
+
+@font-face {
+    font-family: 'Ruda';
+    font-style: normal;
+    font-weight: 400;
+    src: url(./fonts/ruda.ttf), format('truetype');
+}
+
+@font-face {
+    font-family: 'Shadows Into Light Two';
+    font-style: normal;
+    font-weight: 400;
+    src: url(./fonts/shadows-into-light-two.ttf), format('truetype');
+}
+
+@font-face {
+    font-family: 'Gloria Hallelujah';
+    font-style: normal;
+    font-weight: 400;
+    src: url(./fonts/gloria-hallelujah.ttf), format('truetype');
+}
+
+@font-face {
+    font-family: 'Griffy';
+    font-style: normal;
+    font-weight: 400;
+    src: url(./fonts/griffy.ttf), format('truetype');
+} */
+
+@font-face {
+	font-family: 'Poppins-Regular';
+	font-style: normal;
+	font-weight: 400;
+	src: url('../assets/fonts/Poppins-Regular.ttf');
+}

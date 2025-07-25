@@ -1,0 +1,17 @@
+<ng-container *ngIf="sanitizedSrc">
+  <div class="scorm-wrapper">
+    <div *ngIf="loading" class="loader-container">
+      <div class="spinner"></div>
+      <p>Loading SCORM content...</p>
+    </div>
+
+    <iframe
+      #scormIframe    
+      [src]="sanitizedSrc"
+      width="100%"   
+      frameborder="0"
+      [style.visibility]="loading ? 'hidden' : 'visible'"
+      [style.pointerEvents]="loading ? 'none' : 'auto'">
+    </iframe>
+  </div>
+</ng-container>

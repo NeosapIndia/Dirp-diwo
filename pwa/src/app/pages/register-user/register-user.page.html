@@ -1,0 +1,288 @@
+<ion-content no-bounce has-bouncing="false" forceOverscroll="false" style="--background: #f2f2f2">
+	<div class="main-login-section">
+		<div style="width: 100%" class="ion-text-center head-logo">
+			<img
+				*ngIf="appBrandingForSpotReg"
+				[src]="imageBaseURL + appBrandingForSpotReg.learner_app_icon_path"
+				class="logo-icon" />
+			<img
+				*ngIf="!appBrandingForSpotReg && appService.defaultPWALogo"
+				[src]="appService.defaultPWALogo"
+				class="logo-icon" />
+			<img
+				*ngIf="!appBrandingForSpotReg &&!appService.defaultPWALogo"
+				src="assets/icon/diwo_full_logo.png"
+				class="logo-icon-default" />
+		</div>
+
+		<form [formGroup]="userform" (ngSubmit)="submit(userform.value)" class="form-div">
+			<!-- when not setup in app branding -->
+			<div
+				style="--color: gray; margin-top: 1rem; margin-bottom: 0.7rem"
+				class="ion-margin-bottom ion-no-padding"
+				*ngIf="spotRegData && spotRegData.length === 0">
+				<label>{{'First Name'}} <span class="required">*</span></label>
+				<ion-input style="padding-top: 2px" type="text" formControlName="firstName"> </ion-input>
+
+				<div
+					class="error-container"
+					*ngIf="userform.get('firstName').invalid && (userform.get('firstName').dirty || userform.get('firstName').touched)">
+					<span *ngIf="userform.get('firstName').errors.required">{{ 'Utils.FirstNameRequired' | translate }} </span>
+				</div>
+			</div>
+
+			<div
+				style="--color: gray; margin-top: 1rem; margin-bottom: 0.7rem"
+				class="ion-margin-bottom ion-no-padding"
+				*ngIf="spotRegData && spotRegData.length === 0">
+				<label>{{'Last Name'}} <span class="required">*</span></label>
+				<ion-input style="padding-top: 2px" type="text" formControlName="lastName"> </ion-input>
+
+				<div
+					class="error-container"
+					*ngIf="userform.get('lastName').invalid && (userform.get('lastName').dirty || userform.get('lastName').touched)">
+					<span *ngIf="userform.get('lastName').errors.required">{{ 'Utils.LastNameRequired' | translate }} </span>
+				</div>
+			</div>
+
+			<div
+				style="--color: gray; margin-top: 1rem; margin-bottom: 0.7rem"
+				class="ion-margin-bottom ion-no-padding"
+				*ngIf="firstNameData">
+				<label *ngIf="!firstNameData.required">{{firstNameData.label}}</label>
+				<label *ngIf="firstNameData.required">{{firstNameData.label}} <span class="required">*</span></label>
+				<ion-input style="padding-top: 2px" type="text" formControlName="firstName"> </ion-input>
+
+				<div
+					class="error-container"
+					*ngIf="userform.get('firstName').invalid && (userform.get('firstName').dirty || userform.get('firstName').touched)">
+					<span *ngIf="userform.get('firstName').errors.required">{{ 'Utils.FirstNameRequired' | translate }} </span>
+				</div>
+			</div>
+
+			<div
+				style="--color: gray; margin-top: 1rem; margin-bottom: 0.7rem"
+				class="ion-margin-bottom ion-no-padding"
+				*ngIf="lastNameData">
+				<label *ngIf="!lastNameData.required">{{lastNameData.label}}</label>
+				<label *ngIf="lastNameData.required">{{lastNameData.label}} <span class="required">*</span></label>
+				<ion-input style="padding-top: 2px" type="text" formControlName="lastName"> </ion-input>
+
+				<div
+					class="error-container"
+					*ngIf="userform.get('lastName').invalid && (userform.get('lastName').dirty || userform.get('lastName').touched)">
+					<span *ngIf="userform.get('lastName').errors.required">{{ 'Utils.LastNameRequired' | translate }} </span>
+				</div>
+			</div>
+
+			<div style="--color: gray; margin-top: 1rem; margin-bottom: 0.7rem" class="ion-margin-bottom ion-no-padding">
+				<label>{{'New Password'}} <span class="required">*</span></label>
+
+				<ion-input
+					[type]="showPassword ? 'text' : 'password'"
+					formControlName="newPassword"
+					(ionChange)="checkPasswordStrength()"></ion-input>
+
+				<div
+					class="error-container"
+					*ngIf="userform.get('newPassword').invalid && (userform.get('newPassword').dirty || userform.get('newPassword').touched)">
+					<span *ngIf="userform.get('newPassword').errors.required"
+						>{{ 'Utils.newPasswordRequired' | translate }}
+					</span>
+				</div>
+			</div>
+
+			<div class="password-strength" *ngIf="passwordFeedback">
+				<p>{{ 'Utils.passwordstrength' | translate }}:</p>
+				<p>{{ passwordFeedback }}</p>
+			</div>
+
+			<div style="--color: gray; margin-top: 1rem; margin-bottom: 0.7rem" class="ion-margin-bottom ion-no-padding">
+				<label>{{'Confirm Password'}} <span class="required">*</span></label>
+
+				<ion-input [type]="showConfirmPassword ? 'text' : 'password'" formControlName="confirmPassword"></ion-input>
+
+				<div
+					class="error-container"
+					*ngIf="userform.get('confirmPassword').invalid && (userform.get('confirmPassword').dirty || userform.get('confirmPassword').touched)">
+					<span *ngIf="userform.get('confirmPassword').errors.required"
+						>{{ 'Utils.confirmPasswordRequired' | translate }}
+					</span>
+				</div>
+				<div
+					*ngIf="!userform.get('confirmPassword').errors?.required && userform.get('confirmPassword').errors?.mismatch"
+					class="error-container">
+					{{ 'Utils.passwordnotmatch' | translate }}
+				</div>
+			</div>
+
+			<div
+				style="--color: gray; margin-top: 1rem; margin-bottom: 0.7rem"
+				class="ion-margin-bottom ion-no-padding"
+				*ngIf="emailData && verify_using == 'Mobile Number'">
+				<label *ngIf="!emailData.required">{{emailData.label}}</label>
+				<label *ngIf="emailData.required">{{emailData.label}} <span class="required">*</span></label>
+				<ion-input style="padding-top: 2px" type="text" formControlName="Email" (ionChange)="addEmail($event)">
+				</ion-input>
+
+				<div
+					class="error-container"
+					*ngIf="userform.get('Email').invalid && (userform.get('Email').dirty || userform.get('Email').touched)">
+					<span *ngIf="userform.get('Email').errors.required">{{ 'Utils.EmailRequired' | translate }} </span>
+				</div>
+				<div *ngIf="emailError" style="color: #eb445a">{{ 'Utils.InvalidEmail' | translate }}</div>
+			</div>
+
+			<div
+				style="--color: gray; margin-top: 1rem; margin-bottom: 0.7rem"
+				class="ion-margin-bottom ion-no-padding"
+				*ngIf="phoneData && verify_using == 'Email'">
+				<label *ngIf="!phoneData.required">{{phoneData.label}}</label>
+				<label *ngIf="phoneData.required">{{phoneData.label}} <span class="required">*</span></label>
+				<ion-input style="padding-top: 2px" type="text" formControlName="Phone"> </ion-input>
+
+				<div
+					class="error-container"
+					*ngIf="userform.get('Phone').invalid && (userform.get('Phone').dirty || userform.get('Phone').touched)">
+					<span *ngIf="userform.get('Phone').errors.required">{{ 'Utils.PhoneRequired' | translate }} </span>
+				</div>
+			</div>
+
+			<div
+				style="--color: gray; margin-top: 1rem; margin-bottom: 0.7rem"
+				class="ion-margin-bottom ion-no-padding"
+				*ngIf="stateData">
+				<label *ngIf="!stateData.required">{{stateData.label}}</label>
+				<label *ngIf="stateData.required">{{stateData.label}} <span class="required">*</span></label>
+				<ion-input style="padding-top: 2px" type="text" formControlName="State"> </ion-input>
+
+				<div
+					class="error-container"
+					*ngIf="userform.get('State').invalid && (userform.get('State').dirty || userform.get('State').touched)">
+					<span *ngIf="userform.get('State').errors.required"> {{ 'Utils.StateRequired' | translate }} </span>
+				</div>
+			</div>
+
+			<div
+				style="--color: gray; margin-top: 1rem; margin-bottom: 0.7rem"
+				class="ion-margin-bottom ion-no-padding"
+				*ngIf="cityData">
+				<label *ngIf="!cityData.required">{{cityData.label}}</label>
+				<label *ngIf="cityData.required">{{cityData.label}} <span class="required">*</span></label>
+				<ion-input style="padding-top: 2px" type="text" formControlName="City"> </ion-input>
+
+				<div
+					class="error-container"
+					*ngIf="userform.get('City').invalid && (userform.get('City').dirty || userform.get('City').touched)">
+					<span *ngIf="userform.get('City').errors.required">{{ 'Utils.CityRequired' | translate }} </span>
+				</div>
+			</div>
+
+			<div
+				style="--color: gray; margin-top: 1rem; margin-bottom: 0.7rem"
+				class="ion-margin-bottom ion-no-padding"
+				*ngIf="zipCodeData">
+				<label *ngIf="!zipCodeData.required">{{zipCodeData.label}}</label>
+				<label *ngIf="zipCodeData.required">{{zipCodeData.label}} <span class="required">*</span></label>
+				<ion-input style="padding-top: 2px" type="text" formControlName="zipCode"> </ion-input>
+
+				<div
+					class="error-container"
+					*ngIf="userform.get('zipCode').invalid && (userform.get('zipCode').dirty || userform.get('zipCode').touched)">
+					<span *ngIf="userform.get('zipCode').errors.required">{{ 'Utils.zipCodeRequired' | translate }}</span>
+				</div>
+			</div>
+
+			<div
+				style="--color: gray; margin-top: 1rem; margin-bottom: 0.7rem"
+				class="ion-margin-bottom ion-no-padding"
+				*ngIf="branchData">
+				<label *ngIf="!branchData.required">{{branchData.label}}</label>
+				<label *ngIf="branchData.required">{{branchData.label}} <span class="required">*</span></label>
+				<ion-list>
+					<ion-item>
+						<ion-select
+							[placeholder]="branchData.label"
+							[multiple]="false"
+							formControlName="Branch"
+							style="width: 100%"
+							interface="popover">
+							<ion-select-option *ngFor="let branch of branchData.selectedBranchAccount[0]" [value]="branch.id"
+								>{{branch.clientIdWithName}}</ion-select-option
+							>
+						</ion-select>
+					</ion-item>
+				</ion-list>
+
+				<div
+					class="error-container"
+					*ngIf="userform.get('Branch').invalid && (userform.get('Branch').dirty || userform.get('Branch').touched)">
+					<span *ngIf="userform.get('Branch').errors.required">{{ 'Utils.BranchRequired' | translate }}</span>
+				</div>
+			</div>
+
+			<div
+				style="--color: gray; margin-top: 1rem; margin-bottom: 0.7rem"
+				class="ion-margin-bottom ion-no-padding"
+				*ngIf="jobRoleData">
+				<label *ngIf="!jobRoleData.required">{{jobRoleData.label}}</label>
+				<label *ngIf="jobRoleData.required">{{jobRoleData.label}} <span class="required">*</span></label>
+
+				<ion-list>
+					<ion-item>
+						<ion-select
+							[placeholder]="jobRoleData.label"
+							[multiple]="false"
+							formControlName="jobRole"
+							style="width: 100%"
+							interface="popover">
+							<ion-select-option *ngFor="let jobrole of jobRoleData.sectedJobRoleDetails" [value]="jobrole"
+								>{{jobrole.job_role_name}}</ion-select-option
+							>
+						</ion-select>
+					</ion-item>
+				</ion-list>
+
+				<div
+					class="error-container"
+					*ngIf="userform.get('jobRole').invalid && (userform.get('jobRole').dirty || userform.get('jobRole').touched)">
+					<span *ngIf="userform.get('jobRole').errors.required"> {{ 'Utils.JobRoleRequired' | translate }} </span>
+				</div>
+			</div>
+
+			<div
+				style="--color: gray; margin-top: 1rem; margin-bottom: 0.7rem"
+				class="ion-margin-bottom ion-no-padding"
+				*ngFor="let tags of tagsArray let i =index">
+				<label *ngIf="!tags.required">{{tags.label}}</label>
+				<label *ngIf="tags.required">{{tags.label}} <span class="required">*</span></label>
+				<ion-list>
+					<ion-item>
+						<ion-select
+							style="width: 100%"
+							[placeholder]="tags.label"
+							[multiple]="false"
+							formControlName="Tags"
+							(ionChange)="onSelectTags(i,$event)"
+							interface="popover">
+							<ion-select-option *ngFor="let tag of tags.selectedTagArray" [value]="tag">{{tag}}</ion-select-option>
+						</ion-select>
+					</ion-item>
+				</ion-list>
+
+				<!-- <div
+					class="error-container"
+					*ngIf="userform.get('Tags').invalid && (userform.get('Tags').dirty || userform.get('Tags').touched)">
+					<span *ngIf="userform.get('Tags').errors.required"> {{ 'Utils.TagsRequired' | translate }} </span>
+				</div> -->
+				<div *ngIf="tags.tagRequired" style="color: #eb445a">{{tags.label}} {{ 'Utils.TagsRequired' | translate }}</div>
+			</div>
+
+			<div id="surveyForm" style="padding-left: 0px; padding-right: 0px"></div>
+
+			<ion-button expand="block" type="submit" class="login" style="margin-top: 2rem"
+				>{{ 'Utils.submit' | translate }}</ion-button
+			>
+		</form>
+	</div>
+</ion-content>

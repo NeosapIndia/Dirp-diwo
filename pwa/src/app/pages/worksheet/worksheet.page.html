@@ -1,0 +1,2319 @@
+<ion-header *ngIf="!showNotesInput && !showSurveyNote && !showOfflineNote && workSheetData  && !isFullscreen">
+	<ion-toolbar class="toolbar-head">
+		<!-- *ngIf="!trainer_survey &&!isdesktopView" -->
+		<ion-buttons
+			slot="start"
+			style="padding-top: 6px"
+			*ngIf="!trainer_survey && !isdesktopView && !isTabletLandscapeView && !isTablet && (isMobile || isMobileView)">
+			<ion-back-button (click)="back()" text=""></ion-back-button>
+		</ion-buttons>
+		<div class="header-content">
+			<!-- isdesktopView -->
+			<ion-buttons class="back-button" *ngIf="isdesktopView || isTabletLandscapeView || isTablet" (click)="back()">
+				<img src="assets/images/workbook/arrow_back.svg" alt="" style="width: 1.875rem; height: 1.875rem" />
+			</ion-buttons>
+			<div *ngIf="workSheetData" class="ion-title-desktop">
+				<div class="SessionUserTitle">{{ workSheetData.SessionUser.title }}</div>
+			</div>
+		</div>
+	</ion-toolbar>
+</ion-header>
+
+<ion-content class="page-wrap" *ngIf="!showNotesInput && !showSurveyNote && !showOfflineNote && workSheetData">
+	<ion-grid style="padding: 1rem">
+		<ion-row
+			style="display: flex; justify-content: center"
+			[ngClass]="{ 'ion-main-row-desktop': isdesktopView2 || isTabletLandscapeView || isTablet}">
+			<ion-col
+				size-sm="12"
+				size-md="9"
+				size-lg="7"
+				class="main-col"
+				[ngClass]="{ 'ion-main-col-desktop': isdesktopView2 || isTabletLandscapeView || isTablet}">
+				<ion-row>
+					<!-- <ion-col size="12" size-md="10" size-lg="10"> -->
+					<ion-col
+						size="12"
+						[sizeMd]="workSheetData?.SessionAssets[0]?.type === 'Video' ? '11' : '10'"
+						[sizeLg]="workSheetData?.SessionAssets[0]?.type === 'Video' ? '11' : '10'">
+						<div class="worksheet-container">
+							<p
+								class="ws-index"
+								[ngClass]="{ 'ion-worksheet-index-desktop': isdesktopView || isTabletLandscapeView || isTablet }">
+								{{ DiwoModuleId === 2 ? ('Utils.lesson' | translate) : ('Utils.worksheet' | translate) }} {{
+								currentWorksheetIndex + 1 }}/{{ allWorksheetData.length }}
+							</p>
+
+							<!-- Navigation Buttons -->
+							<div class="nav-buttons">
+								<p (click)="prevItem()" *ngIf="currentWorksheetIndex > 0" class="prev-btn">
+									{{'Utils.previousNavigation' | translate}}
+								</p>
+								<p (click)="nextItem()" *ngIf="currentWorksheetIndex < allWorksheetData.length - 1" class="next-btn">
+									{{'Utils.nextNavigation' | translate}}
+								</p>
+							</div>
+						</div>
+
+						<!-- Normal PDF Display -->
+						<ng-container *ngIf="!isFullscreen">
+							<!-- Show spinner while PDF is loading -->
+							<div *ngIf="isPdfLoading" class="spinner-wrapper">
+								<ion-spinner name="crescent"></ion-spinner>
+								<p>Loading PDF...</p>
+							</div>
+
+							<ng-container *ngFor="let asset of pdfFiles; let i = index">
+								<ion-col
+									size="12"
+									*ngIf="pdfVisible && (pdfFiles && pdfFiles.length > 0) && (isdesktopDetectedView || isTabletLandscapeDetectedView || isMobileLandscapeView || isTabletPortraitView || isMobilePortraitView)">
+									<ion-content
+										class="pdf-container"
+										[ngStyle]="(isTabletPortraitView || isMobileView) && isLandscapePDF ? {'height': '30vh', 'min-height': '30vh'} : {}">
+										<div
+											#pdfContainer
+											class="pdf-wrapper"
+											[ngClass]="{							  
+												'horizontal-scroll-view': isLandscapePDF,
+												'vertical-scroll-view': !isLandscapePDF
+												}"
+											*ngIf="asset.type == 'Document'">
+											<!-- src="assets/interactive_pdf_files/M&M Process Excellence Manual Interactive PDF (After Sales).pdf" -->
+
+											<pdf-viewer
+												[src]="pdfUrl"
+												[render-text]="true"
+												[original-size]="false"
+												[fit-to-page]="true"
+												[autoresize]="true"
+												[zoom-scale]="'page-fit'"
+												[stick-to-page]="true"
+												[show-all]="!isLandscapePDF"
+												[page]="isLandscapePDF ? pageNumber : 1"
+												(after-load-complete)="afterLoadComplete($event)"
+												(on-progress)="onPdfProgress($event)"
+												style="
+													--zoom-factor: unset;
+													width: 100%;
+													height: 100%;
+													display: flex;
+													justify-content: center;
+													align-items: center;
+												">
+											</pdf-viewer>
+										</div>
+									</ion-content>
+								</ion-col>
+							</ng-container>
+						</ng-container>
+
+						<!-- Navigation buttons only for landscape PDFs -->
+						<ion-col
+							size="12"
+							*ngIf="isFullscreen || pdfVisible && isLandscapePDF && (isdesktopDetectedView || isTabletLandscapeDetectedView || isMobileLandscapeView || isTabletPortraitView || isMobilePortraitView)">
+							<div class="nav-buttons">
+								<button class="custom-button" (click)="prevPage()" [disabled]="pageNumber <= 1">Previous</button>
+								<!-- <span class="page-num-text">Page {{pageNumber}} / {{totalPages}}</span> -->
+								<button class="custom-button" (click)="nextPage()" [disabled]="pageNumber >= totalPages">Next</button>
+
+								<!-- Fullscreen Toggle Button (Always Visible) -->
+								<span (click)="toggleFullscreen()" [innerHTML]="iconObject['full_screen_24']"></span>
+								<!-- <button class="custom-button" >Fullscreen</button> -->
+							</div>
+						</ion-col>
+
+						<!-- Fullscreen PDF Viewer -->
+						<div class="fullscreen-overlay" *ngIf="isFullscreen">
+							<div class="fullscreen-content">
+								<pdf-viewer
+									[src]="pdfUrl"
+									[render-text]="true"
+									[original-size]="false"
+									[fit-to-page]="true"
+									[autoresize]="true"
+									[zoom-scale]="'page-fit'"
+									[stick-to-page]="true"
+									[show-all]="!isLandscapePDF"
+									[page]="isLandscapePDF ? pageNumber : 1"
+									(after-load-complete)="afterLoadComplete($event)"
+									(on-progress)="onPdfProgress($event)"
+									style="
+										--zoom-factor: unset;
+										width: 100%;
+										height: 100%;
+										display: flex;
+										justify-content: center;
+										align-items: center;
+									"
+									[ngStyle]="(isTabletPortraitView || isMobileView) && isLandscapePDF ? {'height': '30vh', 'min-height': '30vh'} : {}">
+								</pdf-viewer>
+
+								<!-- Navigation Buttons -->
+								<div class="nav-buttons fullscreen-nav">
+									<button class="custom-button" (click)="prevPage()" [disabled]="pageNumber <= 1">Previous</button>
+									<!-- <span class="page-num-text">Page {{pageNumber}} / {{totalPages}}</span> -->
+									<button class="custom-button" (click)="nextPage()" [disabled]="pageNumber >= totalPages">Next</button>
+									<!-- <button class="custom-button exit-btn" (click)="toggleFullscreen()">Exit Fullscreen</button> -->
+									<span
+										class="exit-btn"
+										(click)="toggleFullscreen()"
+										[innerHTML]="iconObject['full_screen_exit_icon_24']"></span>
+								</div>
+							</div>
+						</div>
+
+						<!-- pdf code end -->
+
+						<div class="ws-wrapper">
+							<div
+								*ngIf="workSheetTypesArray.includes(workSheetData.type)
+								&& !pdfVisible ">
+								<div
+									class="img-head"
+									*ngIf="(workSheetData.type !== 'Learning Content' && workSheetData.type !== 'Offline Task' && workSheetData.imgPath && workSheetData.SessionAssets[0]?.type === 'Image') ||
+									((workSheetData.type === 'Learning Content' || workSheetData.type === 'Offline Task') && Wsthumbnail?.length > 0 && Wsthumbnail[0]?.type === 'Image' && Wsthumbnail?.length > 0)">
+									<!-- <img class="ws-img" [src]="workSheetData.imgPath" />	 -->
+
+									
+									<!-- <div #zoomContainer class="zoom-container">
+										<img class="ws-img" [src]="workSheetData.imgPath" 
+										(load)="onImageLoad()"	
+										/>
+									</div> -->									
+
+									<div
+										#zoomContainer
+										class="zoom-container"
+										[ngClass]="{ 'zoom-active': isZoomed }"
+										style="overflow: visible;"
+									>
+										<img
+											#zoomImage
+											[src]="workSheetData.imgPath"
+											class="ws-img"
+											[ngClass]="{ 'zoomable-img': isMobile }"
+											(load)="onImageLoad()"
+											style="will-change: transform;"
+										/>
+									</div>									
+
+
+								</div>
+
+								<!-- && (
+												(workSheetData.type !== 'Learning Content' && workSheetData.type !== 'Offline Task')
+												||((workSheetData.type === 'Learning Content' || workSheetData.type === 'Offline Task')&& Wsthumbnail?.length > 0 && Wsthumbnail[0]?.type === 'Video' && Wsthumbnail?.length > 0)) -->
+
+								<div
+									*ngIf="isLoading && appService?.configurable_feature?.vimeo && Wsthumbnail?.length > 0  && Wsthumbnail[0]?.forBrief == false && (Wsthumbnail[0]?.type === 'Video')"
+									class="vimeo-container">
+									<app-vimeo-video
+										[video_asset]="Wsthumbnail[0]"
+										[assignPostId]="workSheetData.id"
+										[UserId]="userId"
+										videoType="Session_Asset"
+										[currentPlayTime]="workSheetData.seconds"
+										updateTime="true">
+									</app-vimeo-video>
+								</div>
+
+								<!-- 
+								&& (
+									(workSheetData.type !== 'Learning Content' && workSheetData.type !== 'Offline Task')
+									||((workSheetData.type === 'Learning Content' || workSheetData.type === 'Offline Task')&& Wsthumbnail && Wsthumbnail.length > 0)) -->
+
+								<div
+									*ngIf="isLoading && appService?.configurable_feature?.mediaCMS && Wsthumbnail?.length > 0  && Wsthumbnail[0]?.forBrief == false &&  (Wsthumbnail[0]?.type === 'Video')"
+									class="video-container">
+									<app-cms-video
+										[video_asset]="Wsthumbnail[0]"
+										[assignPostId]="workSheetData.id"
+										[UserId]="userId"
+										videoType="Session_Asset"
+										[currentPlayTime]="workSheetData.seconds"
+										updateTime="true"
+										[isWorksheetPage]="true">
+									</app-cms-video>
+								</div>
+							</div>
+							<div class="worksheet-data" *ngIf="!pdfVisible">
+								<div class="flag-div">
+									<div
+										class="activity-type"
+										[ngClass]="{'activity-type-all' : (workSheetData.trainerInst !== null && isTrainer) && (workSheetData.type == 'Offline Task' || workSheetData.type == 'Learning Content'|| workSheetData.type == 'Discussion' || workSheetData.type == 'Follow Us') && workSheetData.flgFav &&  workSheetData.flgImp && workSheetData.flgGroupActivty}">
+										<img
+											*ngIf="workSheetData.type == 'Quiz' || workSheetData.type == 'Quiz (Randomised)'"
+											src="assets/images/workbook/quiz_clock_icon.svg"
+											class="worksheet-type-icon" />
+
+										<img
+											*ngIf="workSheetData.type == 'Learning Content' && workSheetData.SessionAssets[0].type != 'Video' && !workSheetData.isGuideWorksheet"
+											src="assets/images/workbook/content_icon_grey.svg"
+											class="worksheet-type-icon" />
+
+										<img
+											*ngIf="workSheetData.type == 'Learning Content' && workSheetData.SessionAssets[0].type == 'Video' && !workSheetData.isGuideWorksheet"
+											src="assets/images/workbook/module_video_icon.svg"
+											class="worksheet-type-icon" />
+
+										<img
+											*ngIf="workSheetData.type == 'Learning Content' && workSheetData.isGuideWorksheet"
+											src="assets/images/workbook/arvr_icon.svg"
+											class="worksheet-guide-icon" />
+
+										<img
+											*ngIf="workSheetData.type == 'Follow Us'"
+											src="assets/images/workbook/follow_us_icon.svg"
+											class="worksheet-type-icon" />
+
+										<img
+											*ngIf="workSheetData.type == 'Discussion'"
+											src="assets/images/workbook/group-discussion.svg"
+											class="worksheet-disc-type-icon" />
+
+										<img
+											*ngIf="workSheetData.type == 'Poll'"
+											src="assets/images/workbook/poll_icon_grey.svg"
+											class="worksheet-type-icon" />
+										<img
+											*ngIf="workSheetData.type == 'Word Cloud'"
+											src="assets/images/workbook/word_cloud.svg"
+											class="worksheet-type-icon" />
+										<img
+											*ngIf="workSheetData.type == 'Survey'"
+											src="assets/images/workbook/survey_icon_grey.svg"
+											class="worksheet-type-icon" />
+										<img
+											*ngIf="workSheetData.type == 'Offline Task'"
+											src="assets/images/workbook/offline_task_icon_grey.svg"
+											class="worksheet-type-icon" />
+
+										<img
+											*ngIf="workSheetData.type =='Spin The Wheel'"
+											src="assets/images/workbook/spin-the-wheel_grey.svg"
+											class="worksheet-type-icon" />
+
+										<!-- <p style="margin: 0 0.35rem;">{{workSheetData.type}}</p> -->
+
+										<p
+											[ngClass]="{'worksheet-type-text-all' : (workSheetData.trainerInst !== null && isTrainer)&& workSheetData.flgFav && workSheetData.flgImp && workSheetData.flgGroupActivty ,
+										'worksheet-type-text' : (workSheetData.trainerInst !== null && isTrainer) ||  workSheetData.flgFav || workSheetData.flgImp || workSheetData.flgGroupActivty}">
+											<!-- {{ workSheetData.type == 'Quiz (Randomised)' ? 'Quiz' : workSheetData.type}} -->
+											{{ workSheetData.activityTemplate}}
+										</p>
+
+										<!-- check icon has been added -->
+										<img
+											*ngIf="((!isMobile) || (!isMobileView)) && workSheetData.SessionAssets[0].type == 'Video' && (workSheetData.worksheetStatus === 'Completed') && workSheetData.type == 'Learning Content'"
+											src="assets/images/landrover/check_icon.png"
+											class="flag-icons"
+											[ngClass]="'lesson-check-icon'" />
+									</div>
+
+									<div class="fav-icon-wrapper-mobile">
+										<img
+											*ngIf="((isMobile) || (isMobileView)) && workSheetData.SessionAssets[0].type == 'Video' && (workSheetData.worksheetStatus === 'Completed') && workSheetData.type == 'Learning Content'"
+											src="assets/images/landrover/check_icon.png"
+											class="flag-icons"
+											[ngClass]="'lesson-check-icon'" />
+
+										<img
+											src="assets/images/workbook/favorite_gray.svg"
+											*ngIf="workSheetData.flgFav && !workSheetData.isFav"
+											(click)="changeFlag('Fav');"
+											class="flag-icons-mobile" />
+
+										<img
+											src="assets/images/workbook/favorite_selected_icon.svg"
+											*ngIf="workSheetData.flgFav && workSheetData.isFav && workSheetData.trainerSurvey"
+											(click)="changeFlag('Fav');"
+											class="flag-icons-mobile" />
+
+										<div
+											*ngIf="workSheetData.flgFav && workSheetData.isFav && !workSheetData.trainerSurvey"
+											(click)="changeFlag('Fav');"
+											class="flag-icons-mobile fav-icon-select"></div>
+									</div>
+								</div>
+
+								<!-- <p class="description" *ngIf="workSheetData.description">{{workSheetData.description}}</p> -->
+
+								<div id="module_description1" class="description"></div>
+
+								<p class="trainer-note" *ngIf="workSheetData.trainerInst && isShowTrainerNote">
+									{{workSheetData.trainerInst}}
+								</p>
+
+								<!-- -----------------------------------Learning Content ===>>> Attach Files-------------------------------------------- -->
+								<div *ngIf="workSheetData.type == 'Learning Content'">
+									<ion-row *ngIf="briefAssets && briefAssets.length > 0" style="margin-top: 1rem">
+										<ion-col size="6" size-lg="4" size-md="4" *ngFor="let asset of briefAssets ;let i=index">
+											<ion-card class="ion-no-margin" style="border-radius: 0px">
+												<ion-card-content class="uploaded_files_wrapper" (click)="downloadAssetFile(asset)">
+													<p class="downloadable_images_text">{{asset.fileName}}</p>
+													<div class="downloadable_image_wrap" *ngIf="asset.type == 'Image'">
+														<img
+															height="24px"
+															width="24px"
+															style="object-fit: cover; margin-top: 0.5rem; margin-left: -2px"
+															src="assets/images/workbook/image_icon.svg"
+															*ngIf="asset.type == 'Image'" />
+														<p class="downloadable_icons">{{'Utils.image' | translate}}</p>
+														<img
+															height="24px"
+															width="24px"
+															style="object-fit: cover; margin-top: 0.7rem; position: absolute; right: 2px"
+															src="assets/images/workbook/download_icon2.svg" />
+													</div>
+													<div class="downloadable_image_wrap" *ngIf="asset.type == 'Video'">
+														<img
+															height="24px"
+															width="24px"
+															style="object-fit: cover; margin-top: 0.5rem; margin-left: -2px"
+															src="assets/images/workbook/video_icon.svg"
+															*ngIf="asset.type == 'Video'" />
+														<p class="downloadable_icons">{{'Utils.video' | translate}}</p>
+														<img
+															height="24px"
+															width="24px"
+															style="object-fit: cover; margin-top: 0.7rem; position: absolute; right: 2px"
+															src="assets/images/workbook/download_icon2.svg" />
+													</div>
+													<div class="downloadable_image_wrap" *ngIf="asset.type == 'Document'">
+														<img
+															height="24px"
+															width="24px"
+															style="object-fit: cover; margin-top: 0.5rem; margin-left: -2px"
+															src="assets/images/workbook/pdf_icon.svg"
+															*ngIf="asset.type == 'Document'" />
+														<p class="downloadable_icons">{{'Utils.pdf' | translate}}</p>
+														<img
+															height="24px"
+															width="24px"
+															style="object-fit: cover; margin-top: 0.7rem; position: absolute; right: 2px"
+															src="assets/images/workbook/download_icon2.svg" />
+													</div>
+													<div class="downloadable_image_wrap" *ngIf="asset.type == 'Audio'">
+														<img
+															height="24px"
+															width="24px"
+															style="object-fit: cover; margin-top: 0.5rem; margin-left: -2px"
+															src="assets/images/workbook/audio_icon.svg"
+															*ngIf="asset.type == 'Audio'" />
+														<p class="downloadable_icons">{{'Utils.audio' | translate}}</p>
+														<img
+															height="24px"
+															width="24px"
+															style="object-fit: cover; margin-top: 0.7rem; position: absolute; right: 2px"
+															src="assets/images/workbook/download_icon2.svg" />
+													</div>
+												</ion-card-content>
+											</ion-card>
+										</ion-col>
+									</ion-row>
+								</div>
+
+								<!-- <div *ngIf="workSheetData.submit" class="worksheet-score-div"
+									style="visibility: hidden"></div>
+
+								<div *ngIf="workSheetData.submit" class="worksheet-score-div">
+									<div class="quiz-completed-note">
+										<img src="assets/images/workbook/submit_icon.svg" style="height: 20px" />
+										<span style="margin-left: 0.2rem">{{'Utils.completed' | translate}}</span>
+									</div> -->
+
+								<!-- <div
+										style="position: absolute; right: 22px; font-size: 15px"
+										*ngIf="workSheetData.type == 'Quiz' || workSheetData.type == 'Quiz (Randomised)'">
+										<span
+											>{{'Utils.yourScore' | translate}}
+											<span>{{workSheetData.score}} / {{workSheetData.SessionQuestions.length}} </span></span
+										>
+									</div> -->
+
+								<!-- <div style="position: absolute; right: 0.5rem; font-size: 0.9375rem"
+										*ngIf="['Spin The Wheel','Quiz','Quiz (Randomised)'].indexOf(workSheetData.type) != -1">
+										<span *ngIf="isShowMarks">{{'Utils.yourScore' | translate}}
+											<span>{{workSheetData.score}} / {{workSheetData.spinTheQuestionCount}}
+											</span></span>
+									</div>
+								</div> -->
+
+								<div *ngIf="['Quiz'].includes(workSheetData.type)">
+									<div
+										*ngIf="!workSheetData.submit  && workSheetData.isQuizAttempted && workSheetData.reAttemptsCount < maxReAttemptsAllowed"
+										class="worksheet-score-div-retry">
+										<div class="quiz-retry-not-pass-2">
+											<div class="quiz-retry-not-pass-sub">
+												<img src="assets/images/workbook/wrong_icon.svg" style="height: 20px" />
+												<span class="quiz-not-pass"> {{ 'Utils.quiznotpass' | translate }} </span>
+											</div>
+
+											<div class="quiz-retry-not-pass-sub">
+												<img src="assets/images/workbook/wrong_icon.svg" style="height: 20px; visibility: hidden" />
+												<span>
+													<a *ngIf="sessionStatus != 'Closed'" (click)="clearForm()" class="quiz-retry">
+														{{ 'Utils.quizretry' | translate }}
+													</a>
+													<a *ngIf="sessionStatus == 'Closed'" class="quiz-retry-1">
+														{{ 'Utils.quizretry' | translate }}
+													</a>
+												</span>
+											</div>
+										</div>
+
+										<div class="score-container-2">
+											<span class="quizattemptsremaining">
+												{{ 'Utils.quizattemptsremaining' | translate }}: {{maxReAttemptsAllowed > 0 ?
+												maxReAttemptsAllowed- workSheetData.reAttemptsCount : 0}}
+											</span>
+
+											<span *ngIf="isQuizPassShowMarks">
+												{{ 'Utils.yourScore' | translate }}:
+												<span>{{ workSheetData.score }} / {{ workSheetData.spinTheQuestionCount }}</span>
+											</span>
+										</div>
+									</div>
+
+									<div
+										*ngIf="!workSheetData.submit &&
+												maxReAttemptsAllowed == workSheetData.reAttemptsCount"
+										class="quiz-locked-main-sec">
+										<div class="quiz-locked-sub-sec">
+											<img src="assets/images/workbook/info_icon.svg" style="height: 20px" />
+											<span style="margin-left: 0.5rem"> {{ 'Utils.quizlocked' | translate }} </span>
+										</div>
+
+										<div class="score-container">
+											<span *ngIf="isQuizPassShowMarks">
+												{{ 'Utils.yourScore' | translate }}:
+												<span>{{ workSheetData.score }} / {{ workSheetData.spinTheQuestionCount }}</span>
+											</span>
+										</div>
+									</div>
+								</div>
+
+								<div *ngIf="workSheetData.submit" class="worksheet-score-div">
+									<div class="quiz-completed-note">
+										<img src="assets/images/workbook/submit_icon.svg" height="20" />
+										<span>{{ 'Utils.completed' | translate }}</span>
+									</div>
+
+									<div
+										class="score-container"
+										*ngIf="['Spin The Wheel','Quiz','Quiz (Randomised)'].includes(workSheetData.type)">
+										<span *ngIf="isShowMarks">
+											{{ 'Utils.yourScore' | translate }}:
+											<span>{{ workSheetData.score }} / {{ workSheetData.spinTheQuestionCount }}</span>
+										</span>
+									</div>
+								</div>
+
+								<div
+									*ngIf="workSheetData.type == 'Spin The Wheel' && (!workSheetData.submit && !showSpinCategoryQuestion)">
+									<div style="text-align: center" class="wheel-container" #maincontainer>
+										<ngx-wheel
+											*ngIf="showSpinWheel"
+											[ngClass]="{'wheel-center' : !isdesktopView}"
+											#wheel
+											[width]="screenWidth"
+											[height]="screenHeight"
+											[spinDuration]="spinDuration"
+											[disableSpinOnClick]="true"
+											[items]="spinCategoryArray"
+											[innerRadius]="10"
+											[spinAmount]="10"
+											pointerStrokeColor="#FFFFFF"
+											pointerFillColor="#000000"
+											[idToLandOn]="idToLandOn"
+											(onSpinStart)="onSpinStart()"
+											(onSpinComplete)="onSpinStop()">
+										</ngx-wheel>
+									</div>
+									<div style="text-align: center">
+										<ion-button
+											(click)="onClickSpinStart()"
+											class="submit-btn"
+											style="margin-top: 1rem; text-align: center">
+											{{'Utils.spin' | translate}}
+										</ion-button>
+									</div>
+								</div>
+
+								<!-- follow us -->
+								<div
+									*ngIf="workSheetData.type == 'Follow Us' && workSheetData.mediaProfilesData.length >0 && isMediaWorksheet">
+									<ion-row class="equal-height" style="margin-top: 1rem">
+										<ion-col
+											size="6"
+											size-lg="4"
+											size-md="4"
+											*ngFor="let mediaprofile of workSheetData.mediaProfilesData; let i=index">
+											<div class="social-media-section" style="word-wrap: break-word; width: 100%">
+												<img
+													class="social-media-icon"
+													src="assets/images/workbook/socialmedianew/facebook_logo_new.png"
+													*ngIf="mediaprofile.mediaName =='facebook'"
+													(click)="visitSocialMediaProfile(mediaprofile.mediaLink)" />
+												<img
+													class="social-media-icon"
+													src="assets/images/workbook/socialmedianew/instagram_logo_icon_512.png"
+													*ngIf="mediaprofile.mediaName =='instagram'"
+													(click)="visitSocialMediaProfile(mediaprofile.mediaLink)" />
+												<img
+													class="social-media-icon"
+													src="assets/images/workbook/socialmedianew/linkedin_logo_icon_512.png"
+													*ngIf="mediaprofile.mediaName =='linkedin'"
+													(click)="visitSocialMediaProfile(mediaprofile.mediaLink)" />
+												<img
+													class="social-media-icon"
+													src="assets/images/workbook/socialmedianew/medium_logo_icon_512.png"
+													*ngIf="mediaprofile.mediaName =='medium'"
+													(click)="visitSocialMediaProfile(mediaprofile.mediaLink)" />
+												<img
+													class="social-media-icon"
+													src="assets/images/workbook/socialmedianew/reddit_logo_icon_512.png"
+													*ngIf="mediaprofile.mediaName =='reddit'"
+													(click)="visitSocialMediaProfile(mediaprofile.mediaLink)" />
+												<img
+													class="social-media-icon"
+													src="assets/images/workbook/socialmedianew/telegram_logo_new.png"
+													*ngIf="mediaprofile.mediaName =='telegram'"
+													(click)="visitSocialMediaProfile(mediaprofile.mediaLink)" />
+												<img
+													class="social-media-icon"
+													src="assets/images/workbook/socialmedianew/threads_logo_icon_512.png"
+													*ngIf="mediaprofile.mediaName =='thread'"
+													(click)="visitSocialMediaProfile(mediaprofile.mediaLink)" />
+												<img
+													class="social-media-icon"
+													src="assets/images/workbook/socialmedianew/tiktok_logo_icon_512.png"
+													*ngIf="mediaprofile.mediaName =='tiktok'"
+													(click)="visitSocialMediaProfile(mediaprofile.mediaLink)" />
+												<img
+													class="social-media-icon"
+													src="assets/images/workbook/socialmedianew/twitter_x_logo_icon_512.png"
+													*ngIf="mediaprofile.mediaName =='x'"
+													(click)="visitSocialMediaProfile(mediaprofile.mediaLink)" />
+												<img
+													class="social-media-icon"
+													src="assets/images/workbook/socialmedianew/whatsapp_logo_icon_512.png"
+													*ngIf="mediaprofile.mediaName =='whatsapp'"
+													(click)="visitSocialMediaProfile(mediaprofile.mediaLink)" />
+												<img
+													class="social-media-icon"
+													src="assets/images/workbook/socialmedianew/youtube_logo_icon_512.png"
+													*ngIf="mediaprofile.mediaName =='youtube'"
+													(click)="visitSocialMediaProfile(mediaprofile.mediaLink)" />
+
+												<p
+													class="social_medial_handles"
+													*ngIf="mediaprofile.mediaHandle"
+													(click)="visitSocialMediaProfile(mediaprofile.mediaLink)"
+													[ngStyle]="appBrandingInfo && appBrandingInfo.accent_color ? {'color' : appBrandingInfo.accent_color} : {'color': 'var(--branding-color)'}">
+													<span>{{mediaprofile.mediaHandle}}</span>
+												</p>
+												<p
+													class="social_medial_handles"
+													style="margin-bottom: 2rem"
+													*ngIf="!mediaprofile.mediaHandle"
+													(click)="visitSocialMediaProfile(mediaprofile.mediaLink)"
+													[ngStyle]="appBrandingInfo && appBrandingInfo.accent_color ? {'color' : appBrandingInfo.accent_color} : {'color':'var(--branding-color)'}">
+													<span>{{mediaprofile.mediaHandle}}</span>
+												</p>
+											</div>
+										</ion-col>
+									</ion-row>
+								</div>
+							</div>
+						</div>
+
+						<!-- -----------------------------------Ofline Task ===>>> Brief-------------------------------------------- -->
+						<div *ngIf="workSheetData.type == 'Offline Task' && workSheetData.brief">
+							<div class="quiz-wrapper">
+								<div>
+									<p style="margin: 0; font-weight: 500">{{workSheetData.brief}}</p>
+								</div>
+
+								<!-- Video Upload Progress Section for Offline Task -->
+								<!-- Blocker to freeze screen while uploading the video -->
+								<div *ngIf="isVideoUploading" class="upload-blocker"></div>
+
+								<!-- Video Upload Modal  -->
+								<!-- <ion-modal
+									[isOpen]="isModalOpen"
+									(didDismiss)="closeModal()"
+									backdropDismiss="false"
+									class="video-upload-modal">
+									<ng-template class="model-template">
+										<div
+											*ngIf="videoUploadProgress !== null && videoUploadProgress > 0 && videoUploadProgress < 100"
+											style="padding: 0 1rem 0 1rem"
+											class="modal-content">
+											<progress
+												[value]="videoUploadProgress"
+												[max]="100"
+												style="padding: 0.5rem; height: 2.063rem; width: 100%"></progress>
+											<span class="loading-text"> {{'Utils.vimeovideoloading_2' | translate}} </span>
+										</div>
+									</ng-template>
+								</ion-modal> -->
+
+								<ion-row *ngIf="briefAssets && briefAssets.length > 0" style="margin-top: 1rem">
+									<ion-col size="6" size-lg="4" size-md="4" *ngFor="let asset of briefAssets ;let i=index">
+										<ion-card class="ion-no-margin" style="border-radius: 0px">
+											<ion-card-content class="uploaded_files_wrapper" (click)="downloadAssetFile(asset)">
+												<p class="downloadable_images_text">{{asset.fileName}}</p>
+												<div class="downloadable_image_wrap" *ngIf="asset.type == 'Image'">
+													<img
+														height="24px"
+														width="24px"
+														style="object-fit: cover; margin-top: 0.5rem; margin-left: -2px"
+														src="assets/images/workbook/image_icon.svg"
+														*ngIf="asset.type == 'Image'" />
+													<p class="downloadable_icons">{{'Utils.image' | translate}}</p>
+													<img
+														height="24px"
+														width="24px"
+														style="object-fit: cover; margin-top: 0.7rem; position: absolute; right: 2px"
+														src="assets/images/workbook/download_icon2.svg" />
+												</div>
+												<div class="downloadable_image_wrap" *ngIf="asset.type == 'Video'">
+													<img
+														height="24px"
+														width="24px"
+														style="object-fit: cover; margin-top: 0.5rem; margin-left: -2px"
+														src="assets/images/workbook/video_icon.svg"
+														*ngIf="asset.type == 'Video'" />
+													<p class="downloadable_icons">{{'Utils.video' | translate}}</p>
+													<img
+														height="24px"
+														width="24px"
+														style="object-fit: cover; margin-top: 0.7rem; position: absolute; right: 2px"
+														src="assets/images/workbook/download_icon2.svg" />
+												</div>
+
+												<div class="downloadable_image_wrap" *ngIf="asset.type == 'Document'">
+													<img
+														height="24px"
+														width="24px"
+														style="object-fit: cover; margin-top: 0.5rem; margin-left: -2px"
+														src="assets/images/workbook/pdf_icon.svg"
+														*ngIf="asset.type == 'Document'" />
+													<p class="downloadable_icons">{{'Utils.pdf' | translate}}</p>
+													<img
+														height="24px"
+														width="24px"
+														style="object-fit: cover; margin-top: 0.7rem; position: absolute; right: 2px"
+														src="assets/images/workbook/download_icon2.svg" />
+												</div>
+												<div class="downloadable_image_wrap" *ngIf="asset.type == 'Audio'">
+													<img
+														height="24px"
+														width="24px"
+														style="object-fit: cover; margin-top: 0.5rem; margin-left: -2px"
+														src="assets/images/workbook/audio_icon.svg"
+														*ngIf="asset.type == 'Audio'" />
+													<p class="downloadable_icons">{{'Utils.audio' | translate}}</p>
+													<img
+														height="24px"
+														width="24px"
+														style="object-fit: cover; margin-top: 0.7rem; position: absolute; right: 2px"
+														src="assets/images/workbook/download_icon2.svg" />
+												</div>
+											</ion-card-content>
+										</ion-card>
+									</ion-col>
+								</ion-row>
+							</div>
+						</div>
+
+						<!-- -----------------------------------Questions For All Type of Worksheets-------------------------------------------- -->
+						<div
+							*ngIf="workSheetData && workSheetData.SessionQuestions && workSheetData.SessionQuestions[0].SessionOptions && workSheetData.SessionQuestions[0].SessionOptions.length > 0 && workSheetData.type !== 'Learning Content'&& workSheetData.type !== 'Discussion' &&workSheetData.type !== 'Follow Us' &&(workSheetData.type != 'Spin The Wheel' || (workSheetData.type == 'Spin The Wheel' && showSpinCategoryQuestion))">
+							<div *ngFor="let item of workSheetData.SessionQuestions; index as i">
+								<div
+									class="quiz-wrapper"
+									*ngIf="workSheetData.type != 'Spin The Wheel' || (((workSheetData.type == 'Spin The Wheel' && item.spinCatName == selectCategoryName && !workSheetData.submit) || (this.assignUserSpinCategoryArray.indexOf(item.spinCatIndex) > -1 && workSheetData.submit)) && showSpinCategoryQuestion)">
+									<ion-row
+										*ngIf="((workSheetData.type != 'Survey' &&  workSheetData.type != 'Poll' &&  workSheetData.type !='Word Cloud' && workSheetData.type != 'Spin The Wheel') && item.question)">
+										<ion-col size="12" style="padding: 0">
+											<p style="margin: 0; font-weight: 500">Q{{i+1}}. {{item.question}}</p>
+										</ion-col>
+									</ion-row>
+
+									<ion-row
+										*ngIf="((workSheetData.type == 'Survey' && item.questionType !=='Geo Tag') || workSheetData.type == 'Poll' || workSheetData.type =='Word Cloud') && item.question">
+										<ion-col size="12" style="padding: 0">
+											<p style="margin: 0; font-weight: 500">{{item.question}}</p>
+										</ion-col>
+									</ion-row>
+
+									<ion-row
+										*ngIf="(workSheetData.type == 'Spin The Wheel'&& ((item.spinCatName == selectCategoryName && !workSheetData.submit ) || (this.assignUserSpinCategoryArray.indexOf(item.spinCatIndex) > -1 && workSheetData.submit))&& showSpinCategoryQuestion) && item.question">
+										<ion-col size="12" style="padding: 0">
+											<p style="margin: 0; font-weight: 500">Q{{i+1}}. {{item.question}}</p>
+										</ion-col>
+									</ion-row>
+
+									<div *ngIf="item.SessionAssets && item.SessionAssets.length > 0 " class="img-que-wrapper">
+										<div *ngFor="let asset of item.SessionAssets;">
+											<img *ngIf="asset.type == 'Image' && asset.path" [src]="imageHost + asset.path" class="img-que" />
+											<div *ngIf="asset.type == 'Video' && appService?.configurable_feature?.vimeo">
+												<app-vimeo-video
+													[video_asset]="asset"
+													[assignPostId]="item.id"
+													[UserId]="userId"
+													videoType="Session_Question_Asset"
+													[currentPlayTime]="item.seconds"
+													updateTime="true">
+												</app-vimeo-video>
+											</div>
+											<div
+												class="session-question-video"
+												*ngIf="asset.type == 'Video' && appService?.configurable_feature?.mediaCMS">
+												<app-cms-video
+													[video_asset]="asset"
+													[assignPostId]="item.id"
+													[UserId]="userId"
+													videoType="Session_Question_Asset"
+													[currentPlayTime]="item.seconds"
+													updateTime="true">
+												</app-cms-video>
+											</div>
+										</div>
+									</div>
+
+									<div *ngIf="workSheetData.type == 'Word Cloud'" style="margin-top: 2rem">
+										<div
+											*ngFor="let ans of workSheetData.SessionQuestions[i].SessionOptions; index as a;"
+											style="margin-bottom: 1rem">
+											<ion-input
+												[placeholder]="'Utils.entertext' | translate"
+												[disabled]="sessionStatus == 'Closed' || workSheetData.submit || workSheetData.isReattemptLocked || workSheetData.isQuizRetryDisabled"
+												[(ngModel)]="workSheetData.SessionQuestions[i].SessionOptions[a].userAnswer"
+												style="border-bottom: 1px solid lightgray"
+												[maxlength]="totalWordCloudCharLimit"
+												(ionBlur)="submitWordCloud(i, a)"
+												(ionInput)="updateRemainigLimit($event,i, a)">
+											</ion-input>
+											<span class="characteleft">
+												{{'Utils.charcaterlimit' | translate}} - {{
+												workSheetData.SessionQuestions[i].SessionOptions[a].remainigWordCloudLimit != null ||
+												workSheetData.SessionQuestions[i].SessionOptions[a].remainigWordCloudLimit != undefined ?
+												workSheetData.SessionQuestions[i].SessionOptions[a].remainigWordCloudLimit + '/' +
+												totalWordCloudCharLimit : totalWordCloudCharLimit + '/' + totalWordCloudCharLimit }}</span
+											>
+										</div>
+									</div>
+
+									<ion-list *ngIf="workSheetData.type == 'Poll'" class="poll-wrapper card-bg-white">
+										<ion-radio-group *ngIf="item.SessionOptions" [value]="item.selectedAnswer">
+											<div *ngFor="let option of item.SessionOptions; index as j;">
+												<div
+													class="img-option-wrapper"
+													*ngIf="option.assetPath"
+													[ngClass]="{'option-selected': option.selectedAns == true}"
+													[ngStyle]="appBrandingInfo && appBrandingInfo.accent_color && option.selectedAns == true ? {'outline' : '3px solid' + ' ' +appBrandingInfo.accent_color} : {'outline': 'var(--branding-color)'}">
+													<img [src]="imageHost + option.assetPath" class="img-option" />
+												</div>
+												<ion-item class="poll-item" lines="none">
+													<p>{{option.text}}</p>
+													<ion-radio
+														slot="end"
+														value="{{option.text}}"
+														(click)="checkedOption(i, j, $event)"
+														[disabled]="sessionStatus == 'Closed' || workSheetData.submit || workSheetData.isReattemptLocked || workSheetData.isQuizRetryDisabled"
+														class="poll-checked">
+													</ion-radio>
+													<span class="percentage-bar"></span>
+												</ion-item>
+											</div>
+										</ion-radio-group>
+									</ion-list>
+
+									<ion-list
+										*ngIf="(workSheetData.type == 'Quiz' || workSheetData.type == 'Quiz (Randomised)') && item.questionType == 'MCQ'"
+										class="card-bg-white">
+										<div *ngIf="workSheetData.isGraded &&  (workSheetData.submit || isQuizReAttemptPassingSubmitted)">
+											<div
+												class="ans-correct"
+												*ngIf="item.answerStatus == 'Correct' &&( isShowMarks || isQuizPassShowMarks)">
+												<img src="assets/images/workbook/correct_icon.svg" style="height: 20px" />
+												<span style="margin-left: 0.2rem; color: #18a16f; font-weight: 500"
+													>{{'Utils.correct' | translate}}</span
+												>
+											</div>
+											<div
+												class="ans-correct"
+												*ngIf="item.answerStatus == 'Incorrect'  && ( isShowMarks || isQuizPassShowMarks)">
+												<img src="assets/images/workbook/wrong_icon.svg" style="height: 20px" />
+												<span style="margin-left: 0.2rem; color: #f00a2e; font-weight: 500"
+													>{{'Utils.incorrect' | translate}}</span
+												>
+											</div>
+										</div>
+										<ion-radio-group *ngIf="item.SessionOptions" [value]="item.selectedAnswer">
+											<div *ngFor="let option of item.SessionOptions; index as j;">
+												<div
+													class="img-option-wrapper"
+													*ngIf="option.assetPath"
+													[ngStyle]="workSheetData.isGraded && !isShowMarks && !isQuizPassShowMarks && option.selectedAns && appBrandingInfo  && appBrandingInfo.accent_color ? {'outline' : '3px solid' + ' ' +appBrandingInfo.accent_color} : (isShowMarks || (isQuizReAttemptPassingSubmitted && isQuizPassShowMarks))  && option.correctAns ? {'outline' : '3px solid green'} :  (isShowMarks || (isQuizReAttemptPassingSubmitted && isQuizPassShowMarks)) && workSheetData.isGraded   && !option.correctAns && option.selectedAns ? {'outline' : '3px solid red'}  : {'outline' : 'var(--branding-color)'}">
+													<img [src]="imageHost + option.assetPath" class="img-option" />
+												</div>
+												<!-- [ngClass]="{'both-option-correct': workSheetData.isGraded && workSheetData.submit && sessionStatus == 'Closed' && option.selectedAns == true && option.correctAns == true , 'option-selected': option.selectedAns == true , 'correct-option': workSheetData.isGraded && workSheetData.submit && sessionStatus == 'Closed' && option.correctAns == true}" -->
+												<ion-item
+													class="radio-item"
+													lines="none"
+													style="--padding-start: --16px !important; --inner-padding-end: -14px !important">
+													<ion-radio
+														slot="end"
+														value="{{option.text}}"
+														(click)="checkedOption(i, j, $event)"
+														[disabled]="(workSheetData.isGraded && workSheetData.submit) || sessionStatus == 'Closed' || workSheetData.isReattemptLocked || workSheetData.isQuizRetryDisabled"
+														class="poll-checked">
+													</ion-radio>
+													<p
+														[ngStyle]="workSheetData.isGraded && !isShowMarks && !isQuizPassShowMarks &&  option.selectedAns && appBrandingInfo?.accent_color ?  {'color' : appBrandingInfo.accent_color}  : workSheetData.isGraded && (isShowMarks || (isQuizReAttemptPassingSubmitted && isQuizPassShowMarks)) &&  option.selectedAns  && !option.correctAns ? {'color' : 'red'} : workSheetData.isGraded && (isShowMarks || (isQuizReAttemptPassingSubmitted && isQuizPassShowMarks))  && option.correctAns ? {'color' : 'green'} : {'color' : ''}">
+														{{option.text}}
+													</p>
+													<!-- [ngClass]="{'both-radio-opt-correct': workSheetData.isGraded && workSheetData.submit && sessionStatus == 'Closed' && option.selectedAns == true && option.correctAns == true , 'radio-option-selected': option.selectedAns == true , 'radio-option-correct': workSheetData.isGraded && workSheetData.submit && sessionStatus == 'Closed' && option.correctAns == true}" -->
+												</ion-item>
+											</div>
+										</ion-radio-group>
+									</ion-list>
+
+									<ion-list
+										*ngIf="(workSheetData.type == 'Quiz' || workSheetData.type == 'Quiz (Randomised)') && item.questionType == 'multiCorrectAns'"
+										class="card-bg-white">
+										<div *ngIf="item.SessionOptions">
+											<div *ngIf="workSheetData.isGraded &&  (workSheetData.submit || isQuizReAttemptPassingSubmitted)">
+												<div
+													class="ans-correct"
+													*ngIf="item.answerStatus == 'Correct' && ( isShowMarks || isQuizPassShowMarks)">
+													<img src="assets/images/workbook/correct_icon.svg" style="height: 20px" />
+													<span style="margin-left: 0.2rem; color: #18a16f; font-weight: 500"
+														>{{'Utils.correct' | translate}}</span
+													>
+												</div>
+												<div
+													class="ans-correct"
+													*ngIf="item.answerStatus == 'Partially Correct' && ( isShowMarks || isQuizPassShowMarks)">
+													<img src="assets/images/workbook/correct_icon.svg" style="height: 20px" />
+													<span style="margin-left: 0.2rem; color: #18a16f; font-weight: 500">
+														{{'Utils.partiallycorrect' | translate}}
+													</span>
+												</div>
+												<div
+													class="ans-correct"
+													*ngIf="item.answerStatus == 'Incorrect' && ( isShowMarks || isQuizPassShowMarks)">
+													<img src="assets/images/workbook/wrong_icon.svg" style="height: 20px" />
+													<span style="margin-left: 0.2rem; color: #f00a2e; font-weight: 500"
+														>{{'Utils.incorrect' | translate}}</span
+													>
+												</div>
+											</div>
+											<div *ngFor="let option of item.SessionOptions; index as j;">
+												<div
+													class="img-option-wrapper"
+													*ngIf="option.assetPath"
+													[ngStyle]=" workSheetData.isGraded && !isShowMarks && !isQuizPassShowMarks && option.selectedAns && appBrandingInfo  && appBrandingInfo.accent_color ? {'outline' : '3px solid' + ' ' +appBrandingInfo.accent_color} : (isShowMarks || isQuizPassShowMarks)  && option.correctAns ? {'outline' : '3px solid green'} :  (isShowMarks || isQuizPassShowMarks) && workSheetData.isGraded   && !option.correctAns && option.selectedAns ? {'outline' : '3px solid red'}  : {'outline' : 'var(--branding-color)'}">
+													<img [src]="imageHost + option.assetPath" class="img-option" />
+												</div>
+												<ion-item
+													class="radio-item"
+													lines="none"
+													style="--padding-start: --16px !important; --inner-padding-end: -14px !important">
+													<ion-checkbox
+														slot="end"
+														(click)="multiCheckedOption(i, option.id)"
+														[checked]="option.selectedAns"
+														[disabled]="(workSheetData.isGraded && workSheetData.submit) || sessionStatus == 'Closed' ||  workSheetData.isReattemptLocked || workSheetData.isQuizRetryDisabled"
+														class="multi-checked">
+													</ion-checkbox>
+													<p
+														[ngStyle]=" workSheetData.isGraded && !isShowMarks && !isQuizPassShowMarks &&  option.selectedAns && appBrandingInfo?.accent_color ?  {'color' : appBrandingInfo.accent_color}  : workSheetData.isGraded && (isShowMarks || (isQuizReAttemptPassingSubmitted && isQuizPassShowMarks)) &&  option.selectedAns  && !option.correctAns ? {'color' : 'red'} : workSheetData.isGraded && (isShowMarks || (isQuizReAttemptPassingSubmitted && isQuizPassShowMarks))  && option.correctAns ? {'color' : 'green'} : {'color' : ''}">
+														{{option.text}}
+													</p>
+												</ion-item>
+											</div>
+										</div>
+									</ion-list>
+
+									<!-- Spin The Wheel MCQ -->
+									<ion-list
+										*ngIf="(workSheetData.type == 'Spin The Wheel' && showSpinCategoryQuestion && ((item.spinCatName == selectCategoryName && !workSheetData.submit) || (this.assignUserSpinCategoryArray.indexOf(item.spinCatIndex) > -1 && workSheetData.submit)) && item.questionType == 'MCQ')"
+										class="card-bg-white">
+										<div *ngIf="workSheetData.isGraded && workSheetData.submit && sessionStatus == 'Closed'">
+											<div class="ans-correct" *ngIf="item.answerStatus == 'Correct' && isShowMarks">
+												<img src="assets/images/workbook/correct_icon.svg" style="height: 20px" />
+												<span style="margin-left: 0.2rem; color: #18a16f; font-weight: 500"
+													>{{'Utils.correct' | translate}}</span
+												>
+											</div>
+											<div class="ans-correct" *ngIf="item.answerStatus == 'Incorrect'  && isShowMarks ">
+												<img src="assets/images/workbook/wrong_icon.svg" style="height: 20px" />
+												<span style="margin-left: 0.2rem; color: #f00a2e; font-weight: 500"
+													>{{'Utils.incorrect' | translate}}</span
+												>
+											</div>
+										</div>
+										<ion-radio-group *ngIf="item.SessionOptions" [value]="item.selectedAnswer">
+											<div *ngFor="let option of item.SessionOptions; index as j;">
+												<div
+													class="img-option-wrapper"
+													*ngIf="option.assetPath"
+													[ngStyle]=" workSheetData.isGraded  && workSheetData.submit && option.selectedAns == true && option.correctAns == false  && appBrandingInfo && appBrandingInfo.accent_color ? {'outline' : '3px solid' + ' ' +appBrandingInfo.accent_color} : !workSheetData.submit && option.selectedAns == true && appBrandingInfo && appBrandingInfo.accent_color ? {'outline' : '3px solid' + ' ' +appBrandingInfo.accent_color} : workSheetData.submit && option.selectedAns == true && option.correctAns == true ? {'outline' : '3px solid green'} : workSheetData.isGraded && workSheetData.submit && sessionStatus == 'Closed'  && option.correctAns == true ?  {'outline' : '3px solid green'} : {'outline' : 'var(--branding-color)'}">
+													<img [src]="imageHost + option.assetPath" class="img-option" />
+												</div>
+												<ion-item
+													class="radio-item"
+													lines="none"
+													style="--padding-start: --16px !important; --inner-padding-end: -14px !important">
+													<ion-radio
+														slot="end"
+														value="{{option.text}}"
+														(click)="checkedOption(i, j, $event)"
+														[disabled]="(workSheetData.isGraded && workSheetData.submit) || sessionStatus == 'Closed' ||  workSheetData.isReattemptLocked || workSheetData.isQuizRetryDisabled"
+														class="poll-checked">
+													</ion-radio>
+
+													<!-- [ngStyle]=" workSheetData.isGraded  && (workSheetData.submit || sessionStatus == 'Closed') && option.selectedAns == true && option.correctAns == false  && appBrandingInfo && appBrandingInfo.accent_color ? {'color' : appBrandingInfo.accent_color} : !workSheetData.submit && option.selectedAns == true && appBrandingInfo && appBrandingInfo.accent_color ? {'color' : appBrandingInfo.accent_color} : workSheetData.submit && option.selectedAns == true && option.correctAns == true ? {'color' : 'green'} : workSheetData.isGraded && workSheetData.submit && sessionStatus == 'Closed' && option.selectedAns == false && option.correctAns == true ?  {'color' : 'green'} : {'color' : ''}"> -->
+													<p
+														[ngStyle]="
+													workSheetData.isGraded && (workSheetData.submit || sessionStatus == 'Closed') && option.selectedAns && !option.correctAns && appBrandingInfo?.accent_color
+														? { color: 'red' }
+														: !workSheetData.submit && option.selectedAns && appBrandingInfo?.accent_color
+														? { color: appBrandingInfo.accent_color }
+														: workSheetData.submit && option.selectedAns && option.correctAns
+														? { color: 'green' }														
+														: workSheetData.isGraded && workSheetData.submit && sessionStatus == 'Closed' && !option.selectedAns && option.correctAns
+														? { color: 'green' }
+														: { color: '' }
+													">
+														{{ option.text }}
+													</p>
+												</ion-item>
+											</div>
+										</ion-radio-group>
+									</ion-list>
+
+									<!-- Spin The Wheel MultiCurrect Ans -->
+									<ion-list
+										*ngIf="(workSheetData.type == 'Spin The Wheel' && showSpinCategoryQuestion && ((item.spinCatName == selectCategoryName && !workSheetData.submit) || (this.assignUserSpinCategoryArray.indexOf(item.spinCatIndex) > -1 && workSheetData.submit)) && item.questionType == 'multiCorrectAns')"
+										class="card-bg-white">
+										<div *ngIf="item.SessionOptions">
+											<div *ngIf="workSheetData.isGraded && workSheetData.submit && sessionStatus == 'Closed'">
+												<div class="ans-correct" *ngIf="item.answerStatus == 'Correct' && isShowMarks">
+													<img src="assets/images/workbook/correct_icon.svg" style="height: 20px" />
+													<span style="margin-left: 0.2rem; color: #18a16f; font-weight: 500"
+														>{{'Utils.correct' | translate}}</span
+													>
+												</div>
+												<div class="ans-correct" *ngIf="item.answerStatus == 'Partially Correct' && isShowMarks">
+													<img src="assets/images/workbook/correct_icon.svg" style="height: 20px" />
+													<span style="margin-left: 0.2rem; color: #18a16f; font-weight: 500">
+														{{'Utils.partiallycorrect' | translate}}
+													</span>
+												</div>
+												<div class="ans-correct" *ngIf="item.answerStatus == 'Incorrect' && isShowMarks">
+													<img src="assets/images/workbook/wrong_icon.svg" style="height: 20px" />
+													<span style="margin-left: 0.2rem; color: #f00a2e; font-weight: 500"
+														>{{'Utils.incorrect' | translate}}</span
+													>
+												</div>
+											</div>
+											<div *ngFor="let option of item.SessionOptions; index as j;">
+												<div
+													class="img-option-wrapper"
+													*ngIf="option.assetPath"
+													[ngStyle]=" workSheetData.isGraded  && workSheetData.submit && sessionStatus == 'Closed' && option.selectedAns == true && option.correctAns == false  && appBrandingInfo && appBrandingInfo.accent_color ? {'outline' : '3px solid' + ' ' +appBrandingInfo.accent_color} : !workSheetData.submit && option.selectedAns == true && appBrandingInfo && appBrandingInfo.accent_color ? {'outline' : '3px solid' + ' ' +appBrandingInfo.accent_color} : workSheetData.submit && option.selectedAns == true && option.correctAns == true ? {'outline' : '3px solid green'} : workSheetData.isGraded && workSheetData.submit && sessionStatus == 'Closed' && option.selectedAns == false && option.correctAns == true ?  {'outline' : '3px solid green'} : {'outline' : 'var(--branding-color)'}">
+													<img [src]="imageHost + option.assetPath" class="img-option" />
+												</div>
+												<ion-item
+													class="radio-item"
+													lines="none"
+													style="--padding-start: --16px !important; --inner-padding-end: -14px !important">
+													<ion-checkbox
+														slot="end"
+														(click)="multiCheckedOption(i, option.id)"
+														[checked]="option.selectedAns"
+														[disabled]="(workSheetData.isGraded && workSheetData.submit) || sessionStatus == 'Closed' ||  workSheetData.isReattemptLocked || workSheetData.isQuizRetryDisabled"
+														class="multi-checked">
+													</ion-checkbox>
+													<p
+														[ngStyle]=" workSheetData.isGraded  && workSheetData.submit && sessionStatus == 'Closed' && option.selectedAns == true && option.correctAns == false  && appBrandingInfo && appBrandingInfo.accent_color ? {'color' : appBrandingInfo.accent_color} : !workSheetData.submit && option.selectedAns == true && appBrandingInfo && appBrandingInfo.accent_color ? {'color' : appBrandingInfo.accent_color} : workSheetData.submit && option.selectedAns == true && option.correctAns == true ? {'color' : 'green'} : workSheetData.isGraded && workSheetData.submit && sessionStatus == 'Closed' && option.selectedAns == false && option.correctAns == true ?  {'color' : 'green'} : {'color' : ''}">
+														{{option.text}}
+													</p>
+												</ion-item>
+											</div>
+										</div>
+									</ion-list>
+
+									<!-- Spin The Wheel Drag and Drop -->
+									<div
+										*ngIf="(workSheetData.type == 'Spin The Wheel' && showSpinCategoryQuestion && (item.spinCatName == selectCategoryName && !workSheetData.submit) && item.questionType == 'Drag and Drop')">
+										<div
+											cdkDropList
+											class="drop-list"
+											[cdkDropListData]="item.SessionOptions"
+											(cdkDropListDropped)="drop($event,item.SessionOptions)">
+											<div
+												*ngFor="let option of item.SessionOptions"
+												class="drag-option-section"
+												style="margin-top: 1rem"
+												[ngClass]="option.assetPath ? 'drag-image-wrapper' : 'drag-option-wrapper' ">
+												<div
+													class="drop-box"
+													cdkDrag
+													[ngClass]="option.assetPath ? 'image-not-padding' : 'image-padding'">
+													<img *ngIf="option.assetPath" [src]="imageHost + option.assetPath" class="drag-img-option" />
+													<p *ngIf="option.text" style="white-space: normal; text-align: center; margin: 0.5rem 0 0">
+														{{option.text}}
+													</p>
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<div
+										*ngIf="(workSheetData.type == 'Spin The Wheel' && showSpinCategoryQuestion && (this.assignUserSpinCategoryArray.indexOf(item.spinCatIndex) > -1 && workSheetData.submit) && item.questionType == 'Drag and Drop')"
+										class="drag-img-option-group">
+										<div *ngIf="workSheetData.isGraded && workSheetData.submit && sessionStatus == 'Closed'">
+											<div class="ans-correct" *ngIf="item.answerStatus == 'Correct' && isShowMarks">
+												<img src="assets/images/workbook/correct_icon.svg" style="height: 20px" />
+												<span style="margin-left: 0.2rem; color: #18a16f; font-weight: 500">
+													{{'Utils.correct' | translate}}</span
+												>
+											</div>
+											<div class="ans-correct" *ngIf="item.answerStatus == 'Incorrect' && isShowMarks">
+												<img src="assets/images/workbook/wrong_icon.svg" style="height: 20px" />
+												<span style="margin-left: 0.2rem; color: #f00a2e; font-weight: 500"
+													>{{'Utils.incorrect' | translate}}</span
+												>
+											</div>
+										</div>
+
+										<div cdkDropList class="drop-list" [cdkDropListData]="item.SessionOptions">
+											<div
+												*ngFor="let option of item.SessionOptions"
+												class="drag-option-section"
+												style="margin-top: 1rem"
+												[ngClass]="option.assetPath ? 'drag-image-wrapper' : 'drag-option-wrapper' ">
+												<div
+													class="drop-box"
+													cdkDrag
+													[cdkDragDisabled]="true"
+													[ngClass]="option.assetPath ? 'image-not-padding' : 'image-padding'">
+													<img *ngIf="option.assetPath" [src]="imageHost + option.assetPath" class="drag-img-option" />
+													<p *ngIf="option.text" style="white-space: normal; text-align: center; margin: 0.5rem 0 0">
+														{{option.text}}
+													</p>
+													<div style="position: absolute; right: 20px; color: #d9c5f8">{{option.sr_no}}</div>
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<!-- <div
+							*ngIf="workSheetData.type == 'Quiz' && item.questionType == 'Drag and Drop' && !workSheetData.submit"
+							[dragula]="MANY_ITEMS"
+							[(dragulaModel)]="item.SessionOptions"
+							class="drag-img-option-group">
+							<div
+								*ngFor="let option of item.SessionOptions; index as dragIndex;"
+								class="drag-option-section"
+								[ngClass]="option.assetPath ? 'drag-image-wrapper' : 'drag-option-wrapper' ">
+								<img *ngIf="option.assetPath" [src]="imageHost + option.assetPath" class="drag-img-option" />
+								<p *ngIf="option.text" style="white-space: normal; text-align: center; margin: 0.5rem 0 0">
+									{{option.text}}
+								</p>
+							</div>
+						</div>
+
+						{{'--------------------notsubmit'}} -->
+
+									<div
+										*ngIf="(workSheetData.type == 'Quiz' || workSheetData.type == 'Quiz (Randomised)') && item.questionType == 'Drag and Drop' && !workSheetData.submit">
+										<div
+											cdkDropList
+											class="drop-list"
+											[cdkDropListData]="item.SessionOptions"
+											(cdkDropListDropped)="drop($event,item.SessionOptions)">
+											<div
+												*ngFor="let option of item.SessionOptions"
+												class="drag-option-section"
+												style="margin-top: 1rem"
+												[ngClass]="option.assetPath ? 'drag-image-wrapper' : 'drag-option-wrapper' ">
+												<div
+													class="drop-box"
+													cdkDrag
+													[ngClass]="option.assetPath ? 'image-not-padding' : 'image-padding'">
+													<img *ngIf="option.assetPath" [src]="imageHost + option.assetPath" class="drag-img-option" />
+													<p *ngIf="option.text" style="white-space: normal; text-align: center; margin: 0.5rem 0 0">
+														{{option.text}}
+													</p>
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<div
+										*ngIf="(workSheetData.type == 'Quiz' || workSheetData.type == 'Quiz (Randomised)')  && item.questionType == 'Drag and Drop' && (workSheetData.submit || workSheetData.isQuizReAttemptPassingSubmitted)"
+										class="drag-img-option-group">
+										<div *ngIf="workSheetData.isGraded && (workSheetData.submit || isQuizReAttemptPassingSubmitted)">
+											<div
+												class="ans-correct"
+												*ngIf="item.answerStatus == 'Correct' && ( isShowMarks || isQuizPassShowMarks)">
+												<img src="assets/images/workbook/correct_icon.svg" style="height: 20px" />
+												<span style="margin-left: 0.2rem; color: #18a16f; font-weight: 500">
+													{{'Utils.correct' | translate}}</span
+												>
+											</div>
+											<div
+												class="ans-correct"
+												*ngIf="item.answerStatus == 'Incorrect' && ( isShowMarks || isQuizPassShowMarks)">
+												<img src="assets/images/workbook/wrong_icon.svg" style="height: 20px" />
+												<span style="margin-left: 0.2rem; color: #f00a2e; font-weight: 500"
+													>{{'Utils.incorrect' | translate}}</span
+												>
+											</div>
+										</div>
+										<!-- <div
+								*ngFor="let option of item.SessionOptions; index as dragIndex;"
+								class="drag-option-section"
+								[ngClass]="option.assetPath ? 'drag-image-wrapper' : 'drag-option-wrapper' ">
+								<img *ngIf="option.assetPath" [src]="imageHost + option.assetPath" class="drag-img-option" />
+								<p *ngIf="option.text" style="white-space: normal; text-align: center; margin: 0.5rem 0 0">
+									{{option.text}}
+								</p>
+								<div style="position: absolute; right: 20px; color: #d9c5f8">{{option.sr_no}}</div>
+							</div>
+
+							{{'--------------------submit'}} -->
+										<div cdkDropList class="drop-list" [cdkDropListData]="item.SessionOptions">
+											<div
+												*ngFor="let option of item.SessionOptions"
+												class="drag-option-section"
+												style="margin-top: 1rem"
+												[ngClass]="option.assetPath ? 'drag-image-wrapper' : 'drag-option-wrapper' ">
+												<div
+													class="drop-box"
+													cdkDrag
+													[cdkDragDisabled]="true"
+													[ngClass]="option.assetPath ? 'image-not-padding' : 'image-padding'">
+													<img *ngIf="option.assetPath" [src]="imageHost + option.assetPath" class="drag-img-option" />
+													<p *ngIf="option.text" style="white-space: normal; text-align: center; margin: 0.5rem 0 0">
+														{{option.text}}
+													</p>
+													<div *ngIf="isShowMarks" style="position: absolute; right: 20px; color: #d9c5f8">
+														{{option.sr_no}}
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<!---------------------------------WorkSheet Type ==>> Survey ------------------------------------->
+
+									<div *ngIf="workSheetData.type == 'Survey' && item.questionType == 'Short answer'">
+										<!-- <div
+								class="edit-learner-div_survey"
+								*ngIf="workSheetData.type == 'Survey' && item.questionType == 'Short answer' && item.surveyNote">
+								<ion-input
+									[disabled]="workSheetData.submit"
+									[(ngModel)]="item.surveyNote"
+									class="survey_input_text"
+									style="border-bottom: 1px solid lightgray"
+									(click)="addEditSurveyNote(item,i)">
+								</ion-input>
+							</div> -->
+										<!-- <div *ngIf="workSheetData.type == 'Survey' && item.questionType == 'Short answer' && !item.surveyNote">
+								<ion-input
+									[disabled]="workSheetData.submit"
+									[placeholder]="'Utils.taptoaddyouranswer' | translate"
+									class="survey_input_text"
+									style="border-bottom: 1px solid lightgray; text-align: center"
+									(click)="addEditSurveyNote(item,i)">
+								</ion-input>
+							</div> -->
+										<ion-textarea
+											auto-grow
+											[disabled]="workSheetData.submit || workSheetData.isReattemptLocked || workSheetData.isQuizRetryDisabled"
+											[(ngModel)]="item.surveyNote"
+											[maxlength]="item.surveyCharLimit"
+											(ionBlur)="saveSurveyNote(item)"
+											[placeholder]="'Utils.taptoaddyouranswer' | translate"
+											class="short-long-answer">
+										</ion-textarea>
+									</div>
+
+									<div *ngIf="workSheetData.type == 'Survey' && item.questionType == 'Long answer'">
+										<!-- <div
+								class="edit-learner-div"
+								*ngIf="workSheetData.type == 'Survey' && item.questionType == 'Long answer' && item.surveyNote">
+								<ion-input
+									[disabled]="workSheetData.submit"
+									[(ngModel)]="item.surveyNote"
+									class="survey_input_text"
+									style="border-bottom: 1px solid lightgray"
+									(click)="addEditSurveyNote(item,i)">
+								</ion-input>
+							</div>
+							<div *ngIf="workSheetData.type == 'Survey' && item.questionType == 'Long answer' && !item.surveyNote">
+								<ion-input
+									[disabled]="workSheetData.submit"
+									[placeholder]="'Utils.taptoaddyouranswer' | translate"
+									class="survey_input_text"
+									style="border-bottom: 1px solid lightgray; text-align: center"
+									(click)="addEditSurveyNote(item,i)">
+								</ion-input>
+							</div> -->
+										<ion-textarea
+											auto-grow
+											[disabled]="workSheetData.submit || workSheetData.isReattemptLocked || workSheetData.isQuizRetryDisabled"
+											[(ngModel)]="item.surveyNote"
+											[maxlength]="item.surveyCharLimit"
+											(ionBlur)="saveSurveyNote(item)"
+											[placeholder]="'Utils.taptoaddyouranswer' | translate"
+											class="short-long-answer">
+										</ion-textarea>
+									</div>
+
+									<ion-list *ngIf="workSheetData.type == 'Survey' && item.questionType == 'MCQ'" class="card-bg-white">
+										<!-- <div *ngIf="workSheetData.submit">
+                                <div class="ans-correct" *ngIf="item.answerStatus == 'Correct'">
+                                    <img src="assets/images/workbook/correct_icon.svg" style="height: 20px;">
+                                    <span style="margin-left: 0.2rem;color: #18a16f;font-weight: 500;">{{'Utils.correct'
+                                        | translate}}</span>
+                                </div>
+                                <div class="ans-correct" *ngIf="item.answerStatus == 'Incorrect'">
+                                    <img src="assets/images/workbook/wrong_icon.svg" style="height: 20px;">
+                                    <span
+                                        style="margin-left: 0.2rem;color:#f00a2e;font-weight: 500;">{{'Utils.incorrect'
+                                        | translate}}</span>
+                                </div>
+                            </div> -->
+										<ion-radio-group *ngIf="item.SessionOptions" [value]="item.selectedAnswer">
+											<div *ngFor="let option of item.SessionOptions; index as j;">
+												<div
+													class="img-option-wrapper"
+													*ngIf="option.assetPath"
+													[ngStyle]="(workSheetData.submit || sessionStatus == 'Closed') && option.selectedAns == true && option.correctAns == false  && appBrandingInfo && appBrandingInfo.accent_color ? {'outline' : '3px solid' + ' ' +appBrandingInfo.accent_color} : ( !workSheetData.submit || sessionStatus !== 'Closed') && option.selectedAns == true && appBrandingInfo && appBrandingInfo.accent_color ? {'outline' : '3px solid' + ' ' +appBrandingInfo.accent_color} : (workSheetData.submit || sessionStatus == 'Closed') && option.selectedAns == true && option.correctAns == true ? {'outline' : '3px solid green'} : (workSheetData.submit || sessionStatus == 'Closed') && option.selectedAns == false && option.correctAns == true ?  {'outline' : '3px solid green'} : {'outline' : 'var(--branding-color)'}">
+													<img [src]="imageHost + option.assetPath" class="img-option" />
+												</div>
+												<ion-item
+													class="radio-item"
+													lines="none"
+													style="--padding-start: --16px !important; --inner-padding-end: -14px !important">
+													<ion-radio
+														slot="end"
+														value="{{option.text}}"
+														(click)="checkedOption(i, j, $event)"
+														[disabled]="sessionStatus == 'Closed' || workSheetData.submit|| workSheetData.isReattemptLocked || workSheetData.isQuizRetryDisabled"
+														class="poll-checked">
+													</ion-radio>
+													<p
+														[ngStyle]="(workSheetData.submit || sessionStatus == 'Closed') && option.selectedAns == true && option.correctAns == false  && appBrandingInfo && appBrandingInfo.accent_color ? {'color' : appBrandingInfo.accent_color} : ( !workSheetData.submit || sessionStatus !== 'Closed') && option.selectedAns == true && appBrandingInfo && appBrandingInfo.accent_color ? {'color' : appBrandingInfo.accent_color} : (workSheetData.submit || sessionStatus == 'Closed') && option.selectedAns == true && option.correctAns == true ? {'color' : 'green'} : (workSheetData.submit || sessionStatus == 'Closed') && option.selectedAns == false && option.correctAns == true ?  {'color' : 'green'} : {'color' : ''}">
+														{{option.text}}
+													</p>
+												</ion-item>
+											</div>
+										</ion-radio-group>
+									</ion-list>
+
+									<ion-list
+										*ngIf="workSheetData.type == 'Survey' && item.questionType == 'multiCorrectAns'"
+										class="card-bg-white">
+										<div *ngIf="item.SessionOptions">
+											<!-- <div *ngIf="workSheetData.submit">
+                                    <div class="ans-correct" *ngIf="item.answerStatus == 'Correct'">
+                                        <img src="assets/images/workbook/correct_icon.svg" style="height: 20px;">
+                                        <span
+                                            style="margin-left: 0.2rem;color: #18a16f;font-weight: 500;">{{'Utils.correct' | translate}}</span>
+                                    </div>
+                                    <div class="ans-correct" *ngIf="item.answerStatus == 'Partially Correct'">
+                                        <img src="assets/images/workbook/correct_icon.svg" style="height: 20px;">
+                                        <span style="margin-left: 0.2rem;color: #18a16f;font-weight: 500;">
+                                            {{'Utils.partiallycorrect' | translate}}
+                                        </span>
+                                    </div>
+                                    <div class="ans-correct" *ngIf="item.answerStatus == 'Incorrect'">
+                                        <img src="assets/images/workbook/wrong_icon.svg" style="height: 20px;">
+                                        <span
+                                            style="margin-left: 0.2rem;color: #f00a2e;font-weight: 500;">{{'Utils.incorrect' | translate}}</span>
+                                    </div>
+                                </div> -->
+											<div *ngFor="let option of item.SessionOptions; index as j;">
+												<div
+													class="img-option-wrapper"
+													*ngIf="option.assetPath"
+													[ngStyle]="(workSheetData.submit || sessionStatus == 'Closed') && option.selectedAns == true && option.correctAns == false  && appBrandingInfo && appBrandingInfo.accent_color ? {'outline' : '3px solid' + ' ' +appBrandingInfo.accent_color} : ( !workSheetData.submit || sessionStatus !== 'Closed') && option.selectedAns == true && appBrandingInfo && appBrandingInfo.accent_color ? {'outline' : '3px solid' + ' ' +appBrandingInfo.accent_color} : (workSheetData.submit || sessionStatus == 'Closed') && option.selectedAns == true && option.correctAns == true ? {'outline' : '3px solid green'} : (workSheetData.submit || sessionStatus == 'Closed') && option.selectedAns == false && option.correctAns == true ?  {'outline' : '3px solid green'} : {'outline' : 'var(--branding-color)'}">
+													<img [src]="imageHost + option.assetPath" class="img-option" />
+												</div>
+												<ion-item
+													class="radio-item"
+													lines="none"
+													style="--padding-start: --16px !important; --inner-padding-end: -14px !important">
+													<ion-checkbox
+														slot="end"
+														(click)="multiCheckedOption(i, option.id)"
+														[checked]="option.selectedAns"
+														[disabled]="sessionStatus == 'Closed' || workSheetData.submit || workSheetData.isReattemptLocked || workSheetData.isQuizRetryDisabled"
+														class="multi-checked">
+													</ion-checkbox>
+													<p
+														*ngIf="option.text"
+														[ngStyle]="(workSheetData.submit || sessionStatus == 'Closed') && option.selectedAns == true && option.correctAns == false  && appBrandingInfo && appBrandingInfo.accent_color ? {'color' : appBrandingInfo.accent_color} : ( !workSheetData.submit || sessionStatus !== 'Closed') && option.selectedAns == true && appBrandingInfo && appBrandingInfo.accent_color ? {'color' : appBrandingInfo.accent_color} : (workSheetData.submit || sessionStatus == 'Closed') && option.selectedAns == true && option.correctAns == true ? {'color' : 'green'} : (workSheetData.submit || sessionStatus == 'Closed') && option.selectedAns == false && option.correctAns == true ?  {'color' : 'green'} : {'color' : ''}">
+														{{option.text}}
+													</p>
+												</ion-item>
+											</div>
+										</div>
+									</ion-list>
+
+									<ion-list
+										*ngIf="workSheetData.type == 'Survey' && item.questionType == 'Rating scale'"
+										class="card-bg-white">
+										<!-- <div *ngIf="workSheetData.submit">
+                                <div class="ans-correct" *ngIf="item.answerStatus == 'Correct'">
+                                    <img src="assets/images/workbook/correct_icon.svg" style="height: 20px;">
+                                    <span style="margin-left: 0.2rem;color: #18a16f;font-weight: 500;">{{'Utils.correct'
+                                        | translate}}</span>
+                                </div>
+                                <div class="ans-correct" *ngIf="item.answerStatus == 'Incorrect'">
+                                    <img src="assets/images/workbook/wrong_icon.svg" style="height: 20px;">
+                                    <span
+                                        style="margin-left: 0.2rem;color:#f00a2e;font-weight: 500;">{{'Utils.incorrect'
+                                        | translate}}</span>
+                                </div>
+                            </div> -->
+										<ion-radio-group *ngIf="item.SessionOptions" [value]="item.selectedAnswer">
+											<div *ngFor="let option of item.SessionOptions; index as j;">
+												<!-- COMMON IMAGE -->
+												<div
+													class="img-option-wrapper"
+													*ngIf="option.assetPath"
+													[ngStyle]="(workSheetData.submit || sessionStatus == 'Closed') && option.selectedAns == true && option.correctAns == false  && appBrandingInfo && appBrandingInfo.accent_color ? {'outline' : '3px solid' + ' ' +appBrandingInfo.accent_color} : ( !workSheetData.submit || sessionStatus !== 'Closed') && option.selectedAns == true && appBrandingInfo && appBrandingInfo.accent_color ? {'outline' : '3px solid' + ' ' +appBrandingInfo.accent_color} : (workSheetData.submit || sessionStatus == 'Closed') && option.selectedAns == true && option.correctAns == true ? {'outline' : '3px solid green'} : (workSheetData.submit || sessionStatus == 'Closed') && option.selectedAns == false && option.correctAns == true ?  {'outline' : '3px solid green'} : {'outline' : 'var(--branding-color)'}">
+													<img [src]="imageHost + option.assetPath" class="img-option" />
+												</div>
+
+												<!-- have to put only on if the text drop down is selected from the admin side -->
+												<div *ngIf="item.SurveyRatingType == 'Text'">
+													<ion-item
+														class="radio-item"
+														lines="none"
+														style="--padding-start: --16px !important; --inner-padding-end: -14px !important">
+														<ion-radio
+															slot="end"
+															value="{{option.text}}"
+															(click)="checkedOption(i, j, $event)"
+															[disabled]="sessionStatus == 'Closed' || workSheetData.submit || workSheetData.isReattemptLocked || workSheetData.isQuizRetryDisabled"
+															class="poll-checked">
+														</ion-radio>
+														<p
+															[ngStyle]="(workSheetData.submit || sessionStatus == 'Closed') && option.selectedAns == true && option.correctAns == false  && appBrandingInfo && appBrandingInfo.accent_color ? {'color' : appBrandingInfo.accent_color} : ( !workSheetData.submit || sessionStatus !== 'Closed') && option.selectedAns == true && appBrandingInfo && appBrandingInfo.accent_color ? {'color' : appBrandingInfo.accent_color} : (workSheetData.submit || sessionStatus == 'Closed') && option.selectedAns == true && option.correctAns == true ? {'color' : 'green'} : (workSheetData.submit || sessionStatus == 'Closed') && option.selectedAns == false && option.correctAns == true ?  {'color' : 'green'} : {'color' : 'gray'}">
+															{{option.text ? option.text : j+1}}
+														</p>
+													</ion-item>
+												</div>
+											</div>
+
+											<!-- have to put only on if the text drop down is not selected from the admin side -->
+											<div *ngIf="item.SurveyRatingType != 'Text'">
+												<!-- Rating Boxes -->
+												<div
+													class="rating-icon-div"
+													[attr.data-star-count]="item.ratingArray? item.ratingArray.length : 0"
+													*ngIf="item.SurveyRatingType == 'Box'">
+													<div class="rating-container-wrapper">
+														<div class="rating-container" *ngFor="let rating of item.ratingArray; let j = index">
+															<p class="min-label" *ngIf="j==item.surveyMinScale-1">{{ item.ratingMinLabel }}</p>
+															<p class="min-label" *ngIf="j== item.surveyMaxScale -1">{{ item.ratingMaxLabel }}</p>
+															<div
+																class="survey-rating-box"
+																[ngClass]="{ 'survey-box-filled': isRatingFilled(i, j), 'survey-box-empty': !isRatingFilled(i, j),'rating-icon-disable': workSheetData.submit  ||  sessionStatus == 'Closed' }"
+																(click)="setUserRating(i, j + 1)"																
+																[ngStyle]="{
+																	'background-color': isRatingFilled(i, j) && appBrandingInfo?.accent_color
+																		? appBrandingInfo.accent_color
+																		: '',
+																	'border-color': appBrandingInfo?.accent_color
+																		? appBrandingInfo.accent_color
+																		: 'var(--branding-color)'
+																}">
+																<span class="box-star-number">{{ j + 1 }}</span>
+															</div>
+														</div>
+													</div>
+												</div>
+
+												<!-- Rating Stars -->
+												<div
+													class="rating-icon-div"
+													[attr.data-star-count]="item.ratingArray? item.ratingArray.length : 0"
+													*ngIf="item.SurveyRatingType == 'Star'">
+													<div class="rating-container-wrapper">
+														<div class="rating-container" *ngFor="let rating of item.ratingArray; let j = index">
+															<p class="min-label" *ngIf="j==item.surveyMinScale-1">{{ item.ratingMinLabel }}</p>
+															<p class="min-label" *ngIf="j== item.surveyMaxScale -1">{{ item.ratingMaxLabel }}</p>
+															<div
+																[ngClass]="{'star-icon-select': isRatingFilled(i, j), 'star-icon-not-select': !isRatingFilled(i, j),'rating-icon-disable': workSheetData.submit  ||  sessionStatus == 'Closed'}"
+																(click)="setUserRating(i, j + 1)"
+																class="rating-icons"
+																[ngStyle]="
+																appBrandingInfo && appBrandingInfo.accent_color
+																? { 'background-color': appBrandingInfo.accent_color }
+																: { 'background-color': 'var(--branding-color)' }
+															"></div>
+															<span class="star-number">{{ j + 1 }}</span>
+														</div>
+													</div>
+												</div>
+
+												<!-- Rating Hearts -->
+												<div
+													class="rating-icon-div"
+													[attr.data-star-count]="item.ratingArray? item.ratingArray.length : 0"
+													*ngIf="item.SurveyRatingType == 'Heart'">
+													<div class="rating-container-wrapper">
+														<div class="rating-container" *ngFor="let rating of item.ratingArray; let j = index">
+															<p class="min-label" *ngIf="j==item.surveyMinScale-1">{{ item.ratingMinLabel }}</p>
+															<p class="min-label" *ngIf="j== item.surveyMaxScale -1">{{ item.ratingMaxLabel }}</p>
+															<div
+																[ngClass]="{'heart-icon-select': isRatingFilled(i, j), 'heart-icon-not-select': !isRatingFilled(i, j),'rating-icon-disable': workSheetData.submit  ||  sessionStatus == 'Closed'}"
+																(click)="setUserRating(i, j + 1)"
+																class="rating-icons"
+																[ngStyle]="
+																appBrandingInfo && appBrandingInfo.accent_color
+																? { 'background-color': appBrandingInfo.accent_color }
+																: { 'background-color': 'var(--branding-color)' }
+															"></div>
+
+															<!-- <div
+															*ngIf=" !isRatingFilled(i, j)"
+															[ngClass]="{'rating-icon-disable':isSubmited}"
+															(click)="setUserRating(i, j + 1)"
+															class="rating-icons"
+															[innerHTML]="iconObject['heart_preview_not_selected']"
+															style="object-fit: cover"></div>
+
+														<div
+															*ngIf=" isRatingFilled(i, j)"
+															[ngClass]="{'rating-icon-disable':isSubmited}"
+															(click)="setUserRating(i, j + 1)"
+															class="rating-icons"
+															[innerHTML]="iconObject['heart_preview_selected']"
+															style="object-fit: cover"></div> -->
+
+															<span class="star-number">{{ j + 1 }}</span>
+														</div>
+													</div>
+												</div>
+
+												<!-- Rating Thumbs up -->
+												<div
+													class="rating-icon-div"
+													[attr.data-star-count]="item.ratingArray? item.ratingArray.length : 0"
+													*ngIf="item.SurveyRatingType == 'Thumbs-Up'">
+													<div class="rating-container-wrapper">
+														<div class="rating-container" *ngFor="let rating of item.ratingArray; let j = index">
+															<p class="min-label" *ngIf="j==item.surveyMinScale-1">{{ item.ratingMinLabel }}</p>
+															<p class="min-label" *ngIf="j== item.surveyMaxScale -1">{{ item.ratingMaxLabel }}</p>
+															<div
+																[ngClass]="{'thumb-icon-select': isRatingFilled(i, j), 'thumb-icon-not-select': !isRatingFilled(i, j),'rating-icon-disable': workSheetData.submit  ||  sessionStatus == 'Closed'}"
+																(click)="setUserRating(i, j + 1)"
+																class="rating-icons"
+																[ngStyle]="
+																appBrandingInfo && appBrandingInfo.accent_color
+																? { 'background-color': appBrandingInfo.accent_color }
+																: { 'background-color': 'var(--branding-color)' }
+															"></div>
+															<span class="star-number">{{ j + 1 }}</span>
+														</div>
+													</div>
+												</div>
+											</div>
+										</ion-radio-group>
+									</ion-list>
+
+									<!-- Video Upload Progress Section for Survey -->
+									<!-- Blocker to freeze screen while uploading the video -->
+									<div *ngIf="isVideoUploading" class="upload-blocker"></div>
+
+									<!-- Video Upload Modal  -->
+									<!-- <ion-modal
+										[isOpen]="isModalOpen"
+										(didDismiss)="closeModal()"
+										backdropDismiss="false"
+										class="video-upload-modal">
+										<ng-template class="model-template">
+											<div
+												*ngIf="videoUploadProgress !== null && videoUploadProgress > 0 && videoUploadProgress < 100"
+												style="padding: 0 1rem 0 1rem"
+												class="modal-content">
+												<progress
+													[value]="videoUploadProgress"
+													[max]="100"
+													style="padding: 0.5rem; height: 2.063rem; width: 100%"></progress>
+												<span class="loading-text"> {{'Utils.vimeovideoloading_2' | translate}} </span>
+											</div>
+										</ng-template>
+									</ion-modal> -->
+
+									<!-- Survey Drop down -->
+									<div
+										style="--color: gray; margin-top: 1rem; margin-bottom: 0.7rem"
+										class="ion-margin-bottom ion-no-padding"
+										*ngIf="workSheetData.type == 'Survey' && item.questionType == 'Drop Down' && !workSheetData.submit"
+										class="card-bg-white survey-dropdown">
+										<ion-list>
+											<ion-item>
+												<ion-select
+													[placeholder]="'Utils.cooseOption' | translate"
+													[multiple]="false"
+													(ionChange)="onSelectOption(i,$event)"
+													[(ngModel)]="item.selectedAnswer"
+													style="width: 100%"
+													interface="popover">
+													<ion-select-option *ngFor="let option of item.SessionOptions" [value]="option.text">
+														{{option.text}}
+													</ion-select-option>
+												</ion-select>
+											</ion-item>
+										</ion-list>
+									</div>
+
+									<div
+										style="--color: gray; margin-top: 1rem; margin-bottom: 0.7rem"
+										class="ion-margin-bottom ion-no-padding"
+										*ngIf="workSheetData.type == 'Survey' && item.questionType == 'Drop Down' && workSheetData.submit"
+										class="card-bg-white survey-dropdown">
+										<div>
+											<ion-list>
+												<ion-item>
+													<ion-select
+														[placeholder]="'Utils.cooseOption' | translate"
+														[multiple]="false"
+														[(ngModel)]="item.selectedAnswer"
+														[disabled]="workSheetData.submit || workSheetData.isReattemptLocked || workSheetData.isQuizRetryDisabled"
+														style="width: 100%"
+														interface="popover">
+														<ion-select-option *ngFor="let option of item.SessionOptions" [value]="option.text">
+															{{option.text}}
+														</ion-select-option>
+													</ion-select>
+												</ion-item>
+											</ion-list>
+										</div>
+									</div>
+
+									<!-- Survey Date -->
+									<div *ngIf="workSheetData.type == 'Survey' && item.questionType == 'Date'" style="margin-top: 2rem">
+										<p style="font-weight: 500">{{ 'Utils.Date' | translate }}</p>
+										<ion-datetime-button
+											datetime="onlydate{{i}}"
+											class="main-date-head"
+											[disabled]="workSheetData.submit || workSheetData.isReattemptLocked || workSheetData.isQuizRetryDisabled">
+										</ion-datetime-button>
+										<ion-modal [keepContentsMounted]="true">
+											<ng-template>
+												<ion-datetime
+													id="onlydate{{i}}"
+													presentation="date"
+													class="input-box-date"
+													displayFormat="DD-MMM-YYYY"
+													[(ngModel)]="item.surveyNote"
+													(ionChange)="updateCurrentWorksheetChangesInToTheLocalStorge()"></ion-datetime>
+											</ng-template>
+										</ion-modal>
+									</div>
+
+									<!-- Survey Date Time -->
+									<div
+										*ngIf="workSheetData.type == 'Survey' && item.questionType == 'Date Time'"
+										style="margin-top: 2rem">
+										<p style="font-weight: 500">{{ 'Utils.DateTime' | translate }}</p>
+										<ion-datetime-button
+											datetime="datetime{{i}}"
+											class="main-date-head"
+											[disabled]="workSheetData.submit||workSheetData.isReattemptLocked || workSheetData.isQuizRetryDisabled">
+										</ion-datetime-button>
+										<ion-modal [keepContentsMounted]="true">
+											<ng-template>
+												<ion-datetime
+													id="datetime{{i}}"
+													class="input-box-date"
+													style="width: 320px"
+													displayFormat="DD-MMM-YYYY"
+													[(ngModel)]="item.surveyNote"
+													(ionChange)="updateCurrentWorksheetChangesInToTheLocalStorge()"></ion-datetime>
+											</ng-template>
+										</ion-modal>
+									</div>
+
+									<!-- Survey Email -->
+									<div *ngIf="workSheetData.type == 'Survey' && item.questionType == 'Email'">
+										<ion-textarea
+											auto-grow
+											[disabled]="workSheetData.submit || workSheetData.isReattemptLocked || workSheetData.isQuizRetryDisabled"
+											[(ngModel)]="item.surveyNote"
+											[placeholder]="'Utils.enteremail' | translate"
+											class="short-long-answer"
+											style="font-size: 0.9rem"
+											(ionChange)="checkEmail($event)">
+										</ion-textarea>
+										<div *ngIf="emailError" style="color: #eb445a">{{ 'Utils.InvalidEmail' | translate }}</div>
+									</div>
+
+									<!-- Survey Mobile Number -->
+									<div *ngIf="workSheetData.type == 'Survey' && item.questionType == 'Mobile No'">
+										<ion-textarea
+											auto-grow
+											[disabled]="workSheetData.submit || workSheetData.isReattemptLocked || workSheetData.isQuizRetryDisabled"
+											[(ngModel)]="item.surveyNote"
+											[placeholder]="'Utils.mobilenumber' | translate"
+											class="short-long-answer"
+											style="font-size: 0.9rem"
+											(ionChange)="checkPhoneNum($event)">
+										</ion-textarea>
+										<div *ngIf="mobileError" style="color: #eb445a">{{ 'Utils.InvalidMobile' | translate }}</div>
+									</div>
+
+									<!-- Survey Geo Location -->
+									<div
+										*ngIf="workSheetData.type == 'Survey' && item.questionType == 'Geo Tag'"
+										style="margin-top: 1rem">
+										<div *ngIf="!item.geoLocation" style="font-weight: 500">
+											<!-- <p (click)="getUserLocation(item)">{{item.question}}</p> -->
+											<ion-button
+												(click)="getUserLocation(item)"
+												class="submit-btn"
+												[disabled]="workSheetData.submit || workSheetData.isReattemptLocked || workSheetData.isQuizRetryDisabled">
+												<!-- {{'Utils.addLocation' | translate}} -->
+												{{item.question}}
+											</ion-button>
+										</div>
+										<div *ngIf="item.geoLocation" style="font-weight: 500; margin-top: 1rem">
+											<p>{{item.geoLocation}}</p>
+											<img src="assets/images/workbook/location-icon.png" alt="" />
+										</div>
+									</div>
+
+									<div
+										*ngIf="(workSheetData.type == 'Survey' && item.questionType == 'File upload') || (workSheetData.type == 'Offline Task' && item.isFileSubmission)">
+										<div *ngIf="item.SessionQuestionSubmissions.length > 0">
+											<div *ngFor="let file of item.SessionQuestionSubmissions;let j=index;">
+												<!-- <div *ngIf="sessionStatus != 'Closed' && file.type !=='Video'">
+											<img
+												src="assets/images/workbook/cancel_icon.svg"
+												style="float: right"
+												(click)="deleteSubmisitFile(file,j,i)"
+												*ngIf="!workSheetData.submit" />
+										</div> -->
+												<!-- <div *ngIf="file.type == 'Image'" style="margin: 1rem 0rem">
+											<img [src]="imageHost + file.path" />
+											<div>{{file.fileName}}</div>
+										</div>
+										<div *ngIf="file.type =='PDF'" style="margin: 1rem 0rem">
+											<img [src]="imageHost + file.thumnail" />
+											<div>{{file.fileName}}</div>
+										</div>
+										<div *ngIf="file.type =='Audio'" style="margin: 1rem 0rem">
+											<audio controls>
+												<source [src]="imageHost + file.path" type="audio/mpeg" />
+												{{'Utils.browsernotsupportaudio' | translate}}
+											</audio>
+											<div>{{file.fileName}}</div>
+										</div> -->
+												<div style="margin: 1rem 0rem">
+													<div class="video-border">
+														<div style="display: flex; align-items: center">
+															<img
+																*ngIf="file.type =='Video'"
+																src="assets/images/workbook/vimeo_hosted_video_icon.svg"
+																style="margin-right: 10px" />
+															<img
+																*ngIf="file.type =='Image'"
+																src="assets/images/workbook/_image_icon.svg"
+																style="margin-right: 10px" />
+															<img
+																*ngIf="file.type =='PDF'"
+																src="assets/images/workbook/_pdf_icon.svg"
+																style="margin-right: 10px" />
+															<img
+																*ngIf="file.type =='Audio'"
+																src="assets/images/workbook/_audio_icon.svg"
+																style="margin-right: 10px" />
+															<div class="file-name">{{file.fileName}}</div>
+														</div>
+														<img
+															*ngIf="sessionStatus != 'Closed' && !workSheetData.submit"
+															src="assets/images/workbook/cancel_icon.svg"
+															(click)="deleteSubmisitFile(file,j,i)"
+															style="cursor: pointer" />
+													</div>
+												</div>
+											</div>
+										</div>
+
+										<!-- <img *ngIf="item.SessionQuestionSubmissions.length < item.numberOfFiles"
+                                src="assets/images/workbook/file_upload_icon.svg"
+                                style="width: 26px;margin-top: 50px;cursor: pointer;"
+                                (click)="learnerFileSubmission.click()"> -->
+										<ion-button
+											*ngIf="item.SessionQuestionSubmissions.length < item.numberOfFiles"
+											(click)=" learnerFileSubmission.click()"
+											class="upload-btn"
+											[disabled]="sessionStatus == 'Closed' || workSheetData.submit || workSheetData.isReattemptLocked || workSheetData.isQuizRetryDisabled">
+											{{ item.SessionQuestionSubmissions.length > 0 ? ('Utils.addMore' | translate) : ('Utils.upload' |
+											translate)}}</ion-button
+										>
+										<div *ngIf="item.SessionQuestionSubmissions.length < item.numberOfFiles">
+											<p style="margin-top: 0px; margin-bottom: 0px; font-size: 13px">
+												{{'Utils.allowedFileTypes' | translate}} : {{item.allowFileTypes}}
+											</p>
+											<p style="margin-top: 0px; margin-bottom: 0px; font-size: 13px">
+												{{'Utils.maxFileToUpload' | translate}} : {{item.numberOfFiles}}
+											</p>
+										</div>
+
+										<input
+											id="mediaWeb"
+											style="display: none"
+											#learnerFileSubmission
+											type="file"
+											[(ngModel)]="item.submission"
+											[accept]="item.allowFile"
+											(change)="selectFile($event, item, i)"
+											multiple />
+									</div>
+
+									<div *ngIf="workSheetData.type == 'Offline Task' && item.isTextResponse">
+										<!-- <div class="edit-learner-div" *ngIf="item.offlineTaskNote">
+								<div class="show-learner-note">
+									<p class="learner-note">{{item.offlineTaskNote}}</p>
+								</div>
+								<div style="width: 9%; cursor: pointer" (click)="addEditOfflineTaskNote(item,i)">
+									<img src="assets/images/workbook/edit_learner_note.svg" style="margin-bottom: 0.3rem" />
+								</div>
+							</div>
+							<div id="add-notes-label" (click)="addEditOfflineTaskNote(item,i)" *ngIf="!item.offlineTaskNote">
+								<p style="color: darkgray">{{'Utils.taptoaddyouranswer' | translate}}</p>
+							</div> -->
+										<ion-textarea
+											auto-grow
+											[disabled]="workSheetData.submit || workSheetData.isReattemptLocked || workSheetData.isQuizRetryDisabled"
+											[(ngModel)]="item.offlineTaskNote"
+											(ionBlur)="saveOfflineTaskNote(item)"
+											[placeholder]="'Utils.taptoaddyouranswer' | translate"
+											class="short-long-answer">
+										</ion-textarea>
+									</div>
+								</div>
+							</div>
+
+							<ion-row>
+								<ion-col
+									size="12"
+									class="modal-action-btn-div"
+									*ngIf="(workSheetData.type == 'Spin The Wheel' && workSheetData.noOfTimeSpinWheel == noOfTimeUserCanSpinWheel) || (workSheetData.type == 'Spin The Wheel' && workSheetData.submit)  || workSheetData.type != 'Spin The Wheel' ">
+									<div
+										*ngIf="(workSheetData.type == 'Quiz' || workSheetData.type == 'Quiz (Randomised)' || workSheetData.type =='Spin The Wheel')  && !workSheetData.isGraded">
+										<ion-button
+											(click)="submitForm()"
+											class="submit-btn"
+											[disabled]="sessionStatus == 'Closed' || workSheetData.isReattemptLocked|| workSheetData.isQuizRetryDisabled">
+											{{'Utils.submit' | translate}}</ion-button
+										>
+									</div>
+
+									<div
+										*ngIf="['Poll','Offline Task','Survey','Word Cloud'].indexOf(workSheetData.type) > -1 || ((workSheetData.type == 'Quiz' || workSheetData.type == 'Quiz (Randomised)' || workSheetData.type =='Spin The Wheel') && workSheetData.isGraded)">
+										<ion-button
+											(click)="submitForm()"
+											class="submit-btn"
+											[disabled]="workSheetData.submit  ||  sessionStatus == 'Closed' || workSheetData.isReattemptLocked || workSheetData.isQuizRetryDisabled">
+											{{'Utils.submit' | translate}}
+										</ion-button>
+									</div>
+									<a
+										(click)="clearForm()"
+										*ngIf="!workSheetData.submit && workSheetData.type !='Spin The Wheel' && !workSheetData.isReattemptLocked && !workSheetData.isQuizRetryDisabled"
+										class="clear-form">
+										{{'Utils.clearForm' | translate}}
+									</a>
+								</ion-col>
+
+								<ion-col
+									size="12"
+									class="modal-action-btn-div"
+									*ngIf="workSheetData.type == 'Spin The Wheel' && workSheetData.noOfTimeSpinWheel > noOfTimeUserCanSpinWheel && !workSheetData.submit">
+									<div>
+										<ion-button
+											(click)="onClickSpinAgain()"
+											class="submit-btn"
+											[disabled]="workSheetData.submit  ||  sessionStatus == 'Closed' || workSheetData.isReattemptLocked || workSheetData.isQuizRetryDisabled">
+											{{'Utils.spinAgain' | translate}}</ion-button
+										>
+									</div>
+									<!-- <div
+								*ngIf="workSheetData.type == 'Spin The Wheel' && workSheetData.submit">
+								<ion-button
+									(click)="submitForm()"
+									class="submit-btn"
+									[disabled]="workSheetData.submit  ||  sessionStatus == 'Closed'"
+									>
+									{{'Utils.submit' | translate}}</ion-button
+								>
+							</div> -->
+									<!-- <a
+								(click)="clearForm()"
+								style="align-self: center"
+								*ngIf="!workSheetData.submit"
+								[ngStyle]="appBrandingInfo && appBrandingInfo.accent_color ? {'color' : appBrandingInfo.accent_color} : {'color': ''}">
+								{{'Utils.clearForm' | translate}}
+							</a> -->
+								</ion-col>
+							</ion-row>
+						</div>
+
+						<ion-grid
+							class="table"
+							*ngIf="(workSheetData.type == 'Quiz' || workSheetData.type == 'Quiz (Randomised)' || workSheetData.type =='Spin The Wheel') && workSheetData.isGraded && workSheetData.publishResult && workSheetData.submit && isShowMarks">
+							<ion-row>
+								<ion-col class="table-head participant">{{'Utils.participant' | translate}}</ion-col>
+								<ion-col class="table-head rank"> {{'Utils.rank' | translate}}</ion-col>
+								<ion-col class="table-head rank" style="border-top-right-radius: 0.6rem"
+									>{{'Utils.score' | translate}}</ion-col
+								>
+							</ion-row>
+							<ng-container *ngFor="let student of quizLeaderBoard; index as i">
+								<ion-row *ngIf="student.score > 0 && student.rank <= 10">
+									<ion-col>{{ student.name }}</ion-col>
+									<ion-col class="rank">{{ student.rank }}</ion-col>
+									<ion-col class="rank">{{ student.score }}</ion-col>
+								</ion-row>
+							</ng-container>
+						</ion-grid>
+
+						<!--  chart -->
+
+						<div
+							*ngIf="workSheetData.type == 'Poll' && workSheetData.publishResult && workSheetData.submit"
+							style="border: 2px solid lightgray; margin-top: 1rem; border-radius: 0.4rem">
+							<div class="graph-wrapper-scale" *ngIf="pollChartType == 'Scale'">
+								<ngx-charts-bar-horizontal
+									hotfix-zero-margin
+									[scheme]="colorScheme"
+									[results]="ChartData"
+									[gradient]="ChartOptions.gradient"
+									[xAxis]="ChartOptions.showXAxis"
+									[yAxis]="ChartOptions.showYAxis"
+									[legend]="ChartOptions.showLegend"
+									[showXAxisLabel]="ChartOptions.showXAxisLabel"
+									[showYAxisLabel]="ChartOptions.showYAxisLabel"
+									[roundDomains]="ChartOptions.roundDomains"
+									[xAxisLabel]="ChartOptions.xAxisLabel"
+									[yAxisLabel]="ChartOptions.yAxisLabel">
+								</ngx-charts-bar-horizontal>
+							</div>
+
+							<div class="graph-wrapper-1" *ngIf="pollChartType == 'Bar'">
+								<!-- <ngx-charts-bar-vertical
+									hotfix-zero-margin
+									[scheme]="colorScheme"
+									[results]="ChartData"
+									[gradient]="ChartOptions.gradient"
+									[xAxis]="ChartOptions.showXAxis"
+									[yAxis]="ChartOptions.showYAxis"
+									[legend]="ChartOptions.showLegend"
+									[showXAxisLabel]="ChartOptions.showXAxisLabel"
+									[showYAxisLabel]="ChartOptions.showYAxisLabel"
+									[xAxisLabel]="ChartOptions.xAxisLabel"
+									[yAxisLabel]="ChartOptions.yAxisLabel">
+								</ngx-charts-bar-vertical> -->
+
+								<!-- Bar Chart using Echarts -->
+								<div
+									echarts
+									[options]="barChartOptions"
+									class="chart bar-chart"
+									style="margin-bottom: -2.5rem; margin-top: -3rem"></div>
+							</div>
+
+							<div class="graph-wrapper-2" *ngIf="pollChartType == 'Pie'">
+								<!-- <ngx-charts-pie-chart
+									hotfix-zero-margin
+									[scheme]="colorScheme"
+									[results]="ChartData"
+									[gradient]="ChartOptions.gradient"
+									[legend]="ChartOptions.showLegend"
+									[legendPosition]="ChartOptions.legendPosition"
+									[labels]="ChartOptions.showLabels"
+									[doughnut]="ChartOptions.isDoughnut">
+								</ngx-charts-pie-chart> -->
+
+								<!-- Pie charts using Echarts -->
+								<div
+									echarts
+									[options]="pieChartOptions"
+									class="chart pie-chart"
+									style="margin-bottom: 2rem; margin-top: 1rem"></div>
+							</div>
+						</div>
+
+						<!-- <div *ngIf="contentData !== null">
+                    <ion-slides pager="true" [options]="config">
+                        <ion-slide *ngFor="let asset of contentData.images">
+                        <img [src]="asset.src" id="slider-img" />
+                        comment this below line
+                        <iframe src="https://player.vimeo.com/video/680634330" width="100%" frameborder="0" allowfullscreen></iframe>
+                        </ion-slide>
+                    </ion-slides>
+
+                    <p id="description">{{contentData.description}}</p>
+                </div> -->
+						<p
+							*ngIf="(workSheetData.type == 'Poll' || (workSheetData.type == 'Quiz' || workSheetData.type == 'Quiz (Randomised)' || workSheetData.type =='Spin The Wheel' && workSheetData.isGraded )) && workSheetData.submit"
+							class="page-refresh">
+							<a (click)="getWSdetails()" class="clickhere">{{'Utils.clickhere' | translate}}</a>
+							{{'Utils.or' | translate}} {{'Utils.pagerefresh' | translate}}
+						</p>
+
+						<div
+							class="edit-learner-div"
+							*ngIf="(isMobile || isMobileView) && ((workSheetData.userNote && workSheetData.type != 'Spin The Wheel') || 
+     							(workSheetData.userNote && workSheetData.type == 'Spin The Wheel' && workSheetData.submit))">
+							<div class="show-learner-note">
+								<!-- <p class="learner-note" *ngIf="workSheetData.userNote">{{workSheetData.userNote}}</p> -->
+								<div class="learner-note" *ngIf="workSheetData.userNote" [innerHTML]="workSheetData.userNote"></div>
+							</div>
+							<div style="width: 9%; cursor: pointer" (click)="addEditLearnerNote()">
+								<img src="assets/images/workbook/edit_learner_note.svg" style="margin-bottom: 0.3rem" />
+							</div>
+						</div>
+
+						<div *ngIf="workSheetData?.GuideId && appService?.configurable_feature?.sles == true">
+							<ion-button
+								(click)="attendGuide()"
+								class="submit-btn"
+								[disabled]="sessionStatus == 'Closed' || workSheetData?.attendGuide || workSheetData.isQuizRetryDisabled">
+								{{'Utils.launchARVRGuide' | translate}}
+							</ion-button>
+
+							<div class="info_switchARVR" *ngIf="workSheetData?.attendGuide">
+								<span class="info_switchARVR_icon" [innerHTML]="iconObject['info_icon_20']"> </span>
+								<span style="margin-left: 0.5rem"> {{'Utils.switchARVR' | translate}} </span>
+							</div>
+						</div>
+						<div
+							id="add-notes-label"
+							(click)="addEditLearnerNote()"
+							class="add-notes-container"
+							*ngIf="(!workSheetData.userNote && workSheetData.type != 'Spin The Wheel' && !pdfVisible) ||(  !workSheetData.userNote && workSheetData.type == 'Spin The Wheel' && workSheetData.submit) ">
+							<p style="color: darkgray">{{'Utils.taptoaddyournotes' | translate}}</p>
+						</div>
+					</ion-col>
+
+					<!-- <ion-col
+						[ngClass]="{'hide-on-mobile': isMobile || isMobileView}"
+						size="12"
+						size-md="2"
+						size-lg="2"
+						*ngIf="!pdfVisible"> -->
+					<ion-col
+						[ngClass]="{'hide-on-mobile': isMobile || isMobileView}"
+						size="12"
+						[sizeMd]="workSheetData?.SessionAssets[0]?.type === 'Video' ? '1' : '2'"
+						[sizeLg]="workSheetData?.SessionAssets[0]?.type === 'Video' ? '1' : '2'"
+						*ngIf="!pdfVisible">
+						<!-- <ion-col size="12" size-sm="2" size-md="2" size-lg="2"> -->
+						<div class="flag-group-main">
+							<div
+								class="flag-group"
+								[ngClass]="{'flag-group-all' : (workSheetData.trainerInst !== null && isTrainer) && (workSheetData.type == 'Offline Task' || workSheetData.type == 'Learning Content'|| workSheetData.type == 'Discussion'|| workSheetData.type == 'Follow Us') && workSheetData.flgFav &&  workSheetData.flgImp && workSheetData.flgGroupActivty}"
+								*ngIf="workSheetData.trainerInst || workSheetData.flgFav || workSheetData.flgBookmark || workSheetData.flgImp || workSheetData.flgGroupActivty">
+								<img
+									src="assets/images/workbook/trainerNote.svg"
+									(click)="showTrainerNote()"
+									*ngIf="isTrainer && workSheetData.trainerInst !== null && workSheetData.trainerInst !== '' && !isShowTrainerNote"
+									class="flag-icons" />
+
+								<img
+									src="assets/images/workbook/trainerNoteShow.svg"
+									(click)="showTrainerNote()"
+									*ngIf=" isTrainer && workSheetData.trainerInst !== null && workSheetData.trainerInst !== '' && isShowTrainerNote && workSheetData.trainerSurvey"
+									class="flag-icons" />
+
+								<div
+									*ngIf="isTrainer && workSheetData.trainerInst !== null && workSheetData.trainerInst !== '' && isShowTrainerNote && !workSheetData.trainerSurvey"
+									(click)="showTrainerNote()"
+									class="flag-icons trainer-icon-select"></div>
+
+								<div class="flag-container">
+									<!-- Favorite Icon -->
+									<div class="fav-icon-wrapper">
+										<img
+											src="assets/images/workbook/favorite_gray.svg"
+											*ngIf="workSheetData.flgFav && !workSheetData.isFav"
+											(click)="changeFlag('Fav');"
+											class="flag-icons" />
+
+										<img
+											src="assets/images/workbook/favorite_selected_icon.svg"
+											*ngIf="workSheetData.flgFav && workSheetData.isFav && workSheetData.trainerSurvey"
+											(click)="changeFlag('Fav');"
+											class="flag-icons" />
+
+										<div
+											*ngIf="workSheetData.flgFav && workSheetData.isFav && !workSheetData.trainerSurvey"
+											(click)="changeFlag('Fav');"
+											class="flag-icons fav-icon-select"></div>
+									</div>
+
+									<!-- Like Text Below the Image -->
+									<span class="flag-text">{{'Utils.like'| translate}}</span>
+								</div>
+
+								<!-- This shouldn't be displayed in worksheet page -->
+								<!-- <img src="assets/images/workbook/important.svg" *ngIf="workSheetData.flgImp"
+									class="flag-icons" />
+
+								<img src="assets/images/workbook/group_activity.svg"
+									*ngIf="workSheetData.flgGroupActivty" class="flag-icons" /> -->
+							</div>
+
+							<div
+								class="flag-icon-images"
+								(click)="addEditLearnerNote()"
+								*ngIf="(!workSheetData.userNote && workSheetData.type != 'Spin The Wheel' ) ||(  !workSheetData.userNote && workSheetData.type == 'Spin The Wheel' && workSheetData.submit)">
+								<img src="assets/images/landrover/edit_note.svg" alt="Notes Icon" class="flag-icons" />
+								<span class="flag-text">{{'Utils.notes'| translate}}</span>
+							</div>
+
+							<!-- <div class="flag-icon-images" (click)="addEditLearnerNote()"
+								*ngIf="(workSheetData.userNote && workSheetData.type != 'Spin The Wheel' ) ||(  !workSheetData.userNote && workSheetData.type == 'Spin The Wheel' && workSheetData.submit)">
+								<img src="assets/images/landrover/notes_icon.png" alt="Notes Icon" class="flag-icons" />
+								<div class="green-dot"></div>
+								<span class="flag-text">{{'Utils.notes'| translate}}</span>
+							</div> -->
+
+							<div class="flag-container">
+								<div
+									class="flag-icon-images"
+									(click)="addEditLearnerNote()"
+									*ngIf="(workSheetData.userNote && workSheetData.type !== 'Spin The Wheel') || 
+								(workSheetData.userNote && workSheetData.type === 'Spin The Wheel' && workSheetData.submit)">
+									<!-- Image with a wrapper -->
+									<div class="image-container">
+										<img src="assets/images/landrover/edit_note.svg" alt="Notes Icon" class="flag-icons" />
+
+										<!-- Green Dot -->
+										<div class="green-dot"></div>
+									</div>
+									<span class="flag-text">{{'Utils.notes'| translate}}</span>
+								</div>
+							</div>
+						</div>
+					</ion-col>
+				</ion-row>
+			</ion-col>
+		</ion-row>
+	</ion-grid>
+
+	<ion-refresher
+		*ngIf="!showNotesInput"
+		ion-refresh-native
+		slot="fixed"
+		disabled="false"
+		(ionRefresh)="doRefresh($event)"
+		pullFactor="0.1"
+		pullMin="50"
+		pullMax="200">
+		<ion-refresher-content></ion-refresher-content>
+	</ion-refresher>
+</ion-content>
+
+<ion-content *ngIf="showNotesInput">
+	<ion-grid>
+		<ion-row style="height: 92vh; background-color: white; display: flex; justify-content: center" class="main-row">
+			<ion-col size-sm="12" size-md="9" size-lg="7" class="main-col">
+				<div class="modal-action-btn-div">
+					<a (click)="cancel()" class="cancel">{{'Utils.cancel' | translate}}</a>
+					<ion-button shape="round" class="save" (click)="saveLearnerNote()">{{'Utils.save' | translate}}</ion-button>
+				</div>
+				<!-- <textarea
+					rows="10"
+					placeholder="{{'Utils.Whathaveyoulearnedtoday' | translate}}"
+					[(ngModel)]="userNote"
+					class="learner-input"
+					[ngClass]="{ 'learner-input-desktop': isdesktopView2 || isTabletLandscapeView || isTablet}">
+				</textarea> -->
+
+				<!-- <quill-editor
+					[modules]="quillModules"
+					[(ngModel)]="userNote"
+					placeholder="{{'Utils.Whathaveyoulearnedtoday' | translate}}"
+					class="learner-input"
+					[ngClass]="{ 'learner-input-desktop': isdesktopView2 || isTabletLandscapeView || isTablet }">
+				</quill-editor> -->
+
+				
+
+				<!-- <quill-editor
+					#quillEditorRef
+					[(ngModel)]="userNote"
+					[modules]="quillModules"
+					placeholder="{{'Utils.Whathaveyoulearnedtoday' | translate}}"
+					class="learner-input"
+					[ngClass]="{ 'learner-input-desktop': isdesktopView2 || isTabletLandscapeView || isTablet }">
+				</quill-editor> -->
+
+
+				<!-- Custom toolbar container -->
+				<div id="custom-toolbar" class="custom-toolbar-container">					
+					<span class="ql-formats">
+						<!-- Custom undo button -->
+						<button class="ql-undo" type="button">
+							 <svg viewBox="0 0 18 18" width="18" height="18" class="custom-toolbar-icon">
+							<path class="ql-stroke" d="M10 3H5.5L7 4.5 5.5 6 2.5 3 5.5 0 7 1.5 5.5 3H10c2.2 0 4 1.8 4 4s-1.8 4-4 4h-5v1h5c2.8 0 5-2.2 5-5s-2.2-5-5-5Z" 
+								stroke-width="1.2"/>
+							</svg>
+						</button>
+
+						<!-- Custom redo button -->
+						<button class="ql-redo" type="button">
+							 <svg viewBox="0 0 18 18" width="18" height="18" class="custom-toolbar-icon">
+							<path class="ql-stroke" d="M8 3h4.5L11 1.5 12.5 0l3 3-3 3L11 4.5 12.5 3H8c-2.2 0-4 1.8-4 4s1.8 4 4 4h5v1H8c-2.8 0-5-2.2-5-5s2.2-5 5-5Z"
+								stroke-width="1.2"/>
+							</svg>
+						</button>	
+					</span>
+					<span class="ql-formats">
+						<button class="ql-bold"></button>
+						<button class="ql-italic"></button>
+						<button class="ql-underline"></button>
+					</span>
+					<span class="ql-formats">
+						<button class="ql-header" value="1"></button>
+						<button class="ql-header" value="2"></button>
+					</span>
+					<span class="ql-formats" style="margin-right: 7px !important;">
+						<button class="ql-list" value="ordered"></button>
+						<button class="ql-list" value="bullet"></button>
+					</span>
+					<span class="ql-formats">
+						<button class="ql-link"></button>
+						<!-- <button class="ql-image"></button> -->
+					</span>
+					<!-- <span class="ql-formats">
+						<button class="ql-clean"></button>
+					</span> -->
+					<span class="ql-formats">
+						<button class="ql-strike"></button>
+					</span>
+
+					<span class="ql-formats">	
+						<button class="ql-align" value=""></button>			
+						<button class="ql-align" value="center"></button>		
+						<button class="ql-align" value="right"></button>				
+						<button class="ql-align" value="justify"></button>
+					</span>
+
+
+				</div>
+
+				<!-- Quill Editor -->
+				<quill-editor
+					#quillEditorRef
+					[(ngModel)]="userNote"
+					[modules]="quillModules"
+					placeholder="{{'Utils.Whathaveyoulearnedtoday' | translate}}"
+					class="learner-input"
+					[ngClass]="{ 'learner-input-desktop': isdesktopView2 || isTabletLandscapeView || isTablet }">
+				</quill-editor>
+
+			</ion-col>
+		</ion-row>
+	</ion-grid>
+</ion-content>
+
+<!-- <ion-content *ngIf="showSurveyNote" [fullscreen]="true" class="ion-padding-horizontal">
+	<ion-grid>
+		<ion-row style="height: 92vh; background-color: white; display: flex; justify-content: center">
+			<ion-col size-sm="12" size-md="9" size-lg="7">
+				<div class="modal-action-btn-div">
+					<a
+						(click)="cancel()"
+						style="align-self: center; cursor: pointer"
+						[ngStyle]="appBrandingInfo && appBrandingInfo.accent_color ? {'color' : appBrandingInfo.accent_color} : {'color': ''}"
+						>{{'Utils.cancel' | translate}}</a
+					>
+					<ion-button
+						shape="round"
+						(click)="saveSurveyNote()"
+						
+						>{{'Utils.save' | translate}}</ion-button
+					>
+				</div>
+				<textarea
+					*ngIf="surveyNote.totalCharLimit != null "
+					rows="10"
+					[(ngModel)]="surveyNote.surveyNote"
+					[maxlength]="surveyNote.totalCharLimit"
+					class="learner-input"
+					(keyup)="checkcharacterlimit(surveyNote)"></textarea>
+
+				<textarea
+					*ngIf="surveyNote.totalCharLimit == null "
+					rows="10"
+					[(ngModel)]="surveyNote.surveyNote"
+					class="learner-input"
+					(keyup)="checkcharacterlimit(surveyNote)"></textarea>
+				<span class="characteleft" *ngIf="surveyNote.totalCharLimit != null ">
+					{{'Utils.charcaterlimit' | translate}} - {{ surveyNote.characterRemain != null || surveyNote.characterRemain
+					!= undefined ? surveyNote.characterRemain + '/' + surveyNote.totalCharLimit : surveyNote.totalCharLimit + '/'
+					+ surveyNote.totalCharLimit }}</span
+				>
+			</ion-col>
+		</ion-row>
+	</ion-grid>
+</ion-content> -->
+
+<!-- <ion-content *ngIf="showOfflineNote" [fullscreen]="true" class="ion-padding-horizontal">
+	<ion-grid>
+		<ion-row style="height: 92vh; background-color: white; display: flex; justify-content: center">
+			<ion-col size-sm="12" size-md="9" size-lg="7">
+				<div class="modal-action-btn-div">
+					<a
+						(click)="cancel()"
+						style="align-self: center; cursor: pointer"
+						[ngStyle]="appBrandingInfo && appBrandingInfo.accent_color ? {'color' : appBrandingInfo.accent_color} : {'color': ''}"
+						>{{'Utils.cancel' | translate}}</a
+					>
+					<ion-button
+						shape="round"
+						(click)="saveOfflineTaskNote()"
+						
+						>{{'Utils.save' | translate}}</ion-button
+					>
+				</div>
+				<textarea rows="10" [(ngModel)]="offlineTaskNote.offlineTaskNote" class="learner-input"></textarea>
+			</ion-col>
+		</ion-row>
+	</ion-grid>
+</ion-content> -->
+
+<!-- <ion-footer class="ion-padding-horizontal ion-no-border">
+  <ion-toolbar class="ion-text-center">
+    <div class="btns-container">
+      <ion-button class="action-button gradient-button" fill="solid">
+        <span>Attend</span>
+      </ion-button>
+      <ion-button class="action-button" fill="outline" mode="md">
+        <span>Not going</span>
+      </ion-button>
+    </div>
+  </ion-toolbar>
+</ion-footer> -->

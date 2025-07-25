@@ -1,0 +1,541 @@
+<ion-header *ngIf="!showNotesInput">
+	<ion-toolbar style="height: 65px">
+		<ion-buttons slot="start" style="padding-top: 6px">
+			<ion-back-button (click)="back()" text=""></ion-back-button>
+		</ion-buttons>
+		<ion-title style="padding-top: 6px" *ngIf="WorkbookData">{{workbooktitle}}</ion-title>
+	</ion-toolbar>
+</ion-header>
+
+<ion-content
+	*ngIf="!showNotesInput"
+	[fullscreen]="true"
+	class="ion-padding-horizontal"
+	(ionScroll)="getScrollPos($event)"
+	[scrollEvents]="true">
+	<ion-grid style="margin: 1rem auto 0; padding: 0">
+		<ion-row style="display: flex; justify-content: center; flex-direction: column">
+			<ion-col
+				size-sm="12"
+				size-md="9"
+				size-lg="7"
+				id="printThisElement"
+				style="margin: 0 auto !important; max-width: 40% !important; width: 100% !important">
+				<div style="min-height: 99%">
+					<img
+						height="100%"
+						*ngIf="WorkbookData && WorkbookData.SessionAssets.length > 0"
+						[src]="imageHost + WorkbookData.SessionAssets[0].path"
+						style="object-fit: contain; display: block; width: 100%; cursor: pointer; margin-bottom: 1rem" />
+					<div *ngFor="let item of wsData; index as i;" style="margin-top: 1.2rem">
+						<p
+							style="color: var(--branding-color); font-size: 0.9rem; margin: 0; font-family: 'Poppins', sans-serif"
+							[ngStyle]=" appBrandingInfo && appBrandingInfo.accent_color ? {'color' : appBrandingInfo.accent_color} : {'color': ''}">
+							{{'Utils.worksheet' | translate}} {{i+1}}/{{wsData.length}}
+						</p>
+						<div style="min-height: 96.5%">
+							<div
+								style="
+									margin: 0.5rem auto 1.4rem;
+									border-radius: 1rem;
+									padding: 0;
+									border: 2px solid lightgray;
+									background: #fff;
+								">
+								<div class="img-head" *ngIf="item.SessionAssets.length > 0 && item.SessionAssets[0].type =='Image'">
+									<img
+										*ngIf="item.SessionAssets.length > 0 && item.SessionAssets[0].type =='Image'"
+										[src]="imageHost + item.SessionAssets[0].path"
+										style="
+											object-fit: contain;
+											display: block;
+											width: 100%;
+											border-radius: 0.9rem 0.9rem 0 0;
+											cursor: pointer;
+										"
+										(click)="navigateToWorksheet(item.id)" />
+
+									<!-- <img
+										*ngIf="item.SessionAssets.length > 0 &&  item.SessionAssets[0].type =='Video'"
+										src="assets/images/workbook/Video_Icon_Purple_PPT_Size.svg"
+										style="
+											object-fit: contain;
+											display: block;
+											width: 100%;
+											border-radius: 0.9rem 0.9rem 0 0;
+											cursor: pointer;
+										"
+										(click)="navigateToWorksheet(item.id)" /> -->
+								</div>
+								<div
+									class="img-head"
+									*ngIf="item.SessionAssets.length > 0 &&  item.SessionAssets[0].type =='Video'"
+									style="
+										mask: url('/assets/images/workbook/Video_Icon_Purple_PPT_Size.svg') no-repeat center / contain;
+										-webkit-mask: url('/assets/images/workbook/Video_Icon_Purple_PPT_Size.svg') no-repeat center /
+											contain;
+										object-fit: cover;
+										display: block;
+										width: 100%;
+										min-height: 37.5%;
+										border-radius: 0.9rem 0.9rem 0 0;
+										cursor: pointer;
+										background-color: var(--branding-color);
+									"></div>
+
+								<div style="padding: 1rem">
+									<div style="display: flex; justify-content: flex-end; margin-right: -1rem; position: relative">
+										<div style="flex: 1; display: flex; align-items: center; max-height: 6vh">
+											<img
+												*ngIf="item.type == 'Quiz' || item.type=='Quiz (Randomised)'"
+												src="assets/images/workbook/quiz_icon.svg"
+												style="width: 30px; height: 30px" />
+											<img
+												*ngIf="item.type == 'Learning Content'"
+												src="assets/images/workbook/content_icon.svg"
+												style="width: 22px; height: 22px" />
+
+											<img
+												*ngIf="item.type == 'Discussion'"
+												src="assets/images/workbook/group-discussion.svg"
+												class="width: 32px; height: 32px" />
+
+											<img
+												*ngIf="item.type == 'Follow Us'"
+												src="assets/images/workbook/follow_us_icon.svg"
+												class="worksheet-type-icon" />
+
+											<img
+												*ngIf="item.type == 'Poll'"
+												src="assets/images/workbook/poll_icon.svg"
+												style="width: 30px; height: 30px" />
+											<img
+												*ngIf="item.type == 'Word Cloud'"
+												src="assets/images/workbook/word_cloud_icon.svg"
+												style="width: 30px; height: 30px" />
+											<img
+												*ngIf="item.type == 'Survey'"
+												src="assets/images/workbook/survey_icon.svg"
+												style="width: 30px; height: 30px" />
+											<img
+												*ngIf="item.type == 'Offline Task'"
+												src="assets/images/workbook/offline_task_icon.svg"
+												style="width: 30px; height: 30px" />
+											<img
+												*ngIf="item.type =='Spin The Wheel'"
+												src="assets/images/workbook/spin-the-wheel.svg"
+												style="width: 30px; height: 30px" />
+											<p style="margin: 0; margin-left: 0.5rem; font-family: 'Poppins', sans-serif">
+												<!-- {{item.type}} -->
+												{{ item.activityTemplate}}
+											</p>
+										</div>
+
+										<div style="display: flex; justify-content: flex-end; align-items: center">
+											<img
+												src="assets/images/workbook/trainerNote.svg"
+												(click)="showTrainerNote(i)"
+												*ngIf="item.trainerInst !== null && !item.isShowTrainerNote && isTrainer"
+												style="width: 30px; height: 30px; margin-right: 0.8rem" />
+											<!-- <img
+												src="assets/images/workbook/trainerNoteShow.svg"
+												(click)="showTrainerNote(i)"
+												*ngIf="item.trainerInst !== null && item.isShowTrainerNote && isTrainer"
+												style="width: 30px; height: 30px; margin-right: 0.8rem" /> -->
+											<div
+												*ngIf="item.trainerInst !== null && item.isShowTrainerNote && isTrainer"
+												(click)="showTrainerNote(i)"
+												style="
+													width: 30px;
+													height: 30px;
+													margin-right: 0.8rem;
+													mask: url('/assets/images/workbook/trainerNoteShow.svg') no-repeat center / contain;
+													-webkit-mask: url('/assets/images/workbook/trainerNoteShow.svg') no-repeat center / contain;
+													background-color: var(--branding-color);
+												"></div>
+
+											<img
+												src="assets/images/workbook/favorite.svg"
+												*ngIf="item.flgFav && !item.isFav"
+												(click)="changeFlag(i,'Fav');"
+												style="width: 30px; height: 30px; margin-right: 0.8rem" />
+											<!-- <img
+												src="assets/images/workbook/favorite_selected_icon.svg"
+												*ngIf="item.flgFav && item.isFav"
+												(click)="changeFlag(i,'Fav');"
+												style="width: 30px; height: 30px; margin-right: 0.8rem" /> -->
+											<div
+												*ngIf="item.flgFav && item.isFav"
+												(click)="changeFlag(i,'Fav');"
+												style="
+													width: 30px;
+													height: 30px;
+													margin-right: 0.8rem;
+													mask: url('/assets/images/workbook/favorite_selected_icon.svg') no-repeat center / contain;
+													-webkit-mask: url('/assets/images/workbook/favorite_selected_icon.svg') no-repeat center /
+														contain;
+													background-color: var(--branding-color);
+												"></div>
+
+											<img
+												src="assets/images/workbook/important.svg"
+												*ngIf="item.flgImp"
+												style="width: 30px; height: 30px; margin-right: 0.8rem" />
+
+											<img
+												src="assets/images/workbook/group_activity.svg"
+												*ngIf="item.flgGroupActivty"
+												style="width: 30px; height: 30px; margin-right: 0.8rem" />
+										</div>
+									</div>
+
+									<!-- <p
+										style="
+											font-size: 1rem;
+											line-height: 23px;
+											font-weight: 300;
+											text-align: justify;
+											margin: 1rem 0 0 0;
+											cursor: pointer;
+											font-family: 'Poppins', sans-serif;
+										"
+										*ngIf="item.description"
+										(click)="navigateToWorksheet(item.id)">
+										{{item.description}}
+									</p> -->
+
+									<div
+										id="module_print_description{{item.id}}"
+										style="
+											font-size: 1rem;
+											line-height: 23px;
+											font-weight: 300;
+											text-align: justify;
+											margin: 1rem 0 0 0;
+											font-family: 'Poppins', sans-serif;
+											white-space: pre-line;
+										"></div>
+									<p
+										style="margin: 1rem 0; color: #605757; font-family: 'Poppins', sans-serif"
+										*ngIf="item.trainerInst && item.isShowTrainerNote">
+										{{item.trainerInst}}
+									</p>
+
+									<div
+										*ngIf="item.submit && (item.type !== 'Quiz' &&  item.type !== 'Survey' )"
+										style="display: flex; align-items: center; margin: 1.5rem 0px 2rem 0px">
+										<div style="position: absolute; left: 24px; font-size: 15px; display: flex; align-items: center">
+											<img src="assets/images/workbook/submit_icon.svg" style="height: 20px" />
+											<span style="margin-left: 0.2rem; font-family: 'Poppins', sans-serif"
+												>{{'Utils.completed' | translate}}</span
+											>
+										</div>
+									</div>
+
+									<div
+										*ngIf="item.submit && (item.type == 'Quiz' || item.type == 'Survey')"
+										style="display: flex; align-items: center"
+										[ngStyle]="item.userNote ? {'margin': '1.5rem 0px 1.5rem 0px'} : {'margin': '1.5rem 0px 1rem 0px'}">
+										<div style="position: absolute; left: 24px; font-size: 15px; display: flex; align-items: center">
+											<img src="assets/images/workbook/submit_icon.svg" style="height: 20px" />
+											<span style="margin-left: 0.2rem; font-family: 'Poppins', sans-serif"
+												>{{'Utils.completed' | translate}}</span
+											>
+										</div>
+
+										<div
+											style="position: absolute; right: 26px; font-size: 15px; font-family: 'Poppins', sans-serif"
+											*ngIf="item.type == 'Quiz'">
+											<span
+												>{{'Utils.yourScore' | translate}}
+												<span>{{item.score}} / {{item.SessionQuestions.length * 2}} </span></span
+											>
+										</div>
+									</div>
+
+									<div
+										*ngIf="item && item.SessionQuestions && item.SessionQuestions.length > 0 && (item.type == 'Poll' || item.type == 'Word Cloud') ">
+										<div *ngFor="let item_ of item.SessionQuestions; index as i">
+											<ion-row *ngIf="item_.question">
+												<ion-col size="12" style="padding: 0">
+													<p
+														*ngIf="item.type == 'Poll'"
+														[ngStyle]="item.submit ?{'margin': 0} : {'margin-top':'0.7rem'}"
+														style="font-weight: 500; font-family: 'Poppins', sans-serif">
+														{{'Utils.pollquestion' | translate}}: {{item_.question}}
+													</p>
+													<p
+														*ngIf="item.type == 'Word Cloud'"
+														[ngStyle]="item.submit ?{'margin': 0} : {'margin-top':'0.7rem'}"
+														style="font-weight: 500; font-family: 'Poppins', sans-serif">
+														{{'Utils.wordcloudquestion' | translate}}: {{item_.question}}
+													</p>
+												</ion-col>
+											</ion-row>
+										</div>
+									</div>
+
+									<!--  chart -->
+									<div
+										*ngIf="item.type == 'Poll'&& item.publishResult && item.submit"
+										style="border: 2px solid lightgray; margin-top: 1.3rem; border-radius: 0.4rem">
+										<div
+											style="min-height: 17%; padding-top: 1rem; padding-bottom: 27px; width: 95%"
+											*ngIf="pollChartType == 'Scale'">
+											<ngx-charts-bar-horizontal
+												hotfix-zero-margin
+												[scheme]="colorScheme"
+												[results]="ChartData"
+												[gradient]="ChartOptions.gradient"
+												[xAxis]="ChartOptions.showXAxis"
+												[yAxis]="ChartOptions.showYAxis"
+												[legend]="ChartOptions.showLegend"
+												[showXAxisLabel]="ChartOptions.showXAxisLabel"
+												[showYAxisLabel]="ChartOptions.showYAxisLabel"
+												[roundDomains]="ChartOptions.roundDomains"
+												[xAxisLabel]="ChartOptions.xAxisLabel"
+												[yAxisLabel]="ChartOptions.yAxisLabel">
+											</ngx-charts-bar-horizontal>
+										</div>
+
+										<div
+											style="min-height: 15%; padding-top: 1rem; padding-bottom: 27px; width: 100%"
+											*ngIf="pollChartType == 'Bar'">
+											<ngx-charts-bar-vertical
+												hotfix-zero-margin
+												[scheme]="colorScheme"
+												[results]="ChartData"
+												[gradient]="ChartOptions.gradient"
+												[xAxis]="ChartOptions.showXAxis"
+												[yAxis]="ChartOptions.showYAxis"
+												[legend]="ChartOptions.showLegend"
+												[showXAxisLabel]="ChartOptions.showXAxisLabel"
+												[showYAxisLabel]="ChartOptions.showYAxisLabel"
+												[xAxisLabel]="ChartOptions.xAxisLabel"
+												[yAxisLabel]="ChartOptions.yAxisLabel">
+											</ngx-charts-bar-vertical>
+										</div>
+
+										<div
+											style="
+												height: 200px;
+												width: 100%;
+												margin-bottom: 2rem;
+												margin-right: 1rem;
+												display: flex !important;
+												justify-content: center !important;
+												align-items: center !important;
+											"
+											*ngIf="pollChartType == 'Pie'">
+											<ngx-charts-pie-chart
+												hotfix-zero-margin
+												[scheme]="colorScheme"
+												[results]="ChartData"
+												[gradient]="ChartOptions.gradient"
+												[legend]="ChartOptions.showLegend"
+												[legendPosition]="ChartOptions.legendPosition"
+												[labels]="ChartOptions.showLabels"
+												[doughnut]="ChartOptions.isDoughnut">
+											</ngx-charts-pie-chart>
+										</div>
+									</div>
+
+									<div
+										*ngIf="item && item.SessionQuestions && item.SessionQuestions.length > 0 && (item.type == 'Word Cloud')"
+										[ngStyle]="item.userNote ? {'margin-bottom': '1.5rem'} : {'margin-bottom': '0'}">
+										<div>
+											<ion-row>
+												<ion-col size="12" style="padding: 0">
+													<p
+														style="
+															font-weight: 500;
+															margin: 0;
+															margin-top: 0.7rem !important;
+															font-family: 'Poppins', sans-serif;
+														">
+														{{'Utils.yourresponse' | translate}}: {{userAswers}}
+													</p>
+												</ion-col>
+											</ion-row>
+										</div>
+									</div>
+
+									<div *ngIf="item.type == 'Offline Task' && item.brief">
+										<div>
+											<div>
+												<p
+													[ngStyle]="item.submit ? {'margin-top': '0rem'} : {'margin-top': '0.7rem'}"
+													style="font-weight: 500; font-family: 'Poppins', sans-serif">
+													{{'Utils.taskbrief' | translate}}: {{item.brief}}
+												</p>
+											</div>
+										</div>
+									</div>
+
+									<div
+										*ngIf="item && item.SessionQuestions && item.SessionQuestions.length > 0 && (item.type == 'Offline Task')"
+										style="margin-top: 1rem">
+										<div *ngFor="let item_ of item.SessionQuestions; index as i">
+											<ion-row *ngIf="item_.question">
+												<ion-col size="12" style="padding: 0">
+													<p style="font-weight: 500; margin: 0; font-family: 'Poppins', sans-serif">
+														{{'Utils.question' | translate}}{{i+1}}: {{item_.question}}
+													</p>
+												</ion-col>
+											</ion-row>
+										</div>
+									</div>
+
+									<div
+										style="display: flex; justify-content: center; align-items: center; margin: 1rem 0 0"
+										*ngIf="item.userNote">
+										<div
+											style="
+												width: 100%;
+												padding-left: 0.7rem !important;
+												padding-right: 0.7rem;
+												background-color: #f0eeee;
+												display: flex;
+												justify-content: left;
+												align-items: center;
+												border-radius: 0.7rem;
+												min-height: 3rem;
+											"
+											(click)="addEditLearnerNote(item, i)"
+											*ngIf="item.userNote">
+											<!-- <p
+												style="
+													font-size: 1rem;
+													line-height: 23px;
+													font-weight: 300;
+													text-align: justify;
+													font-family: 'Poppins', sans-serif;
+												">
+												{{item.userNote}}
+											</p> -->
+
+											<div style="
+													font-size: 1rem;
+													line-height: 23px;
+													font-weight: 300;
+													text-align: justify;
+													font-family: 'Poppins', sans-serif;
+												" [innerHTML]="item.userNote"></div>
+
+										</div>
+										<!-- <div style="width: 9%; cursor: pointer;" (click)="addEditLearnerNote(item, i)">
+                                                <img src="assets/images/workbook/edit_learner_note.svg"
+                                                    style="margin-bottom: 0.3rem;">
+                                            </div> -->
+									</div>
+
+									<!-- <div id="add-notes-label" style="width: 100%;
+                                            background-color: #f0eeee;display: flex;justify-content: center;
+                                            align-items: center;margin: 1rem 0 0;border-radius: 0.7rem;height: 3rem;"
+                                        (click)="addEditLearnerNote(item, i)" *ngIf="!item.userNote">
+                                        <p style="color: darkgray;font-family: 'Poppins', sans-serif;">
+                                            {{'Utils.taptoaddyournotes' | translate}}
+                                        </p>
+                                    </div> -->
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</ion-col>
+		</ion-row>
+
+		<ion-row style="display: flex; justify-content: center">
+			<ion-col size-sm="12" size-md="9" size-lg="7">
+				<button
+					style="
+						border-radius: 4px;
+						padding-top: 0;
+						padding-bottom: 0;
+						padding-left: 1.1em;
+						padding-right: 1.1em;
+						transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1), background-color 15ms linear, color 15ms linear;
+						margin: 4px 2px;
+						height: 36px;
+						font-size: 14px;
+						font-weight: 500;
+						background-color: var(--branding-color);
+						letter-spacing: 0.06em;
+						text-transform: uppercase;
+					"
+					[ngStyle]="appBrandingInfo && appBrandingInfo.accent_color ? {'background-color' : appBrandingInfo.accent_color} : {'background-color': ''}"
+					printTitle="{{appService?.userPersonalData?.first}}'s {{'Utils.workbookcopy' | translate}} "
+					printSectionId="printThisElement"
+					ngxPrint>
+					{{'Utils.print' | translate}}
+				</button>
+			</ion-col>
+		</ion-row>
+
+		<!-- infifnity scroll hide div -->
+		<!-- <ion-infinite-scroll *ngIf="!showNotesInput" (ionInfinite)="loadMore($event)">
+        <ion-infinite-scroll-content loadingSpinner="circles" loadingText="Loading more data...">
+        </ion-infinite-scroll-content>
+        </ion-infinite-scroll> -->
+
+		<div
+			style="
+				background: var(--branding-color);
+				position: fixed;
+				border-radius: 50%;
+				width: 3rem;
+				height: 3rem;
+				color: #fff;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				transform: translateX(-50%);
+				right: 3%;
+				bottom: 5%;
+				z-index: 999;
+			"
+			*ngIf="backToTop"
+			(click)="gotToTop()"
+			[ngStyle]="appBrandingInfo && appBrandingInfo.accent_color ? {'background' : appBrandingInfo.accent_color} : {'background': ''}">
+			<ion-icon id="top-icon" name="chevron-up-outline"></ion-icon>
+		</div>
+	</ion-grid>
+
+	<ion-refresher
+		*ngIf="!showNotesInput"
+		ion-refresh-native
+		slot="fixed"
+		disabled="false"
+		(ionRefresh)="doRefresh($event)"
+		pullFactor="0.1"
+		pullMin="50"
+		pullMax="200">
+		<ion-refresher-content></ion-refresher-content>
+	</ion-refresher>
+</ion-content>
+
+<ion-content *ngIf="showNotesInput" [fullscreen]="true" class="ion-padding-horizontal">
+	<ion-grid>
+		<ion-row style="height: 92vh; background-color: white; display: flex; justify-content: center">
+			<ion-col size-sm="12" size-md="9" size-lg="7">
+				<div style="display: flex; justify-content: space-between; margin-top: 0.5rem">
+					<a (click)="cancel()" style="align-self: center; cursor: pointer">{{'Utils.cancel' | translate}}</a>
+					<ion-button shape="round" (click)="saveLearnerNote()">{{'Utils.save' | translate}}</ion-button>
+				</div>
+				<textarea
+					rows="10"
+					placeholder="{{'Utils.Whathaveyoulearnedtoday' | translate}}"
+					[(ngModel)]="userNote"
+					style="
+						width: 100%;
+						margin-top: 1rem;
+						border-radius: 1rem;
+						font-size: 1rem;
+						border: none;
+						margin-left: -0.25rem;
+						color: #fff;
+					"></textarea>
+			</ion-col>
+		</ion-row>
+	</ion-grid>
+</ion-content>

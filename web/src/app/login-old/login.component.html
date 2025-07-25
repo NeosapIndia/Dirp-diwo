@@ -1,0 +1,538 @@
+<div class="page" [@routerTransition]>
+	<div class="page__content" id="page-content">
+		<div
+			class="content d-none d-lg-block"
+			style="width: 68%; background: white; display: flex !important; align-content: center; align-items: center"
+			id="content">
+			<img style="width: 110%; visibility: hidden" src="" />
+		</div>
+		<div class="important-container login-container" style="width: 42%">
+			<div class="content page-login">
+				<div class="login-logo-new" style="margin: unset; margin-bottom: 25px; text-align: center">
+					<a>
+						<img
+							*ngIf="projectName == 'drip' && !appService.loginWebLogo"
+							style="width: 65% !important"
+							src="assets/images/drip_logo.png"
+							alt="Packet" />
+						<img
+							*ngIf="projectName == 'drip' && appService.loginWebLogo"
+							style="width: 65% !important"
+							[src]="appService.loginWebLogo"
+							alt="Packet" />
+						<img
+							*ngIf="projectName == 'diwo' && !appService.loginWebLogo"
+							style="width: 65% !important"
+							src="assets/images/diwo_logo.png"
+							alt="Packet" />
+						<img
+							*ngIf="projectName == 'diwo' && appService.loginWebLogo"
+							style="width: 65% !important"
+							[src]="appService.loginWebLogo"
+							alt="Packet" />
+					</a>
+				</div>
+				<form
+					[formGroup]="loginForm"
+					id="screen1"
+					(keyup.enter)="generateOtp()"
+					autocomplete="off"
+					*ngIf="loginAllowedFlag">
+					<div
+						class="form-group align-left-ipad"
+						style="margin-bottom: 15px !important"
+						[ngClass]="{
+							'has-error': f.country.invalid && (f.country.dirty || f.country.touched),
+							'has-success': f.country.valid && (f.country.dirty || f.country.touched)
+						}">
+						<label style="font-family: 'Poppins-Regular' !important">{{ 'Pages.Login.country' | translate }}</label>
+						<!-- <select name="country" class="form-control" formControlName="country"
+                            (change)="changeCountryCode($event.target.value)">
+                            <option value="null" disabled> {{'Signup.Country.placeholder' | translate}} </option>
+                            <option *ngFor="let item of countryList" value="{{item.name}}">{{item.name}}</option>
+                        </select> -->
+
+						<div style="position: relative">
+							<img
+								*ngIf="selectedCountryCode && countrySelected"
+								src="assets/country_flag/{{ selectedCountryCode }}.png"
+								style="height: 30px; width: 40px; margin-right: 15px; position: absolute; left: 25px; top: 10px" />
+							<input
+								formControlName="country"
+								type="text"
+								value="{{ selectedCountry }}"
+								placeholder="{{ 'Pages.Login.selectcountry' | translate }}"
+								(click)="openCountyDropDown()"
+								id="touch"
+								[ngClass]="
+									countryDroupDownShow == false
+										? countrySelected
+											? 'country-input3'
+											: 'country-input'
+										: 'country-input2'
+								"
+								autocomplete="off"
+								(input)="onTypeCountry($event.target.value)"
+								style="font-size: 1.125rem !important; outline: none" />
+							<div [ngClass]="countryDroupDownShow == false ? 'country_list' : 'country_list2'">
+								<div *ngFor="let item of searchCountryList">
+									<div style="cursor: pointer; margin-bottom: 10px" (click)="onCountrySelect(item)">
+										<img
+											src="assets/country_flag/{{ item.countryCode }}.png"
+											style="height: 35px; width: 50px; margin-right: 15px" />
+										<span style="font-family: 'Poppins-Regular' !important">{{ item.name }}</span>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- <ng-select [items]="countryList" style="font-size: 1em; padding: 0px;"
+                            placeholder="Select Country" bindLabel="name" bindValue="name" [multiple]="false"
+                            [closeOnSelect]="true" [searchable]="true" formControlName="country"
+                            (change)="changeCountryCode($event.name)">
+                        </ng-select> -->
+
+						<!-- <div class=" error" *ngIf="f.country.errors && f.country.touched">
+                            <div *ngIf="f.country.errors.required">{{'Signup.Country.error' | translate}}</div>
+                        </div> -->
+					</div>
+
+					<div *ngIf="isCountrySelected">
+						<div
+							class="form-group align-left-ipad"
+							style="margin-bottom: 15px !important"
+							[ngClass]="{
+								'has-error': f.phone.invalid && (f.phone.dirty || f.phone.touched),
+								'has-success': f.phone.valid && (f.phone.dirty || f.phone.touched)
+							}"
+							*ngIf="isMobileLogin">
+							<label style="font-weight: bold; font-family: 'Poppins-Regular' !important">{{
+								'Login.Mobile.title' | translate
+							}}</label>
+							<div class="row">
+								<div class="col-xs-4 col-md-3 col-sm-3" style="padding-right: 5px">
+									<select
+										class="form-control signup_page"
+										disabled="disabled"
+										style="
+											border-radius: 80px;
+											padding-left: 15px !important;
+											height: 50px !important;
+											font-size: 1.125rem !important;
+										">
+										<option value="{{ countryCode }}" style="font-family: 'Poppins-Regular' !important">
+											{{ countryCode }}
+										</option>
+									</select>
+								</div>
+								<div class="col-xs-8 col-md-9 col-sm-9 placeHolder_font" style="padding-left: 0">
+									<input
+										formControlName="phone"
+										type="number"
+										id="phone"
+										class="form-control signup_page"
+										[placeholder]="'Login.Mobile.placeholder' | translate"
+										(keypress)="numberOnly($event)"
+										style="
+											border-radius: 80px;
+											padding-left: 20px !important;
+											height: 50px !important;
+											font-size: 1.125rem !important;
+											font-family: 'Poppins-Regular' !important;
+										" />
+									<div class="error" *ngIf="f.phone.errors && f.phone.touched">
+										<div *ngIf="f.phone.errors.required">{{ 'Login.Mobile.error' | translate }}</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div
+							class="form-group align-left-ipad"
+							style="margin-bottom: 15px !important"
+							[ngClass]="{
+								'has-error': f.email.invalid && (f.email.dirty || f.email.touched),
+								'has-success': f.email.valid && (f.email.dirty || f.email.touched)
+							}"
+							*ngIf="!isMobileLogin">
+							<label style="font-weight: 500; font-family: 'Poppins-Regular' !important">{{
+								'Pages.Login.registeredEmailAddress' | translate
+							}}</label>
+							<div class="row">
+								<div class="col-xs-12 col-md-12 col-sm-12">
+									<input
+										[ngClass]="{ 'red-border': emailError == true }"
+										type="text"
+										id="email"
+										class="form-control signup_page"
+										[placeholder]="'Pages.Login.registeredEmailAddress' | translate"
+										style="
+											border-radius: 80px;
+											padding-left: 20px !important;
+											height: 50px !important;
+											font-size: 1.125rem !important;
+										"
+										(input)="addEmail($event.target.value)" />
+									<div class="error" *ngIf="f.email.errors && f.email.touched">
+										<div *ngIf="f.email.errors.required">
+											{{ 'Pages.Login.registeredEmailAddressError' | translate }}
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div *ngIf="isCountrySelected" class="form-group margin-bottom-30">
+						<div class="form-row">
+							<div class="" style="width: 100%">
+								<a
+									class="btn btn-primary btn-block btnsize1 test"
+									(click)="generateOtp()"
+									[attr.style]="
+										'border-radius: 60px; font-size: 1.25rem; background-color: ' +
+										appService.whiteBrandingColor +
+										' !important; border: 1px solid ' +
+										appService.whiteBrandingColor +
+										' !important; color: white !important;'
+									">
+									{{ 'Pages.Login.logintitle' | translate }}</a
+								>
+							</div>
+						</div>
+					</div>
+				</form>
+				<form
+					autocomplete="off"
+					[formGroup]="otpForm"
+					id="screen2"
+					(keyup.enter)="onSubmit()"
+					style="margin-top: 0px"
+					*ngIf="loginAllowedFlag">
+					<!-- style="margin-bottom: 60px" -->
+					<div class="form-group">
+						<!-- <label style="font-weight: bold">{{ 'Pages.Login.oneTimepasscodeheader' | translate }}</label> -->
+						<div *ngIf="userOtp" style="padding: 0px 0px 20px 0px">
+							{{ userOtp }}
+						</div>
+						<table class="table">
+							<tbody>
+								<tr class="otp">
+									<td
+										[ngClass]="{
+											'has-error': o.otp1.invalid && (o.otp1.dirty || o.otp1.touched),
+											'has-success': o.otp1.valid && (o.otp1.dirty || o.otp1.touched)
+										}">
+										<input
+											id="otp1"
+											formControlName="otp1"
+											type="number"
+											#otp1
+											max="1"
+											(keydown)="numberOnly($event, otp1, otp1, otp2)"
+											class="form-control"
+											placeholder="&nbsp;" />
+									</td>
+									<td
+										[ngClass]="{
+											'has-error': o.otp2.invalid && (o.otp2.dirty || o.otp2.touched),
+											'has-success': o.otp2.valid && (o.otp2.dirty || o.otp2.touched)
+										}">
+										<input
+											id="otp2"
+											formControlName="otp2"
+											type="number"
+											#otp2
+											max="1"
+											(keydown)="numberOnly($event, otp1, otp2, otp3)"
+											class="form-control"
+											placeholder="&nbsp;" />
+									</td>
+									<td
+										[ngClass]="{
+											'has-error': o.otp3.invalid && (o.otp3.dirty || o.otp3.touched),
+											'has-success': o.otp3.valid && (o.otp3.dirty || o.otp3.touched)
+										}">
+										<input
+											id="otp3"
+											formControlName="otp3"
+											type="number"
+											#otp3
+											max="1"
+											(keydown)="numberOnly($event, otp2, otp3, otp4)"
+											class="form-control"
+											placeholder="&nbsp;" />
+									</td>
+									<td
+										[ngClass]="{
+											'has-error': o.otp4.invalid && (o.otp4.dirty || o.otp4.touched),
+											'has-success': o.otp4.valid && (o.otp4.dirty || o.otp4.touched)
+										}">
+										<input
+											id="otp4"
+											formControlName="otp4"
+											type="number"
+											#otp4
+											max="1"
+											(keydown)="numberOnly($event, otp3, otp4)"
+											class="form-control"
+											placeholder="&nbsp;" />
+									</td>
+								</tr>
+								<tr style="border-bottom: 0px !important">
+									<td colspan="4" style="border-bottom: 0px !important; text-align: center">
+										<span style="font-size: 0.938rem !important; margin-top: 10px">
+											{{ 'Pages.Login.oneTimepasscode' | translate }} {{ loginBy }}
+										</span>
+									</td>
+								</tr>
+								<!-- <tr>
+									<span
+										class="sendotp"
+										style="font-size: 1.313rem !important; margin-top: 10px"
+										(click)="resendOtp()"
+										>{{ 'Pages.Login.resendoneTimepasscode' | translate }}</span
+									>
+								</tr> -->
+								<!-- <tr *ngIf="submitted && otpForm.invalid">
+                                    <td colspan="4" style="border: none; color: red !important;font-size: 21px !important;">
+                                        {{'Login.Otp.error' | translate}}
+                                    </td>
+                                </tr> -->
+							</tbody>
+						</table>
+						<!-- <div *ngIf="submitted && otpForm.invalid" style="margin-top: 27px;">
+                            <p style="border: none; color: red !important;font-size: 21px !important;">
+                                {{'Login.Otp.error' | translate}}
+                            </p>
+                        </div> -->
+					</div>
+					<!-- style="margin-top: 25px" -->
+					<div class="form-group" style="margin-bottom: 25px">
+						<div class="form-row">
+							<div class="" style="width: 100%">
+								<a
+									class="btn btn-primary btn-block"
+									(click)="onSubmit()"
+									[attr.style]="
+										'border-radius: 80px; background-color: ' +
+										appService.whiteBrandingColor +
+										' !important; border: 1px solid ' +
+										appService.whiteBrandingColor +
+										' !important; color: white !important;'
+									">
+									{{ 'Pages.Login.verify' | translate }}
+								</a>
+							</div>
+						</div>
+					</div>
+					<div class="sendotp" style="font-size: 0.938rem !important; text-align: end" (click)="resendOtp()">
+						{{ 'Pages.Login.resendoneTimepasscode' | translate }}
+					</div>
+				</form>
+
+				<div *ngIf="displayMessage && !beforwMaintence" style="width: 100%; text-align: center">
+					<div
+						style="min-height: 25vh; background-color: #ea2294; border-radius: 40px; padding: 15px"
+						*ngIf="signInMessage.cardType == 'Card'">
+						<div>
+							<div style="text-align: center">
+								<img style="width: 90px; text-align: center" src="assets/images/home/Maintenance.svg" />
+							</div>
+							<div>
+								<h2 style="text-align: center; color: white; padding-top: 0vh; font-family: 'Poppins-Bold' !important">
+									{{ signInMessage.title }}
+								</h2>
+								<p
+									style="
+										color: white;
+										padding-right: 25px;
+										padding-left: 25px;
+										font-size: 1.25rem;
+										font-family: 'Poppins-Regular' !important;
+										text-align: center;
+									">
+									{{ signInMessage.description }}
+								</p>
+								<div *ngIf="!messageIsDuringFlag && !alertMessageFlag">
+									<h3 style="color: white; text-align: center; font-family: 'Poppins-Bold' !important">
+										Maintenance Starts
+									</h3>
+									<h3 style="color: white; text-align: center; font-family: 'Poppins-Bold' !important">
+										{{ fromTime }} {{ fromDate }}<sup>{{ fromdate }}</sup> {{ fromYear }}
+									</h3>
+									<h3 style="color: white; text-align: center; font-family: 'Poppins-Bold' !important">Ends</h3>
+									<h3 style="color: white; text-align: center; font-family: 'Poppins-Bold' !important">
+										{{ toTime }} {{ toDate }}<sup>{{ todate }}</sup> {{ toYear }}
+									</h3>
+								</div>
+								<div *ngIf="messageIsDuringFlag && !alertMessageFlag">
+									<h3 style="color: white; text-align: center; font-family: 'Poppins-Bold' !important">
+										Service resumes at
+									</h3>
+									<h3 style="color: white; text-align: center; font-family: 'Poppins-Bold' !important">
+										{{ toTime }} {{ toDate }}<sup>{{ todate }}</sup> {{ toYear }}
+									</h3>
+								</div>
+								<div *ngIf="signInMessage.external_link">
+									<p
+										style="
+											color: white;
+											padding-right: 25px;
+											padding-left: 25px;
+											font-size: 1.25rem;
+											font-family: 'Poppins-Regular' !important;
+											text-align: center;
+											text-decoration: underline !important;
+											cursor: pointer;
+										"
+										(click)="goToMore()">
+										More Info
+									</p>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div *ngIf="signInMessage.cardType == 'Banner'">
+						<img
+							src="{{ enviroment + signInMessage.image_web }}"
+							(click)="goToMore()"
+							style="width: 100%; height: auto; cursor: pointer" />
+					</div>
+				</div>
+				<div *ngIf="displayMessage && beforwMaintence" style="width: 100%; text-align: center">
+					<div
+						style="min-height: 25vh; background-color: #ea2294; border-radius: 40px; padding: 15px"
+						*ngIf="signInMessage.cardType == 'Card'">
+						<div>
+							<div style="text-align: center">
+								<img style="width: 90px; text-align: center" src="assets/images/home/Maintenance.svg" />
+							</div>
+							<div>
+								<h2 style="text-align: center; color: white; padding-top: 0vh; font-family: 'Poppins-Bold' !important">
+									Planned Maintenance
+								</h2>
+								<p
+									style="
+										color: white;
+										padding-right: 25px;
+										padding-left: 25px;
+										font-size: 1.25rem;
+										font-family: 'Poppins-Regular' !important;
+										text-align: center;
+									">
+									We will be carrying out planned system maintenance during the hours given below. Bablr services may
+									not be available.
+								</p>
+								<h3 style="color: white; text-align: center; font-family: 'Poppins-Bold' !important">
+									Maintenance Starts
+								</h3>
+								<h3 style="color: white; text-align: center; font-family: 'Poppins-Bold' !important">
+									{{ fromTime }} {{ fromDate }}<sup>{{ fromdate }}</sup> {{ fromYear }}
+								</h3>
+								<h3 style="color: white; text-align: center; font-family: 'Poppins-Bold' !important">Ends</h3>
+								<h3 style="color: white; text-align: center; font-family: 'Poppins-Bold' !important">
+									{{ toTime }} {{ toDate }}<sup>{{ todate }}</sup> {{ toYear }}
+								</h3>
+								<div *ngIf="signInMessage.external_link">
+									<p
+										style="
+											color: white;
+											padding-right: 25px;
+											padding-left: 25px;
+											font-size: 1.25rem;
+											font-family: 'Poppins-Regular' !important;
+											text-align: center;
+											text-decoration: underline !important;
+											cursor: pointer;
+										"
+										(click)="goToMore()">
+										More Info
+									</p>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div *ngIf="signInMessage.cardType == 'Banner'">
+						<img
+							src="{{ enviroment + signInMessage.image_web }}"
+							(click)="goToMore()"
+							style="width: 100%; height: auto; cursor: pointer" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div
+	class="modal fade credit-note"
+	id="loginAs"
+	data-backdrop="static"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="myModalLabel"
+	aria-hidden="true">
+	<div class="modal-dialog modal-sm" style="top: 10%; width: 50%; margin: 0 auto">
+		<div class="modal-content">
+			<div
+				class="modal-header"
+				[ngStyle]="{
+					background: appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}">
+				<h4 class="modal-title">
+					<i class="glyphicon glyphicon-user"></i> {{ 'Pages.Login.selectuserrole' | translate }}
+				</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row center">
+					<div class="col-md-6 col-md-offset-3 list-group">
+						<a *ngFor="let item of userRoles" (click)="loginAs(item)" class="list-group-item list-group-item-action">
+							{{ 'Pages.Login.loginas' | translate }}
+							<span [ngStyle]="{ color: appService.whiteBrandingColor }">{{ item.client.name + '-' + item.role }}</span>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div
+	class="modal fade credit-note"
+	id="customerLogin"
+	data-backdrop="static"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="myModalLabel"
+	aria-hidden="true">
+	<div class="modal-dialog modal-sm" style="top: 30%; width: 40%; margin: 0 auto">
+		<div class="modal-content">
+			<div
+				class="modal-header"
+				[ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}">
+				<h4 class="modal-title"><i class="glyphicon glyphicon-user"></i>Login Role</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row center">
+					<div class="col-md-8 col-md-offset-2 list-group">
+						<a
+							*ngFor="let item of customerRollData"
+							(click)="checkUserType(item)"
+							class="list-group-item list-group-item-action">
+							Login as <span style="color: #6513e1" *ngIf="item.type == 'Normal User'">Account Holder</span>
+							<span style="color: #6513e1" *ngIf="item.type == 'Care Giver'">Caregiver</span>
+							<span style="color: #6513e1" *ngIf="item.associated_user_name"> For {{ item.associated_user_name }}</span>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

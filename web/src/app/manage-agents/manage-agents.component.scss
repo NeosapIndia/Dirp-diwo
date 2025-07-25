@@ -1,0 +1,80 @@
+tr {
+	height: 80px;
+}
+
+.pageDiv {
+	padding-left: 1.9%;
+	padding-right: 0.9%;
+}
+
+::ng-deep.assets .md-drppicker.drops-down-auto.ltr.double.show-ranges.shown {
+	left: -19.6rem !important;
+	width: 37.5rem !important;
+}
+
+.image-over-div {
+	position: absolute;
+	top: 0;
+}
+
+.image-over {
+	width: 160px;
+	height: 80px;
+}
+
+.asset-title-prev {
+	overflow: hidden;
+	display: -webkit-box;
+	-webkit-line-clamp: 1;
+	-webkit-box-orient: vertical;
+	padding-left: 10px;
+}
+
+::ng-deep.md-drppicker .btn {
+	border-radius: 8px;
+	margin-left: 8px;
+	padding: 0 12px;
+	background-color: var(--check-box-color);
+}
+::ng-deep.md-drppicker .btn.btn-default {
+	background-color: lightgray;
+}
+
+::ng-deep button.btn.btn-default.clear {
+	background-color: lightgray !important;
+}
+
+::ng-deep.md-drppicker .clear svg {
+	display: none;
+}
+
+
+/////////////////
+
+.report-header {
+	font-size: 0.9rem !important;
+	font-weight: 500 !important;
+	text-transform: uppercase;
+	color: black !important;
+	background-color: #f9fafb;
+	padding: 14px 20px;
+	border-radius: 12px 12px 0 0;
+	height: 55px;
+	border-bottom: 2px solid rgba(0, 0, 0, 0.07) !important;
+}
+
+.panel-white-3 {
+	background-color: #ffffff;
+	position: relative;
+	color: #5b5b60;
+	border: 2px solid rgba(0, 0, 0, 0.07);
+	border-radius: 15px;
+	margin-bottom: 2rem;
+	margin: 0 1.9% 1.9% 1.9%;
+}
+
+@media screen and (min-width: 992px) and (max-width: 1300px) {
+	.panel-white-3 {
+		margin: 0 2.4% 1.9% 1.9%;
+	}
+}

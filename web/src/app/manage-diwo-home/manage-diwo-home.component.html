@@ -1,0 +1,263 @@
+<div class="pageDiv home" style="min-height: calc(100vh - 95px)">
+	<div style="margin-top: 2rem">
+		<div class="row">
+			<div class="panel header-panel-white">
+				<div class="col-md-3" style="padding-left: 0.5%">
+					<span class="mainTitle no-margin pageTitle_Main">{{ 'Pages.DiwoHomePage.pagetitle' | translate }}</span>
+				</div>
+				<div class="col-md-3" style="float: right; padding-right: 0"></div>
+			</div>
+		</div>
+	</div>
+	<div style="margin-top: 2rem">
+		<div class="row">
+			<div class="panel panel-white-2" style="display: flex; flex-wrap: wrap; margin: 0 1% 1.9% 1%">
+				<div class="col-md-2 count-container">
+					<div class="sub-card count-container-wrap" [routerLink]="['/learners']">
+						<div class="total-count">{{ AllCount.activeLearer }}</div>
+						<p class="title">{{ 'Pages.DiwoHomePage.nofactivelearners' | translate }}</p>
+					</div>
+				</div>
+				<div class="col-md-2 count-container">
+					<div class="sub-card count-container-wrap" [routerLink]="['/module']">
+						<div class="total-count">{{ AllCount.workbookCount }}</div>
+						<p class="title">{{ 'Pages.DiwoHomePage.totalmodules' | translate }}</p>
+					</div>
+				</div>
+				<div class="col-md-2 count-container">
+					<div class="sub-card count-container-wrap" [routerLink]="['/diwo-courses']">
+						<div class="total-count">{{ AllCount.courseCount }}</div>
+						<p class="title">{{ 'Pages.DiwoHomePage.totalcourses' | translate }}</p>
+					</div>
+				</div>
+				<div class="col-md-2 count-container">
+					<div class="sub-card count-container-wrap" [routerLink]="['/diwo-pathways']">
+						<div class="total-count">{{ AllCount.pathwayCount }}</div>
+						<p class="title">{{ 'Pages.DiwoHomePage.publishpathways' | translate }}</p>
+					</div>
+				</div>
+				<div class="col-md-2 count-container">
+					<div class="sub-card count-container-wrap">
+						<div class="total-count">{{ AllCount.assignedCertificateCount }}</div>
+						<p class="title">{{ 'Pages.DiwoAnalytics.Home.certificatesawarded' | translate }}</p>
+					</div>
+				</div>
+				<div class="col-md-2 count-container">
+					<div class="sub-card count-container-wrap">
+						<div class="total-count">{{ AllCount.assignedBadgeCount }}</div>
+						<p class="title">{{ 'Pages.DiwoAnalytics.Home.badgeerarned' | translate }}</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<app-diwo-analytics-chart></app-diwo-analytics-chart>
+
+	<div style="margin-top: 1rem">
+		<div class="row">
+			<div class="panel panel-white-4">
+				<div class="report-header">
+					{{ 'Pages.DiwoHomePage.ReportDownload.title' | translate }}
+				</div>
+				<div style="padding: 1.25rem">
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group" style="margin-top: 0">
+								<label> {{ 'Pages.DiwoHomePage.ReportDownload.Pickyourreport.title' | translate }}</label>
+								<ng-select
+									[items]="Reportdata"
+									class="ng-select-wrap"
+									placeholder="{{ 'Pages.DiwoHomePage.ReportDownload.Pickyourreport.placeholder' | translate }}"
+									bindLabel="lable"
+									bindValue="name"
+									[multiple]="false"
+									[closeOnSelect]="true"
+									[searchable]="false"
+									[clearable]="false"
+									[ngModelOptions]="{ standalone: true }"
+									[(ngModel)]="selectedReportName">
+								</ng-select>
+							</div>
+						</div>
+						<div class="col-md-6 head-title" *ngIf="selectedReportName != 'Learnerwise_Badges_&_Certificates_Report'">
+							<div class="form-group" style="margin-top: 0">
+								<label>{{ 'Pages.DiwoHomePage.ReportDownload.Pickyourperiod.title' | translate }}</label>
+								<input
+									type="text"
+									ngxDaterangepickerMd
+									[showDropdowns]="true"
+									onkeydown="return false"
+									[(ngModel)]="selectedDate"
+									[showCustomRangeLabel]="true"
+									[alwaysShowCalendars]="true"
+									[ranges]="ranges"
+									[linkedCalendars]="true"
+									[isInvalidDate]="isInvalidDate"
+									[showClearButton]="false"
+									[showCancel]="true"
+									placeholder="DD-MM-YYYY - DD-MM-YYYY"
+									[autoApply]="true"
+									[locale]="{ applyLabel: 'ok', format: 'DD-MM-YYYY' }"
+									(startDateChanged)="startDateClicked($event)"
+									(endDateChanged)="endDateClicked($event)"
+									class="form-control"
+									autocomplete="off"
+									[ngModelOptions]="{ standalone: true }" />
+							</div>
+						</div>
+					</div>
+					<div class="row" style="text-align: end; margin-top: 2rem">
+						<a
+							class="btn border_radius functionalBtn"
+							[ngStyle]="{
+								'background-color': appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+								color: 'white'
+							}"
+							style="margin-right: 0.938rem"
+							(click)="downloadReport()"
+							>{{ 'Utils.Action.download' | translate }}</a
+						>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div style="margin-top: 1rem" *ngIf="SubscriptionData">
+		<div class="row" style="margin-bottom: 2rem">
+			<div class="panel panel-white-2">
+				<div class="col-md-4" style="padding-left: 0; padding-right: 1.25rem">
+					<div class="license-sub-card">
+						<p class="license-title">{{ 'Pages.DiwoHomePage.Subscription.available' | translate }}</p>
+
+						<div class="license-total-count">
+							{{
+								SubscriptionData && SubscriptionData.unlimitedWorkbook == true
+									? ('Pages.DiwoHomePage.Subscription.unlimited' | translate)
+									: SubscriptionData && SubscriptionData.workbookCount - SubscriptionData.liveWorkbookCount
+							}}
+						</div>
+					</div>
+				</div>
+				<div class="col-md-4" style="padding-right: 0.625rem; padding-left: 0.625rem">
+					<div class="license-sub-card">
+						<p class="license-title">{{ 'Pages.DiwoHomePage.Subscription.use' | translate }}</p>
+						<div class="license-total-count">
+							{{
+								SubscriptionData && SubscriptionData.unlimitedWorkbook == true
+									? ('Pages.DiwoHomePage.Subscription.unlimited' | translate)
+									: SubscriptionData && SubscriptionData.liveWorkbookCount
+							}}
+						</div>
+					</div>
+				</div>
+				<div class="col-md-4" style="padding-right: 0; padding-left: 1.25rem">
+					<div class="license-sub-card">
+						<p class="license-title">
+							<span *ngIf="SubscriptionData.status != 'Expired'">
+								{{ 'Pages.DiwoHomePage.Subscription.expireson' | translate }}
+							</span>
+							<span *ngIf="SubscriptionData.status == 'Expired'">
+								{{ 'Pages.DiwoHomePage.Subscription.expiredon' | translate }}
+							</span>
+						</p>
+						<div class="license-total-count">
+							{{
+								SubscriptionData && SubscriptionData.endDate != null
+									? (SubscriptionData && SubscriptionData.endDate | DateFormat)
+									: '-'
+							}}
+						</div>
+					</div>
+					<div class="mb-3 text-danger" *ngIf="SubscriptionData && SubscriptionData.status == 'Suspended'">
+						{{ 'Pages.DiwoHomePage.Subscription.temporarilysuspended' | translate }}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div
+	class="modal fade credit-note"
+	id="policyModel"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="myModalLabel"
+	aria-hidden="true"
+	data-backdrop="static"
+	data-keyboard="false">
+	<div class="modal-dialog" style="width: 40%; margin-top: 15%; margin-left: auto; margin-right: auto">
+		<div class="modal-content">
+			<div
+				class="modal-header"
+				[ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}">
+				<!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="cancel()">
+                    <span aria-hidden="true">&times;</span>
+                </button> -->
+				<h4 class="modal-title" id="myModalLabel">
+					<span>{{ 'Pages.DiwoHomePage.policyaccept' | translate }}</span>
+				</h4>
+			</div>
+			<!-- <div class="modal-body">
+                <p>{{'Pages.DiwoHomePage.welcome1' | translate }} {{userName}}. {{'Pages.DiwoHomePage.welcome2' | translate }}</p>
+                <div>
+                    <p *ngFor="let name of policyNames;">
+                        <span (click)="redirctToURL(name)" style="cursor: pointer;">{{name}}</span>
+                    </p>
+                </div>
+                <div class="visible-md visible-lg visible-sm visible-xs"
+                    style="text-align: right; margin-bottom: 0.75rem; margin-top: 1.5rem;">
+                    <a class="btn-xs action-edit-btn"
+                        style="margin-right: 9px; padding: 7px 20px; border-radius: 30px; font-size: 16px;"
+                        (click)="acceptPolicy()">{{'Utils.Action.accept' | translate}}</a>
+                </div>
+            </div> -->
+			<div class="modal-body">
+				<p *ngIf="isExistingUser">
+					{{ 'Pages.DiwoHomePage.welcome3' | translate }}
+					<span>
+						{{ policies }}
+					</span>
+					{{ 'Pages.DiwoHomePage.welcome2' | translate }}
+				</p>
+
+				<p *ngIf="!isExistingUser">
+					{{ 'Pages.DiwoHomePage.welcome1' | translate }}
+					<span>
+						{{ policies }}
+					</span>
+					{{ 'Pages.DiwoHomePage.welcome2' | translate }}
+				</p>
+				<div>
+					<p
+						*ngFor="let name of policyNames"
+						style="margin-bottom: 0px; margin-top: 0.3rem; text-decoration: underline">
+						<span (click)="redirctToURL(name)" style="cursor: pointer">{{ name }}</span>
+					</p>
+				</div>
+				<div
+					class="visible-md visible-lg visible-sm visible-xs"
+					style="text-align: right; margin-bottom: 0.75rem; margin-top: 1.5rem">
+					<a
+						class="btn-xs action-edit-btn"
+						[ngStyle]="{
+							'background-color': appService.whiteBrandingColor,
+							border: '1px solid' + appService.whiteBrandingColor,
+							color: 'white'
+						}"
+						style="margin-right: 9px; padding: 7px 20px; border-radius: 30px; font-size: 0.9rem"
+						(click)="acceptPolicy()"
+						>{{ 'Utils.Action.accept' | translate }}</a
+					>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

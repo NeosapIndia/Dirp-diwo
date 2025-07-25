@@ -1,0 +1,1415 @@
+<div class="container-fluid" style="margin: 2% 2% 2% 3%; min-height: calc(100vh - 110px)">
+	<div class="row add-edit-main-row">
+		<span>
+			<span
+				[routerLink]="['/diwo-courses']"
+				style="margin-left: 0.25rem; color: #637373; margin-right: 2px; cursor: pointer">
+				{{ 'Pages.DiwoPathways.AddEdit.pagetitle' | translate }}</span
+			>
+			<img src="assets/images/arrow_forward.svg" style="width: 27px" />
+			<span style="margin-left: 3px" [ngStyle]="{ color: appService.whiteBrandingColor }">
+				{{ 'Pages.DiwoPathways.AddEdit.subtitle' | translate }}</span
+			>
+		</span>
+		<div *ngIf="isViewMode" style="margin-top: 1rem; display: flex; align-items: center">
+			<p>{{ 'Pages.DiwoPathways.Home.Table.Header.viewtooltip' | translate }}</p>
+		</div>
+	</div>
+
+	<!-- Basic COurse Detail Section -->
+	<form [formGroup]="pathwayForm">
+		<div class="row section-wrapper" style="margin-top: 2rem">
+			<div class="form-title">
+				<span>{{ 'Pages.DiwoPathways.AddEdit.BasicInfo.title' | translate }}</span>
+			</div>
+			<div class="row card-body">
+				<div class="row" style="margin-top: -5px">
+					<div class="col-md-12">
+						<div
+							class="form-group"
+							style="margin-top: 0"
+							[ngClass]="{
+								'has-error': f.title.invalid && (f.title.dirty || f.title.touched),
+								'has-success': f.title.valid && (f.title.dirty || f.title.touched)
+							}">
+							<label>{{ 'Pages.DiwoPathways.AddEdit.BasicInfo.PathwayTitle.title' | translate }}</label>
+							<input
+								type="text"
+								class="form-control"
+								id="exampleInputEmail1"
+								placeholder="{{ 'Pages.DiwoPathways.AddEdit.BasicInfo.PathwayTitle.placeholder' | translate }}"
+								formControlName="title"
+								[maxlength]="maxLengthForPathwayTitle"
+								(keyup)="checkCharacterLimitForPathwayTitle()" />
+
+							<span class="characteleft"
+								>{{ 'Utils.charactersleft' | translate }} -
+								{{
+									characterRemainsForPathwayTitle != null || characterRemainsForPathwayTitle != undefined
+										? characterRemainsForPathwayTitle + '/' + maxLengthForPathwayTitle
+										: maxLengthForPathwayTitle + '/' + maxLengthForPathwayTitle
+								}}</span
+							>
+
+							<div class="error" *ngIf="f.title.errors && f.title.touched">
+								<div *ngIf="f.title.errors.required">
+									{{ 'Pages.DiwoPathways.AddEdit.BasicInfo.PathwayTitle.error' | translate }}
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- <div class="col-md-12">
+						<div class="form-group">
+							<label>
+								{{ 'Pages.DiwoPathways.AddEdit.BasicInfo.PathwaySubTitle.title' | translate }}
+							</label>
+							<textarea
+								type="text"
+								class="form-control"
+								placeholder="{{ 'Pages.DiwoPathways.AddEdit.BasicInfo.PathwaySubTitle.placeholder' | translate }}"
+								formControlName="subtitle">
+							</textarea>
+						</div>
+					</div> -->
+					<div class="col-md-12">
+						<div
+							class="form-group"
+							[ngClass]="{
+								'has-error': f.description.invalid && (f.description.dirty || f.description.touched),
+								'has-success': f.description.valid && (f.description.dirty || f.description.touched)
+							}">
+							<label>
+								{{ 'Pages.DiwoPathways.AddEdit.BasicInfo.Description.title' | translate }}
+							</label>
+							<textarea
+								type="text"
+								class="form-control"
+								placeholder="{{ 'Pages.DiwoPathways.AddEdit.BasicInfo.Description.placeholder' | translate }}"
+								formControlName="description"
+								[maxlength]="maxLengthForPathwayDescription"
+								(keyup)="checkCharacterLimitForPathwayDescription()">
+							</textarea>
+							<span class="characteleft"
+								>{{ 'Utils.charactersleft' | translate }} -
+								{{
+									characterRemainsForPathwayDescription != null || characterRemainsForPathwayDescription != undefined
+										? characterRemainsForPathwayDescription + '/' + maxLengthForPathwayDescription
+										: maxLengthForPathwayDescription + '/' + maxLengthForPathwayDescription
+								}}</span
+							>
+						</div>
+					</div>
+					<div class="col-md-12">
+						<div
+							class="form-group"
+							[ngClass]="{
+								'has-error': f.l_outcomes.invalid && (f.l_outcomes.dirty || f.l_outcomes.touched),
+								'has-success': f.l_outcomes.valid && (f.l_outcomes.dirty || f.l_outcomes.touched)
+							}">
+							<label>{{ 'Pages.DiwoPathways.AddEdit.BasicInfo.Outcomes.title' | translate }}</label>
+							<input
+								type="text"
+								class="form-control"
+								id="exampleInputEmail2"
+								placeholder="{{ 'Pages.DiwoPathways.AddEdit.BasicInfo.Outcomes.placeholder' | translate }}"
+								formControlName="l_outcomes" />
+							<div class="error" *ngIf="f.l_outcomes.errors && f.l_outcomes.touched">
+								<div *ngIf="f.l_outcomes.errors.required">
+									{{ 'Pages.DiwoPathways.AddEdit.BasicInfo.Outcomes.error' | translate }}
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- <div class="col-md-12" id="surveyForm" style="padding-left: 0px; padding-right: 0px"></div> -->
+				</div>
+
+				<div class="row">
+					<div class="col-md-6">
+						<div class="fileupload-buttonbar">
+							<div
+								class="form-group"
+								[ngClass]="{
+									'has-error': f.avatar.invalid && (f.avatar.dirty || f.avatar.touched),
+									'has-success': f.avatar.valid && (f.avatar.dirty || f.avatar.touched)
+								}">
+								<label>{{ 'Pages.DiwoPathways.AddEdit.BasicInfo.Avatar.title' | translate }}</label>
+								<div style="display: flex">
+									<div>
+										<label
+											class="btn center pad fileinput-button browse_lable"
+											[ngStyle]="{
+												'background-color': appService.whiteBrandingColor,
+												border: '1px solid' + appService.whiteBrandingColor,
+												color: 'white !iimportant'
+											}"
+											style="
+												padding: 10px 20px;
+												border-radius: 22px;
+												color: white !important;
+												margin-bottom: 0px;
+												margin-top: 2px;
+											">
+											<input
+												id="mediaWeb"
+												type="file"
+												accept="image/*"
+												(change)="uploadImage($event)"
+												[disabled]="isViewMode"
+												[ngClass]="{ 'edit-disabled': isViewMode }" />
+											{{ 'Pages.DiwoPathways.AddEdit.BasicInfo.Avatar.browseimage' | translate }}
+										</label>
+									</div>
+
+									<div style="margin-top: 2px">
+										<table
+											*ngIf="!pathwayForm.value.avatar"
+											role="presentation"
+											class="table table-striped"
+											style="margin-bottom: 0px">
+											<tbody class="files">
+												<tr class="template-upload fade in">
+													<td>
+														<p class="name imgName">
+															{{ 'Pages.DiwoPathways.AddEdit.BasicInfo.Avatar.recommendedratio16:9' | translate }}
+														</p>
+													</td>
+													<td style="position: absolute; right: 0"></td>
+												</tr>
+											</tbody>
+										</table>
+										<table
+											*ngIf="pathwayForm.value.avatar"
+											role="presentation"
+											class="table table-striped"
+											style="margin-bottom: 0px">
+											<tbody class="files">
+												<tr class="template-upload fade in">
+													<td>
+														<p class="name imgName">{{ pathwayForm.value.avatar }}</p>
+													</td>
+													<td style="position: absolute; right: 0">
+														<label
+															[ngStyle]="{
+																'background-color': appService.whiteBrandingColor,
+																border: '1px solid' + appService.whiteBrandingColor,
+																color: 'white'
+															}"
+															class="btn cancel border_radius">
+															<span (click)="onDeleteThumnail()" [ngClass]="{ 'edit-disabled': isViewMode }">{{
+																'Pages.DiwoPathways.AddEdit.BasicInfo.Avatar.delete' | translate
+															}}</span>
+														</label>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+								<div *ngIf="pathwayForm.value.avatar" style="margin-top: 0.7rem">
+									<div class="row">
+										<div class="col-md-4">
+											<img [src]="assetBasePathPathway + f.avatar_file_name.value" style="width: 100%" />
+										</div>
+									</div>
+								</div>
+								<span class="fileupload-loading"></span>
+								<div class="error" *ngIf="f.avatar.errors && f.avatar.touched" style="color: #a94442">
+									<div *ngIf="f.avatar.errors.required">
+										{{ 'Pages.DiwoPathways.AddEdit.BasicInfo.Avatar.error' | translate }}
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+
+	<!-- Add Cousre to Pathway Table -->
+	<div class="row" style="margin-left: -15px; margin-right: -15px; margin-top: 2rem">
+		<div class="panel panel-white" style="border-radius: 12px 12px 12px 12px; margin: 0px; padding: 25px">
+			<!-- for drag and drop enable -->
+			<div class="sub table-responsive" *ngIf="!isopen && !isViewMode && !isEditCourse">
+				<table class="table table-striped table-hover" id="sample-table-3" style="overflow: hidden">
+					<tbody [dragula]="MANY_ITEMS" [(dragulaModel)]="coursesforPathways">
+						<ng-container *ngFor="let item of coursesforPathways; let i = index">
+							<tr
+								*ngIf="(i === 0 || coursesforPathways[i - 1].CourseIndex !== item.CourseIndex) && item.Added"
+								style="background-color: #f9fafb; height: 60px; cursor: pointer"
+								(click)="toggleAccordion(item.CourseIndex)">
+								<td
+									class="pt-05"
+									style="
+										width: 14vw;
+										word-wrap: break-word;
+										padding-top: 15px !important;
+										padding-left: 1rem;
+										border-bottom: 1px solid #ccc;
+										font-size: 1rem !important;
+										font-weight: bold;
+									">
+									<div
+										class="visible-md visible-lg visible-sm visible-xs"
+										style="display: flex !important; justify-content: start; align-items: center">
+										<span
+											[innerHTML]="iconObject['drag_drop_indicator']"
+											style="width: 25px; height: 26px; cursor: pointer"></span>
+										<div
+											*ngIf="!item.isOpen"
+											[innerHTML]="iconObject['right_arrow_new']"
+											style="width: 25px; height: 25px"></div>
+										<div
+											*ngIf="item.isOpen"
+											[innerHTML]="iconObject['expand_more_icon']"
+											style="width: 25px; height: 25px"></div>
+										<p class="table_para" style="margin-left: 0.5rem; margin-bottom: 0">
+											{{ 'Course' }} {{ item.CourseIndex + 1 }}
+											<span *ngIf="item.isPartCourse">{{ '(Part Course)' }}</span>
+										</p>
+										<div
+											*ngIf="item.CurrentCourseVersion > item.CourseVersion"
+											[innerHTML]="iconObject['info_icon_20']"
+											[title]="'Pages.DiwoPathways.AddEdit.Toaster.newVersion' | translate"
+											style="height: 30px; margin-left: 0.5rem"></div>
+									</div>
+								</td>
+								<td
+									class="pt-05"
+									style="
+										width: 21vw;
+										word-wrap: break-word;
+										padding-top: 15px !important;
+										border-bottom: 1px solid #ccc;
+										font-size: 1rem !important;
+										font-weight: bold;
+									">
+									<div
+										class="visible-md visible-lg visible-sm visible-xs"
+										style="display: flex !important; justify-content: start; align-items: center">
+										<p class="table_para" style="margin-right: 1rem; margin-bottom: 0">
+											{{ item.CourseName }}
+										</p>
+									</div>
+								</td>
+								<td
+									class="pt-05"
+									style="
+										width: 10vw;
+										word-wrap: break-word;
+										padding-top: 15px !important;
+										padding-left: 1rem;
+										border-bottom: 1px solid #ccc;
+										font-size: 1rem !important;
+										font-weight: bold;
+									">
+									<div
+										class="visible-md visible-lg visible-sm visible-xs"
+										style="display: flex !important; justify-content: start; align-items: center; visibility: hidden">
+										<p class="table_para" style="margin-right: 1rem; margin-bottom: 0"></p>
+									</div>
+								</td>
+								<td
+									class="pt-05"
+									style="
+										width: 10vw;
+										word-wrap: break-word;
+										padding-top: 15px !important;
+										padding-left: 1rem;
+										border-bottom: 1px solid #ccc;
+										font-size: 1rem !important;
+										font-weight: bold;
+									">
+									<div
+										class="visible-md visible-lg visible-sm visible-xs"
+										style="display: flex !important; justify-content: start; align-items: center; visibility: hidden">
+										<p class="table_para" style="margin-right: 1rem; margin-bottom: 0"></p>
+									</div>
+								</td>
+								<td
+									class="pt-05"
+									style="
+										width: 8vw;
+										word-wrap: break-word;
+										padding-top: 15px !important;
+										padding-left: 8px;
+										border-bottom: 1px solid #ccc;
+									">
+									<div
+										class="visible-md visible-lg visible-sm visible-xs"
+										style="display: flex !important; justify-content: start; align-items: center">
+										<button
+											class="btn-xs action-delete-btn"
+											[ngStyle]="{
+												color: appService.whiteBrandingColor,
+												border: '0.5px solid' + appService.whiteBrandingColor,
+										}"
+											style="padding: 4px 37px; margin-left: 0px !important"
+											(click)="editCourse(i)"
+											[disabled]="isViewMode"
+											[ngClass]="{ 'edit-disabled': isViewMode }">
+											{{ 'Utils.Action.edit' | translate }}
+										</button>
+										<button
+											class="btn-xs action-delete-btn"
+											[ngStyle]="{
+											color: appService.whiteBrandingColor,
+											border: '0.5px solid' + appService.whiteBrandingColor,
+										}"
+											style="padding: 4px 22px; font-size: 0.75rem"
+											(click)="removeCourse(i)"
+											[disabled]="isViewMode"
+											[ngClass]="{ 'edit-disabled': isViewMode }">
+											{{ 'Utils.Action.remove' | translate }}
+										</button>
+										<button
+											*ngIf="item.CurrentCourseVersion != item.CourseVersion"
+											class="btn-xs action-delete-btn"
+											[ngStyle]="{
+												color: appService.whiteBrandingColor,
+												border: '0.5px solid' + appService.whiteBrandingColor,
+										}"
+											style="padding: 4px 25px; margin-left: 5px !important"
+											(click)="updateCourseVersion(item, i)"
+											[disabled]="isViewMode"
+											[ngClass]="{ 'edit-disabled': isViewMode }">
+											{{ 'Utils.Action.update' | translate }}
+										</button>
+									</div>
+								</td>
+							</tr>
+
+							<tr *ngIf="item.isOpen">
+								<td
+									class="pt-05"
+									style="max-width: 18vw; word-wrap: break-word; padding-top: 15px !important; padding-left: 1rem">
+									<p class="table_para">
+										<!-- {{ item.WorkbookId }} -->
+										{{ 'Module' }} {{ item.ModuleIndex + 1 }}
+									</p>
+								</td>
+
+								<td class="pt-05" style="max-width: 18vw; word-wrap: break-word; padding-top: 15px !important">
+									<p class="table_para">
+										{{ item.ModuleName }}
+									</p>
+								</td>
+
+								<td class="pt-05" style="max-width: 18vw; word-wrap: break-word; padding-top: 15px !important">
+									<p class="table_para">
+										{{ item.ModuleTypeName }}
+									</p>
+								</td>
+
+								<td class="pt-05" style="max-width: 18vw; word-wrap: break-word; padding-top: 15px !important">
+									<p class="table_para">
+										{{ item.ModuleDepedencyIndex != 'No Dependency' ? 'Yes' : 'No Dependency' }}
+										<span
+											*ngIf="item.ModuleDepedencyIndex != 'No Dependency' && item.ModuleOperation != 'OR'"
+											[innerHTML]="iconObject['info_icon_20']"
+											style="width: 30px; cursor: pointer"
+											[title]="'Requires completion of ' + item.moduleDependecyName"></span>
+										<span
+											*ngIf="item.ModuleDepedencyIndex != 'No Dependency' && item.ModuleOperation == 'OR'"
+											[innerHTML]="iconObject['info_icon_20']"
+											style="width: 30px; cursor: pointer"
+											[title]="'Requires completion of either ' + item.moduleDependecyName"></span>
+										<span
+											*ngIf="item.ModuleDepedencyIndex == 'No Dependency'"
+											[innerHTML]="iconObject['info_icon_20']"
+											style="width: 30px; cursor: pointer"
+											[title]="'No Dependency'"></span>
+									</p>
+								</td>
+
+								<td class="left" style="padding: 15px 5px 15px 9px">
+									<div class="visible-md visible-lg visible-sm visible-xs">
+										<a
+											class="btn-xs action-edit-btn"
+											[ngStyle]="{
+												'background-color': appService.whiteBrandingColor,
+												border: '1px solid' + appService.whiteBrandingColor,
+												color: 'white'
+											}"
+											(click)="previewModule(item)"
+											style="padding: 6px 24px"
+											[href]="viewWorkBookUrl"
+											target="_blank">
+											{{ 'Utils.Action.preview' | translate }}
+										</a>
+									</div>
+								</td>
+							</tr>
+						</ng-container>
+					</tbody>
+				</table>
+				<div
+					style="text-align: center; margin-top: 2rem; margin-bottom: 3rem"
+					*ngIf="coursesforPathways && coursesforPathways.length == 0">
+					<p style="width: 50%; margin: 0 auto">
+						{{ 'Pages.DiwoPathways.AddEdit.ModuleTable.nodatatoshow' | translate }}
+					</p>
+				</div>
+			</div>
+
+			<!-- for drag and drop disable -->
+			<div class="sub table-responsive" *ngIf="isopen || isViewMode || isEditCourse">
+				<table class="table table-striped table-hover" id="sample-table-3" style="overflow: hidden">
+					<tbody>
+						<ng-container *ngFor="let item of coursesforPathways; let i = index">
+							<tr
+								*ngIf="(i === 0 || coursesforPathways[i - 1].CourseIndex !== item.CourseIndex) && item.Added"
+								style="background-color: #f9fafb; height: 60px; cursor: pointer"
+								(click)="toggleAccordion(item.CourseIndex)">
+								<!-- colspan="1" -->
+								<td
+									class="pt-05"
+									style="
+										width: 14vw;
+										word-wrap: break-word;
+										padding-top: 15px !important;
+										padding-left: 1rem;
+										border-bottom: 1px solid #ccc;
+										font-size: 1rem !important;
+										font-weight: bold;
+									">
+									<div
+										class="visible-md visible-lg visible-sm visible-xs"
+										style="display: flex !important; justify-content: start; align-items: center">
+										<span
+											*ngIf="!item.isOpen && !isViewMode"
+											[innerHTML]="iconObject['drag_drop_indicator']"
+											style="width: 25px; height: 26px; cursor: pointer; visibility: hidden"></span>
+										<div
+											*ngIf="!item.isOpen"
+											[innerHTML]="iconObject['right_arrow_new']"
+											style="width: 25px; height: 25px"></div>
+										<div
+											*ngIf="item.isOpen"
+											[innerHTML]="iconObject['expand_more_icon']"
+											style="width: 25px; height: 25px"></div>
+										<p class="table_para" style="margin-left: 0.5rem; margin-bottom: 0">
+											{{ 'Course' }} {{ item.CourseIndex + 1 }}
+											<span *ngIf="item.isPartCourse">{{ '(Part Course)' }}</span>
+										</p>
+										<div
+											*ngIf="item.CurrentCourseVersion > item.CourseVersion"
+											[innerHTML]="iconObject['info_icon_20']"
+											[title]="'Pages.DiwoPathways.AddEdit.Toaster.newVersion' | translate"
+											style="height: 30px; margin-left: 0.5rem"></div>
+									</div>
+								</td>
+
+								<!-- colspan="3" -->
+								<td
+									class="pt-05"
+									style="
+										width: 21vw;
+										word-wrap: break-word;
+										padding-top: 15px !important;
+										border-bottom: 1px solid #ccc;
+										font-size: 1rem !important;
+										font-weight: bold;
+									">
+									<div
+										class="visible-md visible-lg visible-sm visible-xs"
+										style="display: flex !important; justify-content: start; align-items: center">
+										<p class="table_para" style="margin-right: 1rem; margin-bottom: 0">
+											{{ item.CourseName }}
+										</p>
+									</div>
+								</td>
+
+								<!-- newcode with colspan -->
+
+								<td
+									class="pt-05"
+									style="
+										width: 10vw;
+										word-wrap: break-word;
+										padding-top: 15px !important;
+										padding-left: 1rem;
+										border-bottom: 1px solid #ccc;
+										font-size: 1rem !important;
+										font-weight: bold;
+									">
+									<div
+										class="visible-md visible-lg visible-sm visible-xs"
+										style="display: flex !important; justify-content: start; align-items: center; visibility: hidden">
+										<p class="table_para" style="margin-right: 1rem; margin-bottom: 0"></p>
+									</div>
+								</td>
+								<td
+									class="pt-05"
+									style="
+										width: 10vw;
+										word-wrap: break-word;
+										padding-top: 15px !important;
+										padding-left: 1rem;
+										border-bottom: 1px solid #ccc;
+										font-size: 1rem !important;
+										font-weight: bold;
+									">
+									<div
+										class="visible-md visible-lg visible-sm visible-xs"
+										style="display: flex !important; justify-content: start; align-items: center; visibility: hidden">
+										<p class="table_para" style="margin-right: 1rem; margin-bottom: 0"></p>
+									</div>
+								</td>
+
+								<!-- colspan="1" -->
+								<td
+									class="pt-05"
+									style="
+										width: 8vw;
+										word-wrap: break-word;
+										padding-top: 15px !important;
+										padding-left: 8px;
+										border-bottom: 1px solid #ccc;
+									">
+									<div
+										class="visible-md visible-lg visible-sm visible-xs"
+										style="display: flex !important; justify-content: start; align-items: center">
+										<!-- <button
+											class="btn-xs action-delete-btn"
+											[ngStyle]="{
+												color: appService.whiteBrandingColor,
+												border: '0.5px solid' + appService.whiteBrandingColor,
+										}"
+											style="padding: 4px 37px; margin-left: 0px !important"
+											(click)="editCourse(i)"
+											[disabled]="isViewMode"
+											[ngClass]="{ 'edit-disabled': isViewMode }">
+											{{ 'Utils.Action.edit' | translate }}
+										</button> -->
+										<button
+											class="btn-xs action-delete-btn"
+											[ngStyle]="{
+											color: appService.whiteBrandingColor,
+											border: '0.5px solid' + appService.whiteBrandingColor,
+										}"
+											style="padding: 4px 22px; font-size: 0.75rem"
+											(click)="removeCourse(i)"
+											[disabled]="isViewMode"
+											[ngClass]="{ 'edit-disabled': isViewMode }">
+											{{ 'Utils.Action.remove' | translate }}
+										</button>
+										<button
+											*ngIf="item.CurrentCourseVersion != item.CourseVersion"
+											class="btn-xs action-delete-btn"
+											[ngStyle]="{
+												color: appService.whiteBrandingColor,
+												border: '0.5px solid' + appService.whiteBrandingColor,
+										}"
+											style="padding: 4px 25px; margin-left: 5px !important"
+											(click)="updateCourseVersion(item, i)"
+											[disabled]="isViewMode"
+											[ngClass]="{ 'edit-disabled': isViewMode }">
+											{{ 'Utils.Action.update' | translate }}
+										</button>
+									</div>
+								</td>
+							</tr>
+
+							<tr *ngIf="item.isOpen">
+								<td
+									class="pt-05"
+									style="max-width: 18vw; word-wrap: break-word; padding-top: 15px !important; padding-left: 1rem">
+									<p class="table_para">
+										<!-- {{ item.WorkbookId }} -->
+										{{ 'Module' }} {{ item.ModuleIndex + 1 }}
+									</p>
+								</td>
+
+								<td class="pt-05" style="max-width: 18vw; word-wrap: break-word; padding-top: 15px !important">
+									<p class="table_para">
+										{{ item.ModuleName }}
+									</p>
+								</td>
+
+								<td class="pt-05" style="max-width: 18vw; word-wrap: break-word; padding-top: 15px !important">
+									<p class="table_para">
+										{{ item.ModuleTypeName }}
+									</p>
+								</td>
+
+								<td class="pt-05" style="max-width: 18vw; word-wrap: break-word; padding-top: 15px !important">
+									<p class="table_para">
+										{{ item.ModuleDepedencyIndex != 'No Dependency' ? 'Yes' : 'No Dependency' }}
+										<span
+											*ngIf="item.ModuleDepedencyIndex != 'No Dependency' && item.ModuleOperation != 'OR'"
+											[innerHTML]="iconObject['info_icon_20']"
+											style="width: 30px; cursor: pointer"
+											[title]="'Requires completion of ' + item.moduleDependecyName"></span>
+										<span
+											*ngIf="item.ModuleDepedencyIndex != 'No Dependency' && item.ModuleOperation == 'OR'"
+											[innerHTML]="iconObject['info_icon_20']"
+											style="width: 30px; cursor: pointer"
+											[title]="'Requires completion of either ' + item.moduleDependecyName"></span>
+										<span
+											*ngIf="item.ModuleDepedencyIndex == 'No Dependency'"
+											[innerHTML]="iconObject['info_icon_20']"
+											style="width: 30px; cursor: pointer"
+											[title]="'No Dependency'"></span>
+									</p>
+								</td>
+
+								<td class="left" style="padding: 15px 5px 15px 9px">
+									<div class="visible-md visible-lg visible-sm visible-xs">
+										<a
+											class="btn-xs action-edit-btn"
+											[ngStyle]="{
+												'background-color': appService.whiteBrandingColor,
+												border: '1px solid' + appService.whiteBrandingColor,
+												color: 'white'
+											}"
+											(click)="previewModule(item)"
+											style="padding: 6px 24px"
+											[href]="viewWorkBookUrl"
+											target="_blank">
+											{{ 'Utils.Action.preview' | translate }}
+										</a>
+									</div>
+								</td>
+							</tr>
+						</ng-container>
+					</tbody>
+				</table>
+				<div
+					style="text-align: center; margin-top: 2rem; margin-bottom: 3rem"
+					*ngIf="coursesforPathways && coursesforPathways.length == 0">
+					<p style="width: 50%; margin: 0 auto">
+						{{ 'Pages.DiwoPathways.AddEdit.ModuleTable.nodatatoshow' | translate }}
+					</p>
+				</div>
+			</div>
+
+			<!-- ---For PathWay Certification Module -->
+			<div class="sub table-responsive">
+				<table class="table table-striped table-hover" id="sample-table-3" style="overflow: hidden">
+					<tbody>
+						<ng-container *ngFor="let item of pathwayCertificationDetails; let i = index">
+							<tr style="background-color: #f9fafb; height: 60px; cursor: pointer">
+								<!-- colspan="1" -->
+								<td
+									class="pt-05"
+									style="
+										width: 14vw;
+										word-wrap: break-word;
+										padding-top: 15px !important;
+										padding-left: 1rem;
+										border-bottom: 1px solid #ccc;
+										font-size: 1rem !important;
+										font-weight: bold;
+									">
+									<div
+										class="visible-md visible-lg visible-sm visible-xs"
+										style="display: flex !important; justify-content: start; align-items: center"
+										(click)="toggleAccordionForCertification()">
+										<span
+											*ngIf="!item.isOpen && !isViewMode"
+											[innerHTML]="iconObject['drag_drop_indicator']"
+											style="width: 25px; height: 26px; cursor: pointer; visibility: hidden"></span>
+										<div
+											*ngIf="!item.isOpen"
+											[innerHTML]="iconObject['right_arrow_new']"
+											style="width: 25px; height: 25px"></div>
+										<div
+											*ngIf="item.isOpen"
+											[innerHTML]="iconObject['expand_more_icon']"
+											style="width: 25px; height: 25px"></div>
+										<p class="table_para" style="margin-left: 0.5rem; margin-bottom: 0">
+											{{ 'Certification Module' }}
+										</p>
+									</div>
+								</td>
+
+								<!-- colspan="3" -->
+								<td
+									(click)="toggleAccordionForCertification()"
+									class="pt-05"
+									style="
+										width: 21vw;
+										word-wrap: break-word;
+										padding-top: 15px !important;
+										border-bottom: 1px solid #ccc;
+										font-size: 1rem !important;
+										font-weight: bold;
+									">
+									<div
+										class="visible-md visible-lg visible-sm visible-xs"
+										style="display: flex !important; justify-content: start; align-items: center">
+										<p class="table_para" style="margin-right: 1rem; margin-bottom: 0">
+											{{ item.ModuleName }}
+										</p>
+									</div>
+								</td>
+
+								<!-- newcode with colspan -->
+
+								<td
+									class="pt-05"
+									style="
+										width: 10vw;
+										word-wrap: break-word;
+										padding-top: 15px !important;
+										padding-left: 1rem;
+										border-bottom: 1px solid #ccc;
+										font-size: 1rem !important;
+										font-weight: bold;
+									">
+									<div
+										class="visible-md visible-lg visible-sm visible-xs"
+										style="display: flex !important; justify-content: start; align-items: center; visibility: hidden">
+										<p class="table_para" style="margin-right: 1rem; margin-bottom: 0"></p>
+									</div>
+								</td>
+								<td
+									class="pt-05"
+									style="
+										width: 10vw;
+										word-wrap: break-word;
+										padding-top: 15px !important;
+										padding-left: 1rem;
+										border-bottom: 1px solid #ccc;
+										font-size: 1rem !important;
+										font-weight: bold;
+									">
+									<div
+										class="visible-md visible-lg visible-sm visible-xs"
+										style="display: flex !important; justify-content: start; align-items: center; visibility: hidden">
+										<p class="table_para" style="margin-right: 1rem; margin-bottom: 0"></p>
+									</div>
+								</td>
+
+								<!-- colspan="1" -->
+								<td
+									class="pt-05"
+									style="
+										width: 8vw;
+										word-wrap: break-word;
+										padding-top: 15px !important;
+										padding-left: 8px;
+										border-bottom: 1px solid #ccc;
+									">
+									<div
+										class="visible-md visible-lg visible-sm visible-xs"
+										style="display: flex !important; justify-content: start; align-items: center">
+										<button
+											class="btn-xs action-delete-btn"
+											[ngStyle]="{
+												color: appService.whiteBrandingColor,
+												border: '0.5px solid' + appService.whiteBrandingColor,
+										}"
+											style="padding: 4px 37px; margin-left: 0px !important"
+											(click)="editCetificationModule()"
+											[disabled]="isViewMode"
+											[ngClass]="{ 'edit-disabled': isViewMode }">
+											{{ 'Utils.Action.edit' | translate }}
+										</button>
+										<button
+											class="btn-xs action-delete-btn"
+											[ngStyle]="{
+											color: appService.whiteBrandingColor,
+											border: '0.5px solid' + appService.whiteBrandingColor,
+										}"
+											style="padding: 4px 22px; font-size: 0.75rem"
+											(click)="removeCertifcationModule(i)"
+											[disabled]="isViewMode"
+											[ngClass]="{ 'edit-disabled': isViewMode }">
+											{{ 'Utils.Action.remove' | translate }}
+										</button>
+									</div>
+								</td>
+							</tr>
+
+							<tr *ngIf="item.isOpen">
+								<td
+									class="pt-05"
+									style="max-width: 18vw; word-wrap: break-word; padding-top: 15px !important; padding-left: 1rem">
+									<p class="table_para">
+										<!-- {{ item.WorkbookId }} -->
+										{{ 'Module' }}
+									</p>
+								</td>
+
+								<td class="pt-05" style="max-width: 18vw; word-wrap: break-word; padding-top: 15px !important">
+									<p class="table_para">
+										{{ item.ModuleName }}
+									</p>
+								</td>
+
+								<td class="pt-05" style="max-width: 18vw; word-wrap: break-word; padding-top: 15px !important">
+									<p class="table_para">
+										{{ item.ModuleTypeName }}
+									</p>
+								</td>
+
+								<td class="pt-05" style="max-width: 18vw; word-wrap: break-word; padding-top: 15px !important">
+									<p class="table_para">
+										{{ 'No Dependency' }}
+										<span
+											[innerHTML]="iconObject['info_icon_20']"
+											style="width: 30px; cursor: pointer"
+											[title]="'No Dependency'"></span>
+									</p>
+								</td>
+
+								<td class="left" style="padding: 15px 5px 15px 9px">
+									<div class="visible-md visible-lg visible-sm visible-xs">
+										<a
+											class="btn-xs action-edit-btn"
+											[ngStyle]="{
+												'background-color': appService.whiteBrandingColor,
+												border: '1px solid' + appService.whiteBrandingColor,
+												color: 'white'
+											}"
+											(click)="previewModule(item)"
+											style="padding: 6px 24px"
+											[href]="viewWorkBookUrl"
+											target="_blank">
+											{{ 'Utils.Action.preview' | translate }}
+										</a>
+									</div>
+								</td>
+							</tr>
+						</ng-container>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-6"></div>
+		<div class="col-md-6 add_module_btn">
+			<a style="float: right; font-size: 0.875rem; color: grey">
+				<div class="info-icon-div">
+					<div style="margin-right: 5px; margin-top: -5px">
+						<label>{{ 'Pages.DiwoPathways.AddEdit.ModuleTable.addonecoursetopathway' | translate }}</label>
+					</div>
+					<div>
+						<label style="cursor: pointer">
+							<span
+								class="info-icon"
+								[innerHTML]="iconObject['add_icon_35']"
+								(click)="showCourseSelectionScreen()"></span>
+						</label>
+					</div>
+				</div>
+				<div class="info-icon-div" *ngIf="!pathwayForm.value.haveCertification && this.coursesforPathways.length > 0">
+					<div style="margin-right: 5px; margin-left: 5px; margin-top: -5px">
+						<label>{{ 'Pages.DiwoPathways.AddEdit.ModuleTable.addCertifictionPathway' | translate }}</label>
+					</div>
+					<div>
+						<label style="cursor: pointer">
+							<span class="info-icon" [innerHTML]="iconObject['add_icon_35']" (click)="addCertification()"></span>
+						</label>
+					</div>
+				</div>
+			</a>
+		</div>
+	</div>
+
+	<!-- Add Course Section -->
+	<form [formGroup]="pathwayCourseForm" *ngIf="showCourseAddScreen">
+		<div class="row section-wrapper">
+			<div class="row card-body">
+				<div class="row">
+					<div class="col-md-6">
+						<div
+							class="form-group"
+							style="margin-top: 0"
+							[ngClass]="{
+								'has-error': f2.courseName.invalid && (f2.courseName.dirty || f2.courseName.touched),
+								'has-success': f2.courseName.valid && (f2.courseName.dirty || f2.courseName.touched)
+							}">
+							<label>{{ 'Pages.DiwoPathways.AddEdit.AddCourse.CourseName.title' | translate }}</label>
+							<ng-select
+								[items]="allCourseList"
+								class="ng-select-wrap"
+								placeholder="{{ 'Pages.DiwoPathways.AddEdit.AddCourse.CourseName.placeholder' | translate }}"
+								bindLabel="title"
+								bindValue="id"
+								[multiple]="false"
+								[closeOnSelect]="true"
+								[searchable]="true"
+								formControlName="courseName"
+								(change)="onSelectCourse($event)">
+							</ng-select>
+							<div class="error" *ngIf="f2.courseName.errors && f2.courseName.touched">
+								<div *ngIf="f2.courseName.errors.required">
+									{{ 'Pages.DiwoPathways.AddEdit.AddCourse.CourseName.error' | translate }}
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!--course select module table -->
+			<div *ngIf="finalCoursesforPathways && finalCoursesforPathways.length > 0">
+				<div class="row card-body" style="margin-top: 2rem">
+					<div *ngFor="let module of finalCoursesforPathways; let i = index">
+						<div
+							class="row"
+							style="display: flex; align-items: center"
+							*ngIf="
+								(module.CourseIndex == finalCoursesforPathways[finalCoursesforPathways.length - 1].CourseIndex &&
+									!isEditCourse) ||
+								(module.CourseIndex == selectedCourseIndexforEdit && isEditCourse)
+							">
+							<div
+								class="col-md-2 form-group asset-img-wrapper"
+								*ngIf="module.CourseId == f2.courseName.value && module.ModuleAsset"
+								style="margin-top: 0">
+								<img
+									[src]="assetBasePath + module.ModuleAsset"
+									style="height: 20vh; object-fit: contain; width: 100%" />
+							</div>
+
+							<div class="col-md-3" *ngIf="module.CourseId == f2.courseName.value">
+								<div class="form-group">
+									<p style="color: #000; font-size: 1.1rem; margin-bottom: 0.5px">{{ module.ModuleName }}</p>
+									<div>
+										{{ 'Pages.DiwoPathways.AddEdit.publishon' | translate }}
+										{{ module.ModulePublishDate != null ? (module.ModulePublishDate | DateFormat) : '-' }}
+									</div>
+								</div>
+							</div>
+
+							<!-- module.Dependency &&  -->
+							<div class="col-md-6" *ngIf="module.CourseId == f2.courseName.value">
+								<div
+									class="form-group"
+									[ngClass]="{
+										'has-error': module.isDepedencyError,
+										'has-success': module.isDepedencyError
+									}">
+									<ng-select
+										[items]="allDepedencyModuleList[module.ModuleIndex]"
+										class="ng-select-wrap"
+										placeholder="{{ 'Pages.DiwoPathways.AddEdit.AddCourse.Depedency.placeholder' | translate }}"
+										bindLabel="ModuleName"
+										bindValue="ModuleIndex"
+										[multiple]="true"
+										[closeOnSelect]="true"
+										[searchable]="true"
+										[disabled]="i == 0"
+										[(ngModel)]="module.ModuleDepedencyIndex"
+										[ngModelOptions]="{ standalone: true }"
+										(change)="onSelectModuleDepedency($event, i)"
+										[disabled]="isViewMode">
+									</ng-select>
+									<div class="error" *ngIf="module.isDepedencyError">
+										{{ 'Pages.DiwoPathways.AddEdit.AddCourse.Depedency.error' | translate }}
+									</div>
+								</div>
+								<div
+									*ngIf="
+										module.ModuleDepedencyIndex != 'No Dependency' &&
+										module.ModuleDepedencyIndex.length > 1 &&
+										module.CourseId == f2.courseName.value
+									">
+									<div
+										class="form-group"
+										[ngClass]="{
+											'has-error': module.isDepedencyOperationError,
+											'has-success': module.isDepedencyOperationError
+										}">
+										<ng-select
+											[items]="operatorList"
+											class="ng-select-wrap"
+											placeholder="{{ 'Pages.DiwoPathways.AddEdit.AddCourse.OpratorName.placeholder' | translate }}"
+											bindLabel="label"
+											bindValue="value"
+											[multiple]="false"
+											[closeOnSelect]="true"
+											[searchable]="true"
+											[clearable]="false"
+											[(ngModel)]="module.ModuleOperation"
+											[ngModelOptions]="{ standalone: true }"
+											(change)="onSelectModuleDepedencyOperator($event, i)"
+											[disabled]="isViewMode">
+										</ng-select>
+										<div class="error" *ngIf="module.isDepedencyOperationError">
+											{{ 'Pages.DiwoPathways.AddEdit.AddCourse.OpratorName.error' | translate }}
+										</div>
+									</div>
+								</div>
+								<!-- For All Complete 
+								<div
+									*ngIf="
+										module.ModuleDepedencyIndex != 'No Dependency' &&
+										module.ModuleDepedencyIndex.length > 1 &&
+										!module.isShowCertifiedDropDown &&
+										module.CourseId == f2.courseName.value
+									"
+									style="display: flex; align-items: center">
+									<div
+										class="form-group"
+										style="width: 100%"
+										[ngClass]="{
+											'has-error': module.isDepedencyOperationError,
+											'has-success': module.isDepedencyOperationError
+										}">
+										<ng-select
+											[items]="operatorList"
+											class="ng-select-wrap"
+											placeholder="{{ 'Pages.DiwoPathways.AddEdit.AddCourse.OpratorName.placeholder' | translate }}"
+											bindLabel="label"
+											bindValue="value"
+											[multiple]="false"
+											[closeOnSelect]="true"
+											[searchable]="true"
+											[clearable]="false"
+											[(ngModel)]="module.ModuleOperation"
+											[ngModelOptions]="{ standalone: true }"
+											(change)="onSelectModuleDepedencyOperator($event, i)"
+											[disabled]="isViewMode">
+										</ng-select>
+										<div class="error" *ngIf="module.isDepedencyOperationError">
+											{{ 'Pages.DiwoPathways.AddEdit.AddCourse.OpratorName.error' | translate }}
+										</div>
+									</div>
+									<span
+										[innerHTML]="iconObject['info_icon_20']"
+										[title]="'Pages.DiwoPathways.AddEdit.certifiedDisabled' | translate"
+										style="height: 30px; margin-left: 0.5rem; margin-top: 0.5rem; cursor: pointer"></span>
+								</div>
+
+								For Single Complete 
+								<div
+									*ngIf="
+										module.ModuleDepedencyIndex != 'No Dependency' &&
+										module.ModuleDepedencyIndex.length == 1 &&
+										!module.isShowCertifiedDropDown &&
+										module.CourseId == f2.courseName.value
+									"
+									style="display: flex; align-items: center">
+									<div
+										class="form-group"
+										style="width: 100%"
+										[ngClass]="{
+											'has-error': module.isDepedencyOperationError,
+											'has-success': module.isDepedencyOperationError
+										}">
+										<ng-select
+											[items]="operatorCompletedList"
+											class="ng-select-wrap"
+											placeholder="{{ 'Pages.DiwoPathways.AddEdit.AddCourse.OpratorName.placeholder' | translate }}"
+											bindLabel="label"
+											bindValue="value"
+											[multiple]="false"
+											[closeOnSelect]="true"
+											[searchable]="true"
+											[clearable]="false"
+											[(ngModel)]="module.ModuleOperation"
+											[ngModelOptions]="{ standalone: true }"
+											(change)="onSelectModuleDepedencyOperator($event, i)"
+											[disabled]="isViewMode">
+										</ng-select>
+										<div class="error" *ngIf="module.isDepedencyOperationError">
+											{{ 'Pages.DiwoPathways.AddEdit.AddCourse.OpratorName.error' | translate }}
+										</div>
+									</div>
+									<span
+										[innerHTML]="iconObject['info_icon_20']"
+										[title]="'Pages.DiwoPathways.AddEdit.certifiedDisabled' | translate"
+										style="height: 30px; margin-left: 0.5rem; margin-top: 0.5rem; cursor: pointer"></span>
+								</div>
+
+								 For All Certified 
+								<div
+									*ngIf="
+										module.ModuleDepedencyIndex != 'No Dependency' &&
+										module.ModuleDepedencyIndex.length > 1 &&
+										module.isShowCertifiedDropDown &&
+										module.CourseId == f2.courseName.value
+									">
+									<div
+										class="form-group"
+										[ngClass]="{
+											'has-error': module.isDepedencyOperationError,
+											'has-success': module.isDepedencyOperationError
+										}">
+										<ng-select
+											[items]="operatorAllList"
+											class="ng-select-wrap"
+											placeholder="{{ 'Pages.DiwoPathways.AddEdit.AddCourse.OpratorName.placeholder' | translate }}"
+											bindLabel="label"
+											bindValue="value"
+											[multiple]="false"
+											[closeOnSelect]="true"
+											[searchable]="true"
+											[clearable]="false"
+											[(ngModel)]="module.ModuleOperation"
+											[ngModelOptions]="{ standalone: true }"
+											(change)="onSelectModuleDepedencyOperator($event, i)"
+											[disabled]="isViewMode">
+										</ng-select>
+										<div class="error" *ngIf="module.isDepedencyOperationError">
+											{{ 'Pages.DiwoPathways.AddEdit.AddCourse.OpratorName.error' | translate }}
+										</div>
+									</div>
+								</div>
+
+								 For Single Certified
+								<div
+									*ngIf="
+										module.ModuleDepedencyIndex != 'No Dependency' &&
+										module.ModuleDepedencyIndex.length == 1 &&
+										module.isShowCertifiedDropDown &&
+										module.CourseId == f2.courseName.value
+									">
+									<div
+										class="form-group"
+										[ngClass]="{
+											'has-error': module.isDepedencyOperationError,
+											'has-success': module.isDepedencyOperationError
+										}">
+										<ng-select
+											[items]="operatorCertifiedList"
+											class="ng-select-wrap"
+											placeholder="{{ 'Pages.DiwoPathways.AddEdit.AddCourse.OpratorName.placeholder' | translate }}"
+											bindLabel="label"
+											bindValue="value"
+											[multiple]="false"
+											[closeOnSelect]="true"
+											[searchable]="true"
+											[clearable]="false"
+											[(ngModel)]="module.ModuleOperation"
+											[ngModelOptions]="{ standalone: true }"
+											(change)="onSelectModuleDepedencyOperator($event, i)"
+											[disabled]="isViewMode">
+										</ng-select>
+										<div class="error" *ngIf="module.isDepedencyOperationError">
+											{{ 'Pages.DiwoPathways.AddEdit.AddCourse.OpratorName.error' | translate }}
+										</div>
+									</div>
+								</div> -->
+							</div>
+
+							<div
+								class="col-md-1"
+								*ngIf="module.CourseId == f2.courseName.value"
+								style="display: flex; align-items: center; justify-content: end">
+								<img
+									src="assets/images/cancel_icon.svg"
+									style="cursor: pointer"
+									title="{{ 'Utils.Action.remove' | translate }}"
+									(click)="removeIndividualModule(module.ModuleIndex, module.CourseIndex)" />
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="row card-body">
+				<div class="col-md-12" style="padding-right: 0">
+					<button
+						class="btn border_radius"
+						style="padding: 4px 35px; float: right; margin-top: 2rem; margin-left: 5px"
+						[ngStyle]="{
+							'background-color': appService.whiteBrandingColor,
+							border: '1px solid' + appService.whiteBrandingColor,
+							color: 'white'
+						}"
+						[ngClass]="{ replace_btn: editCourseIndex != null }"
+						(click)="addCourseToPathway()">
+						{{
+							editCourseIndex == null
+								? ('Pages.DiwoCourses.AddEdit.AddModule.addmoduletocourse' | translate)
+								: ('Pages.DiwoCourses.AddEdit.AddModule.replacemoduletocourse' | translate)
+						}}
+					</button>
+
+					<button
+						class="btn-xs action-delete-btn"
+						style="padding: 4px 30px; float: right; margin-top: 2rem"
+						[ngClass]="{ cancel_btn: editCourseIndex != null }"
+						[ngStyle]="{
+										color: appService.whiteBrandingColor,
+										border: '0.5px solid' + appService.whiteBrandingColor,
+										
+									}"
+						(click)="cancelCourseToPathway()">
+						{{ 'Utils.cancel' | translate }}
+					</button>
+				</div>
+			</div>
+		</div>
+	</form>
+
+	<!-- Add Certificatio Module Section -->
+	<!-- Add Module Section -->
+
+	<div class="row section-wrapper" *ngIf="addCertificationModule">
+		<!-- <div class="form-title">
+				<span>{{ 'Pages.DiwoCourses.AddEdit.AddModule.title' | translate }}</span>
+			</div> -->
+		<div class="row card-body">
+			<div class="row">
+				<div class="col-md-6">
+					<div class="form-group" style="margin-top: 0">
+						<label>{{ 'Pages.DiwoCourses.AddEdit.AddModule.ModuleType.title' | translate }}</label>
+						<ng-select
+							[items]="allModuleTypeList"
+							class="ng-select-wrap"
+							placeholder="{{ 'Pages.DiwoCourses.AddEdit.AddModule.ModuleType.placeholder' | translate }}"
+							bindLabel="type"
+							bindValue="id"
+							[multiple]="false"
+							[closeOnSelect]="true"
+							[searchable]="true"
+							[(ngModel)]="pathwayCerticationModuleDetails.DiwoModuleId"
+							(change)="getModuleListByModuleType($event)">
+						</ng-select>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="form-group" style="margin-top: 0">
+						<label>{{ 'Pages.DiwoCourses.AddEdit.AddModule.ModuleName.title' | translate }}</label>
+						<ng-select
+							[items]="allModuleList"
+							class="ng-select-wrap"
+							placeholder="{{ 'Pages.DiwoCourses.AddEdit.AddModule.ModuleName.placeholder' | translate }}"
+							bindLabel="title"
+							bindValue="id"
+							[multiple]="false"
+							[closeOnSelect]="true"
+							[searchable]="true"
+							[(ngModel)]="pathwayCerticationModuleDetails.WorkbookId"
+							(change)="onPickModule($event)">
+						</ng-select>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-12">
+					<button
+						class="btn border_radius"
+						style="padding: 4px 35px; float: right; margin-top: 2rem; margin-left: 5px"
+						[ngStyle]="{
+							'background-color': appService.whiteBrandingColor,
+							border: '1px solid' + appService.whiteBrandingColor,
+							color: 'white'
+						}"
+						(click)="selectCertificationModule($event)">
+						{{ 'Pages.DiwoCourses.AddEdit.AddModule.addmoduletocourse' | translate }}
+					</button>
+
+					<button
+						class="btn-xs action-delete-btn"
+						style="padding: 4px 30px; float: right; margin-top: 2rem"
+						[ngClass]="{ cancel_btn: editModuleIndex != null }"
+						[ngStyle]="{
+											color: appService.whiteBrandingColor,
+											border: '0.5px solid' + appService.whiteBrandingColor,
+											
+										}"
+						(click)="cancelCertificationModules()">
+						{{ 'Utils.cancel' | translate }}
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row" style="float: right; margin-top: 2rem">
+		<button
+			class="btn btn-o btn-primary border_radius functionalBtn"
+			style="
+				margin-right: 1.25rem;
+				background-color: lightgray !important;
+				color: black;
+				border: 1px solid lightgray !important;
+			"
+			(click)="cancel()">
+			{{ 'Utils.cancel' | translate }}
+		</button>
+		<button
+			class="btn btn-o btn-primary border_radius functionalBtn"
+			style="
+				margin-right: 1.25rem;
+				background-color: lightgray !important;
+				color: black;
+				border: 1px solid lightgray !important;
+			"
+			(click)="savePathways(false)"
+			[disabled]="isViewMode">
+			{{ 'Pages.DiwoPathways.AddEdit.saveasdraft' | translate }}
+		</button>
+		<button
+			class="btn border_radius functionalBtn"
+			[ngStyle]="{
+				'background-color': appService.whiteBrandingColor,
+				border: '1px solid' + appService.whiteBrandingColor,
+				color: 'white'
+			}"
+			style="margin-right: 7px"
+			(click)="savePathways(true)"
+			[disabled]="isViewMode">
+			{{ 'Pages.DiwoPathways.AddEdit.publishcourse' | translate }}
+		</button>
+	</div>
+</div>
+
+<!-- Select Updated Version of the Course -->
+<div
+	class="modal fade credit-note"
+	id="update_Course_Version"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="myModalLabel"
+	aria-hidden="true"
+	data-backdrop="static"
+	data-keyboard="false">
+	<div class="modal-dialog" style="width: 40%; margin-top: 15%; margin-left: auto; margin-right: auto">
+		<div class="modal-content">
+			<div
+				class="modal-header"
+				[ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeUpdateCOursePopup()">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					<span>{{ 'Pages.DiwoPathways.AddEdit.updateCourseVersion.title' | translate }}</span>
+				</h4>
+			</div>
+			<div class="modal-body">
+				<span>{{ 'Pages.DiwoPathways.AddEdit.updateCourseVersion.confirmation' | translate }}</span>
+				<div
+					class="visible-md visible-lg visible-sm visible-xs"
+					style="text-align: right; margin-bottom: 0.75rem; margin-top: 1.5rem">
+					<a
+						class="btn-xs action-edit-btn action-yes-no"
+						[ngStyle]="{
+							'background-color': appService.whiteBrandingColor,
+							border: '0.5px solid' + appService.whiteBrandingColor,
+							color: 'white'
+						}"
+						style="margin-right: 2%; padding: 7px 20px"
+						(click)="updateCourseNewVersion()"
+						>{{ 'Utils.yes' | translate }}</a
+					>
+					<a
+						class="btn-xs action-pause-btn action-yes-no"
+						[ngStyle]="{
+							color: appService.whiteBrandingColor,
+							border: '0.5px solid' + appService.whiteBrandingColor,
+						}"
+						style="padding: 7px 23px; margin-right: 1%"
+						(click)="closeUpdateCOursePopup()"
+						>{{ 'Utils.no' | translate }}</a
+					>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

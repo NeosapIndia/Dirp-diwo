@@ -1,0 +1,1704 @@
+<div class="container-fluid" style="margin: 2% 2% 2% 3%">
+	<div class="row add-edit-main-row">
+		<span>
+			<span
+				[routerLink]="['/general-settings']"
+				style="margin-left: 0.25rem; color: #637373; margin-right: 2px; cursor: pointer">
+				{{ 'Pages.GeneralSettings.AddEdit.pagetitle' | translate }}</span
+			>
+			<img src="assets/images/arrow_forward.svg" style="width: 27px" />
+			<span style="margin-left: 3px" [ngStyle]="{ color: appService.whiteBrandingColor }">
+				{{ 'Pages.GeneralSettings.AddEdit.subtitle' | translate }}</span
+			>
+		</span>
+	</div>
+
+	<form [formGroup]="appBrandingForm">
+		<div class="row section-wrapper" style="margin-top: 2rem">
+			<div class="form-title">
+				<span> {{ 'Pages.GeneralSettings.AddEdit.General.title' | translate }}</span>
+			</div>
+			<div class="row card-body">
+				<div class="row" style="margin-top: -5px">
+					<div class="col-md-6">
+						<div
+							class="form-group"
+							style="margin-top: 0px"
+							[ngClass]="{
+								'has-error': f.clientId.invalid && (f.clientId.dirty || f.clientId.touched),
+								'has-success': f.clientId.valid && (f.clientId.dirty || f.clientId.touched)
+							}">
+							<label>{{ 'Pages.GeneralSettings.AddEdit.General.Client.title' | translate }}</label>
+							<ng-select
+								[items]="clientListForForm"
+								class="ng-select-wrap"
+								placeholder="{{ 'Pages.GeneralSettings.AddEdit.General.Client.placeholder' | translate }}"
+								bindLabel="clientIdWithName"
+								bindValue="id"
+								[multiple]="false"
+								[closeOnSelect]="true"
+								[searchable]="true"
+								[clearable]="false"
+								(change)="onClientSelect($event)"
+								formControlName="clientId">
+							</ng-select>
+							<div class="error" *ngIf="f.clientId.errors && f.clientId.touched">
+								<div *ngIf="f.clientId.errors.required">
+									{{ 'Pages.GeneralSettings.AddEdit.General.Client.error' | translate }}
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-3">
+						<div
+							class="form-group"
+							style="margin-top: 3px"
+							[ngClass]="{
+								'has-error': f.compMobNo.invalid && (f.compMobNo.dirty || f.compMobNo.touched),
+								'has-success': f.compMobNo.valid && (f.compMobNo.dirty || f.compMobNo.touched)
+							}">
+							<label>{{ 'Pages.GeneralSettings.AddEdit.General.makemobilecompulsory' | translate }}</label>
+							<div>
+								<label class="switch">
+									<input
+										type="checkbox"
+										class="form-control js-switch"
+										formControlName="compMobNo"
+										(change)="checkToggleMobileEmail($event, 'mobile')" />
+									<span
+										class="slider round"
+										[ngStyle]="{ 'background-color': f.compMobNo.value ? appService.whiteBrandingColor : '#ccc' }">
+									</span>
+								</label>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-3">
+						<div
+							class="form-group"
+							style="margin-top: 3px"
+							[ngClass]="{
+								'has-error': f.compEmail.invalid && (f.compEmail.dirty || f.compEmail.touched),
+								'has-success': f.compEmail.valid && (f.compEmail.dirty || f.compEmail.touched)
+							}">
+							<label>{{ 'Pages.GeneralSettings.AddEdit.General.makeEmailCompulsory' | translate }}</label>
+							<div>
+								<label class="switch">
+									<input
+										type="checkbox"
+										class="form-control js-switch"
+										formControlName="compEmail"
+										(change)="checkToggleMobileEmail($event, 'email')" />
+									<span
+										class="slider round"
+										[ngStyle]="{ 'background-color': f.compEmail.value ? appService.whiteBrandingColor : '#ccc' }">
+									</span>
+								</label>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="row section-wrapper" style="margin-top: 2rem">
+			<div class="form-title">
+				<span>{{ 'Pages.GeneralSettings.AddEdit.AppBranding.title' | translate }}</span>
+			</div>
+			<div class="row card-body">
+				<div class="row" style="margin-top: -5px">
+					<div class="col-md-12">
+						<div
+							class="form-group"
+							style="margin-top: 0px"
+							[ngClass]="{
+								'has-error': f.about_text.invalid && (f.about_text.dirty || f.about_text.touched),
+								'has-success': f.about_text.valid && (f.about_text.dirty || f.about_text.touched)
+							}">
+							<label>{{ 'Pages.GeneralSettings.AddEdit.AppBranding.AboutText.title' | translate }}</label>
+							<textarea
+								type="text"
+								class="form-control"
+								style="margin-bottom: 0.5rem"
+								placeholder="{{
+									type === 'drip'
+										? ('Pages.GeneralSettings.AddEdit.AppBranding.AboutText.contactplaceholder' | translate)
+										: ('Pages.GeneralSettings.AddEdit.AppBranding.AboutText.placeholder' | translate)
+								}}"
+								formControlName="about_text"
+								maxlength="1150"
+								(keyup)="checkCharacterLimit($event.target.value)">
+							</textarea>
+							<span
+								>{{ 'Utils.charactersleft' | translate }} -
+								{{
+									characterRemains != null || characterRemains != undefined
+										? characterRemains + '/' + 1150
+										: 1150 + '/' + 1150
+								}}</span
+							>
+							<div class="error" *ngIf="f.about_text.errors && f.about_text.touched">
+								<div *ngIf="f.about_text.errors.required">
+									{{ 'Pages.GeneralSettings.AddEdit.AppBranding.AboutText.error' | translate }}
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-4">
+						<div class="fileupload-buttonbar">
+							<div class="form-group" style="margin-top: 4px">
+								<label>{{ 'Pages.GeneralSettings.AddEdit.AppBranding.UploadImage.ThemeImage' | translate }}</label>
+								<div class="center drag">
+									<i class="fa fa-cloud-upload pad" style="font-size: 1.875rem" aria-hidden="true"></i>
+									<p class="pad" style="font-size: 0.938rem">
+										{{ 'Pages.GeneralSettings.AddEdit.AppBranding.UploadImage.DragandDropThemeImage' | translate }}
+									</p>
+									<p class="pad" style="font-size: 0.938rem">
+										{{ 'Pages.GeneralSettings.AddEdit.AppBranding.UploadImage.or' | translate }}
+									</p>
+
+									<label
+										class="btn center pad fileinput-button browse_lable"
+										style="color: #fff; border-radius: 8px !important; padding-left: 1.25rem; padding-right: 1.25rem"
+										[ngStyle]="{
+											'background-color': appService.whiteBrandingColor,
+											border: '1px solid' + appService.whiteBrandingColor,
+											color: 'white'
+										}">
+										<input id="mediaWeb" type="file" accept="image/*" (change)="uploadThemeImage($event)" />
+										{{ 'Pages.GeneralSettings.AddEdit.AppBranding.UploadImage.BrowseImage' | translate }}
+									</label>
+									<div style="font-size: 0.75rem">
+										{{
+											type === 'drip'
+												? ('Pages.GeneralSettings.AddEdit.AppBranding.UploadImage.ContactWebAppRecommendedSize'
+												  | translate)
+												: ('Pages.GeneralSettings.AddEdit.AppBranding.UploadImage.WebAppRecommendedSize' | translate)
+										}}"
+									</div>
+								</div>
+								<span class="fileupload-loading"></span>
+							</div>
+							<table
+								*ngIf="appBrandingForm.value.theme_image_original_name"
+								role="presentation"
+								class="table table-striped"
+								style="margin-bottom: 10px">
+								<tbody class="files">
+									<tr class="template-upload fade in">
+										<td style="width: 80%">
+											<p class="name">
+												{{ appBrandingForm.value.theme_image_original_name }}
+											</p>
+										</td>
+										<td>
+											<label
+												class="btn cancel border_radius"
+												[ngStyle]="{
+													'background-color': appService.whiteBrandingColor,
+													border: '1px solid' + appService.whiteBrandingColor,
+													color: 'white'
+												}">
+												<span (click)="deleteThemeImage()">{{ 'Utils.delete' | translate }}</span>
+											</label>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							<div class="form-group asset-img-wrapper" *ngIf="appBrandingForm.value.theme_image_path">
+								<img [src]="appBrandingForm.value.theme_image_path" style="width: 60%; object-fit: contain" />
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-4">
+						<div class="fileupload-buttonbar">
+							<div class="form-group" style="margin-top: 4px">
+								<label>
+									{{
+										type === 'drip'
+											? ('Pages.GeneralSettings.AddEdit.AppBranding.UploadImage.ContactAppIcon' | translate)
+											: ('Pages.GeneralSettings.AddEdit.AppBranding.UploadImage.LearnerAppIcon' | translate)
+									}}
+								</label>
+								<div class="center drag">
+									<i class="fa fa-cloud-upload pad" style="font-size: 1.875rem" aria-hidden="true"></i>
+									<p class="pad" style="font-size: 0.938rem">
+										{{ 'Pages.GeneralSettings.AddEdit.AppBranding.UploadImage.DragandDropLearnerAppIcon' | translate }}
+									</p>
+									<p class="pad" style="font-size: 0.938rem">
+										{{ 'Pages.GeneralSettings.AddEdit.AppBranding.UploadImage.or' | translate }}
+									</p>
+									<label
+										class="btn center pad fileinput-button browse_lable"
+										style="color: #fff; border-radius: 8px !important; padding-left: 1.25rem; padding-right: 1.25rem"
+										[ngStyle]="{
+											'background-color': appService.whiteBrandingColor,
+											border: '1px solid' + appService.whiteBrandingColor,
+											color: 'white'
+										}">
+										<input id="mediaWeb" type="file" accept="image/*" (change)="uploadLearnerAppIcon($event)" />
+										{{ 'Pages.GeneralSettings.AddEdit.AppBranding.UploadImage.BrowseImage' | translate }}
+									</label>
+									<div style="font-size: 0.75rem">
+										{{
+											type === 'drip'
+												? ('Pages.GeneralSettings.AddEdit.AppBranding.UploadImage.ContactAppRecommendedSize'
+												  | translate)
+												: ('Pages.GeneralSettings.AddEdit.AppBranding.UploadImage.LearnerAppRecommendedSize'
+												  | translate)
+										}}"
+									</div>
+								</div>
+								<span class="fileupload-loading"></span>
+							</div>
+							<table
+								*ngIf="appBrandingForm.value.learner_app_icon_original_name"
+								role="presentation"
+								class="table table-striped"
+								style="margin-bottom: 10px">
+								<tbody class="files">
+									<tr class="template-upload fade in">
+										<td style="width: 80%">
+											<p class="name">
+												{{ appBrandingForm.value.learner_app_icon_original_name }}
+											</p>
+										</td>
+										<td>
+											<label
+												class="btn cancel border_radius"
+												[ngStyle]="{
+													'background-color': appService.whiteBrandingColor,
+													border: '1px solid' + appService.whiteBrandingColor,
+													color: 'white'
+												}">
+												<span (click)="deleteLearnerAppIcon()">{{ 'Utils.delete' | translate }}</span>
+											</label>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							<div class="form-group asset-img-wrapper" *ngIf="appBrandingForm.value.learner_app_icon_path">
+								<img [src]="appBrandingForm.value.learner_app_icon_path" style="width: 35%; object-fit: contain" />
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-4">
+						<div class="fileupload-buttonbar">
+							<div class="form-group" style="margin-top: 4px">
+								<label>
+									{{ 'Pages.GeneralSettings.AddEdit.AppBranding.UploadImage.AdminAppHeaderLogo' | translate }}</label
+								>
+								<div class="center drag">
+									<i class="fa fa-cloud-upload pad" style="font-size: 1.875rem" aria-hidden="true"></i>
+									<p class="pad" style="font-size: 0.938rem">
+										{{ 'Pages.GeneralSettings.AddEdit.AppBranding.UploadImage.DragandDropAdminAppImage' | translate }}
+									</p>
+									<p class="pad" style="font-size: 0.938rem">
+										{{ 'Pages.GeneralSettings.AddEdit.AppBranding.UploadImage.or' | translate }}
+									</p>
+
+									<label
+										class="btn center pad fileinput-button browse_lable"
+										style="color: #fff; border-radius: 8px !important; padding-left: 1.25rem; padding-right: 1.25rem"
+										[ngStyle]="{
+											'background-color': appService.whiteBrandingColor,
+											border: '1px solid' + appService.whiteBrandingColor,
+											color: 'white'
+										}">
+										<input id="mediaWeb" type="file" accept="image/*" (change)="uploadAdminAppHeaderLogo($event)" />
+										{{ 'Pages.GeneralSettings.AddEdit.AppBranding.UploadImage.BrowseImage' | translate }}
+									</label>
+									<div style="font-size: 0.75rem">
+										{{
+											'Pages.GeneralSettings.AddEdit.AppBranding.UploadImage.AdminAppHeaderRecommendedSize' | translate
+										}}
+									</div>
+								</div>
+								<span class="fileupload-loading"></span>
+							</div>
+							<table
+								*ngIf="appBrandingForm.value.admin_side_header_logo_original_name"
+								role="presentation"
+								class="table table-striped"
+								style="margin-bottom: 10px">
+								<tbody class="files">
+									<tr class="template-upload fade in">
+										<td style="width: 80%">
+											<p class="name">
+												{{ appBrandingForm.value.admin_side_header_logo_original_name }}
+											</p>
+										</td>
+										<td>
+											<label
+												class="btn cancel border_radius"
+												[ngStyle]="{
+													'background-color': appService.whiteBrandingColor,
+													border: '1px solid' + appService.whiteBrandingColor,
+													color: 'white'
+												}">
+												<span (click)="deleteAdminAppHeaderLogo()">{{ 'Utils.delete' | translate }}</span>
+											</label>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							<div class="form-group asset-img-wrapper" *ngIf="appBrandingForm.value.admin_side_header_logo_path">
+								<img
+									[src]="appBrandingForm.value.admin_side_header_logo_path"
+									style="width: 35%; object-fit: contain" />
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row" style="margin-top: 10px">
+					<!-- Signature -->
+					<div class="col-md-4">
+						<div class="fileupload-buttonbar">
+							<div class="form-group" style="margin-top: 4px">
+								<label>{{ 'Pages.GeneralSettings.AddEdit.AppBranding.UploadImage.SignatureImage' | translate }}</label>
+								<div class="center drag">
+									<i class="fa fa-cloud-upload pad" style="font-size: 1.875rem" aria-hidden="true"></i>
+									<p class="pad" style="font-size: 0.938rem">
+										{{ 'Pages.GeneralSettings.AddEdit.AppBranding.UploadImage.DragandDropThemeImage' | translate }}
+									</p>
+									<p class="pad" style="font-size: 0.938rem">
+										{{ 'Pages.GeneralSettings.AddEdit.AppBranding.UploadImage.or' | translate }}
+									</p>
+
+									<label
+										class="btn center pad fileinput-button browse_lable"
+										style="color: #fff; border-radius: 8px !important; padding-left: 1.25rem; padding-right: 1.25rem"
+										[ngStyle]="{
+											'background-color': appService.whiteBrandingColor,
+											border: '1px solid' + appService.whiteBrandingColor,
+											color: 'white'
+										}">
+										<input id="mediaWeb" type="file" accept="image/png" (change)="uploadSignatureImage($event)" />
+										{{ 'Pages.GeneralSettings.AddEdit.AppBranding.UploadImage.BrowseImage' | translate }}
+									</label>
+									<div style="font-size: 0.75rem">
+										{{ 'Pages.GeneralSettings.AddEdit.AppBranding.UploadImage.SignatureRecommendedSize' | translate }}
+									</div>
+								</div>
+								<span class="fileupload-loading"></span>
+							</div>
+							<table
+								*ngIf="appBrandingForm.value.signature_image_original_name"
+								role="presentation"
+								class="table table-striped"
+								style="margin-bottom: 10px">
+								<tbody class="files">
+									<tr class="template-upload fade in">
+										<td style="width: 80%">
+											<p class="name">
+												{{ appBrandingForm.value.signature_image_original_name }}
+											</p>
+										</td>
+										<td>
+											<label
+												class="btn cancel border_radius"
+												[ngStyle]="{
+													'background-color': appService.whiteBrandingColor,
+													border: '1px solid' + appService.whiteBrandingColor,
+													color: 'white'
+												}">
+												<span (click)="deleteSignatureImage()">{{ 'Utils.delete' | translate }}</span>
+											</label>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							<div class="form-group asset-img-wrapper" *ngIf="appBrandingForm.value.signature_image_path">
+								<img [src]="appBrandingForm.value.signature_image_path" style="width: 60%; object-fit: contain" />
+							</div>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="form-group">
+							<label>{{ 'Pages.GeneralSettings.AddEdit.AppBranding.AccentColor.title' | translate }}</label>
+							<input
+								class="form-control"
+								formControlName="accent_color"
+								type="color"
+								style="height: 45px; color: #fff" />
+
+							<!-- <div class="error" *ngIf="f.EmailSenderId.errors && f.EmailSenderId.touched">
+								<div *ngIf="f.EmailSenderId.errors.required">
+									{{ 'Pages.GeneralSettings.AddEdit.AppBranding.EmailSetup.EmailDripSenderId.error' | translate }}
+								</div>
+							</div> -->
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- SpotRegistration Start -->
+		<div
+			class="row section-wrapper"
+			style="margin-top: 2rem"
+			*ngIf="selectedAccountType == 'Client Account' && type == 'diwo'">
+			<div class="form-title">
+				<span> {{ 'Pages.GeneralSettings.AddEdit.AppBranding.SpotRegistration.title' | translate }}</span>
+			</div>
+			<div class="row card-body">
+				<div class="row" *ngFor="let item of allSpotRegistarionData; let i = index">
+					<div class="col-md-4">
+						<div class="form-group" style="margin-top: -2px">
+							<label>{{ 'Pages.GeneralSettings.AddEdit.AppBranding.SpotRegistration.headerlable' | translate }}</label>
+							<input
+								*ngIf="item.type == 'FirstName' || item.type == 'LastName'"
+								type="text"
+								class="form-control"
+								[(ngModel)]="item.labelText"
+								[ngModelOptions]="{ standalone: true }"
+								[disabled]="item.isDisabled"
+								placeholder="{{
+									'Pages.GeneralSettings.AddEdit.AppBranding.SpotRegistration.lablePlaceholder' | translate
+								}}" />
+							<input
+								*ngIf="item.type !== 'FirstName' && item.type !== 'LastName'"
+								type="text"
+								class="form-control"
+								[(ngModel)]="item.labelText"
+								[ngModelOptions]="{ standalone: true }"
+								placeholder="{{
+									'Pages.GeneralSettings.AddEdit.AppBranding.SpotRegistration.lablePlaceholder' | translate
+								}}" />
+						</div>
+					</div>
+					<div class="col-md-4" *ngIf="item.type == 'FirstName' || item.type == 'LastName'">
+						<div class="form-group" style="margin-top: -2px">
+							<label>{{ 'Pages.GeneralSettings.AddEdit.AppBranding.SpotRegistration.headerlinkTo' | translate }}</label>
+							<input
+								type="text"
+								class="form-control"
+								[(ngModel)]="item.linkTo"
+								[ngModelOptions]="{ standalone: true }"
+								[disabled]="item.isDisabled"
+								placeholder="{{
+									'Pages.GeneralSettings.AddEdit.AppBranding.SpotRegistration.linkToPlaceholder' | translate
+								}}" />
+						</div>
+					</div>
+					<div class="col-md-4" *ngIf="item.type === 'Branch'">
+						<div class="form-group" style="margin-top: 0px">
+							<label>{{ 'Pages.GeneralSettings.AddEdit.AppBranding.SpotRegistration.headerlinkTo' | translate }}</label>
+							<ng-select
+								[items]="clientListForSpotRegistration"
+								class="ng-select-wrap"
+								placeholder="{{ 'Pages.GeneralSettings.AddEdit.AppBranding.SpotRegistration.client' | translate }}"
+								bindLabel="name"
+								bindValue="id"
+								[multiple]="true"
+								[closeOnSelect]="true"
+								[searchable]="true"
+								[clearable]="false"
+								[(ngModel)]="item.linkTo"
+								[ngModelOptions]="{ standalone: true }"
+								(change)="onChangeBranchName($event, i)">
+							</ng-select>
+						</div>
+					</div>
+
+					<div class="col-md-4" *ngIf="item.type !== 'FirstName' && item.type !== 'LastName' && item.type !== 'Branch'">
+						<div class="form-group" style="margin-top: 0px">
+							<label>{{ 'Pages.GeneralSettings.AddEdit.AppBranding.SpotRegistration.headerlinkTo' | translate }}</label>
+							<ng-select
+								[items]="AllSpotRegTypes"
+								class="ng-select-wrap"
+								placeholder="{{
+									'Pages.GeneralSettings.AddEdit.AppBranding.SpotRegistration.linkToPlaceholder' | translate
+								}}"
+								bindLabel="label"
+								bindValue="value"
+								[multiple]="false"
+								[closeOnSelect]="true"
+								[searchable]="true"
+								[clearable]="false"
+								[(ngModel)]="item.linkTo"
+								[ngModelOptions]="{ standalone: true }"
+								(change)="onChangeSpotRegType(i, $event)">
+							</ng-select>
+						</div>
+					</div>
+
+					<div class="col-md-3">
+						<div class="form-group" style="margin-top: 2.3rem; display: flex; justify-content: center">
+							<div>
+								<label class="switch">
+									<input
+										type="checkbox"
+										class="form-control js-switch"
+										[(ngModel)]="item.isRequired"
+										[ngModelOptions]="{ standalone: true }"
+										[disabled]="item.isDisabled" />
+									<span
+										class="slider round"
+										[ngStyle]="{ 'background-color': item.isRequired ? appService.whiteBrandingColor : '#ccc' }"></span>
+								</label>
+							</div>
+							<div>
+								<label style="margin-top: 4px; padding-left: 15px">
+									{{ 'Pages.GeneralSettings.AddEdit.AppBranding.SpotRegistration.required' | translate }}</label
+								>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-1">
+						<img
+							src="assets/images/cancel_icon.svg"
+							*ngIf="i > 2"
+							(click)="removeSpotRegistration(i)"
+							style="float: right; margin-top: 2.5rem; cursor: pointer" />
+					</div>
+					<div class="col-md-12" style="padding: 0">
+						<div class="col-md-4" *ngIf="item.linkTo == 'jobrole'"></div>
+						<div class="col-md-4" *ngIf="item.linkTo == 'jobrole'">
+							<div class="form-group" style="margin-top: 0px">
+								<ng-select
+									[items]="parentClientJobRoleList"
+									class="ng-select-wrap"
+									placeholder="{{ 'Pages.GeneralSettings.AddEdit.AppBranding.SpotRegistration.jobRole' | translate }}"
+									bindLabel="job_role_name"
+									bindValue="id"
+									[multiple]="true"
+									[closeOnSelect]="true"
+									[searchable]="true"
+									[clearable]="false"
+									[(ngModel)]="item.sectedJobRole"
+									[ngModelOptions]="{ standalone: true }"
+									(change)="onChangeJobRole($event, i)">
+								</ng-select>
+							</div>
+						</div>
+						<div class="col-md-4" *ngIf="item.linkTo == 'jobrole'"></div>
+					</div>
+
+					<div class="col-md-4" *ngIf="item.linkTo == 'tags'"></div>
+					<div class="col-md-4" *ngIf="item.linkTo == 'tags'">
+						<div class="form-group" style="margin-top: 0px">
+							<input
+								type="text"
+								class="form-control"
+								[(ngModel)]="item.selectedTags"
+								[ngModelOptions]="{ standalone: true }"
+								placeholder="{{ 'Pages.GeneralSettings.AddEdit.AppBranding.SpotRegistration.tags' | translate }}" />
+						</div>
+					</div>
+					<div class="col-md-4" *ngIf="item.linkTo == 'tags'"></div>
+				</div>
+				<div class="col-md-12" style="padding-left: 0; margin-top: 1rem" *ngIf="isDripAccess">
+					<div class="form-group" style="margin-top: 3px">
+						<label>{{ 'Pages.GeneralSettings.AddEdit.AppBranding.SpotRegistration.AddForDrip' | translate }}</label>
+						<div>
+							<label class="switch">
+								<input type="checkbox" class="form-control js-switch" formControlName="addLearnerForDrip" />
+								<span
+									class="slider round"
+									[ngStyle]="{
+										'background-color': f.addLearnerForDrip.value ? appService.whiteBrandingColor : '#ccc'
+									}">
+								</span>
+							</label>
+						</div>
+					</div>
+				</div>
+
+				<div class="text-right add-circle" style="cursor: pointer; margin-bottom: -9px; margin-top: 8px">
+					<!-- <img
+						src="assets/images/add_icon.svg"
+						style="width: 30px"
+						title="{{ 'Pages.GeneralSettings.AddEdit.AppBranding.SpotRegistration.addbtntooltip' | translate }}"
+						(click)="addOneSpotRegistration()" /> -->
+					<span
+						[innerHTML]="iconObject['add_icon_30']"
+						title="{{ 'Pages.GeneralSettings.AddEdit.AppBranding.SpotRegistration.addbtntooltip' | translate }}"
+						(click)="addOneSpotRegistration()"></span>
+				</div>
+			</div>
+		</div>
+
+		<!-- Follow On Social Media Start -->
+		<div
+			class="row section-wrapper"
+			style="margin-top: 2rem"
+			*ngIf="selectedAccountType == 'Client Account' && type == 'diwo'">
+			<div class="form-title">
+				<span> {{ 'Pages.GeneralSettings.AddEdit.AppBranding.SocialMediaProfles.title' | translate }}</span>
+			</div>
+			<div class="row card-body">
+				<div class="row" *ngFor="let item of allSocialMediaData; let i = index">
+					<div class="col-md-3">
+						<div class="form-group" style="margin-top: 0px">
+							<label [ngClass]="{ error: item.ismediaNameError == true }">{{
+								'Pages.GeneralSettings.AddEdit.AppBranding.SocialMediaProfles.socialmediadropdown' | translate
+							}}</label>
+							<ng-select
+								[items]="allMediaProfile"
+								class="ng-select-wrap"
+								placeholder="{{
+									'Pages.GeneralSettings.AddEdit.AppBranding.SocialMediaProfles.socialmediadropdownPlaceholder'
+										| translate
+								}}"
+								bindLabel="label"
+								bindValue="value"
+								[multiple]="false"
+								[closeOnSelect]="true"
+								[searchable]="true"
+								[clearable]="false"
+								[(ngModel)]="item.mediaName"
+								[ngModelOptions]="{ standalone: true }"
+								(change)="onSelectSocialMediaName(i, $event)">
+							</ng-select>
+							<div class="error invalid-feedback" *ngIf="item.ismediaNameError == true">
+								{{ 'Pages.GeneralSettings.AddEdit.AppBranding.SocialMediaProfles.socialmedialname' | translate }}
+							</div>
+							<div class="error invalid-feedback" *ngIf="item.isDuplicatePlateForm == true">
+								<span style="text-transform: capitalize">{{ item.mediaName }}</span>
+								{{
+									'Pages.GeneralSettings.AddEdit.AppBranding.SocialMediaProfles.socialmedialduplicateName' | translate
+								}}
+							</div>
+						</div>
+					</div>
+					<div class="col-md-3">
+						<div class="form-group" style="margin-top: -2px">
+							<label [ngClass]="{ error: item.ismediaLinkError == true }">{{
+								'Pages.GeneralSettings.AddEdit.AppBranding.SocialMediaProfles.urltext' | translate
+							}}</label>
+							<input
+								type="text"
+								class="form-control"
+								[(ngModel)]="item.mediaLink"
+								[ngModelOptions]="{ standalone: true }"
+								placeholder="{{
+									'Pages.GeneralSettings.AddEdit.AppBranding.SocialMediaProfles.urlplaceholder' | translate
+								}}"
+								(keyup)="onEnterSocialMediaLink(i, $event.target.value)" />
+						</div>
+						<div class="error invalid-feedback" *ngIf="item.ismediaLinkError == true">
+							{{ 'Pages.GeneralSettings.AddEdit.AppBranding.SocialMediaProfles.socialmedialink' | translate }}
+						</div>
+						<div class="error invalid-feedback" *ngIf="item.isMediaLinkValidError == true">
+							{{ 'Pages.GeneralSettings.AddEdit.AppBranding.SocialMediaProfles.uploadValidLinkError' | translate }}
+						</div>
+					</div>
+
+					<div class="col-md-3">
+						<div class="form-group" style="margin-top: -2px">
+							<label>{{
+								'Pages.GeneralSettings.AddEdit.AppBranding.SocialMediaProfles.socialMediaHandle' | translate
+							}}</label>
+							<input
+								type="text"
+								class="form-control"
+								[(ngModel)]="item.mediaHandle"
+								[ngModelOptions]="{ standalone: true }"
+								placeholder="{{
+									'Pages.GeneralSettings.AddEdit.AppBranding.SocialMediaProfles.socialMediaHandlePlaceholder'
+										| translate
+								}}" />
+						</div>
+					</div>
+
+					<div class="col-md-2">
+						<img
+							src="assets/images/cancel_icon.svg"
+							*ngIf="allSocialMediaData.length > 1"
+							(click)="removeSocialMedia(i)"
+							style="float: right; margin-top: 2.5rem; cursor: pointer" />
+					</div>
+				</div>
+
+				<div class="text-right add-circle" style="cursor: pointer; margin-bottom: -9px; margin-top: 8px">
+					<!-- <img
+						src="assets/images/add_icon.svg"
+						style="width: 30px"
+						title="{{ 'Pages.GeneralSettings.AddEdit.AppBranding.SocialMediaProfles.addbtntooltip' | translate }}"
+						(click)="addOneSocialMedia()" /> -->
+					<span
+						[innerHTML]="iconObject['add_icon_30']"
+						title="{{ 'Pages.GeneralSettings.AddEdit.AppBranding.SocialMediaProfles.addbtntooltip' | translate }}"
+						(click)="addOneSocialMedia()"></span>
+				</div>
+			</div>
+		</div>
+
+		<div class="row section-wrapper" style="margin-top: 2rem">
+			<div class="form-title">
+				<span>{{ 'Pages.GeneralSettings.AddEdit.AppBranding.EmailSetup.title' | translate }}</span>
+			</div>
+			<div class="row card-body">
+				<div class="row" style="margin-top: -5px">
+					<div class="col-md-6">
+						<div
+							class="form-group"
+							style="margin-top: 0px"
+							[ngClass]="{
+								'has-error': f.EmailSenderId.invalid && (f.EmailSenderId.dirty || f.EmailSenderId.touched),
+								'has-success': f.EmailSenderId.valid && (f.EmailSenderId.dirty || f.EmailSenderId.touched)
+							}">
+							<label>{{
+								'Pages.GeneralSettings.AddEdit.AppBranding.EmailSetup.EmailDripSenderId.title' | translate
+							}}</label>
+							<input
+								type="text"
+								class="form-control"
+								placeholder="{{
+									'Pages.GeneralSettings.AddEdit.AppBranding.EmailSetup.EmailDripSenderId.placeholder' | translate
+								}}"
+								formControlName="EmailSenderId" />
+
+							<div class="error" *ngIf="f.EmailSenderId.errors && f.EmailSenderId.touched">
+								<div *ngIf="f.EmailSenderId.errors.required">
+									{{ 'Pages.GeneralSettings.AddEdit.AppBranding.EmailSetup.EmailDripSenderId.error' | translate }}
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-6">
+						<div
+							class="form-group"
+							style="margin-top: 0px"
+							[ngClass]="{
+								'has-error': f.EmailSenderName.invalid && (f.EmailSenderName.dirty || f.EmailSenderName.touched),
+								'has-success': f.EmailSenderName.valid && (f.EmailSenderName.dirty || f.EmailSenderName.touched)
+							}">
+							<label>{{
+								'Pages.GeneralSettings.AddEdit.AppBranding.EmailSetup.EmailDripSenderName.title' | translate
+							}}</label>
+							<input
+								type="text"
+								class="form-control"
+								placeholder="{{
+									'Pages.GeneralSettings.AddEdit.AppBranding.EmailSetup.EmailDripSenderName.placeholder' | translate
+								}}"
+								formControlName="EmailSenderName" />
+						</div>
+					</div>
+
+					<div class="col-md-6">
+						<div
+							class="form-group"
+							[ngClass]="{
+								'has-error': f.welcomeEmail.invalid && (f.welcomeEmail.dirty || f.welcomeEmail.touched),
+								'has-success': f.welcomeEmail.valid && (f.welcomeEmail.dirty || f.welcomeEmail.touched)
+							}">
+							<label>{{
+								'Pages.GeneralSettings.AddEdit.AppBranding.EmailSetup.TriggerWelcomeEmail.title' | translate
+							}}</label>
+							<div>
+								<label class="switch">
+									<input
+										type="checkbox"
+										class="form-control js-switch"
+										formControlName="welcomeEmail"
+										(change)="checkWelcomeEmailToggle($event)" />
+									<span
+										class="slider round"
+										[ngStyle]="{ 'background-color': f.welcomeEmail.value ? appService.whiteBrandingColor : '#ccc' }">
+									</span>
+								</label>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-6">
+						<div
+							class="form-group"
+							[ngClass]="{
+								'has-error': f.EmailTemplateId.invalid && (f.EmailTemplateId.dirty || f.EmailTemplateId.touched),
+								'has-success': f.EmailTemplateId.valid && (f.EmailTemplateId.dirty || f.EmailTemplateId.touched)
+							}">
+							<label>
+								{{
+									'Pages.GeneralSettings.AddEdit.AppBranding.EmailSetup.EmailDripTemplateId.title' | translate
+								}}</label
+							>
+							<input
+								type="text"
+								class="form-control"
+								placeholder=" {{
+									'Pages.GeneralSettings.AddEdit.AppBranding.EmailSetup.EmailDripTemplateId.placeholder' | translate
+								}}"
+								formControlName="EmailTemplateId" />
+						</div>
+					</div>
+
+					<div class="col-md-6">
+						<div
+							class="form-group"
+							[ngClass]="{
+								'has-error':
+									f.OnlyEmailTemplateId.invalid && (f.OnlyEmailTemplateId.dirty || f.OnlyEmailTemplateId.touched),
+								'has-success':
+									f.OnlyEmailTemplateId.valid && (f.OnlyEmailTemplateId.dirty || f.OnlyEmailTemplateId.touched)
+							}">
+							<label>
+								{{
+									'Pages.GeneralSettings.AddEdit.AppBranding.EmailSetup.OnlyEmailDripTemplateId.title' | translate
+								}}</label
+							>
+							<input
+								type="text"
+								class="form-control"
+								placeholder=" {{
+									'Pages.GeneralSettings.AddEdit.AppBranding.EmailSetup.OnlyEmailDripTemplateId.placeholder' | translate
+								}}"
+								formControlName="OnlyEmailTemplateId" />
+						</div>						
+					</div>
+
+					<!-- Email_Signature_Text -->
+					<div class="col-md-6">							
+						<div
+							class="form-group"
+							[ngClass]="{
+								'has-error':
+									f.EmailSignatureText.invalid && (f.EmailSignatureText.dirty || f.EmailSignatureText.touched),
+								'has-success':
+									f.EmailSignatureText.valid && (f.EmailSignatureText.dirty || f.EmailSignatureText.touched)
+							}">
+							<label>
+								{{
+									'Pages.GeneralSettings.AddEdit.AppBranding.EmailSetup.emailSignatureText.title' | translate
+								}}</label
+							>
+							<input
+								type="text"
+								class="form-control"
+								placeholder=" {{
+									'Pages.GeneralSettings.AddEdit.AppBranding.EmailSetup.emailSignatureText.placeholder' | translate
+								}}"
+								formControlName="EmailSignatureText" />
+						</div>
+					</div>
+
+					<div class="col-md-6">
+						<div
+							*ngIf="f.welcomeEmail.value == true"
+							class="form-group"
+							[ngClass]="{
+								'has-error': f.welcomeSubject.invalid && (f.welcomeSubject.dirty || f.welcomeSubject.touched),
+								'has-success': f.welcomeSubject.valid && (f.welcomeSubject.dirty || f.welcomeSubject.touched)
+							}">
+							<label>{{
+								'Pages.GeneralSettings.AddEdit.AppBranding.EmailSetup.WelcomeEmailSubject.title' | translate
+							}}</label>
+							<input
+								type="text"
+								class="form-control"
+								placeholder="{{
+									'Pages.GeneralSettings.AddEdit.AppBranding.EmailSetup.WelcomeEmailSubject.placeholder' | translate
+								}}"
+								formControlName="welcomeSubject" />
+						</div>
+					</div>
+
+					<div class="col-md-6">
+						<div
+							*ngIf="f.welcomeEmail.value == true"
+							class="form-group"
+							[ngClass]="{
+								'has-error': f.welcomeBody.invalid && (f.welcomeBody.dirty || f.welcomeBody.touched),
+								'has-success': f.welcomeBody.valid && (f.welcomeBody.dirty || f.welcomeBody.touched)
+							}">
+							<label>{{
+								'Pages.GeneralSettings.AddEdit.AppBranding.EmailSetup.WelcomeEmailBody.title' | translate
+							}}</label>
+							<input
+								type="text"
+								class="form-control"
+								placeholder="{{
+									'Pages.GeneralSettings.AddEdit.AppBranding.EmailSetup.WelcomeEmailBody.placeholder' | translate
+								}}"
+								formControlName="welcomeBody" />
+						</div>
+					</div>
+
+					<div class="col-md-6">
+						<div
+							*ngIf="f.welcomeEmail.value == true"
+							class="form-group"
+							[ngClass]="{
+								'has-error': f.welcomeButton.invalid && (f.welcomeButton.dirty || f.welcomeButton.touched),
+								'has-success': f.welcomeButton.valid && (f.welcomeButton.dirty || f.welcomeButton.touched)
+							}">
+							<label>{{
+								'Pages.GeneralSettings.AddEdit.AppBranding.EmailSetup.RedirectToURLButtonName.title' | translate
+							}}</label>
+							<input
+								type="text"
+								class="form-control"
+								placeholder="{{
+									'Pages.GeneralSettings.AddEdit.AppBranding.EmailSetup.RedirectToURLButtonName.placeholder' | translate
+								}}"
+								formControlName="welcomeButton" />
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- CarouselDetails -->
+		<div class="row section-wrapper mt-4" style="margin-top: 2rem" *ngIf="type == 'diwo'">
+			<div class="form-title">
+				<span>{{ 'Pages.GeneralSettings.AddEdit.AppBranding.CarouselDetails.title' | translate }}</span>
+			</div>
+
+			<div class="row card-body position-relative" *ngFor="let item of CarouselData; let i = index">
+				<!-- DELETE ICON AT HEADER -->
+				<div class="carousel-data-delete-icon">
+					<button class="btn btn-danger delete-btn" (click)="deleteCarousel(i)">
+						<i class="fa fa-trash"></i>
+					</button>
+				</div>
+
+				<div class="row mt-n1 align-items-start">
+					<!-- Left Section: Image Upload (40%) -->
+					<div class="col-md-4">
+						<div class="fileupload-buttonbar">
+							<div class="form-group mt-1">
+								<label>
+									{{ 'Pages.GeneralSettings.AddEdit.AppBranding.CarouselDetails.CarouselImage.title' | translate }}
+									{{ i >= 0 ? i + 1 : '' }}								
+								</label>
+
+								<div class="center drag">
+									<ng-container *ngIf="item.imagePath; else uploadPlaceholder">
+										<div class="uploaded-image-wrapper">
+											<img
+												[src]="assetBasePath + assetBasePath2 + item.imagePath"
+												alt="Uploaded Image"
+												class="uploaded-image-preview" />
+											<button class="btn btn-danger delete-btn-img" (click)="deleteCoursealImage(i)">
+												<i class="fa fa-trash"></i>
+											</button>
+										</div>
+									</ng-container>
+
+									<ng-template #uploadPlaceholder>
+										<i class="fa fa-cloud-upload pad upload-icon" aria-hidden="true"></i>
+										<p class="pad">
+											{{
+												'Pages.GeneralSettings.AddEdit.AppBranding.UploadImage.DragandDropLearnerAppIcon' | translate
+											}}
+										</p>
+										<p class="pad">{{ 'Pages.GeneralSettings.AddEdit.AppBranding.UploadImage.or' | translate }}</p>
+										<label
+											class="btn center pad fileinput-button browse-label"
+											[ngStyle]="{
+												'background-color': appService.whiteBrandingColor,
+												border: '1px solid' + appService.whiteBrandingColor,
+												color: 'white'
+											}">
+											<input id="mediaWeb" type="file" accept="image/*" (change)="uploadCarouselImage(i, $event)" />
+											{{ 'Pages.GeneralSettings.AddEdit.AppBranding.UploadImage.BrowseImage' | translate }}
+										</label>
+										<div class="recommended-size">
+											{{
+												'Pages.GeneralSettings.AddEdit.AppBranding.UploadImage.SpotlightBannerRecommendedSize'
+													| translate
+											}}
+										</div>
+										<div *ngIf="item.isImageValid === false" class="invalid-feedback">
+											{{ 'Please upload an image' | translate }}
+										</div>
+									</ng-template>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- Right Section: Text Content (60%) -->
+					<div class="col-md-8">
+						<!-- First Row: Title (60%) -->
+						<div class="row">
+							<div class="col-md-12">
+								<div class="form-group mt-1">
+									<label [ngClass]="{ isInvalid: item.isTitleValid === false }"
+										>{{ 'Pages.GeneralSettings.AddEdit.AppBranding.CarouselDetails.CarouselTitle.title' | translate }}									
+										{{ i >= 0 ? i + 1 : '' }}	
+									</label>
+									<input
+										type="text"
+										class="form-control"
+										placeholder="{{
+											'Pages.GeneralSettings.AddEdit.AppBranding.CarouselDetails.CarouselTitle.placeholder' | translate
+										}}"
+										[(ngModel)]="item.title"
+										[ngModelOptions]="{ standalone: true }"
+										maxlength="86"
+										(keyup)="validateCharacterLimitForTitle($event.target.value, i)"
+										[class.is-invalid]="item.isTitleValid === false"
+										(input)="validateCarousel()" />
+
+									<span
+										>{{ 'Utils.charactersleft' | translate }} -
+										{{ item.characterRemainsForTitle !== undefined ? item.characterRemainsForTitle : 86 }}/86
+									</span>
+
+									<div
+										*ngIf="item.isTitleValid === false"
+										[ngClass]="{ isInvalid: item.isTitleValid === false }"
+										class="invalid-feedback">
+										<!-- {{ 'Title is required.' | translate }} -->
+										{{
+											'Pages.GeneralSettings.AddEdit.AppBranding.CarouselDetails.CarouselTitle.titleError' | translate
+										}}
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- Second Row: Description & External Link (60%) -->
+						<div class="row">
+							<!-- Description -->
+							<div class="col-md-6">
+								<div class="form-group mt-1">
+									<label [ngClass]="{ isInvalid: item.isDescriptionValid === false }"
+										>{{
+											'Pages.GeneralSettings.AddEdit.AppBranding.CarouselDetails.CarouselDescription.title' | translate
+										}}										
+										{{ i >= 0 ? i + 1 : '' }}	
+									</label>
+									<textarea
+										class="form-control mb-2"
+										placeholder="{{
+											'Pages.GeneralSettings.AddEdit.AppBranding.CarouselDetails.CarouselDescription.placeholder'
+												| translate
+										}}"
+										[(ngModel)]="item.description"
+										[ngModelOptions]="{ standalone: true }"
+										maxlength="180"
+										(keyup)="validateCharacterLimitForDescription($event.target.value, i)"
+										[class.is-invalid]="item.isDescriptionValid === false"
+										(input)="validateCarousel()">
+									</textarea>
+
+									<span
+										>{{ 'Utils.charactersleft' | translate }} -
+										{{
+											item.characterRemainsForDescription !== undefined ? item.characterRemainsForDescription : 180
+										}}/180
+									</span>
+
+									<div
+										*ngIf="item.isDescriptionValid === false"
+										[ngClass]="{ isInvalid: item.isDescriptionValid === false }"
+										class="invalid-feedback">
+										<!-- Description is required. -->
+										{{
+											'Pages.GeneralSettings.AddEdit.AppBranding.CarouselDetails.CarouselDescription.descriptionError'
+												| translate
+										}}
+									</div>
+								</div>
+							</div>
+
+							<!-- External Link -->
+							<div class="col-md-6">
+								<div class="form-group mt-1">
+									<label [ngClass]="{ isInvalid: item.isExternalLinkValid === false }">
+										{{
+											'Pages.GeneralSettings.AddEdit.AppBranding.CarouselDetails.CarouselExternalLink.title' | translate
+										}}
+									</label>
+									<input
+										type="text"
+										class="form-control"
+										placeholder="{{
+											'Pages.GeneralSettings.AddEdit.AppBranding.CarouselDetails.CarouselExternalLink.placeholder'
+												| translate
+										}}"
+										[(ngModel)]="item.externalLink"
+										[ngModelOptions]="{ standalone: true }"
+										(input)="validateExternalLink(item)"
+										[class.is-invalid]="item.isExternalLinkValid === false" />
+									<div
+										*ngIf="item.isExternalLinkValid === false"
+										[ngClass]="{ isInvalid: item.isExternalLinkValid === false }"
+										class="invalid-feedback">
+										{{
+											'Pages.GeneralSettings.AddEdit.AppBranding.SocialMediaProfles.uploadValidLinkError' | translate
+										}}
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- End Right Section -->
+				</div>
+				<!-- End Row -->
+			</div>
+
+			<!-- <button (click)="addCarousel()">Add Carousel</button> -->
+
+			<span *ngIf="CarouselData.length < 4"
+				[innerHTML]="iconObject['add_icon_30']"
+				class="add-carousel-icon"
+				title="{{ 'Pages.GeneralSettings.AddEdit.AppBranding.CustomReport.addbtntooltip' | translate }}"
+				(click)="addCarousel()"></span>
+			
+		</div>
+
+		<!-- GO to HOme PAge -->
+		<div class="row section-wrapper" style="margin-top: 2rem" *ngIf="type == 'drip'">
+			<div class="form-title">
+				<span>{{ 'Pages.GeneralSettings.AddEdit.AppBranding.GotoHome.title' | translate }}</span>
+			</div>
+			<div class="row card-body">
+				<div class="row" style="margin-top: -5px">
+					<div class="col-md-6">
+						<div class="form-group">
+							<label>{{ 'Pages.GeneralSettings.AddEdit.AppBranding.GotoHome.toggle' | translate }}</label>
+							<div>
+								<label class="switch">
+									<input
+										type="checkbox"
+										class="form-control js-switch"
+										formControlName="hideBackBtnToggle"
+										(change)="checkWelcomeEmailToggle($event)" />
+									<span
+										class="slider round"
+										[ngStyle]="{
+											'background-color': f.hideBackBtnToggle.value ? appService.whiteBrandingColor : '#ccc'
+										}">
+									</span>
+								</label>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-6" *ngIf="!f.hideBackBtnToggle.value">
+						<div class="form-group" style="margin-top: 0px">
+							<label>{{ 'Pages.GeneralSettings.AddEdit.AppBranding.GotoHome.defaultTitle' | translate }}</label>
+							<ng-select
+								[items]="GotoHomeButtonList"
+								class="ng-select-wrap"
+								placeholder="{{ 'Pages.GeneralSettings.AddEdit.AppBranding.GotoHome.defaultplaceholder' | translate }}"
+								bindLabel="label"
+								bindValue="value"
+								[multiple]="false"
+								[closeOnSelect]="true"
+								[searchable]="true"
+								[clearable]="false"
+								formControlName="defaultbackval">
+							</ng-select>
+						</div>
+					</div>
+
+					<div class="form-group col-md-12" style="margin-top: 15px"></div>
+				</div>
+			</div>
+		</div>
+
+		<!-- OPT-OUT -->
+		<div
+			class="row section-wrapper"
+			style="margin-top: 2rem"
+			*ngIf="type == 'drip' && appService?.configurable_feature?.whatsApp">
+			<div class="form-title">
+				<span>{{ 'Pages.GeneralSettings.AddEdit.AppBranding.OptOut.title' | translate }}</span>
+			</div>
+			<div class="row card-body">
+				<div class="row" style="margin-top: -5px">
+					<div class="col-md-6">
+						<div class="form-group">
+							<!-- <label>{{ 'Pages.GeneralSettings.AddEdit.AppBranding.OptOut.sendoptinconftocontact' | translate }}</label>
+							<span style="padding-left: 0.5rem; cursor: pointer">
+								<span
+									[innerHTML]="iconObject['info_icon_25']"
+									title="{{
+										'Pages.GeneralSettings.AddEdit.AppBranding.OptOut.sendoptindriptooltip' | translate
+									}}"></span>
+							</span> -->
+
+							<div class="info-icon-div">
+								<div>
+									<label>{{
+										'Pages.GeneralSettings.AddEdit.AppBranding.OptOut.sendoptinconftocontact' | translate
+									}}</label>
+								</div>
+								<div>
+									<label>
+										<span
+											class="info-icon"
+											[innerHTML]="iconObject['info_icon_25']"
+											title="{{
+												'Pages.GeneralSettings.AddEdit.AppBranding.OptOut.sendoptindriptooltip' | translate
+											}}"></span>
+									</label>
+								</div>
+							</div>
+
+							<div>
+								<label class="switch">
+									<input type="checkbox" class="form-control js-switch" formControlName="sendoptinconfm" />
+									<span
+										class="slider round"
+										[ngStyle]="{ 'background-color': f.sendoptinconfm.value ? appService.whiteBrandingColor : '#ccc' }">
+									</span>
+								</label>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-6" *ngIf="f.sendoptinconfm.value">
+						<div class="form-group">
+							<label>{{ 'Pages.GeneralSettings.AddEdit.AppBranding.OptOut.sendoptoutdrip' | translate }}</label>
+							<div>
+								<label class="switch">
+									<input type="checkbox" class="form-control js-switch" formControlName="sendoptoutconfm" />
+									<span
+										class="slider round"
+										[ngStyle]="{
+											'background-color': f.sendoptoutconfm.value ? appService.whiteBrandingColor : '#ccc'
+										}">
+									</span>
+								</label>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="row" *ngIf="f.sendoptinconfm.value">
+					<div class="col-md-6">
+						<div class="form-group">
+							<label>{{ 'Pages.GeneralSettings.AddEdit.AppBranding.OptOut.choosedrip' | translate }}</label>
+							<ng-select
+								[items]="allWhatsAppPost"
+								class="ng-select-wrap"
+								placeholder="{{ 'Pages.GeneralSettings.AddEdit.AppBranding.OptOut.choosedriplaceholder' | translate }}"
+								bindLabel="dripIdTitle"
+								bindValue="id"
+								[multiple]="false"
+								[closeOnSelect]="true"
+								[searchable]="true"
+								[clearable]="false"
+								formControlName="optinconfmdrip">
+							</ng-select>
+						</div>
+					</div>
+
+					<div class="col-md-6" *ngIf="f.sendoptoutconfm.value">
+						<div class="form-group">
+							<label>{{ 'Pages.GeneralSettings.AddEdit.AppBranding.OptOut.chooseoptoutdrip' | translate }}</label>
+							<ng-select
+								[items]="allWhatsAppPost"
+								class="ng-select-wrap"
+								placeholder="{{
+									'Pages.GeneralSettings.AddEdit.AppBranding.OptOut.chooseoptoutdriplaceholder' | translate
+								}}"
+								bindLabel="dripIdTitle"
+								bindValue="id"
+								[multiple]="false"
+								[closeOnSelect]="true"
+								[searchable]="true"
+								[clearable]="false"
+								formControlName="optoutconfmdrip">
+							</ng-select>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-md-12">
+						<div
+							*ngIf="f.sendoptinconfm.value"
+							class="form-group"
+							[ngClass]="{
+								'has-error': f.custkeywords.invalid && (f.custkeywords.dirty || f.custkeywords.touched),
+								'has-success': f.custkeywords.valid && (f.custkeywords.dirty || f.custkeywords.touched)
+							}">
+							<label>{{ 'Pages.GeneralSettings.AddEdit.AppBranding.OptOut.custkeywords' | translate }}</label>
+							<span style="padding-left: 0.5rem; cursor: pointer">
+								<!-- <img
+									src="assets/images/info_icon.svg"
+									style="width: 25px"
+									title="{{ 'Pages.GeneralSettings.AddEdit.AppBranding.OptOut.custkeywordstooltip' | translate }}" /> -->
+								<span
+									[innerHTML]="iconObject['info_icon_25']"
+									title="{{
+										'Pages.GeneralSettings.AddEdit.AppBranding.OptOut.custkeywordstooltip' | translate
+									}}"></span>
+							</span>
+							<input
+								type="text"
+								class="form-control"
+								placeholder="{{
+									'Pages.GeneralSettings.AddEdit.AppBranding.OptOut.custkeywordsplaceholder' | translate
+								}}"
+								formControlName="custkeywords" />
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- SEND OTP TO WhatsApp -->
+		<div
+			class="row section-wrapper"
+			style="margin-top: 2rem"
+			*ngIf="type == 'drip' && appService?.configurable_feature?.whatsApp">
+			<div class="form-title">
+				<span>{{ 'Pages.GeneralSettings.AddEdit.AppBranding.WhatsAppOTP.title' | translate }}</span>
+			</div>
+			<div class="row card-body">
+				<div class="row" style="margin-top: -5px">
+					<div class="col-md-6">
+						<div class="form-group">
+							<label>{{ 'Pages.GeneralSettings.AddEdit.AppBranding.WhatsAppOTP.toggle' | translate }}</label>
+							<div>
+								<label class="switch">
+									<input
+										type="checkbox"
+										class="form-control js-switch"
+										formControlName="isWhatsAppOTP"
+										(change)="checkOTPToggle()" />
+									<span
+										class="slider round"
+										[ngStyle]="{ 'background-color': f.isWhatsAppOTP.value ? appService.whiteBrandingColor : '#ccc' }">
+									</span>
+								</label>
+							</div>
+						</div>
+						<div *ngIf="showOTPTemplateError" class="error">
+							<p>{{ whatsAppOTPTempStatus }}</p>
+						</div>
+					</div>
+				</div>
+				<div class="row" *ngIf="appBrandingForm.value.isWhatsAppOTP">
+					<!-- <div class="col-md-4 form-group">
+						<label>{{ 'Pages.GeneralSettings.AddEdit.AppBranding.WhatsAppOTP.otpPreview' | translate }}</label>
+
+						<div class="opt-preview">
+							<div style="padding: 0.5rem">
+								<p>{{ 'Pages.GeneralSettings.AddEdit.AppBranding.WhatsAppOTP.otpmsg' | translate }}</p>
+							</div>
+							<div class="copy-code">
+								<p>{{ 'Pages.GeneralSettings.AddEdit.AppBranding.WhatsAppOTP.copycode' | translate }}</p>
+							</div>
+						</div>
+					</div> -->
+					<div class="col-md-4 form-group" style="margin-top: 0">
+						<label>{{ 'Pages.GeneralSettings.AddEdit.AppBranding.WhatsAppOTP.otpPreview' | translate }}</label>
+						<img src="assets/images/whatsapp_otp_preview.png" style="width: 45%" alt="" />
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Default WhatsApp Messafe Reply-->
+		<div
+			class="row section-wrapper"
+			style="margin-top: 2rem"
+			*ngIf="type == 'drip' && appService?.configurable_feature?.whatsApp">
+			<div class="form-title">
+				<span>{{ 'Pages.GeneralSettings.AddEdit.AppBranding.whatsAppDefaultReply.title' | translate }}</span>
+			</div>
+			<div class="row card-body">
+				<div class="row" style="margin-top: -5px">
+					<div class="col-md-6">
+						<div class="form-group">
+							<label>{{
+								'Pages.GeneralSettings.AddEdit.AppBranding.whatsAppDefaultReply.setDefaultToggleTitle' | translate
+							}}</label>
+							<div>
+								<label class="switch">
+									<input type="checkbox" class="form-control js-switch" formControlName="setDefaultReply" />
+									<span
+										class="slider round"
+										[ngStyle]="{
+											'background-color': f.setDefaultReply.value ? appService.whiteBrandingColor : '#ccc'
+										}">
+									</span>
+								</label>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-6" *ngIf="f.setDefaultReply.value">
+						<div
+							class="form-group"
+							[ngClass]="{
+								'has-error':
+									f.dripIdForDefaultReply.invalid && (f.dripIdForDefaultReply.dirty || f.dripIdForDefaultReply.touched),
+								'has-success':
+									f.dripIdForDefaultReply.valid && (f.dripIdForDefaultReply.dirty || f.dripIdForDefaultReply.touched)
+							}">
+							<label>{{
+								'Pages.GeneralSettings.AddEdit.AppBranding.whatsAppDefaultReply.selcteDripForDefaultReply.title'
+									| translate
+							}}</label>
+							<ng-select
+								[items]="allWhatsAppPost"
+								class="ng-select-wrap"
+								placeholder="{{
+									'Pages.GeneralSettings.AddEdit.AppBranding.whatsAppDefaultReply.selcteDripForDefaultReply.placeholder'
+										| translate
+								}}"
+								bindLabel="dripIdTitle"
+								bindValue="id"
+								[multiple]="false"
+								[closeOnSelect]="true"
+								[searchable]="true"
+								[clearable]="false"
+								formControlName="dripIdForDefaultReply">
+							</ng-select>
+						</div>
+						<div class="error" *ngIf="f.dripIdForDefaultReply.errors && f.dripIdForDefaultReply.touched">
+							<div *ngIf="f.dripIdForDefaultReply.errors.required">
+								{{
+									'Pages.GeneralSettings.AddEdit.AppBranding.whatsAppDefaultReply.selcteDripForDefaultReply.error'
+										| translate
+								}}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!--------------------------------------------------------------Zoom Sign Up-------------------------------------------------------- -->
+		<div
+			class="row section-wrapper"
+			style="margin-top: 2rem"
+			*ngIf="isZoomSignUp != null && appService?.configurable_feature?.zoom">
+			<div class="form-title">
+				<span>{{ 'Pages.GeneralSettings.AddEdit.AppBranding.zoomSignUp.title' | translate }}</span>
+			</div>
+			<div class="row card-body">
+				<div class="row" style="margin-top: -5px; display: flex; align-items: center">
+					<div class="col-md-3" style="display: flex; align-items: center">
+						<!-- Zoom Sign in Button ---->
+						<div style="margin-right: 15px">
+							<button
+								class="btn border_radius pull-left add-edit-btn"
+								style="float: left !important"
+								[ngStyle]="{
+									'background-color': appService.whiteBrandingColor,
+									border: '1px solid' + appService.whiteBrandingColor,
+									color: 'white'
+								}"
+								[disabled]="isZoomSignUp"
+								(click)="SignUpWithZoom()">
+								{{ 'Pages.GeneralSettings.AddEdit.AppBranding.zoomSignUp.signInButtonText' | translate }}
+							</button>
+						</div>
+						<div>
+							<!-- <p *ngIf="isZoomSignUp == true" style="color: black; margin: 0px">
+								{{ 'Pages.GeneralSettings.AddEdit.AppBranding.zoomSignUp.signInMessage' | translate }}
+								<span [innerHTML]="iconObject['check']"></span>
+							</p> -->
+
+							<div *ngIf="isZoomSignUp == true" style="color: black; margin: 0px" class="info-icon-div">
+								<div>
+									<label>{{ 'Pages.GeneralSettings.AddEdit.AppBranding.zoomSignUp.signInMessage' | translate }}</label>
+								</div>
+								<div>
+									<div [innerHTML]="iconObject['check']"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6"></div>
+					<div class="col-md-3" *ngIf="isZoomSignUp == true">
+						<p style="float: right; cursor: pointer" (click)="revokeZoomSignIn()">
+							{{ 'Pages.GeneralSettings.AddEdit.AppBranding.zoomSignUp.revoketext' | translate }}
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!------------------------------------------------------------END--Zoom Sign Up-------------------------------------------------------- -->
+
+		<!-- Custom REport -->
+		<div class="row section-wrapper" style="margin-top: 2rem" *ngIf="type == 'drip'">
+			<div class="form-title">
+				<span>{{ 'Pages.GeneralSettings.AddEdit.AppBranding.CustomReport.titleName' | translate }}</span>
+			</div>
+			<div class="row card-body">
+				<div class="row" style="margin-top: -5px">
+					<div class="col-md-6" *ngFor="let item of customReportList; let i = index">
+						<div class="form-group">
+							<label>{{ 'Pages.GeneralSettings.AddEdit.AppBranding.CustomReport.title' | translate }}</label>
+
+							<img
+								src="assets/images/cancel_icon.svg"
+								*ngIf="customReportList.length > 1"
+								(click)="removeReport(i)"
+								style="width: 26px; float: right; margin-top: 1px; cursor: pointer" />
+							<input
+								type="text"
+								class="form-control"
+								placeholder="{{ 'Pages.GeneralSettings.AddEdit.AppBranding.CustomReport.placeholder' | translate }}"
+								[(ngModel)]="customReportList[i].report_name"
+								[ngModelOptions]="{ standalone: true }" />
+							<div
+								class="text-right add-circle"
+								style="cursor: pointer; margin-bottom: -9px; margin-top: 8px"
+								*ngIf="i == customReportList.length - 1">
+								<!-- <img
+									src="assets/images/add_icon.svg"
+									style="width: 30px"
+									title="{{ 'Pages.GeneralSettings.AddEdit.AppBranding.CustomReport.addbtntooltip' | translate }}"
+									(click)="addOneMoreReport()" /> -->
+								<span
+									[innerHTML]="iconObject['add_icon_30']"
+									title="{{ 'Pages.GeneralSettings.AddEdit.AppBranding.CustomReport.addbtntooltip' | translate }}"
+									(click)="addOneMoreReport()"></span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="row section-wrapper" style="margin-top: 2rem">
+			<div class="form-title">
+				<span>{{ 'Pages.GeneralSettings.AddEdit.AppBranding.SupportDetails.title' | translate }}</span>
+			</div>
+			<div class="row card-body">
+				<div class="row" style="margin-top: -5px">
+					<div class="col-md-6">
+						<div
+							class="form-group"
+							style="margin-top: 0px"
+							[ngClass]="{
+								'has-error':
+									f.ContactEmailForLearner.invalid &&
+									(f.ContactEmailForLearner.dirty || f.ContactEmailForLearner.touched),
+								'has-success':
+									f.ContactEmailForLearner.valid && (f.ContactEmailForLearner.dirty || f.ContactEmailForLearner.touched)
+							}">
+							<label>{{
+								type === 'drip'
+									? ('Pages.GeneralSettings.AddEdit.AppBranding.SupportDetails.ContactEmailforLearners.Contacttitle'
+									  | translate)
+									: ('Pages.GeneralSettings.AddEdit.AppBranding.SupportDetails.ContactEmailforLearners.title'
+									  | translate)
+							}}</label>
+							<input
+								type="text"
+								class="form-control"
+								placeholder="{{
+									type === 'drip'
+										? ('Pages.GeneralSettings.AddEdit.AppBranding.SupportDetails.ContactEmailforLearners.contactplaceholder'
+										  | translate)
+										: ('Pages.GeneralSettings.AddEdit.AppBranding.SupportDetails.ContactEmailforLearners.placeholder'
+										  | translate)
+								}}"
+								formControlName="ContactEmailForLearner" />
+
+							<div class="error" *ngIf="f.ContactEmailForLearner.errors && f.ContactEmailForLearner.touched">
+								<div *ngIf="f.ContactEmailForLearner.errors.required">
+									{{
+										type === 'drip'
+											? ('Pages.GeneralSettings.AddEdit.AppBranding.SupportDetails.ContactEmailforLearners.contacterror'
+											  | translate)
+											: ('Pages.GeneralSettings.AddEdit.AppBranding.SupportDetails.ContactEmailforLearners.error'
+											  | translate)
+									}}
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-6">
+						<div
+							class="form-group"
+							style="margin-top: 0px"
+							[ngClass]="{
+								'has-error':
+									f.ContactPhoneForLearner.invalid &&
+									(f.ContactPhoneForLearner.dirty || f.ContactPhoneForLearner.touched),
+								'has-success':
+									f.ContactPhoneForLearner.valid && (f.ContactPhoneForLearner.dirty || f.ContactPhoneForLearner.touched)
+							}">
+							<label>{{
+								type === 'drip'
+									? ('Pages.GeneralSettings.AddEdit.AppBranding.SupportDetails.ContactPhoneforLearners.Contacttitle'
+									  | translate)
+									: ('Pages.GeneralSettings.AddEdit.AppBranding.SupportDetails.ContactPhoneforLearners.title'
+									  | translate)
+							}}</label>
+							<input
+								type="text"
+								class="form-control"
+								placeholder="{{
+									type === 'drip'
+										? ('Pages.GeneralSettings.AddEdit.AppBranding.SupportDetails.ContactPhoneforLearners.contactplaceholder'
+										  | translate)
+										: ('Pages.GeneralSettings.AddEdit.AppBranding.SupportDetails.ContactPhoneforLearners.placeholder'
+										  | translate)
+								}}"
+								formControlName="ContactPhoneForLearner" />
+
+							<div class="error" *ngIf="f.ContactPhoneForLearner.errors && f.ContactPhoneForLearner.touched">
+								<div *ngIf="f.ContactPhoneForLearner.errors.required">
+									{{
+										type === 'drip'
+											? ('Pages.GeneralSettings.AddEdit.AppBranding.SupportDetails.ContactPhoneforLearners.contacterror'
+											  | translate)
+											: ('Pages.GeneralSettings.AddEdit.AppBranding.SupportDetails.ContactPhoneforLearners.error'
+											  | translate)
+									}}
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="form-group col-md-12" style="margin-top: 15px"></div>
+				</div>
+			</div>
+		</div>
+	</form>
+
+	<div class="row">
+		<div class="row card-body" style="margin: 0px">
+			<div style="float: right; margin-top: 2rem">
+				<a
+					class="btn btn-o btn-primary border_radius functionalBtn"
+					style="
+						margin-right: 20px;
+						background-color: lightgray !important;
+						color: black;
+						border: 1px solid lightgray !important;
+					"
+					(click)="cancel()"
+					>{{ 'Utils.cancel' | translate }}</a
+				>
+				<a
+					class="btn border_radius functionalBtn"
+					style="margin-right: 0px"
+					[ngStyle]="{
+						'background-color': appService.whiteBrandingColor,
+						border: '1px solid' + appService.whiteBrandingColor,
+						color: 'white'
+					}"
+					(click)="save()"
+					*ngIf="appBranding.appBrandingId"
+					>{{ 'Utils.update' | translate }}</a
+				>
+				<a
+					class="btn border_radius functionalBtn"
+					style="margin-right: 0px"
+					(click)="save()"
+					[ngStyle]="{
+						'background-color': appService.whiteBrandingColor,
+						border: '1px solid' + appService.whiteBrandingColor,
+						color: 'white'
+					}"
+					*ngIf="!appBranding.appBrandingId"
+					>{{ 'Utils.save' | translate }}</a
+				>
+			</div>
+		</div>
+	</div>
+</div>

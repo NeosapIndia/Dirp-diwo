@@ -1,0 +1,341 @@
+<div class="pageDiv user" style="min-height: calc(100vh - 95px)">
+	<div style="margin-top: 2rem">
+		<div class="row">
+			<div class="panel header-panel-white" style="display: flex">
+				<div class="col-md-3" style="padding-left: 0.5%">
+					<span class="mainTitle no-margin pageTitle_Main">{{ 'Pages.AdminUsers.Home.pagetitle' | translate }}</span>
+				</div>
+				<div class="col-md-9" style="padding-right: 0">
+					<a
+						[ngClass]="{ 'edit-disabled': !writePermission }"
+						class="btn border_radius pull-right add-edit-btn"
+						[ngStyle]="{
+							'background-color': appService.whiteBrandingColor,
+							border: '1px solid' + appService.whiteBrandingColor,
+							color: 'white'
+						}"
+						(click)="addUserClick()"
+						>{{ 'Pages.AdminUsers.Home.addusers' | translate }}
+					</a>
+				</div>
+			</div>
+		</div>
+
+		<form [formGroup]="FilterUserColumnForm">
+			<div style="margin-top: 2rem">
+				<div class="row">
+					<div class="panel panel-white" style="padding: 0.55% 0; display: flex">
+						<div class="col-md-4" style="padding-right: 0.55%">
+							<label>{{ 'Pages.AdminUsers.Home.Filter.Dropdown.title' | translate }}</label>
+							<div id="filterDiv" style="max-width: none; width: 100%; margin-left: 0">
+								<ng-multiselect-dropdown
+									[settings]="dropdownSettings"
+									class="mt-2 filter-search-columns"
+									placeholder="{{ 'Pages.AdminUsers.Home.Filter.Dropdown.placeholder' | translate }}"
+									[data]="FilterColumnArray"
+									formControlName="FilterColumn">
+								</ng-multiselect-dropdown>
+							</div>
+						</div>
+						<div class="col-md-5" style="padding-left: 0.5rem; padding-right: 0px">
+							<label>{{ 'Utils.Filter.Search.title' | translate }}</label>
+							<input
+								id="search"
+								class="form-control"
+								(input)="getUserByFilter($event.target.value)"
+								type="text"
+								placeholder="{{
+									this.FilterUserColumnForm.controls['FilterColumn'].value.length == 6
+										? ('Utils.Filter.Search.placeholder1' | translate)
+										: ('Utils.Filter.Search.placeholder2' | translate)
+								}}"
+								autocomplete="off"
+								[(ngModel)]="inputSearchTxt"
+								[ngModelOptions]="{ standalone: true }" />
+						</div>
+						<div class="col-md-3">
+							<label>{{ 'Utils.Filter.Search.datetitle' | translate }}</label>
+							<input
+								type="text"
+								ngxDaterangepickerMd
+								[showDropdowns]="true"
+								onkeydown="return false"
+								[showCustomRangeLabel]="true"
+								[alwaysShowCalendars]="true"
+								[ranges]="ranges"
+								[linkedCalendars]="true"
+								[isInvalidDate]="isInvalidDate"
+								[showClearButton]="true"
+								[showCancel]="true"
+								placeholder="DD-MM-YYYY - DD-MM-YYYY"
+								[autoApply]="false"
+								[locale]="{ applyLabel: 'ok', format: 'DD-MM-YYYY' }"
+								(startDateChanged)="startDateClicked($event)"
+								(endDateChanged)="endDateClicked($event)"
+								class="form-control"
+								autocomplete="off"
+								[(ngModel)]="selectedDate"
+								[ngModelOptions]="{ standalone: true }"
+								(change)="onSelectFilterDate($event)" />
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+
+		<div class="row">
+			<div class="panel header-panel-white" style="display: flex; align-items: center">
+				<div class="col-md-3" style="padding-left: 2px"></div>
+
+				<div class="col-md-9" style="padding-right: 0">
+					<a *ngIf="selectedUsersIds.length == 0" class="total-Count">
+						{{ 'Utils.totalcount' | translate }} :
+						<span>{{ totalCount }}</span>
+					</a>
+
+					<div class="bulk-action" *ngIf="selectedUsersIds.length > 0">
+						<a style="margin-right: 2.5%">
+							{{ 'Utils.count' | translate }} :
+							<span>{{ this.selectedUsersIds.length }}</span>
+						</a>
+						<a
+							class="btn-xs action-delete-btn"
+							[ngStyle]="{
+							color: appService.whiteBrandingColor,
+							border: '1px solid' + appService.whiteBrandingColor,
+							
+						}"
+							(click)="deleteUserPop()"
+							>{{ 'Utils.Action.delete' | translate }}</a
+						>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div style="margin-top: 2rem">
+			<div class="row">
+				<div class="panel panel-white">
+					<div class="sub table-responsive">
+						<table class="table table-striped table-hover" id="sample-table-3">
+							<thead *ngIf="!isApiCall">
+								<tr>
+									<th class="left tb-first-heading tb-line-height" style="padding-left: 1rem">
+										<input
+											type="checkbox"
+											id="selectBoxId"
+											class="widthauto padTop5 purple_checkbox"
+											#selectAll
+											(change)="selectDeselct(selectAll.checked)" />
+									</th>
+									<th
+										class="left tb-head-bg tb-line-height"
+										style="padding-left: 20px; word-wrap: break-word; width: 13vw">
+										{{ 'Pages.AdminUsers.Home.Table.Header.username' | translate }}
+									</th>
+									<th class="left tb-head-bg tb-line-height" style="word-wrap: break-word">
+										{{ 'Pages.AdminUsers.Home.Table.Header.country' | translate }}
+									</th>
+									<th class="left tb-head-bg tb-line-height" style="word-wrap: break-word; width: 10vw">
+										{{ 'Pages.AdminUsers.Home.Table.Header.account' | translate }}
+									</th>
+									<th class="left tb-head-bg tb-line-height" style="word-wrap: break-word">
+										{{ 'Pages.AdminUsers.Home.Table.Header.accrole' | translate }}
+									</th>
+									<th class="left tb-head-bg tb-line-height" style="word-wrap: break-word">
+										{{ 'Pages.AdminUsers.Home.Table.Header.membersince' | translate }}
+									</th>
+									<th class="left tb-head-bg tb-line-height">
+										{{ 'Pages.AdminUsers.Home.Table.Header.userId' | translate }}
+									</th>
+									<th class="left tb-head-bg tb-line-height">
+										{{ 'Pages.AdminUsers.Home.Table.Header.status' | translate }}
+									</th>
+									<th class="left tb-last-heading tb-line-height" style="width: 0vw">
+										{{ 'Pages.AdminUsers.Home.Table.Header.actions' | translate }}
+									</th>
+								</tr>
+							</thead>
+							<tbody *ngIf="!isApiCall">
+								<ng-container
+									*ngFor="
+										let userItem of clientAllUsers
+											| paginate
+												: {
+														itemsPerPage: limit == 'all' ? totalCount : limit,
+														currentPage: page,
+														totalItems: totalCount
+												  };
+										let i = index
+									">
+									<tr>
+										<td class="left" style="padding-left: 1rem; padding-top: 8px">
+											<input
+												[id]="'checkbox-' + userItem.UserId + '-' + userItem.RoleId + '-' + userItem.ClientId"
+												[placeholder]="placeholder()"
+												type="checkbox"
+												class="widthauto padTop5 purple_checkbox"
+												(change)="onCheck($event.target.checked, userItem, i)" />
+										</td>
+
+										<td class="left" style="padding-left: 20px; padding-top: 15px" class="two-row-td-tag">
+											<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+												{{ userItem.User.first }} {{ userItem.User.last }}
+											</p>
+										</td>
+										<td class="left" style="padding-top: 15px" class="two-row-td-tag">
+											<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+												{{ userItem.User.country }}
+											</p>
+										</td>
+										<td class="left" style="padding-top: 15px" class="two-row-td-tag">
+											<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+												{{ userItem.Client.name }}
+											</p>
+										</td>
+										<td class="left" style="padding-top: 15px" class="two-row-td-tag">
+											<span
+												class="ellipsisWidth two-row-p-tag"
+												data-toggle="tooltip"
+												data-placement="top"
+												[title]="userItem.Role.name"
+												style="width: 140px">
+												{{ userItem.Role.name }}
+											</span>
+										</td>
+										<td class="left" style="padding-top: 15px" class="two-row-td-tag">
+											<span class="ellipsisWidth two-row-p-tag">
+												{{ userItem.User.createdAt != null ? (userItem.User.createdAt | DateFormat) : '-' }}
+											</span>
+										</td>
+
+										<td class="left" style="padding-top: 15px" class="two-row-td-tag">
+											<span
+												class="ellipsisWidth two-row-p-tag"
+												data-toggle="tooltip"
+												data-placement="top"
+												[title]="userItem.User.account_id">
+												{{ userItem.User.account_id }}
+											</span>
+										</td>
+										<td class="left" style="padding-top: 13px !important">
+											<span class="status-active" *ngIf="!userItem.User.is_deleted">
+												{{ 'Utils.Status.active' | translate }}
+											</span>
+											<span class="status-inActive" *ngIf="userItem.User.is_deleted">
+												{{ 'Utils.Status.deleted' | translate }}
+											</span>
+										</td>
+										<!-- style="padding: 0.938rem 1rem 0.938rem 0.75rem" -->
+										<td class="left" style="padding: 0.75rem 1rem 0.938rem 0.75rem">
+											<div class="visible-md visible-lg visible-sm visible-xs">
+												<a
+													[ngClass]="{ 'edit-disabled': !writePermission }"
+													[ngStyle]="{
+														'background-color': appService.whiteBrandingColor,
+														border: '1px solid' + appService.whiteBrandingColor,
+														color: 'white'
+													}"
+													class="btn-xs action-edit-btn"
+													(click)="onEditUser(userItem)"
+													style="padding: 0.25rem 1.25rem"
+													>{{ 'Utils.Action.edit' | translate }}
+												</a>
+											</div>
+										</td>
+									</tr>
+								</ng-container>
+							</tbody>
+						</table>
+						<div
+							style="text-align: center; margin-top: 2rem; margin-bottom: 3rem"
+							*ngIf="clientAllUsers && clientAllUsers.length == 0 && !isApiCall && isDataLoaded">
+							<img src="assets/images/No Results.svg" alt="" style="width: 25%" />
+							<h3>{{ 'Utils.nodataToShow' | translate }}</h3>
+							<p style="width: 50%; margin: 0 auto">
+								{{
+									type === 'drip' ? ('Utils.nodataAvaliable' | translate) : ('Utils.diwonodataAvaliable' | translate)
+								}}
+							</p>
+						</div>
+						<div style="text-align: center; margin-top: 9rem; margin-bottom: 9rem" *ngIf="isApiCall">
+							<!-- <img class="asset-img" src="assets/images/Circle-1.gif" style="width: 3%" /> -->
+							<div [innerHTML]="iconObject['search_loader']" class="asset-img"></div>
+						</div>
+						<div style="text-align: center; margin-top: 9rem; margin-bottom: 9rem" *ngIf="!isDataLoaded"></div>
+					</div>
+				</div>
+				<div class="pagination-wrapper" style="width: 100%">
+					<div style="float: right">
+						<span>{{ 'Utils.perpage' | translate }} : &nbsp;</span>
+						<select class="default-dropdown" (change)="changeResult($event.target.value)">
+							<option *ngFor="let count of pageResultCount; let i = index" [selected]="i == 0">
+								{{ count }}
+							</option>
+						</select>
+					</div>
+					<pagination-controls (pageChange)="onPageChangeEvent($event)" style="float: right"> </pagination-controls>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- User Delete MODAL -->
+	<div
+		class="modal fade credit-note"
+		id="deleteAdminUserModal"
+		tabindex="-1"
+		role="dialog"
+		aria-labelledby="myModalLabel"
+		aria-hidden="true"
+		data-backdrop="static"
+		data-keyboard="false">
+		<div class="modal-dialog" style="width: 40%; margin-top: 20%; margin-left: auto; margin-right: auto">
+			<div class="modal-content">
+				<div
+					class="modal-header"
+					[ngStyle]="{
+						'background-color': appService.whiteBrandingColor,
+						border: '1px solid' + appService.whiteBrandingColor,
+						color: 'white'
+					}">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="cancelDripDeletePopUp()">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title" id="myModalLabel">
+						<span>{{ 'Pages.AdminUsers.Home.Modal.Delete.title' | translate }}</span>
+					</h4>
+				</div>
+				<div class="modal-body">
+					<span>{{ 'Pages.AdminUsers.Home.Modal.Delete.confirmation' | translate }}</span>
+					<div
+						class="visible-md visible-lg visible-sm visible-xs"
+						style="text-align: right; margin-bottom: 0.75rem; margin-top: 1.5rem">
+						<a
+							class="btn-xs action-edit-btn action-yes-no"
+							[ngStyle]="{
+								'background-color': appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+								color: 'white'
+							}"
+							style="margin-right: 2%; padding: 7px 20px"
+							(click)="deleteUser()"
+							>{{ 'Utils.yes' | translate }}</a
+						>
+						<a
+							class="btn-xs action-pause-btn action-yes-no"
+							[ngStyle]="{
+								color: appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+								
+							}"
+							style="margin-right: 1%; padding: 7px 23px"
+							(click)="cancelUserDeletePopUp()"
+							>{{ 'Utils.no' | translate }}</a
+						>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

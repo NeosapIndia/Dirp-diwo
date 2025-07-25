@@ -1,0 +1,22 @@
+<div class="wrap-content container" id="container">
+    <!-- start: BREADCRUMB -->
+    <div class="breadcrumb-wrapper">
+        <h4 class="mainTitle no-margin" style="display: inline-block;">Manage User Profile</h4>
+        <a class="btn btn-o btn-primary backbutton-right" style="margin-top: -6px;float:right;"
+            [routerLink]="['/user']">
+            Back
+        </a>
+    </div>
+    <!-- end: BREADCRUMB -->
+    <!-- start: USER PROFILE -->
+    <div class="container-fluid container-fullw">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="tabbable">
+                    <app-user-details [userId]="userId" [showMoreInfo]="true"></app-user-details>
+                </div>
+                <!-- end: FOOTER -->
+            </div>
+        </div>
+    </div>
+</div>

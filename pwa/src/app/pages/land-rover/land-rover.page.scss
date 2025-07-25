@@ -1,0 +1,126 @@
+ion-card {
+	padding-left: 0px;
+	padding-right: 0px;
+	border-radius: 0.4rem;
+	box-shadow: none;
+	margin-top: 1rem;
+	margin-bottom: 1rem;
+}
+
+.header-logo {
+	// height: 45px;
+	height: 2pc;
+	vertical-align: middle;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+img.card-image {
+	object-fit: cover;
+	width: 100%;
+	height: auto;
+}
+
+.ion-card {
+	background: transparent;
+	border-radius: 0px;
+}
+
+.cmp-hero__copy .title p {
+	-webkit-font-smoothing: antialiased;
+	color: #0c121c;
+	font-family: 'Land_Rover_Web_Bold';
+	font-size: 1.4rem;
+	font-weight: 700;
+	letter-spacing: 0.13rem;
+	text-align: left;
+}
+
+.cmp-hero__copy .headerCopy p {
+	margin: 13px 0 0;
+	text-align: left;
+	color: #4a4f54 !important;
+	font-family: 'AvenirNext';
+	font-weight: 500;
+}
+
+.blog {
+	background-color: #f8f9f9;
+}
+
+.card-blog-image {
+	object-fit: cover;
+	width: 100%;
+	height: auto;
+}
+
+.Article__heading p {
+	color: #0c121c;
+	font-size: 18px;
+	font-family: 'Land_Rover_Web_Bold';
+	margin-top: 2rem;
+}
+
+.Article__content .para {
+	color: #4a4f54 !important;
+	-webkit-font-smoothing: antialiased;
+	font-family: 'AvenirNext';
+	font-size: 0.875rem;
+	font-weight: 400;
+	letter-spacing: 0.02rem;
+	margin-top: 2rem;
+}
+
+.cmp_footerNav__heading {
+	color: #0c121c !important;
+	font-size: 10px;
+	font-family: 'AvenirNext';
+	// font-weight: 600;
+	font-weight: 500;
+	letter-spacing: 0.9pt;
+	margin-bottom: 20px;
+}
+
+.social_icons {
+	width: 25px;
+	height: 25px;
+}
+
+.TargetLinks {
+	// padding: 10px 12px 6px 12px;
+	-webkit-box-pack: center;
+	-ms-flex-pack: center;
+	background-color: #0c121c;
+	color: #fff;
+	margin: 0.5rem;
+	height: 50px;
+	width: 50px;
+	text-align: center;
+	padding-top: 0.8rem;
+	margin: 0.5rem;
+}
+
+.social-media-link-sec {
+	display: flex;
+	align-items: center;
+	list-style-type: none;
+}
+
+.upload-btn {
+	margin-top: 1rem;
+	--background: #0c121c;
+	margin-left: 0px;
+	--border-radius: 0px;
+}
+
+@media only screen and (max-width: 767px) {
+	img.card-image {
+		height: 18vh !important;
+	}
+}
+
+@media only screen and (min-width: 1336px) and (max-width: 1920px) {
+	img.card-image {
+		height: 80vh !important;
+	}
+}

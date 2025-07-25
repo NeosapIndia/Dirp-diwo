@@ -1,0 +1,49 @@
+tr {
+	height: 80px;
+}
+
+.pageDiv {
+	padding-left: 1.9%;
+	padding-right: 0.9%;
+}
+
+::ng-deep.assets .md-drppicker.drops-down-auto.ltr.double.show-ranges.shown {
+	left: -19.6rem !important;
+	width: 37.5rem !important;
+}
+
+.image-over-div {
+	position: absolute;
+	top: 0;
+}
+
+.image-over {
+	width: 160px;
+	height: 80px;
+}
+
+.asset-title-prev {
+	overflow: hidden;
+	display: -webkit-box;
+	-webkit-line-clamp: 1;
+	-webkit-box-orient: vertical;
+	padding-left: 10px;
+}
+
+::ng-deep.md-drppicker .btn {
+	border-radius: 8px;
+	margin-left: 8px;
+	padding: 0 12px;
+	background-color: var(--check-box-color);
+}
+::ng-deep.md-drppicker .btn.btn-default {
+	background-color: lightgray;
+}
+
+::ng-deep button.btn.btn-default.clear {
+	background-color: lightgray !important;
+}
+
+::ng-deep.md-drppicker .clear svg {
+	display: none;
+}

@@ -1,0 +1,569 @@
+ion-toolbar.toolbar-head {
+	height: 65px;
+}
+
+p {
+	margin: 0;
+}
+
+.ws-index {
+	// color: var(--branding-color);
+	color: #000;
+	font-size: 1rem;
+	padding-bottom: 0.5rem;
+}
+
+.ws-wrapper {
+	margin: 0.1rem auto 1.4rem;
+	border-radius: 1rem;
+	// box-shadow: 1px 3px 4px 0 rgb(0, 0, 20);
+	// box-shadow: 1px 3px 4px 0 #d2cfd6;
+	padding: 0;
+	border: 2px solid lightgray;
+}
+
+.ws-img {
+	object-fit: contain;
+	display: block;
+	width: 100%;
+	border-radius: 0.9rem 0.9rem 0 0;
+	cursor: pointer;
+	// height: 209.39px;
+}
+
+.description {
+	overflow: hidden;
+	display: -webkit-box;
+	-webkit-line-clamp: 4;
+	-webkit-box-orient: vertical;
+	font-size: 1rem;
+	line-height: 23px;
+	font-weight: 300;
+	text-align: left;
+	cursor: pointer;
+	white-space: pre-line;
+	margin: 1rem 0 0 0;
+}
+
+.trainer-note,
+.learner-note {
+	overflow: hidden;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	font-size: 1rem;
+	line-height: 23px;
+	font-weight: 300;
+	text-align: left;
+}
+
+.learner-note {
+	font-style: italic;
+}
+
+.trainer-note {
+	margin: 1rem 0;
+	color: #605757;
+}
+
+.edit-learner-div {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin: 1rem 0 0;
+}
+
+.show-learner-note {
+	width: 87%;
+	border-radius: 0.7rem;
+	padding: 0.7rem;
+	// margin-right: 0.7rem;
+	background-color: #f0eeee;
+}
+
+.show-learner-note-rtl {
+	margin-left: 0.7rem;
+}
+
+.show-learner-note-ltr {
+	margin-right: 0.7rem;
+}
+
+.learner-input {
+	width: 100%;
+	margin-top: 1rem;
+	border-radius: 1rem;
+	font-size: 1rem;
+	border: none;
+	margin-left: -0.25rem;
+	// color: #fff;
+	background: white;
+}
+
+.flag-div {
+	display: flex;
+	justify-content: flex-end;
+	// margin-right: -1rem;
+	position: relative;
+}
+
+.flag-div-rtl {
+	margin-left: -1rem;
+}
+
+.flag-div-ltr {
+	margin-right: -1rem;
+}
+
+.activity-type {
+	// position: absolute;
+	// left: 0;
+	// height: 100%;
+	// border-radius: 0.7rem;
+	// display: flex;
+	// align-items: center;
+	// justify-content: flex-start;
+	// width: 60%;
+	flex: 1;
+	display: flex;
+	align-items: center;
+	max-height: 6vh;
+	cursor: pointer;
+}
+
+.activity-type-all {
+	// width: 50%;
+}
+
+.flag-group {
+	// width: 40%;
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+}
+
+.flag-group-all {
+	// width: 50%;
+}
+
+.flag-icons,
+.flag-check-icons {
+	width: 2.5rem;
+	height: 2.5rem;
+	margin-right: 0.8rem;
+}
+
+.flag-icons-rtl,
+.flag-check-icons-rtl {
+	margin-left: 0.8rem;
+}
+
+.flag-icons-ltr,
+.flag-check-icons-ltr {
+	margin-right: 0.8rem;
+}
+
+.back-to-top-btn {
+	background: var(--branding-color);
+	position: fixed;
+	border-radius: 50%;
+	width: 3rem;
+	height: 3rem;
+	color: #fff;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	transform: translateX(-50%);
+	right: 3%;
+	bottom: 5%;
+	z-index: 999;
+
+	#top-icon {
+		height: 45%;
+		width: 45%;
+	}
+}
+
+.note-btn {
+	margin: 0.5rem 0 0.75rem 0;
+	height: 2.3rem;
+	font-size: 1rem;
+	--color: white;
+	text-transform: none;
+	box-shadow: none;
+	--background: var(--branding-color);
+	// --border-radius: 2rem;
+	--border-radius: 0.625rem;
+}
+
+.worksheet-data {
+	padding: 1rem;
+}
+
+#add-notes-label {
+	width: 100%;
+	background-color: #f0eeee;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin: 1rem 0 0;
+	border-radius: 0.7rem;
+	height: 3rem;
+}
+
+.icon-border {
+	border-radius: 0.7rem;
+	border: 1px solid var(--branding-color);
+	height: 4.063rem;
+	width: 4.063rem;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.note-modal-icons {
+	display: flex;
+	justify-content: flex-start;
+	margin-top: 1rem;
+}
+
+.modal-action-btn-div {
+	display: flex;
+	justify-content: space-between;
+	margin-top: 0.5rem;
+}
+
+.worksheet-type-icon {
+	width: 2.5rem;
+	height: 2.5rem;
+}
+
+.worksheet-type-quiz-icon,
+.worksheet-type-poll-icon {
+	width: 2.5rem;
+	height: 2.5rem;
+}
+
+.learning-content-icon {
+	// width: 1.375rem;
+	// height: 1.375rem;
+	width: 2.5rem;
+	height: 2.5rem;
+}
+
+.worksheet-guide-icon {
+	width: 3.5rem;
+	height: 3.5rem;
+	margin-left: -3px;
+}
+
+.worksheet-disc-type-icon {
+	// width: 2rem;
+	// height: 2rem;
+	width: 2.5rem;
+	height: 2.5rem;
+}
+
+.wordcloud-type-icon {
+	// width: 1.875rem;
+	// height: 1.125rem;
+	width: 2.5rem;
+	height: 2.5rem;
+	margin-left: 0.3rem;
+}
+
+.worksheet-type-text {
+	// margin-left: 0.5rem;
+	font-size: 1.25rem;
+}
+
+.worksheet-type-text-rtl {
+	margin-right: 0.5rem;
+}
+
+.worksheet-type-text-ltr {
+	margin-left: 0.5rem;
+}
+
+.worksheet-type-text-all {
+	margin-left: 0.5rem;
+	width: 80%;
+}
+
+ion-title {
+	padding: 0px;
+	padding-left: 0.5rem;
+	padding-right: 0.5rem;
+}
+
+.btn-print {
+	--border-radius: 4px;
+	--padding-top: 0;
+	--padding-bottom: 0;
+	--padding-start: 1.1em;
+	--padding-end: 1.1em;
+	--transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1), background-color 15ms linear, color 15ms linear;
+	margin: 4px 2px;
+	height: 36px;
+	font-size: 14px;
+	font-weight: 500;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	--background: var(--branding-color);
+}
+
+.img-head {
+	// height: 203px;
+	height: 100%;
+	overflow: hidden;
+}
+
+.fav-icon-select {
+	width: 2.5rem;
+	height: 2.5rem;
+	mask: url('/assets/images/workbook/favorite_selected_icon.svg') no-repeat center / contain;
+	-webkit-mask: url('/assets/images/workbook/favorite_selected_icon.svg') no-repeat center / contain;
+	background-color: var(--branding-color);
+}
+
+.trainer-icon-select {
+	width: 2.5rem;
+	height: 2.5rem;
+	mask: url('/assets/images/workbook/trainerNoteShow.svg') no-repeat center / contain;
+	-webkit-mask: url('/assets/images/workbook/trainerNoteShow.svg') no-repeat center / contain;
+	background-color: var(--branding-color);
+}
+
+//WEB Optimization
+.main-col {
+	margin: 0 auto;
+}
+
+.ion-main-col-desktop {
+	max-width: 60.5% !important;
+	width: 100% !important;
+}
+
+.ion-main-row-desktop {
+	display: flex;
+	flex-direction: column;
+}
+
+.learner-input-desktop {
+	border-radius: 0.5rem !important;
+	// border: 2px solid lightgray !important;
+	padding: 0.5rem !important;
+}
+
+.ion-title-desktop {
+	text-align: center;
+	width: 50%;
+	margin: 0 auto;
+}
+
+.ion-worksheet-index-desktop {
+	text-align: center;
+}
+
+// .header-content {
+// 	// display: flex;
+// 	align-items: center;
+// 	justify-content: center;
+// 	// width: 94.5%;
+// 	width: 89.5%;
+// 	position: relative;
+// 	margin: 0 auto;
+// 	padding-top: 0.4rem;
+// }
+
+// .back-button {
+// 	// position: absolute;
+// 	left: 0.313rem;
+// 	cursor: pointer;
+// }
+
+.header-content {
+	display: flex;
+	align-items: center;
+	justify-content: flex-start; /* Align items to the start, title will auto-center */
+	width: 89.5%;
+	margin: 0 auto;
+	padding-top: 0.4rem;
+}
+
+.back-button {
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	margin-right: 1rem; /* Adds spacing between back button and title */
+}
+
+//   .header-title {
+// 	flex-grow: 1; /* Allows the title to take up remaining space */
+// 	text-align: center;
+// 	white-space: nowrap;
+// 	overflow: hidden;
+// 	text-overflow: ellipsis; /* Prevents overflow of long titles */
+//   }
+
+.center-title {
+	// width: 60%;
+	text-align: center;
+	flex-grow: 1;
+	font-size: 1.2rem;
+	margin: 0 auto;
+	// margin: 1rem auto 0 auto;
+	width: 100%;
+	overflow: hidden;
+	display: -webkit-box;
+	-webkit-line-clamp: 1;
+	-webkit-box-orient: vertical;
+	font-size: 1.45rem;
+	font-weight: 540;
+}
+
+.cancel {
+	color: var(--branding-color);
+}
+
+.save {
+	--background: var(--branding-color);
+}
+//////////////////////////////
+.lesson-check-icon {
+	border-radius: 50%;
+	background-color: #00aa4d;
+	width: 1.5rem;
+	height: 1.5rem;
+}
+
+.worksheet-video-icon {
+	width: 2.5rem;
+	height: 2.5rem;
+}
+
+///MObile Responsiveness
+@media (max-width: 767px) {
+	.worksheet-type-text {
+		font-size: 1rem !important;
+	}
+
+	.worksheet-type-icon,
+	.learning-content-icon,
+	.worksheet-disc-type-icon {
+		width: 1.375rem !important;
+		height: 1.375rem !important;
+	}
+
+	.worksheet-guide-icon {
+		width: 1.925rem;
+		height: 1.925rem;
+	}
+
+	.worksheet-type-quiz-icon,
+	.worksheet-type-poll-icon {
+		width: 1.5rem !important;
+		height: 1.5rem !important;
+	}
+
+	.center-title {
+		font-size: 1.25rem !important;
+	}
+
+	.wordcloud-type-icon {
+		width: 1.375rem !important;
+		height: 1.375rem !important;
+	}
+
+	.flag-icons {
+		width: 1.875rem !important;
+		height: 1.875rem !important;
+	}
+
+	.flag-check-icons {
+		width: 1.6rem !important;
+		height: 1.6rem !important;
+	}
+
+	.worksheet-video-icon {
+		width: 1.75rem !important;
+		height: 1.75rem !important;
+	}
+}
+
+@media only screen and (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+}
+
+@media only screen and (min-width: 1024px) and (max-width: 1366.98px) and (orientation: landscape) {
+}
+
+/* iPad Pro - Adjusting height separately */
+@media only screen and (min-width: 1366px) and (max-width: 1366.98px) and (orientation: landscape) {
+}
+
+///// scorm content ////
+.ion-main-col-desktop-scorm {
+  max-width: 92% !important;
+  width: 100% !important;
+  height: calc(100vh - 56px); 
+  display: flex;
+  flex-direction: column;
+}
+/////
+
+.custom-toolbar-container{
+	margin-top:1.5rem; 
+	margin-bottom:-1.5rem; 
+	border-bottom: none !important;
+	border-left: none !important;
+	outline: 1px solid #ccc;
+	outline-offset: -1px;
+}
+
+@media (max-width: 768px) {
+  .custom-toolbar-container .ql-formats {
+    margin-right: 0px !important;
+  }
+}
+
+.zoom-container {
+	position: relative;
+	overflow: visible !important;	
+	z-index: 2;
+}
+
+.zoomable-img {
+	max-width: 100%;
+	max-height: 80vh;
+	display: block;
+	margin: 0 auto;
+	transform-origin: center center;
+	transition: transform 0.3s ease;
+	will-change: transform;
+	touch-action: pan-y;
+}
+
+.zoom-overlay {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 9999 !important;
+  object-fit: contain;
+  background-color: transparent !important;
+  pointer-events: none;
+  touch-action: none; 
+}
+
+
+.hide-during-zoom {
+  visibility: hidden !important;
+}
+
+/* Only disable touch when zoom is active */
+.zoom-active {
+  touch-action: none !important;
+}
+
+

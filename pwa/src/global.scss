@@ -1,0 +1,376 @@
+/*
+ * App Global CSS
+ * ----------------------------------------------------------------------------
+ * Put style rules here that you want to apply globally. These styles are for
+ * the entire app and not just one component. Additionally, this file can be
+ * used as an entry point to import other CSS/Sass files to be included in the
+ * output CSS.
+ * For more information on global stylesheets, visit the documentation:
+ * https://ionicframework.com/docs/layout/global-stylesheets
+ */
+
+/* Core CSS required for Ionic components to work properly */
+
+@font-face {
+	font-family: 'Land_Rover_Web_Bold';
+	src: url('./assets/images/landrover/fonts/3757-font.ttf') format('opentype');
+}
+
+@font-face {
+	font-family: 'AvenirNext';
+	src: url('./assets/images/landrover/fonts/AvenirLTStd-Black.otf') format('opentype');
+	src: url('./assets/images/landrover/fonts/AvenirLTStd-Book.otf') format('opentype');
+	src: url('./assets/images/landrover/fonts/AvenirLTStd-Roman.otf') format('opentype');
+}
+
+@import '~@ionic/angular/css/core.css';
+
+/* Basic CSS for apps built with Ionic */
+
+@import '~@ionic/angular/css/normalize.css';
+@import '~@ionic/angular/css/structure.css';
+@import '~@ionic/angular/css/typography.css';
+@import '~@ionic/angular/css/display.css';
+
+/* Optional CSS utils that can be commented out */
+
+@import '~@ionic/angular/css/padding.css';
+@import '~@ionic/angular/css/float-elements.css';
+@import '~@ionic/angular/css/text-alignment.css';
+@import '~@ionic/angular/css/text-transformation.css';
+@import '~@ionic/angular/css/flex-utils.css';
+@import url('./assets/css/googleFont.css');
+
+/*
+ * App CSS
+ * ----------------------------------------------------------------------------
+ * Imports a file that can contain Sass/CSS that should be used throughout
+ * the entire app.
+ */
+
+@import './app/app.scss';
+
+/* in-flight clone */
+
+.gu-mirror {
+	position: fixed !important;
+	margin: 0 !important;
+	z-index: 9999 !important;
+	opacity: 0.8;
+	-ms-filter: 'progid:DXImageTransform.Microsoft.Alpha(Opacity=80)';
+	filter: alpha(opacity=80);
+	pointer-events: none;
+}
+
+/* high-performance display:none; helper */
+
+.gu-hide {
+	left: -9999px !important;
+}
+
+/* added to mirrorContainer (default = body) while dragging */
+
+.gu-unselectable {
+	-webkit-user-select: none !important;
+	-moz-user-select: none !important;
+	-ms-user-select: none !important;
+	user-select: none !important;
+}
+
+/* added to the source element while its mirror is dragged */
+
+.gu-transit {
+	opacity: 0.2;
+	-ms-filter: 'progid:DXImageTransform.Microsoft.Alpha(Opacity=20)';
+	filter: alpha(opacity=20);
+}
+
+/* For small screens (sm) */
+@media (max-width: 767px) {
+	ion-popover {
+		--width: 90% !important;
+		/* Your CSS rules for small screens (sm) */
+	}
+}
+
+/* For medium screens (md) */
+@media (min-width: 768px) {
+	ion-popover {
+		--width: 66% !important;
+		// --offset-x: 13% !important;
+		/* Your CSS rules for medium screens (md) */
+	}
+}
+
+/* For large screens (lg) */
+@media (min-width: 992px) {
+	ion-popover {
+		--width: 55% !important;
+		// --offset-x: 11% !important;
+		/* Your CSS rules for large screens (lg) */
+	}
+}
+
+@media (min-width: 1024px) {
+	ion-popover {
+		width: 50% !important;
+	}
+}
+
+//-----------custom Field CSS----------------------//
+.sd-root-modern {
+	background-color: #ffffff !important;
+	--sd-base-padding: 0px !important;
+	--sd-base-vertical-padding: 0px !important;
+	--sd-page-vertical-padding: 0px !important;
+}
+
+.sd-root-modern.sd-root-modern--full-container {
+	overflow: visible !important;
+}
+
+.sd-element__title .sd-element__num {
+	display: none;
+}
+
+.sd-element__title span {
+	font-weight: 400 !important;
+	font-size: 1rem !important;
+	font-family: 'Poppins', sans-serif !important;
+	margin-bottom: 8px !important;
+	color: #000;
+}
+
+.sd-question__required-text {
+	color: #e60a3e !important;
+}
+
+.sd-question__header--location-top {
+	padding-bottom: 0px !important;
+}
+
+.sd-text__content input {
+	height: 48px !important;
+	border: 2px solid rgba(0, 0, 0, 0.07) !important;
+	border-radius: 8px !important;
+	padding: 0px 15px !important;
+	font-size: 0.9rem !important;
+	font-family: 'Poppins', sans-serif !important;
+	font-weight: 400 !important;
+	transition: border 200ms ease-in-out;
+}
+
+.sd-element--with-frame {
+	box-shadow: none !important;
+	background: none !important;
+}
+
+.sv-action__content {
+	display: none !important;
+}
+
+.sd-page {
+	padding: 0px !important;
+	width: 100% !important;
+	flex-wrap: wrap !important;
+}
+
+.sd-body.sd-body--static {
+	max-width: 100% !important;
+	padding-bottom: 0px !important;
+	padding-top: 0px !important;
+}
+
+.sd-body .sd-body__page {
+	min-width: 100% !important;
+}
+
+.sd-page {
+	flex-direction: row !important;
+}
+
+.sd-row.sd-page__row {
+	margin-top: 0px !important;
+	width: 100% !important;
+	padding-top: 14px !important;
+}
+
+.sd-row:first-of-type {
+	width: 100% !important;
+}
+
+.sd-body--empty {
+	display: none !important;
+}
+
+.sd-error {
+	background: white !important;
+	color: #e60a3e !important;
+	font-size: 0.9rem !important;
+	font-weight: 400 !important;
+	font-family: 'Poppins', sans-serif !important;
+	padding: 3px 0px !important;
+}
+
+.sd-input {
+	background-color: transparent !important;
+	box-shadow: none !important;
+	padding: 0px !important;
+}
+
+.sd-dropdown {
+	padding-inline-end: 0px !important;
+	padding-inline-start: 0px !important;
+	height: 48px !important;
+	color: #e60a3e !important;
+	font-size: 0.9rem !important;
+	font-weight: 400 !important;
+	font-family: 'Poppins', sans-serif !important;
+	// var(--ion-border-color, var(--ion-color-step-150, rgba(0, 0, 0, 0.13 )))
+	// border-bottom: 1px solid rgba(0, 0, 0, 0.13) !important;
+	border-bottom: 2px solid rgba(0, 0, 0, 0.07) !important;
+}
+
+input[type='text'],
+input[type='number'],
+textarea {
+	background-color: transparent !important;
+}
+
+.sd-dropdown__value {
+	display: inline-block;
+	padding: 12px 15px !important;
+	font-family: 'Poppins', sans-serif !important;
+	color: #282828 !important;
+	font-size: 0.9rem !important;
+	font-weight: 400 !important;
+	margin-top: 1rem;
+}
+
+.sv-dropdown-popup .sv-list__item span {
+	font-family: 'Poppins', sans-serif !important;
+	font-size: 0.9rem !important;
+	font-weight: 400 !important;
+	color: rgba(0, 0, 0, 0.87) !important;
+}
+
+.sv-list__item.sv-list__item--selected .sv-list__item-body {
+	background-color: #f9fafb !important;
+	color: #333 !important;
+	font-weight: 400 !important;
+}
+
+.sv-popup--dropdown-overlay .sv-popup__body-content {
+	height: auto !important;
+}
+
+.sv-popup {
+	left: unset !important;
+	right: unset !important;
+	width: unset !important;
+	height: auto !important;
+	position: absolute !important;
+}
+
+.sd-dropdown__filter-string-input {
+	font-weight: 400 !important;
+}
+
+.sd-comment {
+	border-radius: 8px !important;
+	font-family: 'Poppins', sans-serif !important;
+	padding: 12px 15px !important;
+}
+
+.sd-root-modern--mobile .sd-body.sd-body--responsive,
+.sd-root-modern--mobile .sd-body.sd-body--static {
+	padding: 0 !important;
+}
+
+ion-content {
+	--background: var(--ion-dynamic-background-color) !important;
+}
+
+.ion-item-background {
+	--background: var(--ion-dynamic-background-color) !important;
+}
+
+ion-toolbar {
+	--background: var(--ion-toolbar-background-color) !important;
+}
+
+//To Hide default eye icon in Edge Browser
+input[type='password']::-ms-reveal,
+input[type='password']::-ms-clear {
+	display: none !important;
+}
+
+app-cms-video .media-cms-player {
+	max-height: 100vh !important;
+}
+
+app-cms-video .media-cms-player video {
+	max-height: 100vh !important;
+}
+
+mux-player::part(bottom) {
+	--bottom-play-button: block;
+	--bottom-seek-backward-button: block;
+	--bottom-seek-forward-button: none;
+	--bottom-time-display: block;
+	--bottom-mute-button: block;
+
+	// --media-rendition-menu-button-display: block;
+	// --bottom-settings-button: block;
+
+	// --media-pip-button-display: block;
+	// --bottom-fullscreen-button: block;
+}
+
+//desktop play button css
+mux-player::part(center play button pre-play) {
+	--media-control-background: none;
+	display: none;
+}
+
+// mobile play bubtton css
+
+// mux-player::part(center play button) {
+// 	--media-control-background: none;
+// 	display: none;
+// }
+
+mux-player::part(time range) {
+	transition: none !important;
+}
+
+mux-player::part(control-bar bottom) {
+	transition: none !important;
+}
+
+// mux-player {
+// 	--media-background-color: #f8f9fa;
+// }
+
+// .media-cms-player {
+// 	--media-background-color: #f8f9fa;
+// }
+
+/* Zoom in worksheet and all worksheet */
+// .zoom-overlay {
+//   position: fixed !important;
+//   top: 0;
+//   left: 0;
+//   width: 100vw !important;
+//   height: 100vh !important;
+//   z-index: 9999 !important;
+//   object-fit: contain;
+//   background-color: transparent !important;
+//   pointer-events: none;  
+// }
+
+.hide-during-zoom {
+  visibility: hidden !important;
+}
+
+ 

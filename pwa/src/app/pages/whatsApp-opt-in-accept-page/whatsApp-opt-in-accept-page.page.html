@@ -1,0 +1,25 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-title>{{'Utils.WhatsApOptIn' | translate}}</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding-horizontal">
+    <ion-grid>
+        <ion-row>
+            <ion-col>
+                <div>
+
+
+                </div>
+                <div>
+                    <ion-button (click)="acceptPolicyByUser(true)">{{'Utils.accept' | translate}}</ion-button>
+                </div>
+                <div>
+                    <ion-button (click)="acceptPolicyByUser(false)">{{'Utils.notAccept' | translate}}</ion-button>
+                </div>
+            </ion-col>
+        </ion-row>
+
+    </ion-grid>
+</ion-content>

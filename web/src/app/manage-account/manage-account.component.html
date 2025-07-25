@@ -1,0 +1,167 @@
+<div class="container-fluid" style="margin: 2% 2% 2% 3%">
+	<div class="row add-edit-main-row">
+		<span style="margin-left: 0.25rem; color: #637373; margin-right: 2px; cursor: pointer">{{
+			'Pages.ManageAccounts.pagetitle' | translate
+		}}</span>
+	</div>
+
+	<div class="row section-wrapper" style="margin-top: 2rem">
+		<div class="form-title">
+			<span>{{ 'Pages.ManageAccounts.ProfileInformation.title' | translate }}</span>
+		</div>
+		<div class="row card-body">
+			<div class="row">
+				<div class="col-md-2">
+					<div class="form-group">
+						<label>{{ 'Pages.ManageAccounts.ProfileInformation.userId' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-4 valueCss">
+					{{ appService?.userPersonalData?.account_id ? appService.userPersonalData.account_id : '-' }}
+				</div>
+
+				<div class="col-md-2">
+					<div class="form-group">
+						<label>{{ 'Pages.ManageAccounts.ProfileInformation.role' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-4 valueCss">{{ userRole ? userRole : '-' }}</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-2">
+					<div class="form-group">
+						<label>{{ 'Pages.ManageAccounts.ProfileInformation.firstname' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-4 valueCss">
+					{{ appService?.userPersonalData?.first ? appService.userPersonalData.first : '-' }}
+				</div>
+				<div class="col-md-2">
+					<div class="form-group">
+						<label>{{ 'Pages.ManageAccounts.ProfileInformation.lastname' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-4 valueCss">
+					{{ appService?.userPersonalData?.last ? appService.userPersonalData.last : '-' }}
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-2">
+					<div class="form-group">
+						<label>{{ 'Pages.ManageAccounts.ProfileInformation.email' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-4 valueCss">
+					{{ appService?.userPersonalData?.email ? appService.userPersonalData.email : '-' }}
+				</div>
+				<div class="col-md-2">
+					<div class="form-group">
+						<label>{{ 'Pages.ManageAccounts.ProfileInformation.mobileno' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-4 valueCss">
+					{{ appService?.userPersonalData?.phone ? appService.userPersonalData.phone : '-' }}
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-2">
+					<div class="form-group">
+						<label>{{ 'Pages.ManageAccounts.ProfileInformation.country' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-4 valueCss">{{ user.country ? user.country : '-' }}</div>
+				<div class="col-md-2">
+					<div class="form-group">
+						<label>{{ 'Pages.ManageAccounts.ProfileInformation.state' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-4 valueCss">{{ user.state ? user.state : '-' }}</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-2">
+					<div class="form-group">
+						<label>{{ 'Pages.ManageAccounts.ProfileInformation.city' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-4 valueCss">{{ user.city ? user.city : '-' }}</div>
+				<div class="col-md-2">
+					<div class="form-group">
+						<label>{{ 'Pages.ManageAccounts.ProfileInformation.zipcode' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-4 valueCss">{{ user.zipCode ? user.zipCode : '-' }}</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-2">
+					<div class="form-group">
+						<label>{{ 'Pages.ManageAccounts.ProfileInformation.clientname' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-4 valueCss">{{ client.name ? client.name : '-' }}</div>
+				<!-- <div class="col-md-2">
+                    <div class="form-group">
+                        <label>{{'Pages.ManageAccounts.ProfileInformation.role' | translate }}</label>
+                    </div>
+                </div>
+                <div class="col-md-4 valueCss">{{userRole ? userRole : '-'}}</div> -->
+			</div>
+		</div>
+	</div>
+
+	<div class="row section-wrapper" style="margin-top: 2rem">
+		<div class="form-title">
+			<span>{{ 'Pages.ManageAccounts.ProfileInformation.clientprofile' | translate }}</span>
+		</div>
+		<div class="row card-body">
+			<div class="row">
+				<div class="col-md-2">
+					<div class="form-group">
+						<label>{{ 'Pages.ManageAccounts.ProfileInformation.id' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-4 valueCss">{{ client.client_id ? client.client_id : '-' }}</div>
+				<div class="col-md-2">
+					<div class="form-group">
+						<label>{{ 'Pages.ManageAccounts.ProfileInformation.name' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-4 valueCss">{{ client.name ? client.name : '-' }}</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-2">
+					<div class="form-group">
+						<label>{{ 'Pages.ManageAccounts.ProfileInformation.parentname' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-4 valueCss">{{ parentClient ? parentClient.name : '-' }}</div>
+				<div class="col-md-2">
+					<div class="form-group">
+						<label>{{ 'Pages.ManageAccounts.ProfileInformation.country' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-4 valueCss">{{ clientCountries ? clientCountries : '-' }}</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-2">
+					<div class="form-group">
+						<label>{{ 'Pages.ManageAccounts.ProfileInformation.status' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-4 valueCss">{{ clientStatus !== null ? clientStatus : '-' }}</div>
+				<div class="col-md-2">
+					<div class="form-group">
+						<label>{{ 'Pages.ManageAccounts.ProfileInformation.category' | translate }}</label>
+					</div>
+				</div>
+				<div class="col-md-4 valueCss">{{ client.category ? client.category : '-' }}</div>
+			</div>
+		</div>
+	</div>
+</div>

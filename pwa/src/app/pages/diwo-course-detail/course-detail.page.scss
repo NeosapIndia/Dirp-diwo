@@ -1,0 +1,792 @@
+// ion-toolbar {
+// 	padding: 0 1rem;
+// }
+
+.header-logo {
+	height: 2.188rem;
+	vertical-align: middle;
+	margin-top: 0.625rem;
+	margin-bottom: 0.25rem;
+}
+
+ion-toolbar.toolbar-head {
+	height: 4.063rem;
+}
+
+ion-grid {
+	padding: 0;
+}
+
+.page-wrapper {
+	display: flex;
+	margin-bottom: 2px;
+}
+
+.page-wrapper2 {
+	padding: 0px;
+	margin: 1rem auto 0;
+}
+
+.back-to-top-btn {
+	background: var(--branding-color);
+	position: fixed;
+	border-radius: 50%;
+	width: 3rem;
+	height: 3rem;
+	color: #fff;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	transform: translateX(-50%);
+	right: 3%;
+	bottom: 5%;
+	z-index: 999;
+
+	#top-icon {
+		height: 45%;
+		width: 45%;
+	}
+}
+
+p {
+	margin: 0;
+}
+
+//WEB Optimization
+.ion-main-col-desktop {
+	// max-width: 40% !important;
+	max-width: 95% !important;
+	width: 100% !important;
+	margin-top: 0 !important;
+}
+
+.ion-main-row-desktop {
+	display: flex;
+	flex-direction: column;
+	margin-top: 1rem;
+}
+
+.ion-title-desktop {
+	width: 50%;
+	margin: 0 auto;
+}
+
+//course detail
+
+// .course-detail-section {
+// 	flex: 1;
+// 	// background: #f7f7f7;
+// 	background: #a8c4c747;
+// 	padding: 20px;
+// 	min-width: 250px;
+// }
+
+.course-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
+}
+
+.learnerstatus {
+	font-size: 0.875rem;
+	color: #7f7f7f;
+	white-space: normal;
+	padding-top: 0.2rem;
+	font-weight: 700;
+}
+
+.course-title-row ion-row {
+	display: flex;
+	justify-content: space-between;
+	align-items: center; /* Keeps vertical alignment consistent */
+	width: 100%;
+}
+
+.course-title {
+	font-size: 1.7rem;
+	/* padding: 0rem 0 .2rem; */
+	overflow: hidden;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 1;
+	font-weight: 700;
+	margin-bottom: 0.5rem;
+	word-wrap: break-word;
+}
+
+.course-subtitle {
+	font-size: 1rem;
+	font-weight: 400;
+	overflow: hidden;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 1;
+
+	display: none;
+}
+
+.course-description {
+	font-size: 0.875rem;
+	padding: 0.2rem 0;
+	font-weight: 400;
+	overflow: hidden;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 3;
+}
+
+.outcomes-section {
+	margin-top: 0.5rem;
+}
+
+.outcomes-section,
+.module-outcomes-section {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+}
+
+.module-outcomes-section {
+	margin-top: 1.7rem;
+	margin-bottom: 1.7rem;
+}
+
+.module-outcomes-section-no-descrip {
+	margin-top: 0.1rem !important;
+}
+
+.l_outcomes-btn,
+.module_l_outcomes-btn {
+	// flex: 1 1 auto;
+	// max-width: 100px;
+	text-align: center;
+	// white-space: break-spaces;
+	text-overflow: ellipsis;
+	background: lightgray;
+	color: #000;
+	font-size: 0.7rem;
+	text-transform: none;
+	// border-radius: 0.625rem;
+	box-shadow: none;
+	cursor: default;
+	// padding: 0.2rem;
+	// margin: 0.5rem;
+	border: 1px solid #ccc;
+	// display: flex;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+	// padding: 0.375rem 1rem;
+	// border-radius: 16px;
+	padding: 0.1rem 0.5rem;
+	border-radius: 0.313rem;
+	overflow: hidden;
+	white-space: normal;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 1;
+}
+
+.course-module_eduration-section {
+	margin-top: 2rem;
+	margin-bottom: 2rem;
+}
+
+.course-module_eduration {
+	display: flex;
+	align-items: center;
+}
+
+.course-module_eduration img {
+	width: 30px;
+	height: 30px;
+}
+
+.course-module_eduration span {
+	margin-left: 0.5rem;
+	font-size: 1rem;
+	font-weight: bold;
+	// overflow: hidden;
+	// display: -webkit-box;
+	// -webkit-box-orient: vertical;
+	// -webkit-line-clamp: 1;
+}
+
+.course-module_eduration-rtl span {
+	margin-right: 0.5rem;
+}
+
+.course-module_eduration-ltr span {
+	margin-left: 0.5rem;
+}
+////////////////////////////////////////////////////////////////////////////////////
+
+/* Accordion Styling */
+ion-accordion {
+	--background: #f7f7f7;
+	--border-radius: 8px;
+	--transition: 0.3s ease-in-out;
+}
+
+ion-item[slot='header'] {
+	font-size: 1rem;
+	font-weight: bold;
+}
+
+ion-accordion-group > ion-accordion ion-item[slot='header'] {
+	--border-width: 2px 0px 0px 0px; /* Default styling */
+}
+
+ion-accordion-group > ion-accordion:last-of-type ion-item[slot='header'] {
+	--border-width: 2px 0px 2px 0px; /* Styling for the last accordion */
+}
+
+ion-accordion-group > ion-accordion.accordion-expanded ion-item[slot='header'] {
+	--border-width: 2px 0px 2px 0px; /* Add bottom border when expanded */
+}
+
+.accordain-header {
+	display: flex;
+	align-items: center;
+	width: 100%;
+}
+
+.module-count {
+	flex: 0 0 auto;
+	// margin-right: 10px;
+	color: #b2b2b2 !important;
+	font-size: 0.813rem;
+	width: 17.79rem;
+}
+
+// .workbook-name {
+//   flex: 1;
+//   text-align: left;
+//   font-size: 1.1rem;
+// }
+
+.workbook-name {
+	white-space: normal !important;
+	text-align: left;
+	font-size: 1rem !important;
+	max-width: 75%; /* Adjust the width as needed */
+	overflow: hidden;
+	text-overflow: ellipsis; /* Optional: Adds '...' for long text */
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 1;
+}
+
+/* Content Styling */
+
+.course-accordian-section {
+	margin-bottom: 3rem;
+}
+
+.accordion-content {
+	padding: 1rem;
+}
+
+.accordion-item-content {
+	display: flex;
+	align-items: flex-start;
+	// gap: 20px;
+	gap: 1 rem;
+}
+
+// .accordion-image {
+// 	flex: 0 0 17.8%;
+// }
+
+.accordion-image {
+	max-width: 15.25rem;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+}
+
+.accordion-item-image {
+	// flex: 0 0 23%;
+	// padding-right: 1.25rem;
+	/* min-width: 250px; */
+	/* max-width: 100%; */
+	flex-direction: column;
+	width: 100%;
+	aspect-ratio: 16 / 9;
+	overflow: hidden;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	object-fit: contain;
+	border-radius: 1.1rem;
+}
+
+.accordion-item-image img {
+	width: 100%;
+	height: auto; /* Ensures image scales correctly */
+	// max-height: 8.625rem; /* Adjust this value as needed */
+	object-fit: cover;
+	// max-width: 15.6rem;
+}
+
+// .accordion-image {
+// 	flex: 0 0 120px;
+// }
+
+.accordion-description {
+	flex: 1;
+	position: relative;
+	// padding-left: 2.5rem;
+}
+
+.accordion-description-rtl {
+	padding-right: 2.5rem;
+}
+
+.accordion-description-ltr {
+	padding-left: 2.5rem;
+}
+
+.accordion-description p {
+	margin: 0;
+	color: #000;
+	font-size: 1rem;
+	overflow: hidden;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 3;
+	font-size: 0.813rem;
+	margin-bottom: 0.5rem;
+}
+
+.accordion-description p.truncated {
+	-webkit-line-clamp: 3;
+}
+
+.accordion-description a {
+	display: inline-block;
+	color: #7f818a;
+	cursor: pointer;
+	font-size: 0.9rem;
+	margin: 0rem 0 0.5rem 0;
+}
+
+.module_eduration {
+	display: flex;
+	align-items: center;
+	margin: 0.5rem 0 0.5rem 0;
+}
+
+// .module_eduration img {
+// 	width: 30px;
+// 	height: 30px;
+// }
+
+.module_eduration span {
+	// margin-left: 0.5rem;
+	font-size: 0.875rem;
+}
+
+.module_eduration-rtl span {
+	margin-right: 0.5rem;
+}
+
+.module_eduration-ltr span {
+	margin-left: 0.5rem;
+}
+
+.module-worksheets-section {
+	display: flex;
+	align-items: center;
+	margin: 0.5rem 0;
+}
+
+// .module-worksheets-section img {
+// 	width: 30px;
+// 	height: 30px;
+// }
+
+.module-worksheets-section span {
+	// margin-left: 0.5rem;
+	font-size: 0.875rem;
+}
+
+.module-worksheets-section-rtl span {
+	margin-right: 0.5rem;
+}
+
+.module-worksheets-section-ltr span {
+	margin-left: 0.5rem;
+}
+
+.wb-details {
+	padding: 0.5rem;
+}
+
+.assigned-date {
+	color: #7f7f7f;
+	font-size: 0.75rem;
+	text-align: left;
+	font-weight: 700;
+	padding-left: 0.875rem;
+}
+
+.modulestatus {
+	color: #7f7f7f;
+	font-size: 0.75rem;
+	text-align: left;
+	font-weight: 700;
+	padding-left: 0.875rem;
+}
+
+.pathway-name-anchor {
+	display: inline-block;
+	color: var(--branding-color);
+	cursor: pointer;
+}
+
+//breadcumb
+.breadcrumb {
+	display: flex;
+	align-items: center;
+	font-size: 16px;
+	margin-bottom: 1rem;
+}
+
+.breadcrumb ul {
+	display: flex;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	flex-wrap: wrap;
+}
+
+.breadcrumb ul li {
+	position: relative;
+	margin-right: 10px;
+}
+
+.breadcrumb ul li a {
+	text-decoration: none;
+	color: var(--branding-color);
+	transition: color 0.3s ease;
+	cursor: pointer;
+}
+
+.breadcrumb ul li a:hover {
+	color: var(--branding-color);
+}
+
+.breadcrumb ul li:not(:last-child)::after {
+	content: '>';
+	color: #6c757d;
+	margin-left: 10px;
+}
+
+.starthemodule {
+	font-size: 0.75rem;
+	// margin-top: 1rem;
+	text-align: center;
+	text-transform: none;
+	box-shadow: none;
+	--background: var(--branding-color);
+	--border-radius: 0.2rem;
+	--color: white;
+	height: 2rem;
+}
+
+.start-viewmodule-section {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.startmoduleinfotext {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding-top: 5px;
+}
+
+.startmoduleinfotext p {
+	-webkit-line-clamp: none !important;
+}
+
+.workbook_image {
+	object-fit: cover;
+	margin-top: 0.4rem;
+}
+
+.eduration_image {
+	object-fit: cover;
+	margin-top: 0.4rem;
+}
+
+.course_image {
+	object-fit: cover;
+	margin-top: 0.4rem;
+}
+
+////////////////////////
+
+.capsule {
+	display: inline-block;
+	background-color: #404040;
+	color: #fff;
+	font-size: 0.75rem;
+	font-weight: 500;
+	padding: 0rem 0.6rem; /* Reduced padding */
+	border-radius: 1.25rem;
+	max-width: 4.5rem; /* Set a max-width to prevent excessive length */
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis; /* Adds "..." if text overflows */
+}
+
+.course-content-details {
+	background: #e7eff0;
+	border-radius: 1.25rem;
+	padding: 0.6rem;
+}
+
+.course-content-details-image {
+	flex: 0 0 23%;
+	flex-direction: column;
+	width: 100%;
+	aspect-ratio: 16 / 9;
+	overflow: hidden;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	object-fit: contain;
+	border-radius: 1.25rem;
+}
+
+.course-content-image {
+	// padding-right: 0.5rem;
+	aspect-ratio: 16 / 9;
+	width: 100%;
+	height: 100%;
+}
+
+.course-content-image-rtl {
+	padding-left: 0.5rem;
+}
+
+.course-content-image-ltr {
+	padding-right: 0.5rem;
+}
+
+.course-content-image img {
+	width: 100%;
+	// height: 100%;
+	height: auto;
+	// object-fit: cover; /* Ensures it fills the space properly */
+
+	object-fit: inherit;
+	border-radius: 1.25rem;
+}
+
+.course-title-row ion-col {
+	padding: 0 !important;
+	margin: 0 !important;
+}
+
+.learner-status-col {
+	align-self: flex-start; /* Aligns the column content to the top */
+	display: flex;
+	justify-content: flex-start; /* Ensures content stays at the top */
+	justify-content: flex-end;
+	word-break: break-word;
+}
+
+.truncated {
+	display: -webkit-box;
+	-webkit-line-clamp: 3; /* Show only 3 lines */
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+}
+
+.expanded {
+	-webkit-line-clamp: unset !important; /* Show full text when expanded */
+	overflow: visible !important;
+	white-space: normal !important; /* Ensures text wraps properly */
+}
+
+/////////////////////////////////////////////////////////////////
+
+/* Responsive Adjustments */
+@media (max-width: 767px) {
+	.accordain-header {
+		// flex-direction: column;
+		align-items: center;
+		// gap: 3.3rem !important;
+	}
+
+	// .accordion-description {
+	// 	padding-left: 0.8rem !important;
+	// }
+
+	.accordion-description-rtl {
+		padding-right: 0.8rem !important;
+	}
+
+	.accordion-description-ltr {
+		padding-left: 0.8rem !important;
+	}
+
+	.l_outcomes-btn,
+	.module_l_outcomes-btn {
+		font-size: 0.65rem !important;
+	}
+
+	.course_image {
+		display: none !important;
+	}
+
+	.pathway-course-worksheet-count {
+		font-size: 0.7rem !important;
+		font-weight: unset !important;
+		margin-bottom: 1rem !important;
+	}
+
+	.course-module_eduration-section {
+		margin-top: 0 !important;
+		margin-bottom: 2rem;
+	}
+
+	.course-module_eduration span {
+		font-size: 0.8rem !important;
+	}
+
+	.workbook-name {
+		text-align: left;
+		font-size: 0.7rem !important;
+		-webkit-line-clamp: 2 !important;
+	}
+	.accordion-item-content {
+		flex-direction: row;
+		// gap: 10px;
+		gap: 1.25rem;
+	}
+
+	.accordion-image {
+		flex: 0 0 100px;
+	}
+
+	.accordion-description a {
+		font-size: 0.62rem !important;
+	}
+
+	.accordion-description p {
+		font-size: 0.62rem !important;
+		margin: 0 !important;
+		margin-bottom: 0.5rem !important;
+	}
+
+	.accordion-description p.truncated {
+		-webkit-line-clamp: 3;
+	}
+
+	.module_l_outcomes-btn {
+		font-size: 0.688rem !important;
+	}
+
+	.module_eduration span {
+		font-size: 0.62rem !important;
+	}
+
+	.module_edurationd img {
+		width: 25px !important;
+		height: 25px !important;
+	}
+
+	.module-worksheets-section span {
+		font-size: 0.62rem !important;
+	}
+
+	.modulestatus {
+		font-size: 0.62rem !important;
+		padding-left: 0 !important ;
+	}
+
+	.assigned-date {
+		font-size: 0.62rem !important;
+		padding-left: 0 !important ;
+	}
+
+	.module-count {
+		width: 8.42rem !important;
+		font-size: 0.7rem !important;
+	}
+
+	.course-content-image {
+		display: none;
+	}
+
+	.accordion-item-image {
+		flex: 0 0 40%; /* Adjust width for better proportion */
+		max-width: 11.25rem;
+		border-radius: 0.7rem !important;
+	}
+
+	.course-title {
+		font-size: 1.25rem;
+	}
+
+	.course-content {
+		max-width: 100%; /* Ensures content uses full width */
+	}
+
+	.capsule {
+		font-size: 0.65rem !important;
+		font-weight: 500 !important;
+	}
+
+	.course-description {
+		font-size: 0.65rem !important;
+	}
+
+	.learnerstatus {
+		padding-bottom: 0.3rem !important;
+		padding-top: 0 !important;
+		font-size: 0.7rem !important;
+	}
+
+	.course-title {
+		font-size: 1rem !important;
+	}
+
+	.start-viewmodule-section {
+		flex-direction: column !important;
+		align-items: flex-start;
+		gap: 0;
+	}
+}
+
+@media only screen and (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+	.accordion-item-image img {
+		max-height: 6.625rem;
+	}
+
+	.module-count {
+		width: 14.3rem;
+	}
+}
+
+@media only screen and (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+}
+
+@media screen and (min-width: 800px) and (max-width: 1280px) and (orientation: portrait) {
+	.accordion-item-image img {
+		max-width: 12.25rem;
+	}
+}
+
+@media only screen and (min-width: 800px) and (max-width: 1280px) and (orientation: landscape) {
+	.accordion-item-image img {
+		max-width: 15.25rem;
+	}
+}

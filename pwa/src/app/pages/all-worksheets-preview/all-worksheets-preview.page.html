@@ -1,0 +1,282 @@
+<ion-header *ngIf="!showNotesInput">
+	<ion-toolbar class="toolbar-head">
+		<!-- <ion-title style="padding-top: 6px" *ngIf="WorkBookData">
+			{{'Utils.workbookpreview' | translate}} : {{WorkBookData.title}}</ion-title
+		> -->
+
+		<div class="center-title header-title" *ngIf="WorkBookData" style="padding-top: 6px">
+			{{'Utils.workbookpreview' | translate}} : {{WorkBookData.title}}
+		</div>
+	</ion-toolbar>
+</ion-header>
+
+<ion-content
+	*ngIf="!showNotesInput"
+	[fullscreen]="true"
+	class="ion-padding-horizontal"
+	(ionScroll)="getScrollPos($event)"
+	[scrollEvents]="true">
+	<ion-grid style="margin: 1rem auto 0; padding: 0">
+		<ion-row
+			style="display: flex; justify-content: center"
+			[ngClass]="{ 'ion-main-row-desktop': isdesktopView || isTabletLandscapeView}">
+			<ion-col
+				size-sm="12"
+				size-md="9"
+				size-lg="7"
+				class="main-col"
+				[ngClass]="{ 'ion-main-col-desktop': isdesktopView || isTabletLandscapeView}">
+				<div *ngFor="let item of wsData; index as i;">
+					<p class="ws-index">
+						{{ WorkBookData?.DiwoModuleId === 2 ? ('Utils.lesson' | translate) : ('Utils.worksheet' | translate) }} {{ i
+						+ 1 }}/{{ wsData.length }}
+					</p>
+					<div class="ws-wrapper">
+						<div class="img-head" *ngIf="item.DiwoAssets[0].type =='Image'">
+							<img
+								*ngIf="item.DiwoAssets.length > 0"
+								[src]="imageHost + item.DiwoAssets[0].path"
+								class="ws-img"
+								(click)="navigateToWorksheet(item.id,i)" />
+						</div>
+						<div
+							*ngIf="item.DiwoAssets[0].type =='Video' && appService?.configurable_feature?.vimeo"
+							style="
+								margin: 0rem 0rem 1rem 0rem;
+								overflow: hidden;
+								border-top-left-radius: 1rem;
+								border-top-right-radius: 1rem;
+							">
+							<app-vimeo-video
+								[video_asset]="item.DiwoAssets[0]"
+								[assignPostId]="item.id"
+								[UserId]="userId"
+								videoType="Session_Asset"
+								[currentPlayTime]="item.seconds"
+								updateTime="true">
+							</app-vimeo-video>
+						</div>
+						<div
+							*ngIf="item.DiwoAssets[0].type =='Video' && appService?.configurable_feature?.mediaCMS"
+							style="
+								margin: 0rem 0rem 1rem 0rem;
+								overflow: hidden;
+								border-top-left-radius: 1rem;
+								border-top-right-radius: 1rem;
+							">
+							<app-cms-video
+								[video_asset]="item.DiwoAssets[0]"
+								[assignPostId]="item.id"
+								[UserId]="userId"
+								videoType="Session_Asset"
+								[currentPlayTime]="item.seconds"
+								updateTime="true">
+							</app-cms-video>
+						</div>
+						<div class="worksheet-data">
+							<div class="flag-div">
+								<div
+									class="activity-type"
+									[ngClass]="{'activity-type-all' : (item.trainerInst !== null && isTrainer) && (item.type == 'Offline Task' || item.type == 'Learning Content' || item.type == 'Discussion') && item.flgFav &&  item.flgImp && item.flgGroupActivty}">
+									<div style="display: flex; align-items: center" (click)="navigateToWorksheet(item.id,i)">
+										<img
+											*ngIf="item.type == 'Quiz' || item.type=='Quiz (Randomised)'"
+											src="assets/images/workbook/quiz_clock_icon.svg"
+											class="worksheet-type-quiz-icon" />
+
+										<!-- Show content icon only if there is NO video -->
+										<img
+											*ngIf="!hasVideo(item.DiwoAssets) && item.type === 'Learning Content'  && !item.isGuideWorksheet"
+											src="assets/images/workbook/content_icon_grey.svg"
+											class="learning-content-icon" />
+
+										<!-- Show video icon only if there is a video -->
+										<img
+											*ngIf="hasVideo(item.DiwoAssets) && item.type === 'Learning Content'  && !item.isGuideWorksheet"
+											src="assets/images/workbook/module_video_icon.svg"
+											class="worksheet-video-icon" />
+
+										<img
+											*ngIf="item.type === 'Learning Content' && item.isGuideWorksheet"
+											src="assets/images/workbook/arvr_icon.svg"
+											class="worksheet-guide-icon" />
+
+										<img
+											*ngIf="item.type == 'Follow Us'"
+											src="assets/images/workbook/follow_us_icon.svg"
+											class="worksheet-type-icon" />
+										<img
+											*ngIf="item.type == 'Discussion'"
+											src="assets/images/workbook/group-discussion.svg"
+											class="worksheet-disc-type-icon" />
+
+										<img
+											*ngIf="item.type == 'Poll'"
+											src="assets/images/workbook/poll_icon_grey.svg"
+											class="worksheet-type-poll-icon" />
+
+										<img
+											*ngIf="item.type == 'Word Cloud'"
+											src="assets/images/workbook/word_cloud_icon.svg"
+											class="worksheet-type-icon" />
+
+										<img
+											*ngIf="item.type == 'Survey'"
+											src="assets/images/workbook/survey_icon_grey.svg"
+											class="worksheet-type-icon" />
+
+										<img
+											*ngIf="item.type == 'Offline Task'"
+											src="assets/images/workbook/offline_task_icon_grey.svg"
+											class="worksheet-type-icon" />
+
+										<img
+											*ngIf="item.type =='Spin The Wheel'"
+											src="assets/images/workbook/spin-the-wheel_grey.svg"
+											class="worksheet-type-icon" />
+
+										<p
+											[ngClass]="{'worksheet-type-text-all' : (item.trainerInst !== null && isTrainer)&& item.flgFav && item.flgImp && item.flgGroupActivty ,
+                                        'worksheet-type-text' : (item.trainerInst !== null && isTrainer) ||  item.flgFav || item.flgImp || item.flgGroupActivty}">
+											<!-- {{item.type}} -->
+											{{ item.activityTemplate}}
+										</p>
+									</div>
+								</div>
+
+								<div
+									class="flag-group"
+									style="display: flex"
+									[ngClass]="{'flag-group-all' : (item.trainerInst !== null && isTrainer) && (item.type == 'Offline Task' || item.type == 'Learning Content'|| item.type == 'Discussion') && item.flgFav &&  item.flgImp && item.flgGroupActivty}">
+									<img
+										src="assets/images/workbook/trainerNote.svg"
+										(click)="showTrainerNote(i)"
+										*ngIf="item.trainerInst !== null && !item.isShowTrainerNote && isTrainer"
+										class="flag-icons" />
+									<!-- <img
+										src="assets/images/workbook/trainerNoteShow.svg"
+										(click)="showTrainerNote(i)"
+										*ngIf="item.trainerInst !== null && item.isShowTrainerNote && isTrainer"
+										class="flag-icons" /> -->
+									<div
+										*ngIf="item.trainerInst !== null && item.isShowTrainerNote && isTrainer"
+										(click)="showTrainerNote(i)"
+										class="flag-icons trainer-icon-select"
+										[ngStyle]=" appBrandingInfo && appBrandingInfo.accent_color ? {'background-color' : appBrandingInfo.accent_color} : {'background-color': 'var(--branding-color)'}"></div>
+
+									<!-- check icon has been added -->
+									<img
+										*ngIf="hasVideo(item.DiwoAssets) && item.worksheetStatus === 'Completed' "
+										src="assets/images/landrover/check_icon.png"
+										class="flag-check-icons"
+										[ngClass]="'lesson-check-icon'" />
+
+									<!-- <img *ngIf="hasVideo(item.DiwoAssets) && item.SessionUser.worksheetStatus === 'Completed'" 
+										src="assets/images/landrover/check_icon.png" class="flag-icons"
+										[ngClass]="'lesson-check-icon'" /> -->
+
+									<img
+										src="assets/images/workbook/favorite_gray.svg"
+										*ngIf="item.flgFav && !item.isFav"
+										(click)="changeFlag(i,'Fav');"
+										class="flag-icons" />
+
+									<!-- <img
+										src="assets/images/workbook/favorite_selected_icon.svg"
+										*ngIf="item.flgFav && item.isFav"
+										(click)="changeFlag(i,'Fav');"
+										class="flag-icons" /> -->
+									<div
+										*ngIf="item.flgFav && item.isFav"
+										(click)="changeFlag(i,'Fav');"
+										class="flag-icons fav-icon-select"
+										[ngStyle]=" appBrandingInfo && appBrandingInfo.accent_color ? {'background-color' : appBrandingInfo.accent_color} : {'background-color': 'var(--branding-color)'}"></div>
+
+									<img src="assets/images/workbook/important.svg" *ngIf="item.flgImp" class="flag-icons" />
+
+									<!-- <img
+										src="assets/images/workbook/group_activity.svg"
+										*ngIf="item.flgGroupActivty"
+										class="flag-icons"
+										style="margin-right: 1rem" /> -->
+								</div>
+							</div>
+
+							<!-- <p class="description" *ngIf="item.description" (click)="navigateToWorksheet(item.id)">
+								{{item.description}}
+							</p> -->
+
+							<div id="All_Module_Preview_description{{item.id}}" class="description"></div>
+
+							<p class="trainer-note" *ngIf="item.trainerInst && item.isShowTrainerNote">{{item.trainerInst}}</p>
+
+							<div class="edit-learner-div" *ngIf="item.userNote">
+								<div class="show-learner-note">
+									<p class="learner-note">{{item.userNote}}</p>
+								</div>
+								<div style="width: 9%; cursor: pointer" (click)="addEditLearnerNote(item, i)">
+									<img src="assets/images/workbook/edit_learner_note.svg" style="margin-bottom: 0.3rem" />
+								</div>
+							</div>
+
+							<div id="add-notes-label" (click)="addEditLearnerNote(item, i)" *ngIf="!item.userNote">
+								<p style="color: darkgray">{{ 'Utils.clicktoaddyournotes' | translate }}</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</ion-col>
+		</ion-row>
+
+		<div
+			class="back-to-top-btn"
+			*ngIf="backToTop"
+			(click)="gotToTop()"
+			[ngStyle]=" appBrandingInfo && appBrandingInfo.accent_color ? {'background' : appBrandingInfo.accent_color} : {'background': 'var(--branding-color)'}">
+			<ion-icon id="top-icon" name="chevron-up-outline"></ion-icon>
+		</div>
+	</ion-grid>
+
+	<ion-refresher
+		*ngIf="!showNotesInput"
+		ion-refresh-native
+		slot="fixed"
+		disabled="false"
+		(ionRefresh)="doRefresh($event)"
+		pullFactor="0.1"
+		pullMin="50"
+		pullMax="200">
+		<ion-refresher-content></ion-refresher-content>
+	</ion-refresher>
+</ion-content>
+
+<ion-content *ngIf="showNotesInput" [fullscreen]="true" class="ion-padding-horizontal">
+	<ion-grid>
+		<ion-row style="height: 92vh; background-color: white; display: flex; justify-content: center" class="main-row">
+			<ion-col size-sm="12" size-md="9" size-lg="7" class="main-col">
+				<div class="modal-action-btn-div">
+					<a
+						(click)="cancel()"
+						style="align-self: center; cursor: pointer"
+						class="cancel"
+						[ngStyle]="appBrandingInfo && appBrandingInfo.accent_color ? {'color' : appBrandingInfo.accent_color} : {'color': 'var(--branding-color)'}"
+						>{{'Utils.cancel' | translate}}</a
+					>
+					<ion-button
+						shape="round"
+						(click)="saveLearnerNote()"
+						class="save"
+						[ngStyle]="appBrandingInfo && appBrandingInfo.accent_color ? {'--background' : appBrandingInfo.accent_color} : {'--background': 'var(--branding-color)'}"
+						>{{'Utils.save' | translate}}</ion-button
+					>
+				</div>
+
+				<textarea
+					rows="10"
+					placeholder="{{'Utils.Whathaveyoulearnedtoday' | translate}}"
+					[(ngModel)]="userNote"
+					class="learner-input"></textarea>
+			</ion-col>
+		</ion-row>
+	</ion-grid>
+</ion-content>

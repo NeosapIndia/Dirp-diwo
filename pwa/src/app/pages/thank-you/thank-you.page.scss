@@ -1,0 +1,49 @@
+div {
+	width: 100%;
+	height: 50%;
+	text-align: center;
+}
+
+//WEB Optimization
+.ion-item-mobile {
+	--padding-start: 0;
+	--inner-padding-end: 0;
+}
+
+.ion-item-desktop {
+	--inner-padding-end: 0;
+}
+
+.ion-main-col-desktop {
+	max-width: 40% !important;
+	width: 100% !important;
+	margin: 0 auto;
+	margin-top: 20px;
+	// border: 2px solid lightgray;
+	padding: 0;
+	border-radius: 8px;
+}
+
+.ion-main-row-desktop {
+	// display: flex;
+	// flex-direction: column;
+}
+
+.submit-btn {
+	margin: 0 0 0.75rem 0;
+	height: 3.3rem;
+	font-size: 1rem;
+	--color: white;
+	text-transform: none;
+	box-shadow: none;
+	--background: var(--branding-color);
+	--border-radius: 0.625rem;
+	width: 80px;
+}
+
+.header-logo {
+	height: 35px;
+	margin: 0 auto;
+	margin-top: 10px;
+	margin-bottom: 4px;
+}

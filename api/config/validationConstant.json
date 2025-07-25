@@ -1,0 +1,74 @@
+{
+	"notNegative": {
+		"min": 1
+	},
+	"limit": {
+		"min": 1,
+		"max": 100,
+		"default": 10,
+		"250Max": 250,
+		"10000Max": 10000
+	},
+	"page": {
+		"min": 1,
+		"max": 150,
+		"default": 1
+	},
+	"first": {
+		"min": 2,
+		"max": 50
+	},
+	"last": {
+		"min": 1,
+		"max": 50
+	},
+	"city": {
+		"min": 2,
+		"max": 100
+	},
+	"state": {
+		"min": 2,
+		"max": 100
+	},
+	"zipCode": {
+		"min": 4,
+		"max": 20
+	},
+	"country": {
+		"min": 3,
+		"max": 100
+	},
+	"username": {
+		"min": 3,
+		"max": 15
+	},
+	"CountryId": {
+		"min": 1,
+		"max": 250
+	},
+	"team_id": {
+		"min": 36,
+		"max": 36
+	},
+	"role": {
+		"min": 1,
+		"max": 11
+	},
+	"title": {
+		"min": 1,
+		"max": 255
+	},
+	"description": {
+		"min": 1,
+		"max": 500
+	},
+	"worksheetLimit": {
+		"min": 1,
+		"max": 7
+	},
+	"seessionstep": {
+		"min": 1,
+		"max": 6,
+		"default": 4
+	}
+}

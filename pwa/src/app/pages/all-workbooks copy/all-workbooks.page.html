@@ -1,0 +1,149 @@
+<ion-header *ngIf="!isdesktopView && !isTabletLandscapeView">
+	<ion-toolbar class="toolbar-head">
+		<img *ngIf="clientBranding" [src]="imageBaseURL + clientBranding.learner_app_icon_path" class="header-logo" />
+		<img *ngIf="!clientBranding" src="assets/icon/diwo_full_logo.png" class="header-logo" />
+		<ion-list class="sort-wrapper ion-sort-mobile" style="background: #f7f7f7">
+			<ion-item lines="none">
+				<ion-select
+					interface="popover"
+					placeholder="Sort by"
+					(ionChange)="onChangeDropdown($event)"
+					[(ngModel)]="selectedsArray">
+					<ion-select-option value="SortByDate">{{'Utils.sortbydate' | translate}}</ion-select-option>
+					<ion-select-option value="SortByCourse">{{'Utils.sortbycourse' | translate}}</ion-select-option>
+				</ion-select>
+			</ion-item>
+		</ion-list>
+	</ion-toolbar>
+	<span></span>
+</ion-header>
+
+<ion-content
+	[fullscreen]="true"
+	class="ion-padding-horizontal"
+	[scrollEvents]="true"
+	(ionScroll)="getScrollPos($event)">
+	<ion-row [ngClass]="{ 'ion-main-row-desktop': isdesktopView || isTabletLandscapeView}">
+		<ion-col
+			size-sm="12"
+			size-md="9"
+			size-lg="7"
+			class="page-wrapper3 main-col"
+			[ngClass]="{ 'ion-main-col-desktop': isdesktopView || isTabletLandscapeView ,'page-wrapper3-desktop': isdesktopView || isTabletLandscapeView}">
+			<p
+				*ngIf=" !isdesktopView && !isTabletLandscapeView && appservice?.userPersonalData?.first !== null"
+				style="font-size: 1.25rem">
+				{{'Utils.workbooksfor' | translate}} {{appservice?.userPersonalData?.first}}
+			</p>
+			<div *ngIf="isdesktopView || isTabletLandscapeView" class="ion-sort-desktop">
+				<p style="font-size: 1rem" *ngIf="appservice?.userPersonalData?.first !== null">
+					{{'Utils.workbooksfor' | translate}} {{appservice?.userPersonalData?.first}}
+				</p>
+				<ion-list class="sort-wrapper-dekstop">
+					<ion-item lines="none">
+						<ion-select
+							interface="popover"
+							placeholder="Sort by"
+							(ionChange)="onChangeDropdown($event)"
+							[(ngModel)]="selectedsArray">
+							<ion-select-option value="SortByDate">{{'Utils.sortbydate' | translate}}</ion-select-option>
+							<ion-select-option value="SortByCourse">{{'Utils.sortbycourse' | translate}}</ion-select-option>
+						</ion-select>
+					</ion-item>
+				</ion-list>
+			</div>
+		</ion-col>
+	</ion-row>
+	<ion-grid>
+		<ion-row [ngClass]="{ 'ion-main-row-desktop': isdesktopView || isTabletLandscapeView}">
+			<ion-col
+				size-sm="12"
+				size-md="9"
+				size-lg="7"
+				class="page-wrapper2 main-col"
+				[ngClass]="{ 'ion-main-col-desktop': isdesktopView || isTabletLandscapeView}">
+				<ion-row>
+					<ion-col *ngFor="let item of wbListData" size-sm="6" size-md="4" size-lg="4" size="6" class="page-wrapper">
+						<div class="custom-card" (click)="redirectToSingle(item)">
+							<div
+								*ngIf="item && item.Session"
+								[ngClass]="{'notLive' : (item.Session.status == 'Planned' || item.Session.status == 'Live') && item.attendanceStatus != 'Present' || item.expStatus == 'Expired','live' : ((item.Session.status == 'Live' || item.Session.status == 'Closed' || item.Session.status == 'Planned') && item.attendanceStatus == 'Present' && item.expStatus != 'Expired') }">
+								<div class="wb-img">
+									<img [src]="item.imagePath" class="wbImg" />
+								</div>
+								<div class="wb-details">
+									<p
+										class="course-name"
+										[ngStyle]=" appBrandingInfo && appBrandingInfo.accent_color ? {'color' : appBrandingInfo.accent_color} : {'color': ''}">
+										{{item.courseName}}
+									</p>
+									<p class="wb-name">{{item.title}}</p>
+									<p
+										class="assigned-date"
+										*ngIf="item.Session.status == 'Planned' && item.attendanceStatus != 'Present' && item.expStatus != 'Expired'">
+										{{'Utils.sessionNotStarted' | translate}}
+									</p>
+									<p
+										class="assigned-date"
+										*ngIf="item.Session.status == 'Planned' && item.attendanceStatus == 'Present' && item.expStatus != 'Expired'">
+										{{'Utils.sessionStartingSoon' | translate}} <span class="dot-startingsoon"></span>
+									</p>
+									<p
+										class="assigned-date"
+										*ngIf="item.Session.status == 'Live' && item.attendanceStatus == 'Present' && item.expStatus != 'Expired'">
+										{{'Utils.sessionLive' | translate}} <span class="dot-live"></span>
+									</p>
+									<p
+										class="assigned-date"
+										*ngIf="item.Session.status == 'Live' && item.attendanceStatus != 'Present' && item.expStatus != 'Expired'">
+										{{'Utils.sessionnotLive' | translate}}
+									</p>
+									<p
+										class="assigned-date"
+										*ngIf="item.Session.status == 'Closed' && item.attendanceStatus == 'Present'&& item.expStatus != 'Expired'">
+										{{'Utils.sessionAttendedOn' | translate}} {{item.Session.SessionStartDate}}
+									</p>
+									<p class="assigned-date" *ngIf="item.expStatus == 'Expired'">
+										{{'Utils.sessionExpired' | translate}}
+									</p>
+								</div>
+							</div>
+							<div *ngIf="item && item.Session == null" class="notLive">
+								<div class="wb-img">
+									<img [src]="item.imagePath" class="wbImg" />
+								</div>
+								<div class="wb-details">
+									<p
+										class="course-name"
+										[ngStyle]=" appBrandingInfo && appBrandingInfo.accent_color ? {'color' : appBrandingInfo.accent_color} : {'color': ''}">
+										{{item.courseName}}
+									</p>
+									<p class="wb-name">{{item.title}}</p>
+									<p class="assigned-date">{{'Utils.sessionNotStarted' | translate}}</p>
+								</div>
+							</div>
+						</div>
+					</ion-col>
+				</ion-row>
+			</ion-col>
+		</ion-row>
+
+		<div
+			class="back-to-top-btn"
+			*ngIf="backToTop"
+			(click)="gotToTop()"
+			[ngStyle]=" appBrandingInfo && appBrandingInfo.accent_color ? {'background' : appBrandingInfo.accent_color} : {'background': ''}">
+			<ion-icon id="top-icon" name="chevron-up-outline"></ion-icon>
+		</div>
+	</ion-grid>
+	<ion-refresher
+		ion-refresh-native
+		slot="fixed"
+		disabled="false"
+		(ionRefresh)="doRefresh($event)"
+		pullFactor="0.1"
+		pullMin="50"
+		pullMax="200">
+		<ion-refresher-content></ion-refresher-content>
+	</ion-refresher>
+</ion-content>

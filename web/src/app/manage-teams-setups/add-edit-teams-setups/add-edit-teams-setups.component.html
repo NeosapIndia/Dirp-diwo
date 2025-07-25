@@ -1,0 +1,327 @@
+<div class="container-fluid" style="margin: 2% 2% 2% 3%; min-height: calc(100vh - 110px)">
+	<div class="row add-edit-main-row">
+		<span *ngIf="projectType == 'drip'">
+			<span
+				[routerLink]="['/teams-setup']"
+				style="margin-left: 0.25rem; color: #637373; margin-right: 2px; cursor: pointer">
+				{{ 'Pages.TeamSetups.AddEdit.pagetitle' | translate }}</span
+			>
+			<img src="assets/images/arrow_forward.svg" style="width: 27px" />
+			<span style="margin-left: 3px" [ngStyle]="{ color: appService.whiteBrandingColor }">
+				{{ 'Pages.TeamSetups.AddEdit.subtitle' | translate }}</span
+			>
+			<a
+				*ngIf="setupId"
+				class="btn border_radius pull-right sync-channel-btn"
+				[ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}"
+				(click)="syncChannels()">
+				{{ 'Pages.TeamSetups.AddEdit.syncChannelButton' | translate }}</a
+			>
+		</span>
+	</div>
+
+	<form>
+		<div class="row section-wrapper" style="margin-top: 2rem" *ngIf="projectType == 'drip'">
+			<div class="form-title">
+				<span>{{ 'Pages.TeamSetups.AddEdit.TeamSetupSection.title' | translate }}</span>
+			</div>
+			<div class="row card-body">
+				<div class="row">
+					<div class="col-md-12" *ngIf="showSignIn">
+						<a
+							class="btn border_radius add-sign-btn"
+							(click)="showSignInPopUp()"
+							[ngStyle]="{
+								'background-color': appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+								color: 'white'
+							}"
+							>{{ 'Pages.TeamSetups.AddEdit.TeamSetupSection.signIn' | translate }}
+						</a>
+					</div>
+					<div class="col-md-12 body-new">
+						<p></p>
+
+						<div class="contact-info" *ngIf="userDetails">
+							<h4>{{ 'Pages.TeamSetups.AddEdit.TeamSetupSection.signInAs' | translate }}</h4>
+							<p>
+								<span class="label-new">{{ 'Pages.TeamSetups.AddEdit.TeamSetupSection.name' | translate }}:</span>
+								{{ userDetails.displayName }}
+							</p>
+							<p>
+								<span class="label-new">{{ 'Pages.TeamSetups.AddEdit.TeamSetupSection.jobtitle' | translate }}:</span>
+								{{ userDetails.jobTitle ? userDetails.jobTitle : 'NA' }}
+							</p>
+							<p>
+								<span class="label-new">{{ 'Pages.TeamSetups.AddEdit.TeamSetupSection.email' | translate }}:</span>
+								{{ userDetails.userPrincipalName }}
+							</p>
+							<p>
+								<span class="label-new">{{ 'Pages.TeamSetups.AddEdit.TeamSetupSection.phone' | translate }}:</span>
+								{{ userDetails.mobilePhone ? userDetails.mobilePhone : 'NA' }}
+							</p>
+							<p>
+								<span class="label-new">{{ 'Pages.TeamSetups.AddEdit.TeamSetupSection.teamsid' | translate }}:</span>
+								{{ userDetails.id }}
+							</p>
+						</div>
+					</div>
+					<div class="col-md-12" style="margin-top: 3rem" *ngIf="!showSignIn">
+						<a
+							class="btn border_radius add-sign-btn"
+							(click)="signOutPopUp()"
+							[ngStyle]="{
+								'background-color': appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+								color: 'white'
+							}"
+							>{{ 'Pages.TeamSetups.AddEdit.TeamSetupSection.signOut' | translate }}
+						</a>
+					</div>
+					<div class="col-md-12" style="margin-top: 1rem" *ngIf="!showSignIn">
+						<p class="notes">{{ 'Pages.TeamSetups.AddEdit.ChlidAccountAccess.note' | translate }}</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+
+	<div class="row section-wrapper" style="margin-top: 2rem" *ngIf="!showSignIn">
+		<div class="form-title">
+			<span>{{ 'Pages.TeamSetups.AddEdit.ChlidAccountAccess.title' | translate }}</span>
+		</div>
+		<div class="row card-body">
+			<div class="row">
+				<!-- <div class="col-md-12">
+					<div class="form-group" style="display: flex; float: right">
+						<div style="margin-right: 1rem">
+							<label>{{ 'Pages.TeamSetups.AddEdit.ChlidAccountAccess.title2' | translate }}</label>
+						</div>
+						<div>
+							<label class="switch">
+								<input
+									type="checkbox"
+									[disabled]="disableUpdate"
+									[(ngModel)]="selecteAllChildClient"
+									[ngModelOptions]="{ standalone: true }"
+									(change)="selectAllChildClient()" />
+								<span class="slider round"> </span>
+							</label>
+						</div>
+					</div>
+				</div> -->
+
+				<div class="col-md-4" *ngFor="let childClient of childClientDetails">
+					<div class="add-image-card">
+						<div class="add-image-card-div">
+							<div style="padding-top: 0.3rem">
+								<p>
+									{{ childClient.client_id }}
+								</p>
+							</div>
+							<div style="padding-left: 0.5rem; padding-top: 0.3rem">
+								<p>
+									{{ childClient.name }}
+								</p>
+							</div>
+							<div style="margin-left: 0.5rem">
+								<div>
+									<label class="switch">
+										<input
+											type="checkbox"
+											class="form-control js-switch"
+											[disabled]="disableUpdate"
+											[(ngModel)]="childClient.haveTeamSetup"
+											[ngModelOptions]="{ standalone: true }"
+											(change)="changeOneToggle(childClient.haveTeamSetup)" />
+										<span
+											class="slider round"
+											[ngStyle]="{
+												'background-color': childClient.haveTeamSetup ? appService.whiteBrandingColor : '#ccc'
+											}">
+										</span>
+									</label>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row" style="padding: 1rem">
+				<div class="col-md-12">
+					<p>
+						{{ 'Pages.TeamSetups.AddEdit.ChlidAccountAccess.instructions' | translate }}
+						{{ userDetails && userDetails.email ? userDetails.email : '' }}
+						{{ 'Pages.TeamSetups.AddEdit.ChlidAccountAccess.instructions2' | translate }}:
+					</p>
+					<p style="margin-bottom: 0">{{ 'Pages.TeamSetups.AddEdit.ChlidAccountAccess.readandchat' | translate }}</p>
+					<p style="margin-bottom: 0">{{ 'Pages.TeamSetups.AddEdit.ChlidAccountAccess.readallusers' | translate }}</p>
+					<p style="margin-bottom: 0">
+						{{ 'Pages.TeamSetups.AddEdit.ChlidAccountAccess.readallchannels' | translate }}
+					</p>
+					<p style="margin-bottom: 0">{{ 'Pages.TeamSetups.AddEdit.ChlidAccountAccess.readallteams' | translate }}</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row" *ngIf="!showSignIn">
+		<div class="row card-body" style="margin: 0px">
+			<div style="float: right; margin-top: 2rem">
+				<a
+					class="btn btn-o btn-primary border_radius functionalBtn"
+					style="
+						margin-right: 20px;
+						background-color: lightgray !important;
+						color: black;
+						border: 1px solid lightgray !important;
+					"
+					(click)="cancel()"
+					>{{ 'Utils.cancel' | translate }}</a
+				>
+				<a
+					class="btn border_radius functionalBtn"
+					[ngStyle]="{
+						'background-color': appService.whiteBrandingColor,
+						border: '1px solid' + appService.whiteBrandingColor,
+						color: 'white'
+					}"
+					style="margin-right: 0px"
+					(click)="saveTeamSetup()"
+					*ngIf="setupId"
+					>{{ 'Utils.update' | translate }}</a
+				>
+				<a
+					class="btn border_radius functionalBtn"
+					[ngStyle]="{
+						'background-color': appService.whiteBrandingColor,
+						border: '1px solid' + appService.whiteBrandingColor,
+						color: 'white'
+					}"
+					style="margin-right: 0px"
+					(click)="saveTeamSetup()"
+					*ngIf="!setupId"
+					>{{ 'Utils.save' | translate }}</a
+				>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Sign In Pop Up -->
+<div
+	class="modal fade credit-note"
+	id="teamSetupSignInPopUp"
+	tabindex="-1"
+	role="dialog"
+	aria-hidden="true"
+	data-backdrop="static"
+	data-keyboard="false">
+	<div class="modal-dialog" style="width: 35%; margin-top: 15%">
+		<div class="modal-content">
+			<div
+				class="modal-header"
+				[ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="cancelSignInPopUp()">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					<span>{{ 'Pages.TeamSetups.AddEdit.signInModel.title' | translate }}</span>
+				</h4>
+			</div>
+			<div class="modal-body">
+				<span>{{ 'Pages.TeamSetups.AddEdit.signInModel.popUpMessage' | translate }}</span>
+				<div
+					class="visible-md visible-lg visible-sm visible-xs"
+					style="text-align: right; margin-bottom: 0.75rem; margin-top: 1.5rem">
+					<a
+						class="btn-xs action-edit-btn action-yes-no"
+						[ngStyle]="{
+							'background-color': appService.whiteBrandingColor,
+							border: '0.5px solid' + appService.whiteBrandingColor,
+							color: 'white'
+						}"
+						style="margin-right: 2%; padding: 7px 24px"
+						(click)="signInToTeams()"
+						>{{ 'Utils.Action.signIn' | translate }}</a
+					>
+					<a
+						class="btn-xs action-pause-btn action-yes-no"
+						style="margin-right: 2%; padding: 7px 23px"
+						[ngStyle]="{
+							color: appService.whiteBrandingColor,
+							border: '1px solid' + appService.whiteBrandingColor,
+						}"
+						(click)="cancelSignInPopUp()"
+						>{{ 'Utils.cancel' | translate }}</a
+					>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Sign Out Pop Up -->
+<div
+	class="modal fade credit-note"
+	id="teamSetupSignOutPopUp"
+	tabindex="-1"
+	role="dialog"
+	aria-hidden="true"
+	data-backdrop="static"
+	data-keyboard="false">
+	<div class="modal-dialog" style="width: 35%; margin-top: 15%">
+		<div class="modal-content">
+			<div
+				class="modal-header"
+				[ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="cancelSignInPopUp()">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					<span>{{ 'Pages.TeamSetups.AddEdit.signOutModel.title' | translate }}</span>
+				</h4>
+			</div>
+			<div class="modal-body">
+				<span>{{ 'Pages.TeamSetups.AddEdit.signOutModel.popUpMessage' | translate }}</span>
+				<div
+					class="visible-md visible-lg visible-sm visible-xs"
+					style="text-align: right; margin-bottom: 0.75rem; margin-top: 1.5rem">
+					<a
+						class="btn-xs action-pause-btn action-yes-no"
+						style="margin-right: 2%; padding: 7px 23px"
+						[ngStyle]="{
+							color: appService.whiteBrandingColor,
+							border: '1px solid' + appService.whiteBrandingColor,
+						}"
+						(click)="cancelSignInPopUp()"
+						>{{ 'Utils.cancel' | translate }}</a
+					>
+
+					<a
+						class="btn-xs action-edit-btn action-yes-no"
+						style="margin-right: 2%; padding: 7px 24px"
+						(click)="signOutToTeams()"
+						[ngStyle]="{
+							color: appService.whiteBrandingColor,
+							border: '0.5px solid' + appService.whiteBrandingColor,
+						}"
+						>{{ 'Utils.Action.signOut' | translate }}</a
+					>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

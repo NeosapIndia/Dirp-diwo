@@ -1,0 +1,135 @@
+.right {
+	text-align: right;
+}
+
+.left {
+	text-align: left;
+}
+
+.center {
+	text-align: center;
+}
+
+tr {
+	height: 80px;
+}
+
+#filterDiv {
+	display: flex;
+	margin-left: 30px;
+	border: 2px solid rgba(0, 0, 0, 0.07) !important;
+	border-radius: 8px;
+	max-width: 10vw;
+}
+
+.pageDiv {
+	padding-left: 1.9%;
+	padding-right: 0.9%;
+}
+
+.two-row-td-tag {
+	word-wrap: break-word;
+}
+
+.two-row-p-tag {
+	line-height: 1.6em;
+	max-height: 3.5em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 2;
+}
+
+.campaign-status-running {
+	padding: 0.375rem 1.563rem;
+	background: #e0f8ef;
+	border-radius: 16px;
+	color: #18a16f;
+	font-size: 0.7rem;
+	// border: 0.5px solid #e0f8ef !important;
+}
+
+.campaign-status-finished {
+	padding: 0.375rem 1.563rem;
+	background: #e0f8ef;
+	border-radius: 16px;
+	color: #18a16f;
+	font-size: 0.7rem;
+	// border: 0.5px solid #e0f8ef !important;
+}
+
+.campaign-status-paused {
+	padding: 0.375rem 1.75rem;
+	background: #eff3f4;
+	border-radius: 16px;
+	color: #8890a4;
+	font-size: 0.7rem;
+	// border: 0.5px solid #eff3f4 !important;
+}
+
+.campaign-status-Draft {
+	padding: 0.375rem 2.188rem;
+	background: #eff3f4;
+	border-radius: 16px;
+	color: #8890a4;
+	font-size: 0.7rem;
+	// border: 0.5px solid #eff3f4 !important;
+}
+
+.campaign-status-expired {
+	padding: 0.375rem 1.688rem;
+	background: #f8e2e5;
+	border-radius: 16px;
+	color: #d34053;
+	font-size: 0.7rem;
+	// border: 0.5px solid #f8e2e5 !important;
+}
+
+.campaign-status-scheduled {
+	padding: 0.375rem 1.063rem;
+	background: #fff1da;
+	border-radius: 16px;
+	color: #ffa70b;
+	font-size: 0.7rem;
+	// border: 0.5px solid #fff1da !important;
+}
+
+.edit-disabled {
+	color: white !important;
+	background-color: #8890a4;
+	border: 0.5px solid #8890a4;
+}
+
+.delete-disabled {
+	color: #8890a4 !important;
+	/* background-color: #eff3f4; */
+	border: 0.5px solid #8890a4 !important;
+}
+
+::ng-deep.dripflow .md-drppicker.drops-down-auto.ltr.double.show-ranges.shown {
+	left: -19.5rem !important;
+	width: 37.5rem !important;
+}
+
+::ng-deep.md-drppicker .btn {
+	border-radius: 8px;
+	margin-left: 8px;
+	padding: 0 12px;
+	background-color: var(--check-box-color);
+}
+::ng-deep.md-drppicker .btn.btn-default {
+	background-color: lightgray;
+}
+
+::ng-deep button.btn.btn-default.clear {
+	background-color: lightgray !important;
+}
+
+::ng-deep.md-drppicker .clear svg {
+	display: none;
+}
+
+.disabled-btn {
+	opacity: 0.5;
+}

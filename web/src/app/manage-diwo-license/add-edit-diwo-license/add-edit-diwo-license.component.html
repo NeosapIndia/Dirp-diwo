@@ -1,0 +1,436 @@
+<div class="container-fluid" style="margin: 2% 2% 2% 3%">
+	<div class="row add-edit-main-row">
+		<span>
+			<span
+				[routerLink]="['/licenses']"
+				style="margin-left: 0.25rem; color: #637373; margin-right: 2px; cursor: pointer"
+				>{{ 'Pages.DiwoLicense.AddEdit.pagetitle' | translate }}</span
+			>
+			<img src="assets/images/arrow_forward.svg" style="width: 27px" />
+			<span style="margin-left: 3px" [ngStyle]="{ color: appService.whiteBrandingColor }">{{
+				'Pages.DiwoLicense.AddEdit.subtitle' | translate
+			}}</span>
+		</span>
+	</div>
+
+	<form [formGroup]="licenseDetailsForm">
+		<div class="row section-wrapper" style="margin-top: 2rem">
+			<div class="form-title">
+				<span>{{ 'Pages.DiwoLicense.AddEdit.GetStarted.title' | translate }}</span>
+			</div>
+			<div class="row card-body">
+				<div class="row">
+					<div class="col-md-6">
+						<div
+							class="form-group"
+							style="margin-top: -5px"
+							[ngClass]="{
+								'has-error': f.title.invalid && (f.title.dirty || f.title.touched),
+								'has-success': f.title.valid && (f.title.dirty || f.title.touched)
+							}">
+							<label>{{ 'Pages.DiwoLicense.AddEdit.GetStarted.Title.titlename' | translate }}</label>
+							<input
+								type="text"
+								class="form-control"
+								placeholder="{{ 'Pages.DiwoLicense.AddEdit.GetStarted.Title.placeholder' | translate }}"
+								formControlName="title" />
+							<div class="error" *ngIf="f.title.errors && f.title.touched">
+								<div *ngIf="f.title.errors.required">
+									{{ 'Pages.DiwoLicense.AddEdit.GetStarted.Title.error' | translate }}
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-6">
+						<div
+							class="form-group"
+							style="margin-top: -5px"
+							[ngClass]="{
+								'has-error': f.ClientId.invalid && (f.ClientId.dirty || f.ClientId.touched),
+								'has-success': f.ClientId.valid && (f.ClientId.dirty || f.ClientId.touched)
+							}">
+							<label for="ClientId">{{ 'Pages.DiwoLicense.AddEdit.GetStarted.SelectClient.title' | translate }}</label>
+							<ng-select
+								[items]="ClientList"
+								class="ng-select-wrap"
+								placeholder="{{ 'Pages.DiwoLicense.AddEdit.GetStarted.SelectClient.placeholder' | translate }}"
+								bindLabel="name"
+								bindValue="id"
+								[multiple]="false"
+								[closeOnSelect]="false"
+								[searchable]="true"
+								formControlName="ClientId">
+							</ng-select>
+							<div *ngIf="f.ClientId.errors && f.ClientId.touched" class="error invalid-feedback">
+								<div *ngIf="f.ClientId.errors.required">
+									{{ 'Pages.DiwoLicense.AddEdit.GetStarted.SelectClient.error' | translate }}
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-12">
+						<div class="form-group" style="margin-top: 1rem">
+							<label>{{ 'Pages.DiwoLicense.AddEdit.GetStarted.Description.title' | translate }}</label>
+							<textarea
+								class="form-control"
+								placeholder="{{ 'Pages.DiwoLicense.AddEdit.GetStarted.Description.placeholder' | translate }}"
+								formControlName="description"></textarea>
+						</div>
+					</div>
+
+					<div class="col-md-12">
+						<div class="row">
+							<div
+								*ngIf="idEdit"
+								class="col-md-3 form-group"
+								style="margin-bottom: 0px"
+								[ngClass]="{
+									'has-error': f.startDate.invalid && (f.startDate.dirty || f.startDate.touched),
+									'has-success': f.startDate.valid && (f.startDate.dirty || f.startDate.touched)
+								}">
+								<label class="date-div">{{ 'Pages.DiwoLicense.AddEdit.GetStarted.StartDate.title' | translate }}</label>
+								<input
+									*ngIf="selectedDate"
+									type="text"
+									ngxDaterangepickerMd
+									[showDropdowns]="true"
+									onkeydown="return false"
+									name="sDate"
+									id="sDate"
+									[showClearButton]="false"
+									[(ngModel)]="selectedDate"
+									[showCancel]="true"
+									[singleDatePicker]="true"
+									[autoApply]="true"
+									[locale]="{ applyLabel: 'ok', format: 'DD-MM-YYYY' }"
+									placeholder="{{ 'Pages.DiwoLicense.AddEdit.GetStarted.StartDate.placeholder' | translate }}"
+									formControlName="startDate"
+									autocomplete="off"
+									(change)="DateChange($event)"
+									class="form-control" />
+								<div class="error" *ngIf="f.startDate.errors && f.startDate.touched">
+									<div *ngIf="f.startDate.errors.required">
+										{{ 'Pages.DiwoLicense.AddEdit.GetStarted.StartDate.error' | translate }}
+									</div>
+								</div>
+							</div>
+							<div
+								*ngIf="idEdit"
+								class="col-md-3 form-group"
+								style="margin-bottom: 0px"
+								[ngClass]="{
+									'has-error': f.endDate.invalid && (f.endDate.dirty || f.endDate.touched),
+									'has-success': f.endDate.valid && (f.endDate.dirty || f.endDate.touched)
+								}">
+								<label class="date-div">{{
+									'Pages.DiwoLicense.AddEdit.GetStarted.ExpiryDate.title' | translate
+								}}</label>
+								<input
+									*ngIf="selectedendDate"
+									type="text"
+									ngxDaterangepickerMd
+									[showDropdowns]="true"
+									onkeydown="return false"
+									name="eDate"
+									id="eDate"
+									[showClearButton]="false"
+									[(ngModel)]="selectedendDate"
+									[showCancel]="true"
+									[singleDatePicker]="true"
+									[autoApply]="true"
+									[locale]="{ applyLabel: 'ok', format: 'DD-MM-YYYY' }"
+									placeholder="{{ 'Pages.DiwoLicense.AddEdit.GetStarted.ExpiryDate.placeholder' | translate }}"
+									formControlName="endDate"
+									autocomplete="off"
+									(change)="endDateDateChange($event)"
+									class="form-control" />
+								<div class="error" *ngIf="f.endDate.errors && f.endDate.touched">
+									<div *ngIf="f.endDate.errors.required">
+										{{ 'Pages.DiwoLicense.AddEdit.GetStarted.ExpiryDate.error' | translate }}
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+
+	<form [formGroup]="licenseDetailsForm">
+		<div class="row section-wrapper" style="margin-top: 2rem">
+			<div class="form-title">
+				<span> {{ 'Pages.DiwoLicense.AddEdit.LicenseSection.title' | translate }}</span>
+			</div>
+			<div class="row card-body">
+				<!-- ------------------------------ Learner Count ------------------------------------>
+
+				<div class="row">
+					<div class="col-md-4">
+						<div class="form-group">
+							<label>{{ 'Pages.DiwoLicense.AddEdit.LicenseSection.LearnerCount.title' | translate }}</label>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div
+							class="form-group"
+							style="margin-top: -2px"
+							[ngClass]="{
+								'has-error': f.learnerCount.invalid && (f.learnerCount.dirty || f.learnerCount.touched),
+								'has-success': f.learnerCount.valid && (f.learnerCount.dirty || f.learnerCount.touched)
+							}">
+							<input
+								type="number"
+								class="form-control"
+								placeholder="{{ 'Pages.DiwoLicense.AddEdit.LicenseSection.LearnerCount.placeholder' | translate }}"
+								formControlName="learnerCount" />
+							<div class="error" *ngIf="f.learnerCount.errors && f.learnerCount.touched">
+								<div *ngIf="f.learnerCount.errors.required">
+									{{ 'Pages.DiwoLicense.AddEdit.LicenseSection.LearnerCount.error' | translate }}
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="form-group" style="margin-top: 5px; display: flex; justify-content: center">
+							<div>
+								<label class="switch">
+									<input
+										type="checkbox"
+										class="form-control js-switch"
+										formControlName="unlimitedLearner"
+										(click)="toggleUnlimited($event.target.checked, 'learnerCount')" />
+									<span
+										class="slider round"
+										[ngStyle]="{
+											'background-color': f.unlimitedLearner.value ? appService.whiteBrandingColor : '#ccc'
+										}"></span>
+								</label>
+							</div>
+							<div>
+								<label style="margin-top: 4px; padding-left: 15px">{{
+									'Pages.DiwoLicense.AddEdit.LicenseSection.UnlimitedCount' | translate
+								}}</label>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- ------------------------------ WorkBook Count ------------------------------------>
+
+				<div class="row" style="margin-top: 1rem">
+					<div class="col-md-4">
+						<div class="form-group">
+							<label>{{ 'Pages.DiwoLicense.AddEdit.LicenseSection.WorkbookCredits.title' | translate }}</label>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div
+							class="form-group"
+							style="margin-top: -2px"
+							[ngClass]="{
+								'has-error': f.workbookCount.invalid && (f.workbookCount.dirty || f.workbookCount.touched),
+								'has-success': f.workbookCount.valid && (f.workbookCount.dirty || f.workbookCount.touched)
+							}">
+							<input
+								type="number"
+								class="form-control"
+								placeholder="{{ 'Pages.DiwoLicense.AddEdit.LicenseSection.WorkbookCredits.placeholder' | translate }}"
+								formControlName="workbookCount" />
+							<div class="error" *ngIf="f.workbookCount.errors && f.workbookCount.touched">
+								<div *ngIf="f.workbookCount.errors.required">
+									{{ 'Pages.DiwoLicense.AddEdit.LicenseSection.WorkbookCredits.error' | translate }}
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="form-group" style="margin-top: 5px; display: flex; justify-content: center">
+							<div>
+								<label class="switch">
+									<input
+										type="checkbox"
+										class="form-control js-switch"
+										formControlName="unlimitedWorkbook"
+										(click)="toggleUnlimited($event.target.checked, 'workbookCount')" />
+									<span
+										class="slider round"
+										[ngStyle]="{
+											'background-color': f.unlimitedWorkbook.value ? appService.whiteBrandingColor : '#ccc'
+										}"></span>
+								</label>
+							</div>
+							<div>
+								<label style="margin-top: 4px; padding-left: 15px">{{
+									'Pages.DiwoLicense.AddEdit.LicenseSection.UnlimitedCount' | translate
+								}}</label>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- ------------------------------ Server Storage Count ------------------------------------>
+
+				<div class="row" style="margin-top: 1rem">
+					<div class="col-md-4">
+						<div class="form-group">
+							<label>{{ 'Pages.DiwoLicense.AddEdit.LicenseSection.ServerStorage.title' | translate }}</label>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div
+							class="form-group"
+							style="margin-top: -2px"
+							[ngClass]="{
+								'has-error':
+									f.serverStorageCount.invalid && (f.serverStorageCount.dirty || f.serverStorageCount.touched),
+								'has-success':
+									f.serverStorageCount.valid && (f.serverStorageCount.dirty || f.serverStorageCount.touched)
+							}">
+							<div style="display: -webkit-box">
+								<input
+									type="number"
+									class="form-control"
+									placeholder="{{ 'Pages.DiwoLicense.AddEdit.LicenseSection.ServerStorage.placeholder' | translate }}"
+									formControlName="serverStorageCount" />
+								<div style="margin-left: 0.7rem; margin-top: 0.7rem">
+									{{ 'Pages.DiwoLicense.AddEdit.LicenseSection.ServerStorage.gb' | translate }}
+								</div>
+							</div>
+							<div class="error" *ngIf="f.serverStorageCount.errors && f.serverStorageCount.touched">
+								<div *ngIf="f.serverStorageCount.errors.required">
+									{{ 'Pages.DiwoLicense.AddEdit.LicenseSection.ServerStorage.error' | translate }}
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="form-group" style="margin-top: 10px; display: flex; justify-content: center">
+							<div>
+								<label class="switch">
+									<input
+										type="checkbox"
+										class="form-control js-switch"
+										formControlName="UnlimitedServerStor"
+										(click)="toggleUnlimited($event.target.checked, 'serverStorageCount')" />
+									<span
+										class="slider round"
+										[ngStyle]="{
+											'background-color': f.UnlimitedServerStor.value ? appService.whiteBrandingColor : '#ccc'
+										}"></span>
+								</label>
+							</div>
+							<div>
+								<label style="margin-top: 4px; padding-left: 15px">{{
+									'Pages.DiwoLicense.AddEdit.LicenseSection.UnlimitedCount' | translate
+								}}</label>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- ------------------------------ Data Tranfer Count ------------------------------------>
+
+				<div class="row" style="margin-top: 1rem">
+					<div class="col-md-4">
+						<div class="form-group">
+							<label>{{ 'Pages.DiwoLicense.AddEdit.LicenseSection.DataTransfer.title' | translate }}</label>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div
+							class="form-group"
+							style="margin-top: -2px"
+							[ngClass]="{
+								'has-error': f.DataTransferCount.invalid && (f.DataTransferCount.dirty || f.DataTransferCount.touched),
+								'has-success': f.DataTransferCount.valid && (f.DataTransferCount.dirty || f.DataTransferCount.touched)
+							}">
+							<div style="display: -webkit-box">
+								<input
+									type="number"
+									class="form-control"
+									placeholder="{{ 'Pages.DiwoLicense.AddEdit.LicenseSection.DataTransfer.placeholder' | translate }}"
+									formControlName="DataTransferCount" />
+								<div style="margin-left: 0.7rem; margin-top: 0.7rem">
+									{{ 'Pages.DiwoLicense.AddEdit.LicenseSection.DataTransfer.gb/month' | translate }}
+								</div>
+							</div>
+							<div class="error" *ngIf="f.DataTransferCount.errors && f.DataTransferCount.touched">
+								<div *ngIf="f.DataTransferCount.errors.required">
+									{{ 'Pages.DiwoLicense.AddEdit.LicenseSection.DataTransfer.error' | translate }}
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="form-group" style="margin-top: 10px; display: flex; justify-content: center">
+							<div>
+								<label class="switch">
+									<input
+										type="checkbox"
+										class="form-control js-switch"
+										formControlName="unlimitedDataTransfer"
+										(click)="toggleUnlimited($event.target.checked, 'DataTransferCount')" />
+									<span
+										class="slider round"
+										[ngStyle]="{
+											'background-color': f.unlimitedDataTransfer.value ? appService.whiteBrandingColor : '#ccc'
+										}"></span>
+								</label>
+							</div>
+							<div>
+								<label style="margin-top: 4px; padding-left: 15px">{{
+									'Pages.DiwoLicense.AddEdit.LicenseSection.UnlimitedCount' | translate
+								}}</label>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+
+	<div class="row">
+		<div class="row card-body" style="margin: 0px">
+			<div style="float: right; margin-top: 2rem">
+				<a
+					class="btn btn-o btn-primary border_radius functionalBtn"
+					style="
+						margin-right: 20px;
+						background-color: lightgray !important;
+						color: black;
+						border: 1px solid lightgray !important;
+					"
+					(click)="cancel()"
+					>{{ 'Utils.cancel' | translate }}</a
+				>
+				<a
+					class="btn border_radius functionalBtn"
+					[ngStyle]="{
+						'background-color': appService.whiteBrandingColor,
+						border: '1px solid' + appService.whiteBrandingColor,
+						color: 'white'
+					}"
+					style="margin-right: 0px"
+					(click)="saveLicense()"
+					*ngIf="clientId"
+					>{{ 'Utils.update' | translate }}</a
+				>
+				<a
+					class="btn border_radius functionalBtn"
+					[ngStyle]="{
+						'background-color': appService.whiteBrandingColor,
+						border: '1px solid' + appService.whiteBrandingColor,
+						color: 'white'
+					}"
+					style="margin-right: 0px"
+					(click)="saveLicense()"
+					*ngIf="!clientId"
+					>{{ 'Utils.save' | translate }}</a
+				>
+			</div>
+		</div>
+	</div>
+</div>

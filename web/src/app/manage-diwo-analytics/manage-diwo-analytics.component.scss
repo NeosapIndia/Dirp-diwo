@@ -1,0 +1,141 @@
+.total-count {
+	font-size: 2.2rem;
+	// font-weight: bold;
+	color: var(--check-box-color);
+}
+
+.license-total-count {
+	font-weight: 500;
+	font-size: 1.3rem;
+	color: black;
+}
+
+.sub-card p.title {
+	font-size: 0.9rem;
+	color: #637373;
+}
+
+.license-title {
+	font-size: 0.9rem;
+	font-weight: 600;
+	color: #637373;
+}
+
+.panel-white-2 {
+	background-color: #ffffff;
+	position: relative;
+	color: #5b5b60;
+	margin: 0 1.9% 1.9% 1.9%;
+}
+
+.panel-white-4 {
+	background-color: #ffffff;
+	position: relative;
+	color: #5b5b60;
+	border: 2px solid rgba(0, 0, 0, 0.07);
+	border-radius: 15px;
+	margin-bottom: 2rem;
+	margin: 0 1.9% 1.9% 1.9%;
+}
+
+@media screen and (min-width: 992px) and (max-width: 1300px) {
+	.panel-white-2 {
+		margin: 0 2.4% 1.9% 1.9%;
+	}
+
+	.panel-white-4 {
+		margin: 0 2.4% 1.9% 1.9%;
+	}
+}
+
+.mainTitle {
+	cursor: pointer;
+}
+
+.license-total-count {
+	font-weight: 500;
+	font-size: 1.3rem;
+	color: black;
+}
+.sub-card {
+	background-color: #ffffff;
+	position: relative;
+	color: #5b5b60;
+	border: 2px solid rgba(0, 0, 0, 0.07);
+	border-radius: 0.7rem;
+	padding: 0.5rem 0rem 0rem 0.7rem;
+	cursor: pointer;
+}
+
+.license-sub-card {
+	background-color: #ffffff;
+	position: relative;
+	color: #5b5b60;
+	border: 2px solid rgba(0, 0, 0, 0.07);
+	border-radius: 15px;
+	padding: 1.25rem 1.563rem;
+	cursor: pointer;
+}
+
+.license-sub-card {
+	height: 120px;
+}
+
+.sub-card img {
+	background: rgb(182 206 214 / 25%);
+	border-radius: 50%;
+	padding: 0px 8px;
+	height: 2.4rem;
+	width: 2.5rem;
+}
+
+.report-header {
+	font-size: 0.9rem !important;
+	font-weight: 500 !important;
+	text-transform: uppercase;
+	color: black !important;
+	background-color: #f9fafb;
+	padding: 14px 20px;
+	border-radius: 12px 12px 0 0;
+	height: 55px;
+	border-bottom: 2px solid rgba(0, 0, 0, 0.07) !important;
+}
+
+.form-group {
+	margin-bottom: 8px;
+	margin-top: 12px;
+}
+
+.ng-select .ng-select-container {
+	align-items: center;
+	padding: 6px 7px 6px 4px;
+	border: 2px solid rgba(0, 0, 0, 0.07) !important;
+	border-radius: 8px;
+}
+
+::ng-deep.home .md-drppicker.drops-down-auto.ltr.double.show-ranges.shown {
+	left: -2.5rem !important;
+	width: 37.5rem !important;
+	top: -220px !important;
+}
+
+.pageDiv {
+	padding-left: 1.9%;
+	padding-right: 0.9%;
+}
+
+::ng-deep.tick text {
+	font-size: 0.9rem !important;
+}
+
+.count-container {
+	display: flex;
+	flex-direction: row;
+	justify-content: stretch;
+}
+
+.count-container-wrap {
+	min-height: 100px;
+	word-wrap: break-word;
+	width: 100%;
+}

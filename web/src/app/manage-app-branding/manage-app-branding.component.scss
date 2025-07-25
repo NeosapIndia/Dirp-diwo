@@ -1,0 +1,20 @@
+.left {
+    text-align: left;
+}
+
+tr {
+    height: 80px;
+}
+
+#filterDiv {
+    display: flex;
+    margin-left: 30px;
+    border: 2px solid rgba(0, 0, 0, 0.07) !important;
+    border-radius: 8px;
+    max-width: 10vw;
+}
+
+.pageDiv {
+    padding-left: 1.9%;
+    padding-right: 0.9%;
+}

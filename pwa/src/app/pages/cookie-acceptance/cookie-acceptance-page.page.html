@@ -1,0 +1,27 @@
+<ion-header>
+	<ion-toolbar>
+		<ion-title class="ion-text-center">{{'Utils.profile' | translate}}</ion-title>
+	</ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding-horizontal">
+	<ion-grid>
+		<ion-row [ngClass]="{ 'ion-main-row-desktop': isdesktopView || isTabletLandscapeView}">
+			<ion-col
+				size-sm="12"
+				size-md="9"
+				size-lg="7"
+				class="main-col"
+				[ngClass]="{ 'ion-main-col-desktop': isdesktopView || isTabletLandscapeView}">
+				<div>
+					<p *ngIf="userName">{{'Utils.hi' | translate}} {{userName}},</p>
+					<p></p>
+					<div style="text-align: left">{{'Utils.cookiePolicy' | translate}}</div>
+				</div>
+				<div>
+					<ion-button (click)="acceptPolicyByUser()"> {{'Utils.accept' | translate}}</ion-button>
+				</div>
+			</ion-col>
+		</ion-row>
+	</ion-grid>
+</ion-content>

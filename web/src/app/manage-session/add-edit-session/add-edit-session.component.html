@@ -1,0 +1,526 @@
+<div class="container-fluid" style="background-color: #ffffff; min-height: 100vh; padding: 0px">
+	<div style="margin: 0%">
+		<div class="row">
+			<div class="col-md-2" (click)="backStep()">
+				<div class="arrow" style="justify-content: start">
+					<!-- <img
+						src="assets/images/arrow_icon.svg"
+						style="width: 4rem; margin-left: 2rem; transform: rotate(180deg)"
+						*ngIf="stepCount > 1" /> -->
+					<div [innerHTML]="iconObject['arrow_icon_rotate']" *ngIf="stepCount > 1"></div>
+				</div>
+			</div>
+
+			<div class="col-md-8">
+				<div style="height: 100vh">
+					<div class="row">
+						<div class="col-md-1"></div>
+						<div class="col-md-10">
+							<div class="row">
+								<div class="col-md-12">
+									<h3 class="session-step-count" [ngStyle]="{ color: appService.whiteBrandingColor }">
+										{{ 'Pages.Session.AddEdit.step' | translate }} {{ stepCount }}
+									</h3>
+								</div>
+							</div>
+
+							<!-- Status Bar -->
+							<div class="row">
+								<div
+									class="col-md-2"
+									*ngFor="let i of status"
+									[ngStyle]="{ 'margin-top': i <= stepCount ? '-1px' : '0' }">
+									<hr
+										class="active-step-status"
+										[ngStyle]="{ 'background-color': appService.whiteBrandingColor }"
+										*ngIf="i <= stepCount" />
+									<hr class="inactive-step-status" *ngIf="i > stepCount" />
+								</div>
+							</div>
+						</div>
+						<div class="col-md-1"></div>
+					</div>
+
+					<!-- All Steps -->
+					<div class="row">
+						<div *ngIf="stepCount == 1">
+							<div class="step-heading">
+								<span>{{ 'Pages.Session.AddEdit.SelectCourseAndWorkbook.title' | translate }}</span>
+							</div>
+							<div class="step-form" style="min-height: 36vh">
+								<div style="height: 20vh; display: grid; align-items: center">
+									<form [formGroup]="sessionForm">
+										<!-- <div class="row session-style">
+											<div class="col-md-2"></div>
+											<div class="col-md-8">
+												<div class="form-group">
+													<label style="font-size: 1.2rem">
+														{{ 'Pages.Session.AddEdit.SelectCourseAndWorkbook.CourseList.title' | translate }}
+													</label>
+													<ng-select
+														[items]="course_List"
+														class="ng-select-wrap"
+														placeholder="{{
+															'Pages.Session.AddEdit.SelectCourseAndWorkbook.CourseList.placeholder' | translate
+														}}"
+														bindLabel="title"
+														bindValue="id"
+														[multiple]="false"
+														[closeOnSelect]="true"
+														[searchable]="true"
+														[clearable]="false"
+														formControlName="CourseId"
+														(change)="OnchangeCourse()">
+													</ng-select>
+												</div>
+											</div>
+										</div> -->
+										<div class="row session-style">
+											<div class="col-md-2"></div>
+											<div class="col-md-8">
+												<div
+													class="form-group"
+													[ngClass]="{
+														'has-error': f1.WorkbookId.invalid && (f1.WorkbookId.dirty || f1.WorkbookId.touched),
+														'has-success': f1.WorkbookId.valid && (f1.WorkbookId.dirty || f1.WorkbookId.touched)
+													}">
+													<label style="font-size: 1.2rem">
+														{{ 'Pages.Session.AddEdit.SelectCourseAndWorkbook.WorkbookList.title' | translate }}
+													</label>
+													<ng-select
+														[items]="workbookList"
+														class="ng-select-wrap"
+														placeholder="{{
+															'Pages.Session.AddEdit.SelectCourseAndWorkbook.WorkbookList.placeholder' | translate
+														}}"
+														bindLabel="title"
+														bindValue="id"
+														[multiple]="false"
+														[closeOnSelect]="true"
+														[searchable]="true"
+														formControlName="WorkbookId"
+														(change)="onChangeWorkbook($event)">
+													</ng-select>
+													<div class="error" *ngIf="f1.WorkbookId.errors">
+														<div *ngIf="f1.WorkbookId.errors.required">
+															{{ 'Pages.Session.AddEdit.SelectCourseAndWorkbook.WorkbookList.error' | translate }}
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</form>
+								</div>
+							</div>
+						</div>
+
+						<div *ngIf="stepCount == 2">
+							<div class="step-heading">
+								<span>
+									{{ 'Pages.Session.AddEdit.AddSessionCoordinates.title' | translate }}
+								</span>
+							</div>
+							<div class="step-form" style="min-height: 36vh">
+								<div style="height: 30vh; display: grid; align-items: center">
+									<form [formGroup]="sessionForm">
+										<div class="row">
+											<div class="col-md-2"></div>
+											<div class="col-md-8">
+												<div
+													class="form-group session-style"
+													[ngClass]="{
+														'has-error': f1.location.invalid && (f1.location.dirty || f1.location.touched),
+														'has-success': f1.location.valid && (f1.location.dirty || f1.location.touched)
+													}">
+													<label>
+														{{ 'Pages.Session.AddEdit.AddSessionCoordinates.SessionLocation.title' | translate }}</label
+													>
+													<input
+														class="form-control"
+														type="text"
+														placeholder="{{
+															'Pages.Session.AddEdit.AddSessionCoordinates.SessionLocation.placeholder' | translate
+														}}"
+														formControlName="location" />
+													<div class="error" *ngIf="f1.location.errors">
+														<div *ngIf="f1.location.errors.required">
+															{{ 'Pages.Session.AddEdit.AddSessionCoordinates.SessionLocation.error' | translate }}
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-md-2"></div>
+											<div class="col-md-8">
+												<div
+													class="form-group session-style"
+													[ngClass]="{
+														'has-error': f1.language.invalid && (f1.language.dirty || f1.language.touched),
+														'has-success': f1.language.valid && (f1.language.dirty || f1.language.touched)
+													}">
+													<label>
+														{{ 'Pages.Session.AddEdit.AddSessionCoordinates.SessionLanguage.title' | translate }}</label
+													>
+													<input
+														class="form-control"
+														type="text"
+														placeholder="{{
+															'Pages.Session.AddEdit.AddSessionCoordinates.SessionLanguage.placeholder' | translate
+														}}"
+														formControlName="language" />
+													<div class="error" *ngIf="f1.language.errors">
+														<div *ngIf="f1.language.errors.required">
+															{{ 'Pages.Session.AddEdit.AddSessionCoordinates.SessionLanguage.error' | translate }}
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-md-2"></div>
+											<div class="col-md-4 session-style date">
+												<div
+													class="form-group"
+													[ngClass]="{
+														'has-error': f1.date.invalid && (f1.date.dirty || f1.date.touched),
+														'has-success': f1.date.valid && (f1.date.dirty || f1.date.touched)
+													}">
+													<label>
+														{{ 'Pages.Session.AddEdit.AddSessionCoordinates.DateandTime.title' | translate }}
+													</label>
+													<input
+														*ngIf="selectedDate"
+														type="text"
+														ngxDaterangepickerMd
+														[showDropdowns]="true"
+														onkeydown="return false"
+														name="sDate"
+														id="sDate"
+														[showClearButton]="false"
+														[(ngModel)]="selectedDate"
+														[showCancel]="true"
+														[singleDatePicker]="true"
+														[autoApply]="true"
+														[locale]="{ applyLabel: 'ok', format: 'DD-MM-YYYY' }"
+														placeholder="DD-MM-YYYY"
+														formControlName="date"
+														autocomplete="off"
+														(change)="DateChange($event)"
+														class="form-control" />
+													<div class="error" *ngIf="f1.date.errors">
+														<div *ngIf="f1.date.errors.required">
+															{{ 'Pages.Session.AddEdit.AddSessionCoordinates.DateandTime.title' | translate }}
+														</div>
+													</div>
+												</div>
+											</div>
+											<div class="col-md-4 session-style">
+												<div
+													class="form-group"
+													[ngClass]="{
+														'has-error': f1.time.invalid && (f1.time.dirty || f1.time.touched),
+														'has-success': f1.time.valid && (f1.time.dirty || f1.time.touched)
+													}">
+													<label style="visibility: hidden">
+														{{ 'Pages.Session.AddEdit.AddSessionCoordinates.Time.title' | translate }}
+													</label>
+													<ng-select
+														[items]="timePicker"
+														class="ng-select-wrap"
+														placeholder="Time"
+														bindLabel="time"
+														bindValue="id"
+														[multiple]="false"
+														[closeOnSelect]="true"
+														[searchable]="true"
+														formControlName="time">
+													</ng-select>
+													<div class="error" *ngIf="f1.time.errors">
+														<div *ngIf="f1.time.errors.required">
+															{{ 'Pages.Session.AddEdit.AddSessionCoordinates.Time.error' | translate }}
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</form>
+								</div>
+							</div>
+						</div>
+
+						<div *ngIf="stepCount == 3">
+							<div class="step-heading">
+								<span>{{ 'Pages.Session.AddEdit.NameYourSession.title' | translate }}</span>
+								<div class="step-form" style="min-height: 50vh">
+									<form [formGroup]="sessionForm">
+										<div class="row">
+											<div class="col-md-2"></div>
+											<div class="col-md-8 session-style">
+												<div
+													class="form-group"
+													[ngClass]="{
+														'has-error': f1.title.invalid && (f1.title.dirty || f1.title.touched),
+														'has-success': f1.title.valid && (f1.title.dirty || f1.title.touched)
+													}">
+													<label style="float: left">
+														{{ 'Pages.Session.AddEdit.NameYourSession.SessionTitle.title' | translate }}
+													</label>
+													<input
+														class="form-control"
+														value="Session Title"
+														type="text"
+														placeholder="{{
+															'Pages.Session.AddEdit.NameYourSession.SessionTitle.placeholder' | translate
+														}}"
+														formControlName="title" />
+													<div class="error" *ngIf="f1.title.errors">
+														<div *ngIf="f1.title.errors.required">
+															{{ 'Pages.Session.AddEdit.NameYourSession.SessionTitle.error' | translate }}
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</form>
+								</div>
+							</div>
+						</div>
+
+						<div *ngIf="stepCount == 4">
+							<!-- <div class="step-heading">
+								<span>{{ 'Pages.Session.AddEdit.SharetheWorkbook.title' | translate }}</span>
+							</div> -->
+							<div class="step-form">
+								<div class="row">
+									<div class="col-md-1"></div>
+									<div class="col-md-10">
+										<div class="row" style="align-items: center; display: flex">
+											<div class="col-md-12" style="text-align: center" #qrCodeElement>
+												<qr-code [value]="sessionForm.value.link" size="500" errorCorrectionLevel="M"></qr-code>
+											</div>
+											<!-- <div class="col-md-6">
+												<div class="session-style">
+													<div class="form-group">
+														<input
+															*ngIf="!copyLink"
+															class="form-control"
+															type="text"
+															[value]="sessionForm.value.link"
+															disabled
+															placeholder="{{ 'Pages.Session.AddEdit.SharetheWorkbook.workbooklink' | translate }}" />
+														<input
+															*ngIf="copyLink"
+															class="form-control"
+															type="text"
+															[value]="sessionForm.value.link"
+															id="hyper_link"
+															placeholder="{{ 'Pages.Session.AddEdit.SharetheWorkbook.workbooklink' | translate }}" />
+													</div>
+												</div>
+											</div> -->
+										</div>
+
+										<div class="row">
+											<div class="col-md-6" style="text-align: end">
+												<div class="form-group session-style" style="padding: 0% 0% 7% 0%">
+													<a
+														class="btn-xs action-pause-btn"
+														[ngStyle]="{
+															color: appService.whiteBrandingColor,
+															border: '1px solid' + appService.whiteBrandingColor,
+														}"
+														style="margin-left: 5px; padding: 10px 24px; font-size: 1.3rem; border-radius: 50px"
+														(click)="downloadQRCode()">
+														{{ 'Pages.Session.AddEdit.SharetheWorkbook.saveQR' | translate }}
+													</a>
+												</div>
+											</div>
+											<div class="col-md-6" style="text-align: left">
+												<div class="form-group session-style" style="padding: 0% 0% 7% 0%">
+													<a
+														class="btn-xs action-pause-btn"
+														[ngStyle]="{
+															color: appService.whiteBrandingColor,
+															border: '1px solid' + appService.whiteBrandingColor,
+														}"
+														style="margin-left: 5px; padding: 10px 20px; font-size: 1.3rem; border-radius: 50px"
+														(click)="copyText()">
+														{{ 'Pages.Session.AddEdit.SharetheWorkbook.copylink' | translate }}</a
+													>
+												</div>
+											</div>
+										</div>
+
+										<div class="row">
+											<div
+												*ngIf="sessionForm.value.status !== 'Live' && sessionForm.value.status !== 'Ended'"
+												[ngStyle]="{ color: appService.whiteBrandingColor }"
+												class="col-md-12 skip"
+												(click)="updateStep(4)">
+												<u style="color: #8e8e93"> {{ 'Pages.Session.AddEdit.SharetheWorkbook.skip' | translate }}</u>
+											</div>
+											<div
+												*ngIf="sessionForm.value.status == 'Live' || sessionForm.value.status == 'Ended'"
+												class="col-md-12 skip"
+												(click)="startSession(sessionForm.value)">
+												<u> {{ 'Pages.Session.AddEdit.SharetheWorkbook.continuethesession' | translate }}</u>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div *ngIf="stepCount == 5">
+							<div class="step-heading">
+								<span>{{ 'Pages.Session.AddEdit.ApproveParticipants.title' | translate }}</span>
+							</div>
+							<div class="step-form">
+								<div class="row">
+									<div class="col-md-12">
+										<div
+											class="row"
+											style="
+												margin-bottom: 2rem;
+												max-height: 50vh;
+												overflow: auto;
+												padding-top: 0.5%;
+												overflow-x: hidden;
+											">
+											<div
+												class="col-md-6 mar-bot"
+												*ngFor="let item of allParticipants; let i = index"
+												[ngStyle]="{
+													'padding-left': (i + 1) % 2 == 0 ? '2.5%' : '0',
+													'padding-right': (i + 1) % 2 != 0 ? '2.5%' : '0'
+												}">
+												<div class="row">
+													<div class="col-md-7">
+														<p style="font-size: 1.1rem !important">{{ item.User.fullName }}</p>
+													</div>
+													<div class="col-md-5" style="text-align: right; padding-right: 2rem">
+														<span
+															class="btn-xs participant-status-approved"
+															style="font-size: 1rem !important"
+															*ngIf="item.status == 'Approved'"
+															(click)="changeStatus('Not Approved', item.id)">
+															{{ 'Pages.Session.AddEdit.ApproveParticipants.approved' | translate }}
+														</span>
+														<span
+															class="btn-xs participant-status-not-approve"
+															style="font-size: 1rem !important"
+															*ngIf="item.status == 'Not Approved'"
+															(click)="changeStatus('Approved', item.id)">
+															{{ 'Pages.Session.AddEdit.ApproveParticipants.notapproved' | translate }}</span
+														>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-md-12" style="text-align: center; font-size: 1.1rem; margin-top: 2%">
+												<span>
+													<img
+														src="assets/images/refresh_icon.svg"
+														(click)="refreshParticipantResult()"
+														style="cursor: pointer" />
+												</span>
+												{{ 'Pages.Session.AddEdit.ApproveParticipants.totalApprovedparticipants' | translate }}:
+												{{ approvedCount }}
+											</div>
+										</div>
+										<div class="row">
+											<div
+												*ngIf="sessionForm.value.status !== 'Live' && sessionForm.value.status !== 'Ended'"
+												class="col-md-12 skip"
+												(click)="updateStep(5)">
+												<u style="color: #8e8e93">{{ 'Pages.Session.AddEdit.ApproveParticipants.skip' | translate }}</u>
+											</div>
+											<div
+												*ngIf="sessionForm.value.status == 'Live' || sessionForm.value.status == 'Ended'"
+												class="col-md-12 skip"
+												(click)="startSession(sessionForm.value)">
+												<u> {{ 'Pages.Session.AddEdit.SharetheWorkbook.continuethesession' | translate }}</u>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div *ngIf="stepCount == 6">
+							<div class="step-heading">
+								<span *ngIf="sessionForm.value.status !== 'Live' && sessionForm.value.status !== 'Ended'">{{
+									'Pages.Session.AddEdit.ConducttheSession.title' | translate
+								}}</span>
+								<span *ngIf="sessionForm.value.status == 'Live' || sessionForm.value.status == 'Ended'">{{
+									'Pages.Session.AddEdit.ConducttheSession.livesessiontitle' | translate
+								}}</span>
+							</div>
+							<div class="step-form">
+								<div style="height: 40vh; display: grid; align-items: center">
+									<div class="row" *ngIf="sessionForm.value.status !== 'Live' && sessionForm.value.status !== 'Ended'">
+										<div class="col-md-2"></div>
+										<div class="col-md-8">
+											<div class="form-group" style="text-align: center">
+												<h1 style="font-size: 1.3rem !important">
+													{{ 'Pages.Session.AddEdit.ConducttheSession.allsetforeng&insp' | translate }}
+												</h1>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-2"></div>
+										<div class="col-md-8">
+											<div class="center">
+												<a
+													*ngIf="sessionForm.value.status !== 'Live' && sessionForm.value.status !== 'Ended'"
+													[ngStyle]="{
+														'background-color': appService.whiteBrandingColor,
+														border: '1px solid' + appService.whiteBrandingColor,
+														color: 'white'
+													}"
+													class="btn border_radius conduct-seesion-btn"
+													(click)="startSession(sessionForm.value)">
+													{{ 'Pages.Session.AddEdit.ConducttheSession.conductsession' | translate }}
+												</a>
+												<a
+													*ngIf="sessionForm.value.status == 'Live' || sessionForm.value.status == 'Ended'"
+													[ngStyle]="{
+														'background-color': appService.whiteBrandingColor,
+														border: '1px solid' + appService.whiteBrandingColor,
+														color: 'white'
+													}"
+													class="btn border_radius conduct-seesion-btn"
+													(click)="startSession(sessionForm.value)">
+													{{ 'Pages.Session.AddEdit.ConducttheSession.continuethesession' | translate }}
+												</a>
+											</div>
+										</div>
+									</div>
+									<div class="row" *ngIf="sessionForm.value.status != 'Live' && sessionForm.value.status != 'Ended'">
+										<div class="col-md-12 skip">
+											<span (click)="updateStep(6)"
+												><u style="color: #8e8e93">
+													{{ 'Pages.Session.AddEdit.ConducttheSession.saveforlater' | translate }}</u
+												></span
+											>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-md-2" (click)="forwardStep()">
+				<div class="arrow" style="justify-content: end">
+					<!-- <img style="width: 4rem; margin-right: 2rem" src="assets/images/arrow_icon.svg" *ngIf="stepCount < 6" /> -->
+					<div [innerHTML]="iconObject['arrow_icon']" *ngIf="stepCount < 6"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

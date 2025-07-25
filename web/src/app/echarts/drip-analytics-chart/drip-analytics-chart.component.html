@@ -1,0 +1,494 @@
+<div style="margin-top: 1.5rem">
+	<div class="row">
+		<div class="panel panel-white-3">
+			<div class="report-header">
+				{{ 'Pages.HomePage.DripActivity.title' | translate }}
+			</div>
+			<div style="padding: 20px" #container>
+				<div class="row">
+					<div class="col-md-12">
+						<div class="col-md-9" style="padding-left: 0; padding-right: 0">
+							<div class="form-group" style="margin-top: 2rem; display: flex">
+								<div style="min-width: 85px; max-width: 130px; display: flex; justify-content: center">
+									<label>{{ 'Pages.Analytics.Home.Filter.filterby' | translate }}</label>
+									<!-- <img
+										(click)="onclickFilterDropDownModal()"
+										src="/assets/images/expand_more_icon.svg"
+										alt=""
+										style="width: 30%; cursor: pointer" /> -->
+									<span
+										style="width: 30%; cursor: pointer"
+										(click)="onclickFilterDropDownModal()"
+										[innerHTML]="iconObject['expand_more_icon']"></span>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-3 filter-date" style="padding-right: 0">
+							<div class="form-group" style="margin-top: 0">
+								<label style="min-width: 94px; margin: 0"
+									>{{ 'Pages.Analytics.Home.Filter.filterDate' | translate }}
+								</label>
+								<input
+									type="text"
+									ngxDaterangepickerMd
+									[showDropdowns]="true"
+									onkeydown="return false"
+									[showCustomRangeLabel]="true"
+									[alwaysShowCalendars]="true"
+									[ranges]="ranges"
+									[maxDate]="maxDate"
+									[linkedCalendars]="true"
+									[isInvalidDate]="isInvalidDate"
+									[showClearButton]="true"
+									[showCancel]="true"
+									placeholder="DD-MM-YYYY - DD-MM-YYYY"
+									[autoApply]="false"
+									[locale]="{ applyLabel: 'Apply', format: 'DD-MM-YYYY' }"
+									(startDateChanged)="startFilterDateClicked($event)"
+									(endDateChanged)="endFilterDateClicked($event)"
+									class="form-control"
+									autocomplete="off"
+									(change)="onDateChange($event)"
+									[(ngModel)]="selectedFilterDate"
+									[ngModelOptions]="{ standalone: true }" />
+							</div>
+						</div>
+						<div class="col-md-12" style="padding-left: 0">
+							<div style="margin-top: 2px">
+								<span *ngFor="let item of filterArrayData; let i = index">
+									<a
+										*ngFor="let item_ of item.selectedData; let j = index"
+										class="btn-xs action-clear-btn"
+										style="margin-right: 5px">
+										<span *ngIf="item.filterType == 'Drips'">
+											{{ item.filterType }}: {{ item_.drip_title ? item_.drip_title : '' }}
+										</span>
+
+										<span *ngIf="item.filterType == 'Drip Flows'">
+											{{ item.filterType }}: {{ item_.title ? item_.title : '' }}
+										</span>
+
+										<span *ngIf="item.filterType == 'Job Role'">
+											{{ item.filterType }}: {{ item_.job_role_name ? item_.job_role_name : '' }}
+										</span>
+
+										<span *ngIf="['Drips', 'Drip Flows', 'Job Role'].indexOf(item.filterType) == -1">
+											{{ item.filterType }}:
+											{{ item_.name ? item_.name : item_.label ? item_.label : '' }}
+										</span>
+
+										<span class="clear-filter" (click)="clearFilter(i, j)">&times;</span>
+									</a>
+									<a *ngIf="item?.searchByText" class="btn-xs action-clear-btn" style="margin-right: 5px">
+										<span>
+											{{ item.filterType }}:
+											{{ item.searchByText ? item.searchByText : '' }}
+										</span>
+
+										<span class="clear-filter" (click)="clearFilter(i)">&times;</span>
+									</a>
+								</span>
+								<span
+									*ngIf="filterArrayData && filterArrayData.length > 0"
+									(click)="clearAllFilter()"
+									style="margin: 0; padding-left: 0.2rem">
+									{{ 'Pages.Analytics.Home.Filter.clearAll' | translate }}
+								</span>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="row" style="margin-top: 1rem">
+					<div class="col-md-12">
+						<div
+							class="col-md-3 btn-tab btn btn-o"
+							style="padding-right: 0px; text-align: left"
+							[(ngModel)]="seletedDripSentTab"
+							[ngModelOptions]="{ standalone: true }"
+							ngDefaultControl
+							(click)="dripTab('Drips Sent', seletedDripSentTab)"
+							[ngClass]="{ 'selected-Drip-SentTab': seletedDripSentTab }">
+							<p style="margin: 0">{{ 'Pages.Analytics.Home.DripsSent' | translate }}</p>
+							<p style="margin: 0">{{ totalDripSent }}</p>
+						</div>
+						<div
+							class="col-md-3 btn-tab btn btn-o"
+							style="padding-right: 0px; text-align: left; border-left: 0px"
+							[(ngModel)]="seletedDripDeliveredTab"
+							[ngModelOptions]="{ standalone: true }"
+							ngDefaultControl
+							(click)="dripTab('Drips Delivered', seletedDripDeliveredTab)"
+							[ngClass]="{ 'selected-Drip-DeliveredTab': seletedDripDeliveredTab }">
+							<p style="margin: 0">{{ 'Pages.Analytics.Home.DripsDelivered' | translate }}</p>
+							<p style="margin: 0">{{ totalDripDelivered }}</p>
+						</div>
+						<div
+							class="col-md-3 btn-tab btn btn-o"
+							style="text-align: left; border-left: 0px"
+							[ngClass]="{ 'selected-Drip-EngagedTab': seletedDripEngagedTab }"
+							[(ngModel)]="seletedDripEngagedTab"
+							[ngModelOptions]="{ standalone: true }"
+							ngDefaultControl
+							(click)="dripTab('Drips Engaged', seletedDripEngagedTab)">
+							<p style="margin: 0">{{ 'Pages.Analytics.Home.DripsEngaged' | translate }}</p>
+							<p style="margin: 0">{{ totalDripEngaged }}</p>
+						</div>
+						<div
+							class="col-md-3 btn-tab btn btn-o"
+							style="text-align: left; border-left: 0px"
+							[(ngModel)]="selectedRateOfEngagedTab"
+							[ngModelOptions]="{ standalone: true }"
+							ngDefaultControl
+							[ngClass]="{ 'selected-Drip-ScheduledTab': selectedRateOfEngagedTab }"
+							(click)="dripTab('Rate of Engagement', selectedRateOfEngagedTab)">
+							<p style="margin: 0">{{ 'Pages.Analytics.Home.RateOfEngaged' | translate }}</p>
+							<p style="margin: 0">{{ totalRateOfEngaged + '%' }}</p>
+						</div>
+					</div>
+				</div>
+
+				<div class="chart-header">
+					<div class="row">
+						<div style="height: 350px; width: auto">
+							<div *ngIf="showNoData" style="height: 100%; width: 100%">
+								<div class="no-data">
+									<h3>No data</h3>
+								</div>
+								<div class="select-filter">
+									<p>To see the chart, choose different filter</p>
+								</div>
+							</div>
+							<div id="drip_chart" style="height: 100%; width: 100%"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div
+	class="modal fade credit-note"
+	id="filterDropDownModal"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="myModalLabel"
+	aria-hidden="true"
+	data-backdrop="static"
+	data-keyboard="false"
+	*ngIf="loadingCompleted">
+	<div class="modal-dialog" style="width: 25%; margin-top: 12%; margin-left: auto; margin-right: auto">
+		<div class="modal-content">
+			<div
+				class="modal-header"
+				[ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}">
+				<button
+					type="button"
+					class="close"
+					data-dismiss="modal"
+					aria-label="Close"
+					(click)="cancelFilterDropDownModal()">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					<span>
+						{{ 'Pages.Analytics.Home.Filter.selectFilter' | translate }}
+					</span>
+				</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-12 form-group" style="margin-top: -5px">
+						<label>{{ 'Pages.Analytics.Home.Filter.selectFilter' | translate }}</label>
+						<ng-select
+							[items]="filterData"
+							class="ng-select-wrap"
+							placeholder="{{ 'Pages.Analytics.Home.Filter.filterPlaceholder' | translate }}"
+							bindLabel="name"
+							bindValue="value"
+							[multiple]="false"
+							[closeOnSelect]="true"
+							[searchable]="false"
+							[clearable]="false"
+							(change)="onSelectFilterType($event)"
+							[ngModelOptions]="{ standalone: true }"
+							[(ngModel)]="selectedFilterType">
+						</ng-select>
+					</div>
+				</div>
+
+				<div
+					class="visible-md visible-lg visible-sm visible-xs"
+					style="text-align: right; margin-bottom: 0.75rem; margin-top: 1.5rem">
+					<a
+						class="btn-xs action-pause-btn"
+						[ngStyle]="{
+							color: appService.whiteBrandingColor,
+							border: '1px solid' + appService.whiteBrandingColor,
+						}"
+						style="padding: 7px 23px; border-radius: 30px; font-size: 0.9rem; margin-right: 10px"
+						(click)="cancelFilterDropDownModal()"
+						>{{ 'Utils.Action.cancel' | translate }}</a
+					>
+					<a
+						class="btn-xs action-edit-btn"
+						[ngStyle]="{
+							'background-color': appService.whiteBrandingColor,
+							border: '1px solid' + appService.whiteBrandingColor,
+							color: 'white'
+						}"
+						(click)="filterDropDownModalOk()"
+						style="margin-right: 9px; padding: 7px 20px; border-radius: 30px; font-size: 0.9rem"
+						>{{ 'Utils.ok' | translate }}</a
+					>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div
+	class="modal fade credit-note"
+	id="filterModal"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="myModalLabel"
+	aria-hidden="true"
+	data-backdrop="static"
+	data-keyboard="false">
+	<div class="modal-dialog" style="width: 30%; margin-top: 12%; margin-left: auto; margin-right: auto">
+		<div class="modal-content">
+			<div
+				class="modal-header"
+				[ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="cancelFilterModal()">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					<span>
+						{{ 'Pages.Analytics.Home.Filter.selectFilter' | translate }}
+					</span>
+					<!-- <span *ngIf="seletedFilterType == 'Account'">
+						{{ 'Pages.Analytics.Home.Filter.Branch.title' | translate }}
+					</span>
+					<span *ngIf="seletedFilterType == 'Country'">
+						{{ 'Pages.Analytics.Home.Filter.Country.title' | translate }}
+					</span>
+					<span *ngIf="seletedFilterType == 'State'">
+						{{ 'Pages.Analytics.Home.Filter.State.title' | translate }}
+					</span>
+					<span *ngIf="seletedFilterType == 'City'">
+						{{ 'Pages.Analytics.Home.Filter.City.title' | translate }}
+					</span>
+					<span *ngIf="seletedFilterType == 'Job Role'">
+						{{ 'Pages.Analytics.Home.Filter.JobRole.title' | translate }}
+					</span>
+					<span *ngIf="seletedFilterType == 'Tags'">
+						{{ 'Pages.Analytics.Home.Filter.Tags.title' | translate }}
+					</span>
+					<span *ngIf="seletedFilterType == 'Channel'">
+						{{ 'Pages.Analytics.Home.Filter.Channel.title' | translate }}
+					</span>
+					<span *ngIf="seletedFilterType == 'Drip Flows'">
+						{{ 'Pages.Analytics.Home.Filter.DripFlow.title' | translate }}
+					</span>
+					<span *ngIf="seletedFilterType == 'Drips'">
+						{{ 'Pages.Analytics.Home.Filter.Drip.title' | translate }}
+					</span> -->
+				</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-12 form-group" style="margin-top: -5px" *ngIf="seletedFilterType == 'Account'">
+						<label>{{ 'Pages.Analytics.Home.Filter.Branch.title' | translate }}</label>
+						<ng-select
+							[items]="branchList"
+							class="ng-select-wrap"
+							placeholder="{{ 'Pages.Analytics.Home.Filter.Branch.placeholder' | translate }}"
+							bindLabel="account_name_with_id"
+							bindValue="id"
+							[multiple]="true"
+							[clearable]="true"
+							[closeOnSelect]="false"
+							[searchable]="true"
+							[(ngModel)]="branchSelectedList"
+							[ngModelOptions]="{ standalone: true }"
+							(change)="onselctedFilterData($event, 'Account')">
+						</ng-select>
+					</div>
+					<div class="col-md-12 form-group" style="margin-top: -5px" *ngIf="seletedFilterType == 'Country'">
+						<label>{{ 'Pages.Analytics.Home.Filter.Country.title' | translate }}</label>
+						<ng-select
+							[items]="countryList"
+							class="ng-select-wrap"
+							placeholder="{{ 'Pages.Analytics.Home.Filter.Country.placeholder' | translate }}"
+							bindLabel="name"
+							bindValue="id"
+							[multiple]="true"
+							[clearable]="true"
+							[closeOnSelect]="false"
+							[searchable]="true"
+							[(ngModel)]="countrySelectedList"
+							[ngModelOptions]="{ standalone: true }"
+							(change)="onselctedFilterData($event, 'Country')">
+						</ng-select>
+					</div>
+					<!-- <div class="col-md-12 form-group" style="margin-top: -5px" *ngIf="seletedFilterType == 'State'">
+						<label>{{ 'Pages.Analytics.Home.Filter.State.title' | translate }}</label>
+						<div class="form-group">
+							<input
+								type="text"
+								class="form-control"
+								(keyup)="onSearchFilter($event.target.value, 'State')"
+								placeholder="{{ 'Pages.Analytics.Home.Filter.State.placeholder' | translate }}" />
+						</div>
+					</div> -->
+					<div class="col-md-12 form-group" style="margin-top: -5px" *ngIf="seletedFilterType == 'City'">
+						<label>{{ 'Pages.Analytics.Home.Filter.City.title' | translate }}</label>
+						<div class="form-group">
+							<input
+								type="text"
+								class="form-control"
+								(keyup)="onSearchFilter($event.target.value, 'City')"
+								placeholder="{{ 'Pages.Analytics.Home.Filter.City.placeholder' | translate }}" />
+						</div>
+					</div>
+					<div class="col-md-12 form-group" style="margin-top: -5px" *ngIf="seletedFilterType == 'Tags'">
+						<label>{{ 'Pages.Analytics.Home.Filter.Tags.title' | translate }}</label>
+						<div class="form-group">
+							<input
+								type="text"
+								class="form-control"
+								(keyup)="onSearchFilter($event.target.value, 'Tags')"
+								placeholder="{{ 'Pages.Analytics.Home.Filter.Tags.placeholder' | translate }}" />
+						</div>
+					</div>
+					<div class="col-md-12 form-group" style="margin-top: -5px" *ngIf="seletedFilterType == 'Job Role'">
+						<label>{{ 'Pages.Analytics.Home.Filter.JobRole.title' | translate }}</label>
+						<ng-select
+							[items]="jobRoleList"
+							class="ng-select-wrap"
+							placeholder="{{ 'Pages.Analytics.Home.Filter.JobRole.placeholder' | translate }}"
+							bindLabel="job_role_name"
+							bindValue="id"
+							[multiple]="true"
+							[clearable]="true"
+							[closeOnSelect]="false"
+							[searchable]="true"
+							[(ngModel)]="jobRoleSelectedList"
+							[ngModelOptions]="{ standalone: true }"
+							(change)="onselctedFilterData($event, 'Job Role')">
+						</ng-select>
+					</div>
+					<div class="col-md-12 form-group" style="margin-top: -5px" *ngIf="seletedFilterType == 'Channel'">
+						<label>{{ 'Pages.Analytics.Home.Filter.Channel.title' | translate }}</label>
+						<ng-select
+							[items]="dripTypes"
+							class="ng-select-wrap"
+							placeholder="{{ 'Pages.Analytics.Home.Filter.Channel.placeholder' | translate }}"
+							bindLabel="name"
+							bindValue="id"
+							[multiple]="true"
+							[clearable]="true"
+							[closeOnSelect]="false"
+							[searchable]="true"
+							[(ngModel)]="dripTypesSelectedList"
+							[ngModelOptions]="{ standalone: true }"
+							(change)="onselctedFilterData($event, 'Channel')">
+						</ng-select>
+					</div>
+					<div class="col-md-12 form-group" style="margin-top: -5px" *ngIf="seletedFilterType == 'Drip Flows'">
+						<label>{{ 'Pages.Analytics.Home.Filter.DripFlow.title' | translate }}</label>
+						<ng-select
+							[items]="campaignList"
+							class="ng-select-wrap"
+							placeholder="{{ 'Pages.Analytics.Home.Filter.DripFlow.placeholder' | translate }}"
+							bindLabel="campaign_id_title"
+							bindValue="id"
+							[multiple]="true"
+							[clearable]="true"
+							[closeOnSelect]="false"
+							[searchable]="true"
+							[(ngModel)]="campaignSelectedList"
+							[ngModelOptions]="{ standalone: true }"
+							(change)="onselctedFilterData($event, 'Drip Flows')">
+						</ng-select>
+					</div>
+					<div class="col-md-12 form-group" style="margin-top: -5px" *ngIf="seletedFilterType == 'Drips'">
+						<label>{{ 'Pages.Analytics.Home.Filter.Drip.title' | translate }}</label>
+						<ng-select
+							[items]="dripList"
+							class="ng-select-wrap"
+							placeholder="{{ 'Pages.Analytics.Home.Filter.Drip.placeholder' | translate }}"
+							bindLabel="dripIdTitle"
+							bindValue="id"
+							[multiple]="true"
+							[clearable]="true"
+							[closeOnSelect]="false"
+							[searchable]="true"
+							[(ngModel)]="dripSelectedList"
+							[ngModelOptions]="{ standalone: true }"
+							(change)="onselctedFilterData($event, 'Drips')">
+						</ng-select>
+					</div>
+
+					<div
+						class="col-md-12 form-group"
+						style="margin-top: -5px"
+						*ngIf="seletedFilterType && customFieldLabelList.indexOf(seletedFilterType) > -1">
+						<label>Select {{ seletedFilterType }}</label>
+						<ng-select
+							[items]="customFieldOptions"
+							class="ng-select-wrap"
+							placeholder="Select {{ seletedFilterType }} to filter"
+							bindLabel="label"
+							bindValue="label"
+							[multiple]="true"
+							[clearable]="true"
+							[closeOnSelect]="false"
+							[searchable]="true"
+							[(ngModel)]="customFieldSelectedList"
+							[ngModelOptions]="{ standalone: true }"
+							(change)="onselctedFilterData($event, seletedFilterType, true)">
+						</ng-select>
+					</div>
+				</div>
+
+				<div
+					class="visible-md visible-lg visible-sm visible-xs"
+					style="text-align: right; margin-bottom: 0.75rem; margin-top: 1.5rem">
+					<a
+						class="btn-xs action-pause-btn"
+						[ngStyle]="{
+							color: appService.whiteBrandingColor,
+							border: '1px solid' + appService.whiteBrandingColor,
+						}"
+						style="padding: 7px 23px; border-radius: 30px; font-size: 0.9rem; margin-right: 10px"
+						(click)="backToFilterList()"
+						>{{ 'Utils.Action.back' | translate }}</a
+					>
+					<a
+						class="btn-xs action-edit-btn"
+						[ngStyle]="{
+							'background-color': appService.whiteBrandingColor,
+							border: '1px solid' + appService.whiteBrandingColor,
+							color: 'white'
+						}"
+						(click)="selectedFilterOk()"
+						style="margin-right: 9px; padding: 7px 20px; border-radius: 30px; font-size: 0.9rem"
+						>{{ 'Utils.ok' | translate }}</a
+					>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

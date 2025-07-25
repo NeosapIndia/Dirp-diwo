@@ -1,0 +1,33 @@
+iframe {
+	border: 1px solid #ccc;
+	border-radius: 4px;
+  }
+
+  .loader-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 600px;
+  background-color: #f5f5f5;
+  text-align: center;
+  font-weight: bold;
+  color: #333;
+}
+
+.spinner {
+  border: 8px solid #eee;
+  border-top: 8px solid #3f51b5;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 15px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+

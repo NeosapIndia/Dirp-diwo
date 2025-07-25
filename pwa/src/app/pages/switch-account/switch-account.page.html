@@ -1,0 +1,36 @@
+<ion-content no-bounce has-bouncing="false" forceOverscroll="false" style="--background: #f2f2f2">
+	<ion-content>
+		<div class="login-container" [ngStyle]="getBackgroundStyle()">
+			<div class="login-box">
+				<div style="width: 100%" class="ion-text-center" *ngIf="appService.loginPWALogo">
+					<img [src]="appService.loginPWALogo" class="logo-image" />
+				</div>
+				<div style="width: 100%" class="ion-text-center" *ngIf="!appService.loginPWALogo">
+					<img *ngIf="projectName == 'drip'" src="assets/icon/drip_logo.png" class="logo-image" />
+					<img *ngIf="projectName == 'diwo'" src="assets/icon/diwo_logo.png" class="logo-image" />
+				</div>
+
+				<h2 class="switch-account-text">{{'Utils.switchaccount' | translate}}</h2>
+
+				<div class="switch-account">
+					<div *ngFor="let client of clientList; let i=index">
+						<ion-row *ngIf="clientList.length != i+1" class="ion-row" (click)="selecteClient(client)">
+							<ion-list class="ion-list" lines="none">
+								<ion-item class="ion-item">
+									<span>{{client.Client.name}} {{'(' + client.Role.name + ')'}}</span>
+								</ion-item>
+							</ion-list>
+						</ion-row>
+						<ion-row *ngIf="clientList.length == i+1" class="ion-row" (click)="selecteClient(client)">
+							<ion-list class="ion-list" lines="none">
+								<ion-item class="ion-item">
+									<span>{{client.Client.name}} {{'(' + client.Role.name + ')'}}</span>
+								</ion-item>
+							</ion-list>
+						</ion-row>
+					</div>
+				</div>
+			</div>
+		</div>
+	</ion-content>
+</ion-content>

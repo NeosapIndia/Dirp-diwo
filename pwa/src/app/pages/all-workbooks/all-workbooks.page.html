@@ -1,0 +1,658 @@
+<ion-header *ngIf="isMobile && isMobileView">
+	<ion-toolbar class="toolbar-head">
+		<img *ngIf="clientBranding" [src]="imageBaseURL + clientBranding.learner_app_icon_path" class="header-logo" />
+		<img *ngIf="!clientBranding && appService.defaultPWALogo" [src]="appService.defaultPWALogo" class="header-logo" />
+		<img
+			*ngIf="!clientBranding &&!appService.defaultPWALogo"
+			src="assets/icon/diwo_full_logo.png"
+			class="header-logo" />
+	</ion-toolbar>
+</ion-header>
+
+<ion-content
+	[fullscreen]="true"
+	class="ion-padding-horizontal"
+	[scrollEvents]="true"
+	(ionScroll)="getScrollPos($event)">
+	<ion-grid>
+		<!--  Welcome Text -->
+		<ion-row
+			[ngClass]="{ 
+				'ion-main-row-desktop': isdesktopView || isTabletLandscapeView || isTablet			
+			}">
+			<ion-col
+				size-sm="12"
+				size-md="9"
+				size-lg="7"
+				class="page-wrapper2 main-col"
+				[ngClass]="{ 'ion-main-col-desktop': isdesktopView || isTabletLandscapeView || isTablet }">
+				<ion-row>
+					<ion-col
+						[ngClass]="{ 'ion-main-row-desktop': isdesktopView || isTabletLandscapeView || isTablet }"
+						class="custom-welcome-row">
+						<div class="welcome-sort-desktop">
+							<p class="welcome-text">
+								{{ 'Utils.welcomeBack' | translate }},
+								<span style="text-transform: capitalize">{{ appService?.userPersonalData?.first }}</span>!
+							</p>
+							<p class="subtext" *ngIf="isdesktopView">{{'Utils.welcomeBackSubtext' | translate}}</p>
+						</div>
+					</ion-col>
+				</ion-row>
+
+				<!-- 'hidden-mobile': !isdesktopView && !isTabletLandscapeView && !isTablet -->
+				<ion-row
+					[ngClass]="{ 						
+						'hidden-mobile': !isdesktopView && !isResizeTabLandScapView
+					}"
+					class="custom-gutter">
+					<ion-col size-sm="4" size-md="2" size-lg="2" size="4">
+						<div class="stats-container-col">
+							<p class="Container-data">
+								{{'Utils.modules' | translate}}<br />
+								{{'Utils.completed' | translate}}
+							</p>
+							<p class="Container-sub-data">
+								{{ WorkbooksCoursesPathwaysCertisBadgesCountListData?.workbooksCount || 0 }}
+							</p>
+						</div>
+					</ion-col>
+
+					<ion-col size-sm="4" size-md="2" size-lg="2" size="4">
+						<div class="stats-container-col">
+							<p class="Container-data">
+								{{'Utils.courses'| translate}}<br />
+								{{'Utils.completed'| translate}}
+							</p>
+							<p class="Container-sub-data">
+								{{ WorkbooksCoursesPathwaysCertisBadgesCountListData?.coursesCount || 0 }}
+							</p>
+						</div>
+					</ion-col>
+
+					<ion-col size-sm="4" size-md="2" size-lg="2" size="4">
+						<div class="stats-container-col">
+							<p class="Container-data">
+								{{'Utils.pathways'| translate}}<br />
+								{{'Utils.completed'| translate}}
+							</p>
+							<p class="Container-sub-data">
+								{{ WorkbooksCoursesPathwaysCertisBadgesCountListData?.pathwaysCount || 0 }}
+							</p>
+						</div>
+					</ion-col>
+
+					<ion-col size-sm="4" size-md="2" size-lg="2" size="4">
+						<div class="stats-container-col">
+							<p class="Container-data">
+								{{'Utils.certificates'| translate}}<br />
+								{{'Utils.earned'| translate}}
+							</p>
+							<p class="Container-sub-data">
+								{{ WorkbooksCoursesPathwaysCertisBadgesCountListData?.certificatesCount || 0 }}
+							</p>
+						</div>
+					</ion-col>
+
+					<ion-col size-sm="4" size-md="2" size-lg="2" size="4">
+						<div class="stats-container-col">
+							<p class="Container-data">
+								{{'Utils.badges'| translate}}<br />
+								{{'Utils.earned'| translate}}
+							</p>
+							<p class="Container-sub-data">
+								{{ WorkbooksCoursesPathwaysCertisBadgesCountListData?.badgesCount || 0 }}
+							</p>
+						</div>
+					</ion-col>
+
+					<ion-col size-sm="4" size-md="2" size-lg="2" size="4">
+						<div class="stats-container-col">
+							<p class="Container-data">
+								{{'Utils.totalLearning'| translate}}<br />
+								{{'Utils.Minutes'| translate}}
+							</p>
+							<p class="Container-sub-data">
+								{{ WorkbooksCoursesPathwaysCertisBadgesCountListData?.totalLearningMinutes || 0 }}
+							</p>
+						</div>
+					</ion-col>
+				</ion-row>
+			</ion-col>
+		</ion-row>
+
+		<!--  TO DOs -->
+		<!-- *ngIf="assignToDosListData && assignToDosListData.length > 0"  it was in the ion row -->
+		<ion-row
+			[ngClass]="{ 'ion-main-row-desktop': isdesktopView || isTabletLandscapeView || isTablet}"
+			>
+			<ion-col
+				size-sm="12"
+				size-md="9"
+				size-lg="7"
+				class="page-wrapper2 main-col"
+				[ngClass]="{ 'ion-main-col-desktop': isdesktopView || isTabletLandscapeView || isTablet }">
+				<div class="ion-sort-desktop">
+					<p class="todos">
+						{{'Utils.todos' | translate}}
+						<span class="capsule">{{toDOListCount}}</span>
+					</p>
+					<p class="sealltodos" (click)="seeAllTodos()">{{'Utils.seeall' | translate}}</p>
+				</div>
+
+				<!-- When there is assignToDosListData -->
+				<ion-row class="custom-gutter"  *ngIf="assignToDosListData && assignToDosListData.length > 0">
+					<ion-col
+						*ngFor="let item of assignToDosListData"
+						size-sm="6"
+						size-md="3"
+						size-lg="3"
+						size="6"
+						class="page-wrapper">
+						<div class="custom-card" (click)="redirectToSingle(item)">
+							<div
+								*ngIf="item && item.Session"
+								[ngClass]="{'notLive' : (item.Session.status == 'Planned' || item.Session.status == 'Live') && item.attendanceStatus != 'Present' || item.expStatus == 'Expired','live' : ((item.Session.status == 'Live' || item.Session.status == 'Closed' || item.Session.status == 'Planned') && item.attendanceStatus == 'Present' && item.expStatus != 'Expired'),
+									'notLive2' : ((item.Session.status == 'Closed' && item.ModuleStatus =='Not Started')|| (item.Session.status == 'Planned' && item.attendanceStatus == 'Present' && item.expStatus != 'Expired' && item.Session.DiwoModuleId !=1))
+								 }">
+								<div class="wb-img">
+									<img [src]="item.imagePath" class="wbImg" />
+								</div>
+								<div class="wb-details">
+									<p class="wb-name">{{item.title}}</p>
+									<p class="moduletype-name">{{item.ModuleTypeName}}</p>
+									<div *ngIf="item.Session.DiwoModuleId ==1">
+										<p
+											class="assigned-date"
+											*ngIf="item.Session.status == 'Planned' && item.attendanceStatus != 'Present' && item.expStatus != 'Expired'">
+											{{'Utils.sessionNotStarted' | translate}}
+										</p>
+										<p
+											class="assigned-date"
+											*ngIf="item.Session.status == 'Planned' && item.attendanceStatus == 'Present' && item.expStatus != 'Expired'">
+											{{'Utils.sessionStartingSoon' | translate}}
+											<span class="dot-startingsoon"></span>
+										</p>
+										<p
+											class="assigned-date"
+											*ngIf="item.Session.status == 'Ended' && item.attendanceStatus == 'Present' && item.expStatus != 'Expired'">
+											{{'Utils.sessionOpen' | translate}}
+											<span class="dot-startingsoon"></span>
+										</p>
+										<p
+											class="assigned-date"
+											*ngIf="item.Session.status == 'Live' && item.attendanceStatus == 'Present' && item.expStatus != 'Expired'">
+											{{'Utils.sessionLive' | translate}}
+											<span class="dot-live"></span>
+										</p>
+										<p
+											class="assigned-date"
+											*ngIf="item.Session.status == 'Live' && item.attendanceStatus != 'Present' && item.expStatus != 'Expired'">
+											{{'Utils.sessionnotLive' | translate}}
+										</p>
+										<p
+											class="assigned-date"
+											*ngIf="item.ModuleStatus !='Not Started' && item.Session.status == 'Closed' && item.attendanceStatus == 'Present'&& item.expStatus != 'Expired'">
+											{{'Utils.sessionAttendedOn' | translate}} {{item.Session.SessionStartDate}}
+										</p>
+										<p
+											class="assigned-date"
+											*ngIf="item.ModuleStatus =='Not Started' && item.Session.status == 'Closed' && item.attendanceStatus == 'Present'&& item.expStatus != 'Expired'">
+											{{'Utils.sessionNotStarted' | translate}}
+										</p>
+										<p class="assigned-date" *ngIf="item.expStatus == 'Expired'">
+											{{'Utils.sessionExpired' | translate}}
+										</p>
+										<p
+											class="learnerstatus"
+											*ngIf="item.ModuleStatus=='Certified'"
+											[ngClass]="{																					
+											'green-shade': item.ModuleStatus == 'Certified'
+										  }">
+											{{item.ModuleStatus}}
+										</p>
+									</div>
+									<div *ngIf="item.Session.DiwoModuleId !=1">
+										<p
+											class="assigned-date"
+											*ngIf="item.Session.status == 'Live' && item.attendanceStatus == 'Present' && item.expStatus != 'Expired'">
+											{{'Utils.sessiondueOn' | translate}} {{item.Session.enddateWithTime}}
+										</p>
+										<!-- <p class="learnerstatus" [ngClass]="{
+											'red-shade': item.ModuleStatus == 'Not Started',
+											'yellow-shade': item.ModuleStatus == 'In Progress',
+											'green-shade': item.ModuleStatus == 'Completed' || item.ModuleStatus == 'Certified'
+										 }">{{item.ModuleStatus}}</p> -->
+										<p class="learnerstatus">{{item.ModuleStatus}}</p>
+									</div>
+								</div>
+							</div>
+							<div *ngIf="item && item.Session == null" class="notLive">
+								<div class="wb-img">
+									<img [src]="item.imagePath" class="wbImg" />
+								</div>
+								<div class="wb-details">
+									<p class="wb-name">{{item.title}}</p>
+									<p class="moduletype-name">{{item.ModuleTypeName}}</p>
+									<p class="assigned-date">{{'Utils.sessionNotStarted' | translate}}</p>
+								</div>
+							</div>
+						</div>
+					</ion-col>
+				</ion-row>
+
+				<!-- When there is no assignToDosListData -->
+				<ion-row class="custom-gutter"  *ngIf="!assignToDosListData || assignToDosListData.length == 0">
+					<ion-col						
+						size-sm="12"
+						size-md="12"
+						size-lg="12"
+						class="page-wrapper2 main-col">
+
+						<div class="no-todos-card">						
+							<span class="assignment_icon" [innerHTML]="iconObject['assignment_icon']"></span>
+							<span style="font-weight:501; margin-bottom: 1rem;">{{'Utils.noToDosAvailable' | translate}}</span>								
+							<span style="padding: 0 1rem; text-align: center;">								
+								{{'Utils.noToDosAssignedText' | translate}}
+							</span>							
+						</div>
+
+					</ion-col>
+				</ion-row>
+
+			</ion-col>
+		</ion-row>
+
+		<!-- Coursel -- Desktop & Tablet Landscape View -->
+		<ion-row [ngClass]="{ 'ion-main-row-desktop': isdesktopView || isTabletLandscapeView || isTablet}">
+			<ion-col
+				size-sm="12"
+				size-md="9"
+				size-lg="7"
+				class="page-wrapper2 main-col"
+				[ngClass]="{ 'ion-main-col-desktop': isdesktopView || isTabletLandscapeView || isTablet}">
+				<div *ngIf="isdesktopView || isTabletLandscapeView || isTablet">
+					<div class="slider-container" [ngClass]="{'carousel-direction-rtl': isRtl }">
+						<ion-slides #slides [pager]="true" [options]="
+						{ spaceBetween: 6, 
+						 slidesPerView: 1, 
+						 centeredSlides:true,
+						 observer: true,
+    					 observeParents: true
+						 }
+						 ">
+							<!-- *ngFor="let item of assignToDosListData;" -->
+							<ion-slide
+								*ngFor="let item of carouselItems"
+								[ngClass]="{ 'ion-slides-desktop': isdesktopView || isTabletLandscapeView || isTablet}">
+								<div class="carousel">
+									<ion-row>
+										<ion-col size-sm="12" size-md="12" size-lg="12" class="page-wrapper2 main-col page-wrapper-6">
+											<div
+												class="carousel-content"
+												style="overflow: hidden; scrollbar-width: none; -ms-overflow-style: none">
+												<div class="carousel-details">
+													<p class="carousel-name">{{item.title}}</p>
+
+													<p class="carousel-sub-name" [ngClass]="{ 'expanded': isReadMoreActive }">
+														{{item.description}}
+													</p>
+
+													<!-- <button (click)="toggleReadMore()" class="read-more-btn">
+													{{ isReadMoreActive ? 'Read Less' : 'Read More' }}
+												</button> -->
+													<a
+														*ngIf="item.externalLink"
+														[href]="item.externalLink"
+														target="_blank"
+														rel="noopener noreferrer"
+														class="read-more-btn">
+														{{'Utils.readMore' | translate}}
+													</a>
+												</div>
+												<!-- <div class="carousel-img">													
+													<img src="assets/images/landrover/carousal_image_01.png" class="carouselImg" />
+												</div> -->
+
+												<div class="carousel-img">
+													<img [src]="imageBaseURL + item.imagePath" class="carouselImg" />
+												</div>
+
+												<!-- <div class="carousel-img">
+													<img [src]="item.imagePath" class="carouselImg" />
+													<img src="assets/images/landrover/crousel_image_01.png" class="carouselImg" />
+												</div> -->
+											</div>
+										</ion-col>
+									</ion-row>
+								</div>
+							</ion-slide>
+						</ion-slides>
+
+						<!-- Prev and Next Buttons with Icons -->
+						<div *ngIf="(carouselItems?.length > 0) && (isdesktopView || isTabletLandscapeView || isTablet)">
+							<ion-button
+								*ngIf="currentSlideIndex > 0"
+								fill="clear"
+								(click)="prevSlide()"
+								class="prev-button"
+								[ngClass]="{'tablet-portrait-top': isTabletPortraitView}">
+								<img src="assets/images/workbook/arrow_left.svg" style="max-width: 100px" />
+							</ion-button>
+							<ion-button
+								*ngIf="currentSlideIndex < carouselItems.length - 1"
+								fill="clear"
+								(click)="nextSlide()"
+								class="next-button"
+								[ngClass]="{'tablet-portrait-next-btn': isTabletPortraitView}">
+								<img src="assets/images/workbook/arrow_right.svg" style="max-width: 100px" />
+							</ion-button>
+						</div>
+					</div>
+				</div>
+			</ion-col>
+		</ion-row>
+
+		<!-- Coursel Mobile -->
+		<div *ngIf="isMobile && isMobileView">
+			<div class="slider-container mobile-slider">
+				<ion-slides #slides [pager]="true" [options]="{ spaceBetween: 6, slidesPerView: 1, centeredSlides: true }">
+					<!-- *ngFor="let item of assignToDosListData;" -->
+					<ion-slide *ngFor="let item of carouselItems">
+						<div class="mobile-carousel">
+							<ion-col class="page-wrapper-6">
+								<div class="mobile-carousel-content">
+									<!-- Image at the Top -->
+									<!-- <div class="mobile-carousel-img"> -->
+									<!-- <img [src]="item.imagePath" class="carouselImg" /> -->
+									<!-- <img src="assets/images/landrover/1.png" class="carouselImg" />
+									</div>	 -->
+
+									<div class="mobile-carousel-img">
+										<img [src]="imageBaseURL + item.imagePath" class="carouselImg" />
+									</div>
+
+									<!-- Carousel Details -->
+									<div class="mobile-carousel-details">
+										<p class="mobile-carousel-name" [ngClass]="{ 'expanded': isReadMoreActive }">{{item.title}}</p>
+
+										<!-- Sub-name limited to 1 line -->
+										<!-- <p class="carousel-sub-name" >
+											Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
+										</p> -->
+
+										<!-- Read More Button -->
+										<!-- <button (click)="toggleReadMore()" class="mobile-read-more-btn">
+											{{ isReadMoreActive ? 'Read Less' : 'Read More' }}
+										</button> -->
+
+										<!-- <a href="https://www.tataadvancedsystems.com/" target="_blank" rel="noopener noreferrer"
+											class="mobile-read-more-btn ">
+											Read More
+										</a> -->
+
+										<a
+											*ngIf="item.externalLink"
+											[href]="item.externalLink"
+											target="_blank"
+											rel="noopener noreferrer"
+											class="mobile-read-more-btn">
+											{{'Utils.readMore' | translate}}
+										</a>
+									</div>
+								</div>
+							</ion-col>
+						</div>
+					</ion-slide>
+				</ion-slides>
+
+				<!-- Prev and Next Buttons with Icons -->
+				<div *ngIf="carouselItems?.length > 0">
+					<ion-button fill="clear" (click)="prevSlide()" class="prev-button">
+						<img src="assets/images/workbook/arrow_left.svg" style="max-width: 100px" />
+					</ion-button>
+					<ion-button fill="clear" (click)="nextSlide()" class="next-button">
+						<img src="assets/images/workbook/arrow_right.svg" style="max-width: 100px" />
+					</ion-button>
+				</div>
+			</div>
+		</div>
+
+		<!-- My Learnering Pathways -->
+		<ion-row
+			[ngClass]="{ 'ion-main-row-desktop': isdesktopView || isTabletLandscapeView || isTablet}"
+			*ngIf="assignPathwayListData && assignPathwayListData.length > 0">
+			<ion-col
+				size-sm="12"
+				size-md="9"
+				size-lg="7"
+				class="page-wrapper2 main-col"
+				[ngClass]="{ 'ion-main-col-desktop': isdesktopView || isTabletLandscapeView || isTablet}">
+				<div class="ion-sort-desktop">
+					<p class="mylearning-pathways">{{'Utils.learningpathways' | translate}}</p>
+					<p class="seallmylearning-pathways" (click)="seeAllPathways()">{{'Utils.seeall' | translate}}</p>
+				</div>
+				<ion-row class="custom-gutter">
+					<ion-col
+						*ngFor="let item of assignPathwayListData"
+						size-sm="6"
+						size-md="3"
+						size-lg="3"
+						size="6"
+						class="page-wrapper">
+						<div class="custom-card" (click)="showPathwayDetail(item)">
+							<div *ngIf="item">
+								<div class="wb-img">
+									<img [src]="imageBaseURL + 'uploads/diwo_pathway_thumbnail/' + item.avatar_file_name" class="wbImg" />
+								</div>
+								<div class="wb-details">
+									<p class="wb-name-pathways-courses">{{item.title}}</p>
+									<p class="courseandmodulecount">
+										{{ item.totalCourses }}
+										<span>
+											{{ item.totalCourses === 1 ? ('Utils.course'| translate) : ('Utils.courses'| translate) }}
+										</span>
+										<span> {{ 'Utils.and'| translate }} </span>
+										<span>
+											{{ item.totalModules }} {{ item.totalModules === 1 ? ('Utils.module'| translate) :
+											('Utils.modules'| translate) }}
+										</span>
+									</p>
+									<p class="progressbar">
+										<progress [value]="item.completedCount" [max]="item.totalCourses"></progress>
+									</p>
+									<p class="learnerstatus">{{item.pathwayStatus ? item.pathwayStatus : '-'}}</p>
+								</div>
+							</div>
+						</div>
+					</ion-col>
+				</ion-row>
+			</ion-col>
+		</ion-row>
+
+		<!-- My Courses -->
+		<ion-row
+			[ngClass]="{ 'ion-main-row-desktop': isdesktopView || isTabletLandscapeView || isTablet}"
+			*ngIf="assignCourseListData && assignCourseListData.length > 0">
+			<ion-col
+				size-sm="12"
+				size-md="9"
+				size-lg="7"
+				class="page-wrapper2 main-col"
+				[ngClass]="{ 'ion-main-col-desktop': isdesktopView || isTabletLandscapeView || isTablet}">
+				<div class="ion-sort-desktop">
+					<p class="mycourses">{{'Utils.coursesTitle' | translate}}</p>
+					<p class="seallmycourses" (click)="seeAllCourses()">{{'Utils.seeall' | translate}}</p>
+				</div>
+				<ion-row class="custom-gutter">
+					<ion-col
+						*ngFor="let item of assignCourseListData"
+						size-sm="6"
+						size-md="3"
+						size-lg="3"
+						size="6"
+						class="page-wrapper">
+						<div class="custom-card" (click)="showCourseDetail(item)">
+							<div *ngIf="item">
+								<div class="wb-img">
+									<img [src]="imageBaseURL + 'uploads/diwo_course_thumbnail/' + item.avatar_file_name" class="wbImg" />
+								</div>
+								<div class="wb-details">
+									<p class="wb-name-pathways-courses">{{item.title}}</p>
+									<p class="courseandmodulecount">
+										{{ item.totalModules }} {{ item.totalModules === 1 ? ('Utils.module'| translate) : ('Utils.modules'
+										| translate ) }}
+									</p>
+									<p class="progressbar">
+										<progress [value]="item.completedCount" [max]="item.totalModules"></progress>
+									</p>
+									<p class="learnerstatus">{{item.courseStatus ? item.courseStatus : '-'}}</p>
+								</div>
+							</div>
+						</div>
+					</ion-col>
+				</ion-row>
+			</ion-col>
+		</ion-row>
+
+		<!-- My Modules -->
+		<!-- *ngIf="assignWorkBookListData && assignWorkBookListData.length > 0" -->
+		<ion-row
+			[ngClass]="{ 'ion-main-row-desktop': isdesktopView || isTabletLandscapeView || isTablet}"
+			>
+			<ion-col
+				size-sm="12"
+				size-md="9"
+				size-lg="7"
+				class="page-wrapper2 main-col"
+				[ngClass]="{ 'ion-main-col-desktop': isdesktopView || isTabletLandscapeView || isTablet}">
+				<div class="ion-sort-desktop">
+					<p class="mycourses">{{'Utils.modulesTitle' | translate}}</p>
+					<p class="seallmymodules" (click)="seeAllModules('modules')">{{'Utils.seeall' | translate}}</p>
+				</div>
+
+				<ion-row class="custom-gutter" *ngIf="assignWorkBookListData && assignWorkBookListData.length > 0">
+					<ion-col
+						*ngFor="let item of assignWorkBookListData"
+						size-sm="6"
+						size-md="3"
+						size-lg="3"
+						size="6"
+						class="page-wrapper">
+						<div class="custom-card" (click)="redirectToSingle(item)">
+							<div
+								*ngIf="item && item.Session"
+								[ngClass]="{'notLive' : (item.Session.status == 'Planned' || item.Session.status == 'Live') && item.attendanceStatus != 'Present' || item.expStatus == 'Expired','live' : ((item.Session.status == 'Live' || item.Session.status == 'Closed' || item.Session.status == 'Planned' || item.Session.status == 'Ended') && item.attendanceStatus == 'Present' && item.expStatus != 'Expired'),
+									'notLive2' : ((item.Session.status == 'Closed' && item.ModuleStatus =='Not Started')|| (item.Session.status == 'Planned' && item.attendanceStatus == 'Present' && item.expStatus != 'Expired' && item.Session.DiwoModuleId !=1))
+								 }">
+								<div class="wb-img">
+									<img [src]="item.imagePath" class="wbImg" />
+								</div>
+								<div class="wb-details">
+									<p class="wb-name">{{item.title}}</p>
+									<p class="moduletype-name">{{item.ModuleTypeName}}</p>
+									<div *ngIf="item.Session.DiwoModuleId ==1">
+										<p
+											class="assigned-date"
+											*ngIf="item.Session.status == 'Planned' && item.attendanceStatus != 'Present' && item.expStatus != 'Expired'">
+											{{'Utils.sessionNotStarted' | translate}}
+										</p>
+										<p
+											class="assigned-date"
+											*ngIf="item.Session.status == 'Planned' && item.attendanceStatus == 'Present' && item.expStatus != 'Expired'">
+											{{'Utils.sessionStartingSoon' | translate}}
+											<span class="dot-startingsoon"></span>
+										</p>
+										<p
+											class="assigned-date"
+											*ngIf="item.Session.status == 'Ended' && item.attendanceStatus == 'Present' && item.expStatus != 'Expired'">
+											{{'Utils.sessionOpen' | translate}}
+											<span class="dot-startingsoon"></span>
+										</p>
+										<p
+											class="assigned-date"
+											*ngIf="item.Session.status == 'Live' && item.attendanceStatus == 'Present' && item.expStatus != 'Expired'">
+											{{'Utils.sessionLive' | translate}}
+											<span class="dot-live"></span>
+										</p>
+										<p
+											class="assigned-date"
+											*ngIf="item.Session.status == 'Live' && item.attendanceStatus != 'Present' && item.expStatus != 'Expired'">
+											{{'Utils.sessionnotLive' | translate}}
+										</p>
+										<p
+											class="assigned-date"
+											*ngIf="item.ModuleStatus !='Not Started' && item.Session.status == 'Closed' && item.attendanceStatus == 'Present'&& item.expStatus != 'Expired'">
+											{{'Utils.sessionAttendedOn' | translate}} {{item.Session.SessionStartDate}}
+										</p>
+										<p
+											class="assigned-date"
+											*ngIf="item.ModuleStatus =='Not Started' && item.Session.status == 'Closed' && item.attendanceStatus == 'Present'&& item.expStatus != 'Expired'">
+											{{'Utils.sessionNotStarted' | translate}}
+										</p>
+										<p class="assigned-date" *ngIf="item.expStatus == 'Expired'">
+											{{'Utils.sessionExpired' | translate}}
+										</p>
+										<p class="learnerstatus" *ngIf="item.ModuleStatus=='Certified'">{{item.ModuleStatus}}</p>
+									</div>
+									<div *ngIf="item.Session.DiwoModuleId !=1">
+										<p
+											class="assigned-date"
+											*ngIf="item.Session.status == 'Live' && item.attendanceStatus == 'Present' && item.expStatus != 'Expired'">
+											{{'Utils.sessiondueOn' | translate}} {{item.Session.enddateWithTime}}
+										</p>
+										<p class="learnerstatus">{{item.ModuleStatus}}</p>
+									</div>
+								</div>
+							</div>
+							<div *ngIf="item && item.Session == null" class="notLive">
+								<div class="wb-img">
+									<img [src]="item.imagePath" class="wbImg" />
+								</div>
+								<div class="wb-details">
+									<p class="wb-name">{{item.title}}</p>
+									<p class="moduletype-name">{{item.ModuleTypeName}}</p>
+									<p class="assigned-date">{{'Utils.sessionNotStarted' | translate}}</p>
+								</div>
+							</div>
+						</div>
+					</ion-col>
+				</ion-row> 
+
+				<!-- When there is no assignWorkBookListData -->			
+				<ion-row class="custom-gutter" *ngIf="!assignWorkBookListData || assignWorkBookListData.length == 0" >
+					<ion-col						
+						size-sm="12"
+						size-md="12"
+						size-lg="12"
+						class="page-wrapper2 main-col">
+
+						<div class="no-todos-card">						
+							<span class="no_modules_icon" [innerHTML]="iconObject['no_modules_icon']"></span>
+							<span style="font-weight:501; margin-bottom: 1rem;">{{'Utils.noModulesAvailable' | translate}}</span>
+							<span style="padding: 0 1rem; text-align: center;">																
+								{{'Utils.noLearningModulesAssignedText' | translate}}								
+							</span>							
+						</div>
+
+					</ion-col>
+				</ion-row>
+
+			</ion-col>
+		</ion-row>
+
+		<div class="back-to-top-btn" *ngIf="backToTop" (click)="gotToTop()">
+			<ion-icon id="top-icon" name="chevron-up-outline"></ion-icon>
+		</div>
+	</ion-grid>
+	<ion-refresher
+		ion-refresh-native
+		slot="fixed"
+		disabled="false"
+		(ionRefresh)="doRefresh($event)"
+		pullFactor="0.1"
+		pullMin="50"
+		pullMax="200">
+		<ion-refresher-content></ion-refresher-content>
+	</ion-refresher>
+</ion-content>

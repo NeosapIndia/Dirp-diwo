@@ -1,0 +1,3758 @@
+<div class="container-fluid" style="background-color: #ffffff; min-height: 93vh; padding: 0px" *ngIf="showTimeLinePage">
+	<div style="margin: 2% 1% 2% 2%">
+		<div>
+			<!-- *ngIf="!code" -->
+			<div class="panel panel-white-2">
+				<!-- <div class="row" style="font-size: 0.9rem; margin-top: 2rem">
+					<div class="col-md-6" style="margin-left: -15px">
+						<span
+							[routerLink]="['/session']"
+							style="margin-left: 0.25rem; color: #637373; margin-right: 2px; cursor: pointer">
+							{{ 'Pages.Session.SessionTimeline.pagetitle' | translate }}</span
+						>
+						<img src="assets/images/arrow_forward.svg" style="width: 27px" />
+						<span style="margin-left: 3px" [ngStyle]="{ color: appService.whiteBrandingColor }">{{
+							'Pages.Session.SessionTimeline.subtitleforaddedit' | translate
+						}}</span>
+						<span
+						[routerLink]="['/session']"
+						style="margin-left: 0.25rem; color: #637373; margin-right: 2px; cursor: pointer">
+						{{ 'Pages.Session.SessionTimeline.pagetitle' | translate }}</span
+					>
+					<img src="assets/images/arrow_forward.svg" style="width: 27px" />
+					<span style="margin-left: 3px" [ngStyle]="{ color: appService.whiteBrandingColor }">
+						{{ sessionData && sessionData.title ? sessionData.title : '-' }}
+					</span>
+					</div>
+					<div class="col-md-6" style="padding-right: 0px"></div>
+				</div> -->
+				<div class="row" style="font-size: 0.9rem; margin-top: 2rem">
+					<div class="col-md-8" style="margin-left: -15px">
+						<span
+							[routerLink]="['/session']"
+							style="margin-left: 0.25rem; color: #637373; margin-right: 2px; cursor: pointer">
+							{{ 'Pages.Session.SessionTimeline.pagetitle' | translate }}</span
+						>
+						<img src="assets/images/arrow_forward.svg" style="width: 27px" />
+						<span style="margin-left: 3px" [ngStyle]="{ color: appService.whiteBrandingColor }">
+							{{ sessionData && sessionData.title ? sessionData.title : '-' }}
+						</span>
+					</div>
+					<!-- <div class="col-md-4"></div> -->
+					<div class="col-md-2"></div>
+					<div class="col-md-2" style="padding-right: 6px; margin-top: -20px; text-align: end">
+						<div style="margin-bottom: 2rem" #ImageVideoContainer>
+							<div *ngIf="isFullscreen">
+								<img
+									*ngIf="currentMedia.type === 'Image'"
+									[src]="assetBasePath + currentMedia.path"
+									class="fullscreen-image"
+									style="width: 100%" />
+								<div class="media-container">
+									<div
+										*ngIf="currentMedia.type === 'Video' && currentMedia.path && currentMedia.isTranscoding"
+										class="video-wrapper">
+										<!-- <iframe
+											[src]="transform(currentMedia.path)"
+											*ngIf="currentMedia.path && currentMedia.isTranscoding"
+											class="responsive-iframe"
+											frameborder="0"
+											allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+											allowfullscreen>
+										</iframe> -->
+
+										<div *ngIf="appService?.configurable_feature?.vimeo">
+											<iframe
+												[src]="transform(currentMedia.path)"
+												class="responsive-iframe"
+												frameborder="0"
+												allowfullscreen>
+											</iframe>
+										</div>
+
+										<div
+											style="width: 100%; height: 100%"
+											*ngIf="
+												appService?.configurable_feature?.mediaCMS &&
+												currentMedia.path &&
+												currentMedia.isTranscoding &&
+												showNextVideo
+											">
+											<app-video-player [VideoPath]="currentMedia.path"></app-video-player>
+										</div>
+									</div>
+									<div
+										*ngIf="currentMedia.type === 'Video' && currentMedia.path && !currentMedia.isTranscoding"
+										style="text-align: center">
+										<img style="padding-top: 50%" src="assets/images/transcoding.gif" class="transcoding-img" />
+									</div>
+								</div>
+								<div>
+									<img
+										*ngIf="
+											(currentMedia.worksheet.type == 'Poll' ||
+												((currentMedia.worksheet.type == 'Quiz' ||
+													currentMedia.worksheet.type == 'Quiz (Randomised)' ||
+													currentMedia.worksheet.type == 'Spin The Wheel') &&
+													currentMedia.worksheet.isGraded)) &&
+											seeResultData &&
+											seeResultData.length > 0
+										"
+										(click)="showResultPopUp(currentMedia.worksheet, currentMedia.id, showResultContainer, false, true)"
+										src="assets/images/show_result.svg"
+										class="showResultFullScreenBtn"
+										title="{{ 'Pages.Session.SessionTimeline.showresult' | translate }}"
+										style="width: 50px; height: 45px" />
+									<img
+										*ngIf="currentMedia.worksheet.type == 'Word Cloud'"
+										(click)="showResultPopUp(currentMedia.worksheet, currentMedia.id, showResultContainer, false, true)"
+										src="assets/images/show_result.svg"
+										class="showResultFullScreenBtn"
+										title="{{ 'Pages.Session.SessionTimeline.showresult' | translate }}"
+										style="width: 50px; height: 45px" />
+								</div>
+							</div>
+							<button
+								*ngIf="!isFullscreen && DiwoModuleId != 5"
+								(click)="toggleFullscreen(ImageVideoContainer, 0)"
+								class="fullscreen-btn"
+								data-toggle="tooltip"
+								data-placement="top"
+								title="{{ 'Pages.Session.SessionTimeline.fullscreentooltip' | translate }}">
+								<img src="assets/images/presentation.svg" alt="" />
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div style="margin-top: 1rem" *ngIf="sessionData && sessionData.status == 'Closed'">
+				<div class="row">
+					<div class="panel panel-white-4">
+						<div class="report-header">
+							{{ 'Pages.Session.SessionTimeline.PostSession.SessionsDetail.title' | translate }}
+						</div>
+						<div class="row card-body">
+							<div class="row">
+								<div class="col-md-2">
+									<div class="form-group">
+										<label>{{
+											'Pages.Session.SessionTimeline.PostSession.SessionsDetail.sessionName' | translate
+										}}</label>
+									</div>
+								</div>
+								<div class="col-md-6 valueCss">{{ sessionData.title ? sessionData.title : '-' }}</div>
+							</div>
+							<div class="row">
+								<div class="col-md-2">
+									<div class="form-group">
+										<label>{{
+											'Pages.Session.SessionTimeline.PostSession.SessionsDetail.courseName' | translate
+										}}</label>
+									</div>
+								</div>
+								<div class="col-md-4 valueCss">
+									{{
+										sessionData.Workbook && sessionData.Workbook.Courses[0] && sessionData.Workbook.Courses[0]?.title
+											? sessionData.Workbook.Courses[0].title
+											: '-'
+									}}
+								</div>
+								<div class="col-md-2">
+									<div class="form-group">
+										<label>{{
+											'Pages.Session.SessionTimeline.PostSession.SessionsDetail.courseBookName' | translate
+										}}</label>
+									</div>
+								</div>
+								<div class="col-md-4 valueCss">{{ sessionData.Workbook.title ? sessionData.Workbook.title : '-' }}</div>
+							</div>
+
+							<div class="row">
+								<div class="col-md-2">
+									<div class="form-group">
+										<label>{{
+											'Pages.Session.SessionTimeline.PostSession.SessionsDetail.faciltatorName' | translate
+										}}</label>
+									</div>
+								</div>
+								<div class="col-md-4 valueCss">{{ sessionData.User.fullName ? sessionData.User.fullName : '-' }}</div>
+								<div class="col-md-2">
+									<div class="form-group">
+										<label>{{ 'Pages.Session.SessionTimeline.PostSession.SessionsDetail.location' | translate }}</label>
+									</div>
+								</div>
+								<div class="col-md-4 valueCss">{{ sessionData.location ? sessionData.location : '-' }}</div>
+							</div>
+
+							<div class="row">
+								<div class="col-md-2">
+									<div class="form-group">
+										<label>{{
+											'Pages.Session.SessionTimeline.PostSession.SessionsDetail.startDate' | translate
+										}}</label>
+									</div>
+								</div>
+								<div class="col-md-4 valueCss">
+									{{ sessionData.dateWithTime ? sessionData.dateWithTime : '-' }} ({{
+										sessionData.SessionStartDate ? sessionData.SessionStartDate : '-'
+									}})
+								</div>
+								<div class="col-md-2">
+									<div class="form-group">
+										<label>{{ 'Pages.Session.SessionTimeline.PostSession.SessionsDetail.endDate' | translate }}</label>
+									</div>
+								</div>
+								<div class="col-md-4 valueCss">
+									{{ sessionData.enddateWithTime ? sessionData.enddateWithTime : '-' }} ({{
+										sessionData.SessionEndDate ? sessionData.SessionEndDate : '-'
+									}})
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div style="margin-top: 1rem" *ngIf="sessionData && sessionData.status == 'Closed' && DiwoModuleId == 1">
+				<div class="row">
+					<div class="panel panel-white-2" style="display: flex; flex-wrap: wrap">
+						<div
+							class="col-md-4"
+							style="
+								padding-left: 0;
+								padding-right: 1.25rem;
+								display: flex;
+								flex-direction: row;
+								justify-content: stretch;
+							">
+							<div class="sub-card" style="min-height: 100px; word-wrap: break-word; width: 100%">
+								<!-- <img src="assets/images/task_alt.svg" alt="" /> -->
+								<div [innerHTML]="iconObject['task_alt']"></div>
+								<div class="total-count">{{ sessionCardData.ParticipantsApprovedCount }}</div>
+								<p class="title">{{ 'Pages.Session.SessionTimeline.PostSession.participantsapproved' | translate }}</p>
+							</div>
+						</div>
+						<div
+							class="col-md-4"
+							style="padding-left: 0.625rem; display: flex; flex-direction: row; justify-content: stretch">
+							<div class="sub-card" style="min-height: 100px; word-wrap: break-word; width: 100%">
+								<!-- <img src="assets/images/person_raised_hand.svg" alt="" /> -->
+								<div [innerHTML]="iconObject['person_raised_hand']"></div>
+
+								<div class="total-count">{{ sessionCardData.ParticipantsAttendCount }}</div>
+								<p class="title">{{ 'Pages.Session.SessionTimeline.PostSession.participantsattended' | translate }}</p>
+							</div>
+						</div>
+						<div
+							class="col-md-4"
+							style="padding-right: 0; display: flex; flex-direction: row; justify-content: stretch">
+							<div class="sub-card" style="min-height: 100px; word-wrap: break-word; width: 100%">
+								<!-- <img src="assets/images/sentiment_very_satisfied.svg" alt="" /> -->
+								<div [innerHTML]="iconObject['sentiment_very_satisfied']"></div>
+
+								<div class="total-count">
+									{{ sessionCardData.sessionFeedbackScore }}/{{ sessionCardData.sessionFeedbackTotalCount }}
+									<span class="title" *ngIf="isSurveyInProgress" style="font-size: 0.75rem; color: #637373">
+										({{ 'Pages.Session.SessionTimeline.PostSession.surveyinprogress' | translate }})
+									</span>
+								</div>
+
+								<p class="title">{{ 'Pages.Session.SessionTimeline.PostSession.sessionfeedbackScore' | translate }}</p>
+							</div>
+						</div>
+						<!-- <div
+							class="col-md-3"
+							style="padding-right: 0; display: flex; flex-direction: row; justify-content: stretch">
+							<div class="sub-card" style="min-height: 100px; word-wrap: break-word; width: 100%">
+								<div [innerHTML]="iconObject['diversity_4']"></div>
+
+								<div class="total-count" style="height: 2.5rem; font-size: 1.1rem; padding-top: 0.4rem">
+									Coming Soon
+								</div>
+								<p class="title">
+									{{ 'Pages.Session.SessionTimeline.PostSession.sessionengagementScore' | translate }}
+								</p>
+							</div>
+						</div> -->
+					</div>
+				</div>
+			</div>
+
+			<div style="margin-top: 1rem" *ngIf="sessionData && DiwoModuleId == 5">
+				<div class="row">
+					<div class="panel panel-white-2" style="display: flex; flex-wrap: wrap">
+						<div
+							class="col-md-4"
+							style="
+								padding-left: 0;
+								padding-right: 1.25rem;
+								display: flex;
+								flex-direction: row;
+								justify-content: stretch;
+							">
+							<div class="sub-card" style="min-height: 100px; word-wrap: break-word; width: 100%">
+								<!-- <img src="assets/images/task_alt.svg" alt="" /> -->
+								<div [innerHTML]="iconObject['task_alt']"></div>
+								<div class="total-count">{{ sessionCardData.averageTimeInSeconds }} secs</div>
+								<p class="title">{{ 'Pages.Session.SessionTimeline.PostSession.averageTimeSpent' | translate }}</p>
+							</div>
+						</div>
+						<div
+							class="col-md-4"
+							style="padding-left: 0.625rem; display: flex; flex-direction: row; justify-content: stretch">
+							<div class="sub-card" style="min-height: 100px; word-wrap: break-word; width: 100%">
+								<!-- <img src="assets/images/person_raised_hand.svg" alt="" /> -->
+								<div [innerHTML]="iconObject['person_raised_hand']"></div>
+
+								<div class="total-count">{{ sessionCardData.averageScore }}</div>
+								<p class="title">{{ 'Pages.Session.SessionTimeline.PostSession.avaerageScore' | translate }}</p>
+							</div>
+						</div>
+						<div
+							class="col-md-4"
+							style="padding-right: 0; display: flex; flex-direction: row; justify-content: stretch">
+							<div class="sub-card" style="min-height: 100px; word-wrap: break-word; width: 100%">
+								<!-- <img src="assets/images/sentiment_very_satisfied.svg" alt="" /> -->
+								<div [innerHTML]="iconObject['sentiment_very_satisfied']"></div>
+
+								<div class="total-count"> {{ sessionCardData.lessonCompletitionstatusCount }} </div>
+								<p class="title">{{ 'Pages.Session.SessionTimeline.PostSession.learnerCompletitionCount' | translate }}</p>
+							</div>
+						</div>
+						<!-- <div
+							class="col-md-3"
+							style="padding-right: 0; display: flex; flex-direction: row; justify-content: stretch">
+							<div class="sub-card" style="min-height: 100px; word-wrap: break-word; width: 100%">
+								<div [innerHTML]="iconObject['diversity_4']"></div>
+
+								<div class="total-count" style="height: 2.5rem; font-size: 1.1rem; padding-top: 0.4rem">
+									Coming Soon
+								</div>
+								<p class="title">
+									{{ 'Pages.Session.SessionTimeline.PostSession.sessionengagementScore' | translate }}
+								</p>
+							</div>
+						</div> -->
+					</div>
+				</div>
+			</div>
+
+
+		</div>
+
+		<div style="margin-top: 2rem" *ngIf="allWorksheets && allWorksheets.length > 0">
+			<!-- full screen view -->
+			<!-- <div class="panel panel-white-2" *ngIf="sessionData && sessionData.status != 'Closed'">
+				<div class="row" style="font-size: 0.9rem; margin-top: 2rem">
+					<div class="col-md-8" style="margin-left: -15px">
+						<span
+							[routerLink]="['/session']"
+							style="margin-left: 0.25rem; color: #637373; margin-right: 2px; cursor: pointer">
+							{{ 'Pages.Session.SessionTimeline.pagetitle' | translate }}</span
+						>
+						<img src="assets/images/arrow_forward.svg" style="width: 27px" />
+						<span style="margin-left: 3px" [ngStyle]="{ color: appService.whiteBrandingColor }">
+							{{ sessionData && sessionData.title ? sessionData.title : '-' }}
+						</span>
+					</div>
+					<div class="col-md-2"></div>
+					<div class="col-md-2" style="padding-right: 6px; margin-top: -20px; text-align: end">
+						<div style="margin-bottom: 2rem" #ImageVideoContainer>
+							<div *ngIf="isFullscreen">
+								<img
+									*ngIf="currentMedia.type === 'Image'"
+									[src]="assetBasePath + currentMedia.path"
+									class="fullscreen-image"
+									style="width: 100%" />
+								<div class="media-container">
+									<div
+										*ngIf="currentMedia.type === 'Video' && currentMedia.path && currentMedia.isTranscoding"
+										class="video-wrapper">
+										<iframe
+											[src]="transform(currentMedia.path)"
+											*ngIf="currentMedia.path && currentMedia.isTranscoding"
+											class="responsive-iframe"
+											frameborder="0"
+											allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+											allowfullscreen>
+										</iframe>
+									</div>
+									<div
+										*ngIf="currentMedia.type === 'Video' && currentMedia.path && !currentMedia.isTranscoding"
+										style="text-align: center">
+										<img style="padding-top: 50%" src="assets/images/transcoding.gif" class="transcoding-img" />
+									</div>
+								</div>
+								<div>
+									<img
+										*ngIf="
+											(currentMedia.worksheet.type == 'Poll' ||
+												((currentMedia.worksheet.type == 'Quiz' ||
+													currentMedia.worksheet.type == 'Quiz (Randomised)' ||
+													currentMedia.worksheet.type == 'Spin The Wheel') &&
+													currentMedia.worksheet.isGraded)) &&
+											seeResultData &&
+											seeResultData.length != 0
+										"
+										(click)="showResultPopUp(currentMedia.worksheet, currentMedia.id, showResultContainer, false, true)"
+										src="assets/images/show_result.svg"
+										class="showResultFullScreenBtn"
+										title="{{ 'Pages.Session.SessionTimeline.showresult' | translate }}"
+										style="width: 50px; height: 45px" />
+									<img
+										*ngIf="currentMedia.worksheet.type == 'Word Cloud'"
+										(click)="showResultPopUp(currentMedia.worksheet, currentMedia.id, showResultContainer, false, true)"
+										src="assets/images/show_result.svg"
+										class="showResultFullScreenBtn"
+										title="{{ 'Pages.Session.SessionTimeline.showresult' | translate }}"
+										style="width: 50px; height: 45px" />
+								</div>
+							</div>
+							<button
+								*ngIf="!isFullscreen"
+								(click)="toggleFullscreen(ImageVideoContainer, 0)"
+								class="fullscreen-btn"
+								data-toggle="tooltip"
+								data-placement="top"
+								title="{{ 'Pages.Session.SessionTimeline.fullscreentooltip' | translate }}">
+								<img src="assets/images/presentation.svg" alt="" />
+							</button>
+						</div>
+					</div>
+				</div>
+			</div> -->
+
+			<mzd-timeline [alternateSide]="alternateSide" [firstContentSide]="firstContentSide">
+				<mzd-timeline-content *ngFor="let timeline of allWorksheets; let i = index">
+					<mzd-icon>
+						<p
+							style="
+								font-size: 1.2rem;
+								font-weight: 500;
+								color: #ffffff;
+								margin-top: -1px;
+								width: 45px;
+								text-align: center;
+							">
+							{{ i + 1 }}
+						</p>
+					</mzd-icon>
+					<div class="row">
+						<div class="col-md-4" style="margin-top: -10px">
+							<div *ngIf="timeline.DiwoAssets[0].type == 'Image'" class="timeline-image-wrapper">
+								<img
+									[src]="assetBasePath + timeline.DiwoAssets[0].path"
+									class="timeline-img"
+									(click)="toggleFullscreen(ImageVideoContainer, i)" />
+							</div>
+							<!-- <div style="display: flex;">
+                                    <img  src="assets/images/view_guid_icon.svg">
+                                    <h3 style="font-size: 18px;">{{timeline.type}}</h3>
+                                </div> -->
+							<div *ngIf="timeline.DiwoAssets[0].type == 'Video'" class="timeline-image-wrapper">
+								<!-- <iframe
+									[src]="transform(timeline.DiwoAssets[0].path)"
+									*ngIf="timeline.DiwoAssets[0].path && timeline.DiwoAssets[0].isTranscoding"
+									width="100%"
+									frameborder="0"
+									allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+									allowfullscreen
+									class="timeline-img"
+									(click)="toggleFullscreen(ImageVideoContainer, i)">
+								</iframe> -->
+
+								<iframe
+									*ngIf="
+										appService?.configurable_feature?.vimeo &&
+										timeline.DiwoAssets[0].type == 'Video' &&
+										timeline.DiwoAssets[0].path &&
+										timeline.DiwoAssets[0].isTranscoding
+									"
+									[src]="transform(timeline.DiwoAssets[0].path)"
+									frameborder="0"
+									allowfullscreen
+									class="timeline-img"
+									width="100%">
+								</iframe>
+								<div
+									style="width: 100%; height: 100%"
+									*ngIf="
+										appService?.configurable_feature?.mediaCMS &&
+										timeline.DiwoAssets[0].type == 'Video' &&
+										timeline.DiwoAssets[0].path &&
+										timeline.DiwoAssets[0].isTranscoding
+									">
+									<div>
+										<app-video-player [VideoPath]="timeline.DiwoAssets[0].path"></app-video-player>
+									</div>
+								</div>
+								<img
+									src="assets/images/transcoding.gif"
+									class="timeline-transcoding-img"
+									*ngIf="timeline.DiwoAssets[0].path && !timeline.DiwoAssets[0].isTranscoding"
+									(click)="toggleFullscreen(ImageVideoContainer, i)" />
+							</div>
+
+							<div class="flag-div">
+								<div class="activity-type">
+									<img
+										*ngIf="timeline.type == 'Quiz' || timeline.type == 'Quiz (Randomised)'"
+										src="assets/images/quiz_icon.svg"
+										class="worksheet-type-icon" />
+									<img
+										*ngIf="timeline.type == 'Learning Content'"
+										src="assets/images/content_icon.svg"
+										class="learning-content-icon" />
+									<img
+										*ngIf="timeline.type == 'Discussion'"
+										src="assets/images/group-discussion_selected.svg"
+										class="worksheet-type-icon" />
+									<img
+										*ngIf="timeline.type == 'Follow Us'"
+										src="assets/images/follow_us_icon.svg"
+										class="learning-content-icon" />
+									<img *ngIf="timeline.type == 'Poll'" src="assets/images/poll_icon.svg" class="worksheet-type-icon" />
+									<img
+										*ngIf="timeline.type == 'Word Cloud'"
+										src="assets/images/word_cloud_icon.svg"
+										class="worksheet-type-icon" />
+									<img
+										*ngIf="timeline.type == 'Survey'"
+										src="assets/images/survey_icon.svg"
+										class="worksheet-type-icon" />
+									<img
+										*ngIf="timeline.type == 'Offline Task'"
+										src="assets/images/offline_task_icon.svg"
+										class="worksheet-type-icon" />
+									<img
+										*ngIf="timeline.type == 'Spin The Wheel'"
+										src="assets/images/spin-the-wheel-selected.svg"
+										class="worksheet-type-icon" />
+
+									<!-- <p style="margin: 0 0.35rem">{{ timeline.type }}</p> -->
+									<p style="margin: 0 0.35rem">{{ timeline.activityTemplate }}</p>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-8">
+							<div class="row">
+								<!-- ----------------Other Icon ---------------------------->
+								<div class="col-md-3" style="text-align: center">
+									<!-- <img src="assets/images/favorite_icon.svg" *ngIf="timeline.flgFav" class="flag-icons" /> -->
+									<img src="assets/images/important.svg" *ngIf="timeline.flgImp" class="flag-icons" />
+									<img
+										src="assets/images/group_activity.svg"
+										*ngIf="timeline.flgGroupActivty"
+										class="flag-icons"
+										style="margin-right: 1rem" />
+								</div>
+
+								<!-- ----------------------Info Icon--------------------- -->
+								<div class="col-md-3" style="text-align: center">
+									<!-- <img
+										*ngIf="timeline.trainerInst"
+										src="assets/images/info.svg"
+										style="width: 60px; height: 50px; cursor: pointer"
+										title="View Guide"
+										(click)="viewGuidePopUp(timeline.trainerInst)" /> -->
+									<div
+										*ngIf="timeline.trainerInst"
+										[innerHTML]="iconObject['info_50_60']"
+										title="View Guide"
+										(click)="viewGuidePopUp(timeline.trainerInst)"></div>
+									<img
+										*ngIf="!timeline.trainerInst"
+										src="assets/images/info_disabled.svg"
+										style="width: 60px; height: 50px" />
+									<p>{{ 'Pages.Session.SessionTimeline.instructions' | translate }}</p>
+								</div>
+
+								<!-- -----------------------See Result--------------------->
+								<div class="col-md-3" style="text-align: center">
+									<!-- <img
+										*ngIf="
+											((timeline.type == 'Quiz' ||
+												timeline.type == 'Quiz (Randomised)' ||
+												timeline.type == 'Spin The Wheel') &&
+												timeline.isGraded) ||
+											timeline.type == 'Survey' ||
+											timeline.type == 'Offline Task' ||
+											timeline.type == 'Word Cloud' ||
+											timeline.type == 'Poll' ||
+											((timeline.type == 'Learning Content' || timeline.type == 'Discussion') &&
+												timeline.DiwoAssets[0].type == 'Video')
+										"
+										src="assets/images/see_result.svg"
+										style="width: 60px; height: 50px; cursor: pointer"
+										title="{{ 'Pages.Session.SessionTimeline.seeresult' | translate }}"
+										(click)="
+											seeResultPopUp(i, false, timeline.type == 'Poll' ? seeSubmissionContainer : seeResultContainer)
+										" /> -->
+									<div
+										*ngIf="
+											((timeline.type == 'Quiz' ||
+												timeline.type == 'Quiz (Randomised)' ||
+												timeline.type == 'Spin The Wheel') &&
+												timeline.isGraded) ||
+											timeline.type == 'Survey' ||
+											timeline.type == 'Offline Task' ||
+											timeline.type == 'Word Cloud' ||
+											timeline.type == 'Poll' ||
+											((timeline.type == 'Learning Content' || timeline.type == 'Discussion') &&
+												timeline.DiwoAssets[0].type == 'Video')
+										"
+										title="{{ 'Pages.Session.SessionTimeline.seeresult' | translate }}"
+										(click)="
+											seeResultPopUp(
+												i,
+												false,
+												timeline.type == 'Poll' || timeline.type == 'Word Cloud'
+													? seeSubmissionContainer
+													: seeResultContainer
+											)
+										"
+										[innerHTML]="iconObject['see_result_50_60']"></div>
+
+									<img
+										*ngIf="
+											((timeline.type == 'Quiz' ||
+												timeline.type == 'Quiz (Randomised)' ||
+												timeline.type == 'Spin The Wheel') &&
+												!timeline.isGraded) ||
+											((timeline.type == 'Learning Content' || timeline.type == 'Discussion') &&
+												timeline.DiwoAssets[0].type != 'Video') ||
+											timeline.type == 'Follow Us'
+										"
+										src="assets/images/see_result_disabled.svg"
+										style="width: 60px; height: 50px" />
+									<p>{{ 'Pages.Session.SessionTimeline.seeresult' | translate }}</p>
+								</div>
+
+								<!-- -------------------Show Result------------------------->
+								<div class="col-md-3" style="text-align: center">
+									<!-- <img
+										*ngIf="
+											timeline.type == 'Poll' ||
+											timeline.type == 'Word Cloud' ||
+											((timeline.type == 'Quiz' ||
+												timeline.type == 'Quiz (Randomised)' ||
+												timeline.type == 'Spin The Wheel') &&
+												timeline.isGraded)
+										"
+										src="assets/images/show_result.svg"
+										style="width: 60px; height: 50px; cursor: pointer"
+										title="{{ 'Pages.Session.SessionTimeline.showresult' | translate }}"
+										(click)="showResultPopUp(timeline, i, showResultContainer, false)" /> -->
+
+									<div
+										*ngIf="
+											timeline.type == 'Poll' ||
+											timeline.type == 'Word Cloud' ||
+											((timeline.type == 'Quiz' ||
+												timeline.type == 'Quiz (Randomised)' ||
+												timeline.type == 'Spin The Wheel') &&
+												timeline.isGraded)
+										"
+										title="{{ 'Pages.Session.SessionTimeline.showresult' | translate }}"
+										(click)="showResultPopUp(timeline, i, showResultContainer, false)"
+										[innerHTML]="iconObject['show_result_50_60']"></div>
+
+									<img
+										*ngIf="
+											timeline.type == 'Learning Content' ||
+											timeline.type == 'Discussion' ||
+											timeline.type == 'Follow Us' ||
+											timeline.type == 'Survey' ||
+											timeline.type == 'Offline Task' ||
+											((timeline.type == 'Quiz' ||
+												timeline.type == 'Quiz (Randomised)' ||
+												timeline.type == 'Spin The Wheel') &&
+												!timeline.isGraded)
+										"
+										src="assets/images/show_result_disabled.svg"
+										style="width: 60px; height: 50px" />
+									<p>{{ 'Pages.Session.SessionTimeline.showresult' | translate }}</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</mzd-timeline-content>
+			</mzd-timeline>
+		</div>
+
+		<!-- Session Photo -->
+		<div
+			style="margin-top: 1rem"
+			*ngIf="sessionData && sessionData.status == 'Closed' && sessionData.SessionPhotographs.length > 0">
+			<div class="row">
+				<div class="panel panel-white-4">
+					<div class="report-header">
+						{{ 'Pages.Session.SessionTimeline.sessionphotographs' | translate }}
+					</div>
+					<div class="row card-body">
+						<div class="row">
+							<div class="col-md-12" style="padding-left: 0; padding-right: 0">
+								<div
+									class="col-md-3 image-container"
+									style="padding-right: 0.4rem; padding-left: 0.4rem"
+									*ngFor="let item of sessionData.SessionPhotographs; let i = index">
+									<div class="form-group" *ngIf="shoAllImage || i < 8">
+										<div>
+											<div *ngIf="item.fieldname == 'Image'">
+												<img
+													[src]="assetBasePath + item.path"
+													class="image"
+													style="width: 100%; border-radius: 1rem; height: 24vh; object-fit: contain" />
+											</div>
+											<div *ngIf="item.fieldname == 'Video'">
+												<video style="width: 100%" class="image" controls>
+													<source [src]="assetBasePath + item.path" />
+												</video>
+											</div>
+											<div *ngIf="item.fieldname == 'PDF'">
+												<img
+													src="/assets/images/pdf_preview_new2.png"
+													style="width: 100%; object-fit: contain; height: 24vh"
+													class="image" />
+											</div>
+											<div *ngIf="item.fieldname == 'PPT'">
+												<img
+													src="/assets/images/ppt_preview_new2.png"
+													style="width: 100%; object-fit: contain; height: 24vh"
+													class="image" />
+											</div>
+											<div class="middle">
+												<!-- <img
+													src="assets/images/download_fill.svg"
+													style="width: 40px; cursor: pointer"
+													(click)="downloadPhoto(item)" /> -->
+												<div [innerHTML]="iconObject['download_fill']" (click)="downloadPhoto(item)"></div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div
+									class="col-md-12"
+									style="cursor: pointer"
+									*ngIf="sessionData.SessionPhotographs.length > 3"
+									(click)="shoAllImage = !shoAllImage">
+									<div class="form-group" style="float: right">
+										<img src="assets/images/expand_more.svg" style="width: 50px" *ngIf="!shoAllImage" />
+										<img src="assets/images/expand_less.svg" style="width: 50px" *ngIf="shoAllImage" />
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Trainer Note -->
+		<!-- Session Photo -->
+		<div style="margin-top: 1rem" *ngIf="sessionData && sessionData.status == 'Closed' && sessionData.trainerNote">
+			<div class="row">
+				<div class="panel panel-white-4">
+					<div class="report-header">
+						{{ 'Pages.Session.SessionTimeline.notesandFeedbackByTrainer' | translate }}
+					</div>
+					<div class="row card-body">
+						<div class="row">
+							<div class="col-md-12">
+								{{ sessionData.trainerNote }}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="panel panel-white-2">
+			<div class="row" style="margin-top: 1rem">
+				<div class="col-md-12" style="justify-content: end; display: flex; padding: 0; align-items: center">
+					<!-- <div>
+						<a (click)="AddRecodSessionLink()" style="text-decoration: underline !important">
+							{{ 'Pages.Session.SessionTimeline.sessionrecordlinktext' | translate }}
+						</a>
+						
+					</div> -->
+					<div>
+						<a
+							class="btn btn-o btn-primary border_radius functionalBtn"
+							(click)="cancel()"
+							style="
+								margin-right: 2rem;
+								background-color: lightgray !important;
+								color: black;
+								border: 1px solid lightgray !important;
+							">
+							{{ 'Utils.Action.cancel' | translate }}</a
+						>
+						
+						<a
+							*ngIf="DiwoModuleId != 5"
+							[ngClass]="{ 'edit-disabled': sessionUserId != userId && this.UserRoleId != 6 && this.UserRoleId != 7 }"
+							class="btn border_radius functionalBtn"
+							[ngStyle]="{
+								'background-color': appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+								color: 'white'
+							}"
+							style="margin-right: 2rem"
+							(click)="AddRecodSessionLink()">
+							{{
+								recordedSessionLink != null && recordedSessionLink != ''
+									? ('Pages.Session.SessionTimeline.editsessionlink' | translate)
+									: ('Pages.Session.SessionTimeline.addsessionlink' | translate)
+							}}
+						</a>
+						
+
+						<!-- View Workbook Button -->
+						<a
+							class="btn border_radius functionalBtn"
+							[ngStyle]="{
+								'background-color': appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+								color: 'white'
+							}"
+							*ngIf="showViewWorkbookButton"
+							style="
+								margin-right: 2rem;
+								background-color: lightgray !important;
+								color: black;
+								border: 1px solid lightgray !important;
+							"
+							[href]="viewWorkBookUrl"
+							target="_blank"
+							>{{ 'Pages.Session.SessionTimeline.viewWorkbook' | translate }}</a
+						>
+
+						<!-- QR Code Button -->
+						<a
+							[ngClass]="{ 'edit-disabled': sessionUserId != userId && this.UserRoleId != 6 && this.UserRoleId != 7 }"
+							class="btn border_radius functionalBtn"
+							[ngStyle]="{
+								'background-color': appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+								color: 'white'
+							}"
+							style="margin-right: 2rem"
+							(click)="gotoSessionStepPage()"
+							*ngIf="sessionData && sessionData.status != 'Closed' && DiwoModuleId == 1"
+							>{{ 'Pages.Session.SessionTimeline.qrcode' | translate }}</a
+						>
+
+						<!-- Passing User Details Button -->
+						<a
+							[ngClass]="{ 'edit-disabled': sessionUserId != userId }"
+							class="btn border_radius functionalBtn"
+							[ngStyle]="{
+								'background-color': appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+								color: 'white'
+							}"
+							style="margin-right: 2rem"
+							(click)="getPassingUserData(sessionData.id)"
+							*ngIf="sessionData && (sessionData.isAssignmentCertification || sessionData?.Workbook?.haveCertificate)"
+							>{{ 'Pages.Session.SessionTimeline.Assessment' | translate }}</a
+						>
+
+						<!-- Close Session Button -->
+						<a
+							[ngClass]="{ 'edit-disabled': sessionUserId != userId && this.UserRoleId != 6 && this.UserRoleId != 7 }"
+							class="btn border_radius functionalBtn"
+							[ngStyle]="{
+								'background-color': appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+								color: 'white'
+							}"
+							style="margin-right: 2rem"
+							(click)="closingSeesion()"
+							*ngIf="sessionData && sessionData.status != 'Closed' && DiwoModuleId == 1"
+							>{{ 'Pages.Session.SessionTimeline.closesession' | translate }}</a
+						>
+
+						<a
+							class="btn border_radius functionalBtn"
+							[ngStyle]="{
+								'background-color': appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+								color: 'white'
+							}"
+							style="margin-right: 2rem; width: 240px"
+							(click)="TrainerOnlyResponse()"
+							*ngIf="sessionData && sessionData.trainerSurvey && sessionData.status == 'Closed'">
+							{{ 'Pages.Session.SessionTimeline.trainerOnlySurvey' | translate }}
+						</a>
+
+						<!-- Copy Button -->
+						<a
+							class="btn border_radius functionalBtn"
+							[ngStyle]="{
+								'background-color': appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+								color: 'white'
+							}"
+							style="margin-right: 2rem"
+							*ngIf="sessionData && sessionData.status == 'Closed' && !code"
+							(click)="showCopyLinkPopup()">
+							{{ 'Pages.Session.SessionTimeline.sharelink' | translate }}
+						</a>
+						<!-- View Attendence Button -->
+						<a
+							class="btn border_radius functionalBtn"
+							[ngStyle]="{
+								'background-color': appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+								color: 'white'
+							}"
+							(click)="showAttendancePopup()"
+							*ngIf="sessionData && sessionData.status == 'Closed'">
+							{{ 'Pages.Session.SessionTimeline.viewAttendance' | translate }}
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div
+		class="modal fade credit-note"
+		id="viewGuideModel"
+		tabindex="-1"
+		role="dialog"
+		aria-labelledby="myModalLabel"
+		aria-hidden="true"
+		data-backdrop="static"
+		data-keyboard="false">
+		<div class="modal-dialog" style="width: 50%; margin-top: 15%; margin-left: 25%">
+			<div class="modal-content">
+				<div
+					class="modal-header"
+					[ngStyle]="{
+						'background-color': appService.whiteBrandingColor,
+						border: '1px solid' + appService.whiteBrandingColor,
+						color: 'white'
+					}">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="cancelshowResultPopUp()">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title" id="myModalLabel">
+						<span>{{ 'Pages.Session.SessionTimeline.Modal.guide' | translate }}</span>
+					</h4>
+				</div>
+				<div class="modal-body">
+					<div>
+						<div>
+							<p style="margin-bottom: 0px">{{ trainerInstruction }}</p>
+						</div>
+						<!-- <div class="visible-md visible-lg visible-sm visible-xs" style="text-align: right; margin-bottom: 0.75rem; margin-top: 1.5rem;">
+                        <a class="btn-xs action-pause-btn" style="padding: 7px 23px; border-radius: 30px; font-size: 16px;" (click)="cancelshowResultPopUp()">Cancel</a>
+                    </div> -->
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div
+		class="modal fade credit-note"
+		id="showResultModel"
+		tabindex="-1"
+		role="dialog"
+		aria-labelledby="myModalLabel"
+		aria-hidden="true"
+		data-backdrop="static"
+		data-keyboard="false">
+		<div class="modal-dialog" style="width: 98vw; margin: 1%">
+			<div class="modal-content">
+				<div
+					class="modal-header"
+					[ngStyle]="{
+						'background-color': appService.whiteBrandingColor,
+						border: '1px solid' + appService.whiteBrandingColor,
+						color: 'white'
+					}">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="cancelViewGuide()">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title" id="myModalLabel">
+						<span *ngIf="worksheetType == 'Quiz' || worksheetType == 'Quiz (Randomised)'">{{
+							'Pages.Session.SessionTimeline.Modal.quizresult' | translate
+						}}</span>
+						<span *ngIf="worksheetType == 'Poll'">{{
+							'Pages.Session.SessionTimeline.Modal.pollresult' | translate
+						}}</span>
+						<span *ngIf="worksheetType == 'Word Cloud'">{{
+							'Pages.Session.SessionTimeline.Modal.wordcloudresponses' | translate
+						}}</span>
+						<span *ngIf="worksheetType == 'Spin The Wheel'">{{
+							'Pages.Session.SessionTimeline.Modal.spinthewhellresult' | translate
+						}}</span>
+					</h4>
+				</div>
+
+				<div
+					class="modal-body"
+					style="min-height: 88vh; padding: 2.2rem"
+					*ngIf="worksheetType == 'Quiz' || worksheetType == 'Quiz (Randomised)' || worksheetType == 'Spin The Wheel'">
+					<div style="text-align: right">
+						<img src="assets/images/refresh_icon.svg" (click)="refreshShowResult()" style="cursor: pointer" />
+					</div>
+					<!-- <div class="row">
+                    <div class="col-md-12">
+                        <p style="text-align: center;font-size: 1.2rem;color: black;">Quiz Summary</p>
+                    </div>
+                </div> -->
+					<div class="row">
+						<div class="col-md-12" style="text-align: center">
+							<p
+								style="font-size: 0.9rem; margin: 0"
+								[ngStyle]="{
+								color: appService.whiteBrandingColor,
+								
+							}">
+								{{ 'Pages.Session.SessionTimeline.Modal.worksheet' | translate }}
+								{{ showResultworkseetIndex }}/{{ allWorksheets.length }}
+							</p>
+							<p style="font-size: 1.3rem; color: black; margin-bottom: 2rem !important">
+								{{ showResultdescription }}
+							</p>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6">
+							<div class="row">
+								<div class="col-md-6">
+									<div>
+										<div style="margin-top: 0.5rem">
+											<p class="show-result-box-title">
+												{{ 'Pages.Session.SessionTimeline.Modal.totalnumberofquestion' | translate }}
+											</p>
+										</div>
+										<div class="show-result-box">
+											<p class="show-result-box-text">{{ showResultQuestionCount }}</p>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div>
+										<div style="margin-top: 0.5rem">
+											<p class="show-result-box-title">
+												{{ 'Pages.Session.SessionTimeline.Modal.totalresponses' | translate }}
+											</p>
+										</div>
+										<div class="show-result-box">
+											<p class="show-result-box-text">{{ seeResultTotalResponses }}</p>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-6" *ngIf="worksheetType != 'Spin The Wheel'">
+									<div>
+										<div style="margin-top: 0.5rem">
+											<p class="show-result-box-title">
+												{{ 'Pages.Session.SessionTimeline.Modal.maximumpossiblescore' | translate }}
+											</p>
+										</div>
+										<div class="show-result-box">
+											<p class="show-result-box-text">{{ showResultMaximunPossibleNo }}</p>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div>
+										<div style="margin-top: 0.5rem">
+											<p class="show-result-box-title">
+												{{ 'Pages.Session.SessionTimeline.Modal.averagescore' | translate }}
+											</p>
+										</div>
+										<div class="show-result-box">
+											<p class="show-result-box-text">{{ showResultAverageScore }}</p>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div>
+										<div style="margin-top: 0.5rem">
+											<p class="show-result-box-title">
+												{{ 'Pages.Session.SessionTimeline.Modal.topscore' | translate }}
+											</p>
+										</div>
+										<div class="show-result-box">
+											<p class="show-result-box-text">{{ showResultTopScroe }}</p>
+										</div>
+									</div>
+								</div>
+								<!-- <div class="col-md-6">
+									<div>
+										<div style="margin-top: 0.5rem">
+											<p class="show-result-box-title">
+												{{ 'Pages.Session.SessionTimeline.Modal.passpercentage' | translate }}
+											</p>
+										</div>
+										<div class="show-result-box">
+											<p class="show-result-box-text">{{ '-' }}</p>
+										</div>
+									</div>
+								</div> -->
+							</div>
+						</div>
+						<div class="col-md-6" style="margin-top: 2.6rem" *ngIf="seeResultTotalResponses > 0">
+							<div class="panel panel-white" style="margin-bottom: 2rem; margin-top: 2rem; margin: 0 0 24px 24px">
+								<div class="sub table-responsive" style="height: 57vh">
+									<table class="table table-striped table-hover">
+										<thead>
+											<tr>
+												<th class="center tb-first-heading" style="font-size: 1.2rem">
+													{{ 'Pages.Session.SessionTimeline.Modal.rank' | translate }}
+												</th>
+												<th class="left tb-head-bg" style="word-wrap: break-word; font-size: 1.2rem">
+													{{ 'Pages.Session.SessionTimeline.Modal.participant' | translate }}
+												</th>
+												<th class="center tb-last-heading" style="font-size: 1.2rem">
+													{{ 'Pages.Session.SessionTimeline.Modal.score' | translate }}
+												</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr *ngFor="let topper of toppers; let i = index">
+												<td class="center" style="padding-top: 7px">{{ topper.rank }}</td>
+												<td class="left" style="padding-left: 10x; padding-top: 15px" class="two-row-td-tag">
+													<p class="two-row-p-tag" style="-webkit-box-orient: vertical; font-size: 1.2rem">
+														{{ topper.fullName }}
+													</p>
+												</td>
+												<td class="center" style="padding-top: 7px">
+													<p style="font-size: 1.2rem">
+														{{ topper.total }}
+													</p>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- <div class="row" *ngFor="let question of allQuestion;let i=index;">
+                    <div class="col-md-1" *ngIf="question.type == 'MCQ'">
+                    </div>
+                    <div class="col-md-10" style="text-align: center;" *ngIf="question.type == 'MCQ'">
+                        <div>
+                            <p style="font-size: 2rem;color: black;">
+                                Question {{i + 1}}
+                            </p>
+                        </div>
+                        <div>
+                            <p style="font-size: 1.5rem;color: black;">
+                                {{question.question}}
+                            </p>
+                        </div>
+                        <div style="display: flex;justify-content: center;" *ngIf="chartType == 'Bar' && question.type == 'MCQ'">
+                            <ngx-charts-bar-vertical [view]="view" [scheme]="colorScheme" [results]="question.options" [gradient]="gradient" [xAxis]="showXAxis" [yAxis]="showYAxis" [legend]="showLegend" [showXAxisLabel]="showXAxisLabel" [showYAxisLabel]="showYAxisLabel" [xAxisLabel]="xAxisLabel"
+                                [yAxisLabel]="yAxisLabel" (select)="onSelect($event)">
+                            </ngx-charts-bar-vertical>
+                        </div>
+                        <div style="display: flex;justify-content: center;" *ngIf="chartType == 'Donut' && question.type == 'MCQ'">
+                            <ngx-charts-advanced-pie-chart [view]="donutView" [scheme]="colorScheme" [results]="question.options" [gradient]="gradient" (select)="onSelect($event)" (activate)="onActivate($event)" (deactivate)="onDeactivate($event)">
+                            </ngx-charts-advanced-pie-chart>
+
+                        </div>
+                        <div style="display: flex;justify-content: center;" *ngIf="chartType == 'Pie' && question.type == 'MCQ'">
+                            <ngx-charts-pie-chart [view]="view" [scheme]="colorScheme" [results]="question.options" [gradient]="gradient" [legend]="showLegend" [legendPosition]="legendPosition" [labels]="showLabels" [doughnut]="isDoughnut" (select)="onSelect($event)" (activate)="onActivate($event)"
+                                (deactivate)="onDeactivate($event)">
+                            </ngx-charts-pie-chart>
+
+                        </div>
+                    </div>
+                </div> -->
+				</div>
+
+				<div class="modal-body" *ngIf="worksheetType == 'Poll'" style="min-height: 88vh">
+					<!-- <div style="text-align: right;">
+                        <img src="assets/images/refresh_icon.svg" (click)="refreshShowResult()">
+                    </div> -->
+					<div *ngFor="let question of allQuestion; let i = index">
+						<div class="row">
+							<div class="col-md-12">
+								<div style="margin-top: 1rem; text-align: center">
+									<p
+										style="font-size: 0.9rem; margin: 0"
+										[ngStyle]="{
+										color: appService.whiteBrandingColor,
+										
+									}">
+										{{ 'Pages.Session.SessionTimeline.Modal.worksheet' | translate }}
+										{{ showResultworkseetIndex }}/{{ allWorksheets.length }}
+									</p>
+
+									<p style="font-size: 1.3rem; color: black; font-weight: 700; width: 50%; margin: 0 auto">
+										{{ question.question }}
+									</p>
+									<p style="width: 50%; margin: 0 auto; margin-bottom: 2rem !important">
+										{{ 'Participation Rate' }}: {{ totalAttendeaParticipantPercantage + '%' }}
+									</p>
+								</div>
+								<div style="text-align: right; margin-top: -5.5rem">
+									<img src="assets/images/refresh_icon.svg" (click)="refreshShowResult()" style="cursor: pointer" />
+								</div>
+							</div>
+						</div>
+
+						<div class="row" style="margin-top: 4.5rem">
+							<div class="col-md-12" style="text-align: center">
+								<div style="display: flex; justify-content: center" *ngIf="chartType == 'Scale'">
+									<ngx-charts-bar-horizontal
+										[view]="horizontalView"
+										[scheme]="colorScheme"
+										[results]="question.options"
+										[gradient]="gradient"
+										[xAxis]="showXAxis"
+										[yAxis]="showYAxis"
+										[legend]="showLegend"
+										[showXAxisLabel]="showXAxisLabel"
+										[showYAxisLabel]="showYAxisLabel"
+										[xAxisLabel]="xAxisLabel"
+										[yAxisLabel]="yAxisLabel"
+										(select)="onSelect($event)"
+										trimYAxisTicks="false"
+										maxYAxisTickLength="25"
+										[xAxisTickFormatting]="yAxisTickFormatting">
+									</ngx-charts-bar-horizontal>
+								</div>
+								<div style="display: flex; justify-content: center" *ngIf="chartType == 'Bar'">
+									<ngx-charts-bar-vertical
+										[view]="verticalBarview"
+										[scheme]="colorScheme"
+										[results]="question.options"
+										[gradient]="gradient"
+										[xAxis]="showXAxis"
+										[yAxis]="showYAxis"
+										[legend]="showLegend"
+										[showXAxisLabel]="showXAxisLabel"
+										[showYAxisLabel]="showYAxisLabel"
+										[xAxisLabel]="xAxisLabel"
+										[yAxisLabel]="yAxisLabel"
+										(select)="onSelect($event)"
+										trimXAxisTicks="true"
+										maxXAxisTickLength="25"
+										[yAxisTickFormatting]="yAxisTickFormatting">
+									</ngx-charts-bar-vertical>
+								</div>
+								<div style="display: flex; justify-content: center" *ngIf="chartType == 'Donut'">
+									<ngx-charts-advanced-pie-chart
+										[view]="Donutview"
+										[scheme]="colorScheme"
+										[results]="question.options"
+										[gradient]="gradient"
+										(select)="onSelect($event)"
+										(activate)="onActivate($event)"
+										(deactivate)="onDeactivate($event)"
+										trimLabels="true"
+										maxLabelLength="1000">
+									</ngx-charts-advanced-pie-chart>
+								</div>
+								<div style="display: flex; justify-content: center; margin-top: -2rem" *ngIf="chartType == 'Pie'">
+									<ngx-charts-pie-chart
+										[view]="viewPiechart"
+										[scheme]="colorScheme"
+										[results]="question.options"
+										[gradient]="gradient"
+										[legend]="showLegend"
+										[legendPosition]="legendPosition"
+										[labels]="showLabels"
+										[doughnut]="isDoughnut"
+										(select)="onSelect($event)"
+										(activate)="onActivate($event)"
+										(deactivate)="onDeactivate($event)"
+										trimLabels="true"
+										maxLabelLength="1000">
+									</ngx-charts-pie-chart>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="modal-body" *ngIf="worksheetType == 'Word Cloud'" style="min-height: 88vh">
+					<div style="text-align: right">
+						<img src="assets/images/refresh_icon.svg" (click)="refreshShowResult()" style="cursor: pointer" />
+					</div>
+					<!-- <div
+						*ngIf="showWordCloudFlag"
+						AgWordCloud
+						#word_cloud_chart="ag-word-cloud"
+						[wordData]="word_cloud"
+						[options]="options"
+						style="display: flex; justify-content: center"></div> -->
+				</div>
+
+				<div class="modal-body" style="min-height: 88vh; padding: 2.2rem" *ngIf="worksheetType == 'Survey'">
+					<div style="text-align: right">
+						<img src="assets/images/refresh_icon.svg" (click)="refreshShowResult()" style="cursor: pointer" />
+					</div>
+					<div class="row">
+						<div class="col-md-2"></div>
+						<div class="col-md-2">
+							<h3>
+								{{ totalSurveyRespose }}
+								{{ 'Pages.Session.SessionTimeline.Modal.responses' | translate }}
+							</h3>
+						</div>
+					</div>
+					<div *ngFor="let item of surveyData">
+						<div *ngIf="item.type == 'Short answer'" style="margin-bottom: 5rem">
+							<div style="text-align: center">
+								<h3>{{ item.question }}</h3>
+							</div>
+							<div class="row">
+								<div class="col-md-2"></div>
+								<div class="col-md-4">
+									{{ item.shortAnswer.length }}
+									{{ 'Pages.Session.SessionTimeline.Modal.responses' | translate }}
+								</div>
+							</div>
+							<div *ngFor="let note of item.shortAnswer; let i = index">
+								<div class="row" *ngIf="i < showMoreCount || item.showMore">
+									<div class="col-md-2"></div>
+									<div class="col-md-8">
+										<h5>{{ note }}</h5>
+									</div>
+								</div>
+							</div>
+							<div *ngIf="item.shortAnswer.length > showMoreCount" style="text-align: center">
+								<p *ngIf="!item.showMore" (click)="item.showMore = !item.showMore">
+									{{ 'Pages.Session.SessionTimeline.Modal.more' | translate }}
+								</p>
+								<p *ngIf="item.showMore" (click)="item.showMore = !item.showMore">
+									{{ 'Pages.Session.SessionTimeline.Modal.less' | translate }}
+								</p>
+							</div>
+						</div>
+						<div *ngIf="item.type == 'Long answer'" style="margin-bottom: 5rem">
+							<div style="text-align: center">
+								<h3>{{ item.question }}</h3>
+							</div>
+							<div class="row">
+								<div class="col-md-2"></div>
+								<div class="col-md-4">
+									{{ item.longAnswer.length }}
+									{{ 'Pages.Session.SessionTimeline.Modal.responses' | translate }}
+								</div>
+							</div>
+							<div *ngFor="let note of item.longAnswer; let i = index">
+								<div class="row" *ngIf="i < showMoreCount || item.showMore">
+									<div class="col-md-2"></div>
+									<div class="col-md-8">
+										<h5>{{ note }}</h5>
+									</div>
+								</div>
+							</div>
+							<div *ngIf="item.longAnswer.length > showMoreCount" style="text-align: center">
+								<p *ngIf="!item.showMore" (click)="item.showMore = !item.showMore">
+									{{ 'Pages.Session.SessionTimeline.Modal.more' | translate }}
+								</p>
+								<p *ngIf="item.showMore" (click)="item.showMore = !item.showMore">
+									{{ 'Pages.Session.SessionTimeline.Modal.less' | translate }}
+								</p>
+							</div>
+						</div>
+						<div *ngIf="item.type == 'MCQ'" style="margin-bottom: 5rem">
+							<!-- For MCQ -->
+							<div style="text-align: center">
+								<h3>{{ item.question }}</h3>
+							</div>
+
+							<div class="row">
+								<div class="col-md-2"></div>
+								<div class="col-md-4">
+									{{ item.responses }}
+									{{ 'Pages.Session.SessionTimeline.Modal.responses' | translate }}
+								</div>
+							</div>
+
+							<div style="display: flex; justify-content: center; margin-top: -2rem">
+								<ngx-charts-pie-chart
+									[view]="viewPiechart"
+									[scheme]="colorScheme"
+									[results]="item.option"
+									[gradient]="gradient"
+									[legend]="showLegend"
+									[legendPosition]="legendPosition"
+									[labels]="showLabels"
+									[doughnut]="isDoughnut"
+									(select)="onSelect($event)"
+									(activate)="onActivate($event)"
+									(deactivate)="onDeactivate($event)"
+									trimLabels="true"
+									maxLabelLength="1000">
+								</ngx-charts-pie-chart>
+							</div>
+						</div>
+						<div *ngIf="item.type == 'Rating scale'" style="margin-bottom: 5rem">
+							<!-- For Rating Scale -->
+							<div style="text-align: center">
+								<h3>{{ item.question }}</h3>
+							</div>
+
+							<div class="row">
+								<div class="col-md-2"></div>
+								<div class="col-md-4">
+									{{ item.responses }}
+									{{ 'Pages.Session.SessionTimeline.Modal.responses' | translate }}
+								</div>
+							</div>
+
+							<div style="display: flex; justify-content: center">
+								<ngx-charts-bar-vertical
+									[view]="verticalBarview"
+									[scheme]="colorScheme"
+									[results]="item.option"
+									[gradient]="gradient"
+									[xAxis]="showXAxis"
+									[yAxis]="showYAxis"
+									[legend]="showLegend"
+									[showXAxisLabel]="showXAxisLabel"
+									[showYAxisLabel]="showYAxisLabel"
+									[xAxisLabel]="xAxisLabel"
+									[yAxisLabel]="yAxisLabel"
+									(select)="onSelect($event)"
+									trimXAxisTicks="true"
+									maxXAxisTickLength="25">
+								</ngx-charts-bar-vertical>
+							</div>
+						</div>
+
+						<div *ngIf="item.type == 'File upload'" style="margin-bottom: 5rem">
+							<!-- For Rating Scale -->
+							<div style="text-align: center">
+								<h3>{{ item.question }}</h3>
+							</div>
+							<div class="row">
+								<div class="col-md-2"></div>
+								<div class="col-md-4">
+									{{ item.responses }}
+									{{ 'Pages.Session.SessionTimeline.Modal.responses' | translate }}
+								</div>
+							</div>
+							<div style="text-align: center">
+								<a class="btn btn-o btn-primary border_radius functionalBtn" (click)="downloadAllFile(item)">
+									{{ 'Pages.Session.SessionTimeline.Modal.downloadAllFiles' | translate }}
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-body" style="min-height: 88vh; padding: 2.2rem" *ngIf="worksheetType == 'Offline Task'">
+					<div style="text-align: right">
+						<img src="assets/images/refresh_icon.svg" (click)="refreshShowResult()" style="cursor: pointer" />
+					</div>
+					<div class="row">
+						<div class="col-md-2"></div>
+						<div class="col-md-2">
+							<h3>
+								{{ totalSurveyRespose }}
+								{{ 'Pages.Session.SessionTimeline.Modal.responses' | translate }}
+							</h3>
+						</div>
+					</div>
+					<!-- <div *ngFor="let item of offlineTaskData">
+						<div style="margin-bottom: 5rem">
+							<div style="text-align: center">
+								<h3>{{ item.question }}</h3>
+							</div>
+							<div class="row">
+								<div class="col-md-2"></div>
+								<div class="col-md-4">
+									{{ item.responses }}
+									{{ 'Pages.Session.SessionTimeline.Modal.responses' | translate }}
+								</div>
+							</div>
+							<div *ngFor="let note of item.textNote; let i = index">
+								<div class="row" *ngIf="i < showMoreCount || item.showMore">
+									<div class="col-md-2"></div>
+									<div class="col-md-8">
+										<h5>{{ note }}</h5>
+									</div>
+								</div>
+							</div>
+							<div *ngIf="item.textNote.length > showMoreCount" style="text-align: center">
+								<p *ngIf="!item.showMore" (click)="item.showMore = !item.showMore">
+									{{ 'Pages.Session.SessionTimeline.Modal.more' | translate }}
+								</p>
+								<p *ngIf="item.showMore" (click)="item.showMore = !item.showMore">
+									{{ 'Pages.Session.SessionTimeline.Modal.less' | translate }}
+								</p>
+							</div>
+							<div style="text-align: center" *ngIf="item.uploadedFiles.length > 0">
+								<a class="btn btn-o btn-primary border_radius functionalBtn" (click)="downloadAllFile(item)">
+									{{ 'Pages.Session.SessionTimeline.Modal.downloadAllFiles' | translate }}
+								</a>
+							</div>
+						</div>
+					</div> -->
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div
+		class="modal fade credit-note"
+		id="seeResultModel"
+		tabindex="-1"
+		role="dialog"
+		aria-labelledby="myModalLabel"
+		aria-hidden="true"
+		data-backdrop="static"
+		data-keyboard="false">
+		<div class="modal-dialog" style="width: 98vw; margin: 1%">
+			<div class="modal-content">
+				<div
+					class="modal-header"
+					[ngStyle]="{
+						'background-color': appService.whiteBrandingColor,
+						border: '1px solid' + appService.whiteBrandingColor,
+						color: 'white'
+					}">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="cancelSeeResultPopUp()">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title" id="myModalLabel">
+						<span>{{ 'Pages.Session.SessionTimeline.Modal.seeresult' | translate }}</span>
+					</h4>
+				</div>
+				<div class="modal-body" style="height: 88vh">
+					<!-- <div style="text-align: right;">
+                        <img src="assets/images/refresh_icon.svg" (click)="refreshSeeResult()">
+                    </div> -->
+					<div
+						class="row"
+						style="
+							margin-bottom: 2rem;
+							max-height: 75vh;
+							overflow: auto;
+							padding-top: 0.5%;
+							overflow-x: hidden;
+							display: flex;
+							flex-direction: column;
+						">
+						<div class="col-md-12" style="text-align: center; margin-top: 1rem">
+							<div>
+								<p
+									style="font-size: 0.9rem; margin: 0; width: 95%; margin: 0 auto"
+									[ngStyle]="{
+									color: appService.whiteBrandingColor,
+									
+								}">
+									{{ 'Pages.Session.SessionTimeline.Modal.worksheet' | translate }}
+									{{ workseetIndex }}/{{ allWorksheets.length }}
+								</p>
+								<p style="font-size: 1.3rem; color: black; margin-bottom: 2rem !important; width: 95%; margin: 0 auto">
+									{{ description }}
+								</p>
+							</div>
+							<div style="text-align: right; margin-top: -5.5rem">
+								<img src="assets/images/refresh_icon.svg" (click)="refreshSeeResult()" style="cursor: pointer" />
+							</div>
+						</div>
+						<div class="panel panel-white" style="margin-bottom: 2rem; margin-top: 2rem">
+							<div class="sub table-responsive">
+								<table class="table table-striped table-hover">
+									<thead>
+										<tr style="height: 80px">
+											<th class="left tb-line-height tb-first-heading" style="word-wrap: break-word; width: 10vw">
+												{{ 'Pages.Session.SessionTimeline.Modal.participant' | translate }}
+											</th>
+											<th class="left tb-line-height tb-first-heading" style="word-wrap: break-word; width: 5vw">
+												{{ 'Pages.Session.SessionTimeline.Modal.QuizResponses' | translate }}
+											</th>
+											<th class="center tb-line-height tb-head-bg" style="width: 8vw">
+												{{ 'Pages.Session.SessionTimeline.Modal.totalmarks' | translate }}
+											</th>
+											<th
+												class="center tb-line-height tb-head-bg"
+												style="width: 12vw; text-transform: capitalize"
+												*ngFor="let qus of seeResultQuestionCount; let j = index"
+												[ngClass]="{
+													'tb-last-heading': seeResultQuestionCount.length == j + 1,
+													'tb-head-bg': seeResultQuestionCount.length != j + 1
+												}">
+												Q {{ j + 1 }} : {{ qus.question }}
+											</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr *ngFor="let participant of seeResultData; let i = index">
+											<td class="left" style="padding-left: 10x; padding-top: 15px" class="two-row-td-tag">
+												<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+													{{ participant && participant.fullName ? participant.fullName : '' }}
+												</p>
+											</td>
+											<td class="left" style="padding-left: 10x; padding-top: 15px" class="two-row-td-tag">
+												<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+													{{ participant && participant.response ? participant.response : '' }}
+												</p>
+											</td>
+											<td class="center" style="padding-top: 7px">{{ participant.total }}</td>
+
+											<td
+												*ngFor="let answer of participant.questions; let j = index"
+												class="center"
+												style="padding-top: 7px">
+												<p
+													class="option-padding"
+													[ngClass]="{
+														'correct-answer': answer.correctAns && !answer.wrongAns,
+														'wrong-answer': !answer.correctAns && answer.wrongAns,
+														'half-correct-answer': answer.correctAns && answer.wrongAns,
+														'no-answer': !answer.correctAns && !answer.wrongAns
+													}">
+													{{ answer.userAnswer }}
+												</p>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div
+		class="modal fade credit-note"
+		id="seeAttendanceModel"
+		tabindex="-1"
+		role="dialog"
+		aria-labelledby="myModalLabel"
+		aria-hidden="true"
+		data-backdrop="static"
+		data-keyboard="false">
+		<div class="modal-dialog" style="width: 70vw">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: transparent; border-color: transparent">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="cancelAttendancePopup()">
+						<span aria-hidden="true" style="color: black; font-size: 1.875rem">&times;</span>
+					</button>
+					<!-- <h4 class="modal-title" id="myModalLabel" style="color: #000">
+						<span>
+							{{ 'Pages.Session.SessionTimeline.Modal.attendance' | translate }} -
+							{{ sessionData && sessionData.title ? sessionData.title : '-' }}
+						</span>
+					</h4> -->
+				</div>
+				<div class="modal-body" style="height: 75vh">
+					<div
+						class="row"
+						style="margin-bottom: 2rem; max-height: 80vh; overflow: auto; padding-top: 1rem; overflow-x: hidden"
+						*ngIf="allParticipants && allParticipants.length > 0">
+						<div class="col-md-12" style="display: flex; align-items: center; margin-bottom: 1.5rem">
+							<div class="col-md-11 basic-dripflow">
+								<p style="color: #000; font-size: 1.1rem; margin: 0">
+									{{ 'Pages.Session.SessionTimeline.Modal.attendance' | translate }} -
+									{{ sessionData && sessionData.title ? sessionData.title : '-' }}
+								</p>
+							</div>
+
+							<div class="col-md-1" style="float: right; padding-right: 0">
+								<a
+									class="btn pull-right export"
+									[ngStyle]="{ color: appService.whiteBrandingColor }"
+									(click)="exportViewAttendanceToCsv()"
+									style="text-decoration: underline !important; padding: 0"
+									>{{ 'Pages.Session.SessionTimeline.export' | translate }}
+								</a>
+							</div>
+						</div>
+						<div class="col-md-12 mar-bot" *ngFor="let item of allParticipants; let i = index">
+							<div class="row" style="display: flex; align-items: baseline; margin-bottom: 1rem">
+								<div class="col-md-2" style="margin-left: 1rem">
+									<p style="font-size: 1.1rem !important">{{ item && item.User ? item.User.account_id : '' }}</p>
+								</div>
+								<div class="col-md-3">
+									<p style="font-size: 1.1rem !important">{{ item && item.User ? item.User.fullName : '' }}</p>
+								</div>
+								<div class="col-md-2" style="padding-left: 0">
+									<span
+										class="btn-xs participant-status-approved"
+										style="font-size: 1rem !important"
+										*ngIf="item.attendanceStatus == 'Present'">
+										{{ 'Pages.Session.SessionTimeline.Modal.present' | translate }}
+									</span>
+									<span
+										class="btn-xs participant-status-not-approve"
+										style="font-size: 1rem !important"
+										*ngIf="item.attendanceStatus == 'Absent'">
+										{{ 'Pages.Session.SessionTimeline.Modal.absent' | translate }}</span
+									>
+								</div>
+								<div class="col-md-5" style="padding-left: 3rem">
+									<input
+										class="form-control"
+										type="text"
+										placeholder="{{ 'Pages.Session.SessionTimeline.Modal.addnote' | translate }}"
+										disabled
+										[(ngModel)]="item.trainerNote" />
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div
+		class="modal fade credit-note"
+		id="viewPasswordModel"
+		tabindex="-1"
+		role="dialog"
+		aria-labelledby="myModalLabel"
+		aria-hidden="true"
+		data-backdrop="static"
+		data-keyboard="false">
+		<div class="modal-dialog" style="width: 30%; margin-top: 15%; margin-left: 35%">
+			<div class="modal-content">
+				<div
+					class="modal-header"
+					[ngStyle]="{
+						'background-color': appService.whiteBrandingColor,
+						border: '1px solid' + appService.whiteBrandingColor,
+						color: 'white'
+					}">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="cancelPasswordPopUp()">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title" id="myModalLabel">
+						<span>{{ 'Pages.Session.SessionTimeline.Modal.password' | translate }}</span>
+					</h4>
+				</div>
+				<div class="modal-body">
+					<div>
+						<!-- <label> {{ 'Pages.Session.SessionTimeline.Modal.password' | translate }}</label> -->
+						<div style="text-align: center">
+							<input
+								type="text"
+								class="form-control"
+								placeholder="{{ 'Pages.Session.SessionTimeline.Modal.password' | translate }}"
+								[ngModel]="password"
+								(ngModelChange)="passwordFiledChange($event)" />
+							<a
+								class="btn btn-o btn-primary bottom-button"
+								style="margin-top: 20px; height: 40px; padding-top: 12px; border-radius: 25px"
+								(click)="save()">
+								{{ 'Pages.Session.SessionTimeline.Modal.verify' | translate }}
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div
+		class="modal fade credit-note"
+		id="viewCopyLinkModel"
+		tabindex="-1"
+		role="dialog"
+		aria-labelledby="myModalLabel"
+		aria-hidden="true"
+		data-backdrop="static"
+		data-keyboard="false">
+		<div class="modal-dialog" style="width: 55%; margin-top: 12%; margin-left: auto; margin-right: auto">
+			<div class="modal-content">
+				<div
+					class="modal-header"
+					[ngStyle]="{
+						'background-color': appService.whiteBrandingColor,
+						border: '1px solid' + appService.whiteBrandingColor,
+						color: 'white'
+					}">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="cancelCopyLinkPopup()">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title" id="myModalLabel">
+						<span>{{ 'Pages.Session.SessionTimeline.Modal.link' | translate }}</span>
+					</h4>
+				</div>
+				<div class="modal-body" *ngIf="sessionData" style="padding: 1.2rem 2rem 2rem 2rem">
+					<div class="row" style="display: flex; align-items: center">
+						<div class="col-md-9">
+							<div class="form-group">
+								<label>{{ 'Pages.Session.SessionTimeline.Modal.link' | translate }}</label>
+								<input
+									type="text"
+									readonly
+									class="form-control"
+									placeholder="{{ 'Pages.Learners.AddEdit.PersonalInfo.FirstName.placeholder' | translate }}"
+									[value]="sessionData.adminLink"
+									autocomplete="disabled"
+									id="hyper_link" />
+							</div>
+						</div>
+
+						<div class="col-md-2">
+							<div class="form-group" style="text-align: center">
+								<button
+									class="btn btn-xs action-edit-btn"
+									[ngStyle]="{
+										'background-color': appService.whiteBrandingColor,
+										border: '1px solid' + appService.whiteBrandingColor,
+										color: 'white'
+									}"
+									style="
+										padding: 7px 28px;
+										border-radius: 30px;
+										font-size: 0.9rem;
+										padding-right: 50px;
+										padding-left: 50px;
+									"
+									(click)="saveLink()">
+									{{ 'Pages.Session.AddEdit.SharetheWorkbook.copylink' | translate }}
+								</button>
+							</div>
+						</div>
+					</div>
+					<div class="row" style="margin-top: 15px; display: flex; align-items: center">
+						<div class="col-md-9">
+							<div class="form-group">
+								<label>{{ 'Pages.Session.SessionTimeline.Modal.password' | translate }}</label>
+								<input
+									type="text"
+									readonly
+									class="form-control"
+									placeholder="{{ 'Pages.Learners.AddEdit.PersonalInfo.FirstName.placeholder' | translate }}"
+									[value]="sessionData.password"
+									autocomplete="disabled"
+									id="hyper_link2" />
+							</div>
+						</div>
+
+						<div class="col-md-2">
+							<div class="form-group" style="text-align: center">
+								<button
+									class="btn btn-xs action-edit-btn"
+									[ngStyle]="{
+										'background-color': appService.whiteBrandingColor,
+										border: '1px solid' + appService.whiteBrandingColor,
+										color: 'white'
+									}"
+									style="padding: 7px 28px; border-radius: 30px; font-size: 0.9rem"
+									(click)="savePassword()">
+									{{ 'Pages.Session.AddEdit.SharetheWorkbook.copyPassword' | translate }}
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div
+	class="modal fade credit-note"
+	id="downloadReportAndUploadedFiles"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="myModalLabel"
+	aria-hidden="true"
+	data-backdrop="static"
+	data-keyboard="false">
+	<div class="modal-dialog" style="width: 55%; margin-top: 15%">
+		<div class="modal-content">
+			<div
+				class="modal-header"
+				[ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel" *ngIf="worksheetType == 'Survey'">
+					<span>{{ 'Pages.Session.SessionTimeline.Modal.surveyresponses' | translate }}</span>
+				</h4>
+				<h4 class="modal-title" id="myModalLabel" *ngIf="worksheetType == 'Offline Task'">
+					<span>{{ 'Pages.Session.SessionTimeline.Modal.offlinetaskresponses' | translate }}</span>
+				</h4>
+				<h4 class="modal-title" id="myModalLabel" *ngIf="worksheetType == 'Spin The Wheel'">
+					<span>{{ 'Pages.Session.SessionTimeline.Modal.SpinTheWheel' | translate }}</span>
+				</h4>
+				<h4 class="modal-title" id="myModalLabel" *ngIf="worksheetType == 'Learning Content'">
+					<span>{{ 'Pages.Session.SessionTimeline.Modal.learningContent' | translate }}</span>
+				</h4>
+				<h4 class="modal-title" id="myModalLabel" *ngIf="worksheetType == 'Discussion'">
+					<span>{{ 'Pages.Session.SessionTimeline.Modal.discussion' | translate }}</span>
+				</h4>
+			</div>
+			<div class="modal-body" style="padding: 2rem">
+				<div>
+					<div class="visible-md visible-lg visible-sm visible-xs" style="text-align: center">
+						<a
+							class="btn-xs action-edit-btn"
+							[ngStyle]="{
+								'background-color': appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+								color: 'white'
+							}"
+							style="padding: 7px 45px; border-radius: 30px; font-size: 0.9rem; margin-right: 1rem"
+							(click)="downloadLoadReport()"
+							>{{ 'Pages.Session.SessionTimeline.downloadreport' | translate }}</a
+						>
+
+						<a
+							*ngIf="
+								worksheetType != 'Spin The Wheel' &&
+								worksheetType != 'Learning Content' &&
+								worksheetType != 'Discussion' &&
+								worksheetType != 'Offline Task'
+							"
+							class="btn-xs action-edit-btn"
+							[ngStyle]="{
+								'background-color': appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+								color: 'white'
+							}"
+							style="padding: 7px 20px; border-radius: 30px; font-size: 0.9rem; margin-right: 1rem"
+							(click)="downloadUpaloedFile()"
+							>{{ 'Pages.Session.SessionTimeline.downloadUploaedfile' | translate }}</a
+						>
+
+						<a
+							*ngIf="worksheetType == 'Offline Task'"
+							class="btn-xs action-edit-btn"
+							[ngStyle]="{
+								'background-color': appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+								color: 'white'
+							}"
+							style="padding: 7px 20px; border-radius: 30px; font-size: 0.9rem; margin-right: 1rem"
+							(click)="showUploadedData(showResultContainer)"
+							>{{ 'Pages.Session.SessionTimeline.downloadUploaedfile' | translate }}</a
+						>
+
+						<a
+							*ngIf="worksheetType == 'Survey'"
+							class="btn-xs action-edit-btn"
+							[ngStyle]="{
+								'background-color': appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+								color: 'white'
+							}"
+							style="padding: 7px 20px; border-radius: 30px; font-size: 0.9rem"
+							(click)="showLearnerResponses('Survey', page, limit, seeSubmissionContainer)"
+							>{{ 'Pages.Session.SessionTimeline.LiveSubmissionStatus' | translate }}</a
+						>
+						<a
+							*ngIf="worksheetType == 'Spin The Wheel'"
+							class="btn-xs action-edit-btn"
+							[ngStyle]="{
+								'background-color': appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+								color: 'white'
+							}"
+							style="padding: 7px 20px; border-radius: 30px; font-size: 0.9rem"
+							(click)="showLearnerResponses('Spin The Wheel', page, limit, seeSubmissionContainer)"
+							>{{ 'Pages.Session.SessionTimeline.LiveSubmissionStatus' | translate }}</a
+						>
+						<a
+							*ngIf="worksheetType == 'Offline Task'"
+							class="btn-xs action-edit-btn"
+							[ngStyle]="{
+								'background-color': appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+								color: 'white'
+							}"
+							style="padding: 7px 20px; border-radius: 30px; font-size: 0.9rem"
+							(click)="showLearnerResponses('Offline Task', page, limit, seeSubmissionContainer)"
+							>{{ 'Pages.Session.SessionTimeline.LiveSubmissionStatus' | translate }}</a
+						>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div
+	class="modal fade credit-note"
+	id="downloadTrainerSurveyReport"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="myModalLabel"
+	aria-hidden="true"
+	data-backdrop="static"
+	data-keyboard="false">
+	<div class="modal-dialog" style="width: 30%; margin-top: 15%; margin-left: 35%">
+		<div class="modal-content">
+			<div
+				class="modal-header"
+				[ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					<span>{{ 'Pages.Session.SessionTimeline.Modal.surveytrainerOnlyresponses' | translate }}</span>
+				</h4>
+			</div>
+			<div class="modal-body">
+				<div *ngFor="let item of surveyOnlyTrainerData?.SessionWorksheets; let i = index">
+					<div
+						*ngIf="item.trainerSurvey"
+						class="visible-md visible-lg visible-sm visible-xs"
+						style="text-align: center; margin-bottom: 0.75rem; margin-top: 1.5rem">
+						<a
+							class="btn-xs action-edit-btn"
+							[ngStyle]="{
+								'background-color': appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+								color: 'white'
+							}"
+							style="padding: 7px 20px; border-radius: 30px; font-size: 0.9rem; margin-right: 1rem"
+							(click)="downloadLoadTrainerOnlyReport(item, true)"
+							>{{ 'Pages.Session.SessionTimeline.downloadreport' | translate }}</a
+						>
+						<a
+							class="btn-xs action-edit-btn"
+							[ngStyle]="{
+								'background-color': appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+								color: 'white'
+							}"
+							style="padding: 7px 20px; border-radius: 30px; font-size: 0.9rem"
+							(click)="downloadLoadTrainerOnlyReport(item, false)"
+							>{{ 'Pages.Session.SessionTimeline.downloadUploaedfile' | translate }}</a
+						>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Learner Response ("Submitted" and "Not Submitted") -->
+<div
+	class="modal fade credit-note"
+	id="learnerResponses"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="myModalLabel"
+	aria-hidden="true"
+	data-backdrop="static"
+	data-keyboard="false">
+	<div class="modal-dialog" style="width: 90vw; margin: 1%; margin-left: 4%">
+		<div class="modal-content">
+			<div
+				class="modal-header"
+				[ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}">
+				<!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button> -->
+				<button
+					type="button"
+					class="close"
+					data-dismiss="modal"
+					aria-label="Close"
+					(click)="cancelLearnerResponsePopup()">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					<span>{{ 'Pages.Session.SessionTimeline.Modal.surveyLearnerResponse' | translate }}</span>
+				</h4>
+			</div>
+			<div class="modal-body" style="padding: 1% 4% 4% 4%; min-height: 88vh">
+				<div></div>
+				<div>
+					<div class="row">
+						<div class="col-md-12" style="text-align: center">
+							<p
+								style="font-size: 0.9rem; margin: 0"
+								[ngStyle]="{
+								color: appService.whiteBrandingColor,
+								
+							}">
+								{{ 'Pages.Session.SessionTimeline.Modal.worksheet' | translate }}
+								{{ refreshSeeResultIndex + 1 }}/{{ allWorksheets.length }}
+							</p>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12" style="text-align: center">
+							<p style="margin-top: 0.5rem">Learner Count : {{ afterFinalLearnerResponsesData.length }}</p>
+						</div>
+					</div>
+
+					<!-- <div style="text-align: right">
+						<img
+							src="assets/images/refresh_icon.svg"
+							(click)="showLearnerResponses(null, page, limit)"
+							style="cursor: pointer" />
+					</div> -->
+					<div class="row" style="margin-bottom: 1rem">
+						<div class="col-md-12" style="margin-top: 2rem">
+							<div>
+								<input
+									id="search"
+									class="form-control"
+									(input)="getLearnerByFilter($event.target.value)"
+									type="text"
+									placeholder="{{ 'Pages.Session.SessionTimeline.searchLearner.placeholder' | translate }}"
+									autocomplete="off"
+									[(ngModel)]="inputSearchTxt"
+									[ngModelOptions]="{ standalone: true }" />
+							</div>
+						</div>
+					</div>
+					<div class="panel panel-white" style="margin-bottom: 2rem; margin-top: 2rem; margin: 0">
+						<div class="sub table-responsive" style="height: 56vh">
+							<table class="table table-striped table-hover">
+								<thead>
+									<tr style="height: 80px">
+										<th
+											class="left tb-line-height tb-first-heading"
+											style="word-wrap: break-word; width: 10vw; padding-left: 2rem">
+											{{ 'Pages.Session.SessionTimeline.Modal.participant' | translate }}
+										</th>
+										<th
+											class="left tb-line-height tb-last-heading"
+											style="word-wrap: break-word; width: 10vw; padding-left: 2rem">
+											{{ worksheetType }} {{ 'Pages.Session.SessionTimeline.Modal.learnerResponse' | translate }}
+										</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr
+										*ngFor="
+											let participant of afterFinalLearnerResponsesData
+												| paginate
+													: {
+															itemsPerPage: limit == 'all' ? totalCount : limit,
+															currentPage: page,
+															totalItems: totalCount
+													  };
+											let i = index
+										">
+										<td class="left" style="padding-left: 2rem; padding-top: 15px" class="two-row-td-tag">
+											<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+												{{ participant && participant.fullName ? participant.fullName : '' }}
+											</p>
+										</td>
+										<td class="left" style="padding-left: 2rem; padding-top: 15px" class="two-row-td-tag">
+											<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+												{{ participant && participant.submit_status ? participant.submit_status : '' }}
+											</p>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<div class="pagination-wrapper" style="width: 100%; margin-top: 1rem">
+						<div style="float: right">
+							<span>{{ 'Utils.perpage' | translate }}: &nbsp;</span>
+							<!-- <select class="default-dropdown" (change)="changeResult($event.target.value)">
+								<option *ngFor="let count of pageResultCount; let i = index" [selected]="i == 0">
+									{{ count }}
+								</option>
+							</select> -->
+						</div>
+						<!-- <pagination-controls (pageChange)="onPageChangeEvent($event)" style="float: right"> </pagination-controls> -->
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- //show result full screen view -->
+<div class="modal-body" style="min-height: 88vh" #showResultContainer style="background: #fff">
+	<div *ngIf="isFullscreen">
+		<div class="modal-body" style="min-height: 88vh; padding: 2.2rem" *ngIf="worksheetType == 'Spin The Wheel'">
+			<div class="row">
+				<div class="col-md-12" style="text-align: center">
+					<div class="fullscreen-header">
+						<div style="text-align: left; margin-top: 1rem"></div>
+						<div class="w-100">
+							<!-- <p
+								style="font-size: 0.9rem; margin: 0"
+								[ngStyle]="{
+								color: appService.whiteBrandingColor,
+								
+							}">
+								{{ 'Pages.Session.SessionTimeline.Modal.worksheet' | translate }}
+								{{ showResultworkseetIndex }}/{{ allWorksheets.length }}
+							</p> -->
+							<!-- <p style="font-size: 1.3rem; color: black; margin-bottom: 2rem !important">
+								{{ showResultdescription }}
+							</p> -->
+							<p
+								style="
+									font-size: 2rem;
+									color: black;
+									font-weight: 500;
+									width: 65%;
+									margin: 0 auto;
+									line-height: normal;
+								">
+								{{ showResultdescription }}
+							</p>
+						</div>
+						<!-- margin-top: -5rem -->
+						<div style="text-align: right; margin-top: 1rem">
+							<img
+								*ngIf="showWBackWorksheetButton"
+								src="assets/images/back_arrow_icon.svg"
+								style="width: 50px; height: 50px; cursor: pointer"
+								(click)="backToWorksheet()"
+								title="{{ 'Pages.Session.SessionTimeline.backtoworksheet' | translate }}"
+								alt="" />
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row" style="margin-top: 5rem">
+				<div class="col-md-6">
+					<div class="row">
+						<div class="col-md-6">
+							<div>
+								<div style="margin-top: 0.5rem">
+									<p class="show-result-box-title">
+										{{ 'Pages.Session.SessionTimeline.Modal.totalnumberofquestion' | translate }}
+									</p>
+								</div>
+								<div class="show-result-box">
+									<p class="show-result-box-text">{{ showResultQuestionCount }}</p>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div>
+								<div style="margin-top: 0.5rem">
+									<p class="show-result-box-title">
+										{{ 'Pages.Session.SessionTimeline.Modal.totalresponses' | translate }}
+									</p>
+								</div>
+								<div class="show-result-box">
+									<p class="show-result-box-text">{{ seeResultTotalResponses }}</p>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-6" *ngIf="worksheetType != 'Spin The Wheel'">
+							<div>
+								<div style="margin-top: 0.5rem">
+									<p class="show-result-box-title">
+										{{ 'Pages.Session.SessionTimeline.Modal.maximumpossiblescore' | translate }}
+									</p>
+								</div>
+								<div class="show-result-box">
+									<p class="show-result-box-text">{{ showResultMaximunPossibleNo }}</p>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div>
+								<div style="margin-top: 0.5rem">
+									<p class="show-result-box-title">
+										{{ 'Pages.Session.SessionTimeline.Modal.averagescore' | translate }}
+									</p>
+								</div>
+								<div class="show-result-box">
+									<p class="show-result-box-text">{{ showResultAverageScore }}</p>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div>
+								<div style="margin-top: 0.5rem">
+									<p class="show-result-box-title">
+										{{ 'Pages.Session.SessionTimeline.Modal.topscore' | translate }}
+									</p>
+								</div>
+								<div class="show-result-box">
+									<p class="show-result-box-text">{{ showResultTopScroe }}</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6" style="margin-top: 2.6rem" *ngIf="seeResultTotalResponses > 0">
+					<div class="panel panel-white" style="margin-bottom: 2rem; margin-top: 2rem; margin: 0 0 24px 24px">
+						<div class="sub table-responsive" style="height: 50vh">
+							<table class="table table-striped table-hover">
+								<thead>
+									<tr>
+										<th class="center tb-first-heading" style="font-size: 1.2rem">
+											{{ 'Pages.Session.SessionTimeline.Modal.rank' | translate }}
+										</th>
+										<th class="left tb-head-bg" style="word-wrap: break-word; font-size: 1.2rem">
+											{{ 'Pages.Session.SessionTimeline.Modal.participant' | translate }}
+										</th>
+										<th class="center tb-last-heading" style="font-size: 1.2rem">
+											{{ 'Pages.Session.SessionTimeline.Modal.score' | translate }}
+										</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr *ngFor="let topper of toppers; let i = index">
+										<td class="center" style="padding-top: 7px" *ngIf="topper.total > 0 && topper.rank <= 10">
+											{{ topper.rank }}
+										</td>
+										<td
+											class="left"
+											style="padding-left: 10x; padding-top: 15px"
+											class="two-row-td-tag"
+											*ngIf="topper.total > 0 && topper.rank <= 10">
+											<p class="two-row-p-tag" style="-webkit-box-orient: vertical; font-size: 1.2rem">
+												{{ topper.fullName }}
+											</p>
+										</td>
+										<td class="center" style="padding-top: 7px" *ngIf="topper.total > 0 && topper.rank <= 10">
+											<p style="font-size: 1.2rem">
+												{{ topper.total }}
+											</p>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div style="text-align: center; margin-top: 1rem">
+				<img src="assets/images/refresh_icon.svg" (click)="refreshShowResult()" style="cursor: pointer" />
+			</div>
+		</div>
+
+		<div
+			class="modal-body"
+			style="min-height: 88vh; padding: 2.2rem"
+			*ngIf="worksheetType == 'Quiz' || worksheetType == 'Quiz (Randomised)'">
+			<div class="row">
+				<div class="col-md-12" style="text-align: center">
+					<div class="fullscreen-header">
+						<div style="text-align: left; margin-top: 1rem"></div>
+						<div
+							class="w-100"
+							style="width: 90%; margin: 0 auto; display: flex; justify-content: center; align-items: center">
+							<span [innerHTML]="iconObject['quiz_leaderboard']"></span>
+							<p style="font-size: 3rem; color: black; font-weight: 500; line-height: normal; padding-left: 0.8rem">
+								{{ activityLabel }}
+							</p>
+						</div>
+
+						<div style="text-align: right; margin-top: 1rem">
+							<img
+								*ngIf="showWBackWorksheetButton"
+								src="assets/images/back_arrow_icon.svg"
+								style="width: 50px; height: 50px; cursor: pointer"
+								(click)="backToWorksheet()"
+								title="{{ 'Pages.Session.SessionTimeline.backtoworksheet' | translate }}"
+								alt="" />
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="row" style="margin-top: 3rem">
+				<div class="col-md-1"></div>
+				<div class="col-md-4">
+					<div class="leaderboard-response-container">
+						<div class="leaderboard-response-box">
+							<div class="leaderboard-response-item">
+								<span class="leaderboard-response-label">{{
+									'Pages.Session.SessionTimeline.Modal.totalresponses' | translate
+								}}</span>
+								<span class="leaderboard-response-label-count">{{ seeResultTotalResponses }}</span>
+							</div>
+							<div class="leaderboard-response-item">
+								<span class="leaderboard-response-label">{{
+									'Pages.Session.SessionTimeline.Modal.participantrate' | translate
+								}}</span>
+								<span class="leaderboard-response-label-count">{{ totalAttendeaParticipantPercantage }}%</span>
+							</div>
+							<div class="leaderboard-response-item">
+								<span class="leaderboard-response-label">{{
+									'Pages.Session.SessionTimeline.Modal.totalnumberofquestion' | translate
+								}}</span>
+								<span class="leaderboard-response-label-count">{{ showResultQuestionCount }}</span>
+							</div>
+							<div class="leaderboard-response-item">
+								<span class="leaderboard-response-label">{{
+									'Pages.Session.SessionTimeline.Modal.topscore' | translate
+								}}</span>
+								<span class="leaderboard-response-label-count">{{ showResultMaximunPossibleNo }}</span>
+							</div>
+							<div class="leaderboard-response-item">
+								<span class="leaderboard-response-label">{{
+									'Pages.Session.SessionTimeline.Modal.averagescore' | translate
+								}}</span>
+								<span class="leaderboard-response-label-count">{{ showResultAverageScore }}</span>
+							</div>
+						</div>
+					</div>
+					<div style="margin-top: 1rem">
+						<img src="assets/images/refresh_icon.svg" (click)="refreshShowResult()" style="cursor: pointer" />
+					</div>
+				</div>
+
+				<div class="col-md-6" *ngIf="seeResultTotalResponses > 0" style="overflow-y: auto; height: 60vh">
+					<div class="leaderboard-container" *ngFor="let topper of toppers; let i = index">
+						<div class="leaderboard-box" *ngIf="topper.total > 0 && topper.rank <= 10">
+							<div class="leaderboard-item">
+								<div style="display: flex; align-items: center">
+									<span [innerHTML]="iconObject['gold_icon']" *ngIf="topper.rank == 1"></span>
+									<span [innerHTML]="iconObject['silver_icon']" *ngIf="topper.rank == 2"></span>
+									<span [innerHTML]="iconObject['bronze_icon']" *ngIf="topper.rank == 3"></span>
+									<span *ngIf="topper.rank > 3" class="leaderboard-rank">{{ topper.rank }}</span>
+									<span [ngClass]="{ 'leaderboard-not-top-label': topper.rank > 3 }" class="leaderboard-label">{{
+										topper.fullName
+									}}</span>
+								</div>
+
+								<span [ngClass]="{ 'leaderboard-not-top-total': topper.rank > 3 }" class="leaderboard-total">{{
+									topper.total
+								}}</span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-1"></div>
+			</div>
+		</div>
+
+		<div
+			class="modal-body"
+			*ngIf="worksheetType == 'Poll'"
+			style="min-height: 88vh; display: flex; flex-direction: column; justify-content: center; align-items: center">
+			<div *ngFor="let question of allQuestion; let i = index">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="fullscreen-header">
+							<div style="text-align: left; margin-top: 1rem"></div>
+							<!-- <div class="w-100" -->
+							<div style="margin-top: 1rem; text-align: center">
+								<!-- <p style="width:90%" -->
+								<p
+									style="
+										font-size: 2rem;
+										color: black;
+										font-weight: 500;
+										
+										margin: 0 auto;
+										line-height: normal;
+									">
+									{{ question.question }}
+								</p>
+
+								<!-- Participation Rate with Refresh -->
+								<div
+									style="
+										width: 50%;
+										margin-right: auto;
+										margin-left: auto;
+										font-size: 1.5rem;
+										margin-top: 1.5rem;
+										margin-bottom: 1.5rem !important;
+										white-space: nowrap;
+										width: fit-content;
+
+										display: flex;
+										align-items: center;
+										justify-content: center;
+										gap: 1rem;
+									"
+									[ngStyle]="{
+									color: appService.whiteBrandingColor,
+								}">
+									<p>{{ 'Participation Rate' }}: {{ totalAttendeaParticipantPercantage + '%' }}</p>
+
+									<!-- Refresh Icon next to text -->
+									<img
+										src="assets/images/refresh_icon.svg"
+										(click)="refreshShowResult()"
+										[ngStyle]="
+											pieChartOptions ? { transform: 'translateX(22.5rem)' } : { transform: 'translateX(0rem)' }
+										"
+										style="cursor: pointer" />
+								</div>
+							</div>
+							<div style="text-align: right; margin-top: 1rem">
+								<img
+									*ngIf="showWBackWorksheetButton"
+									src="assets/images/back_arrow_icon.svg"
+									style="width: 50px; height: 50px; cursor: pointer"
+									(click)="backToWorksheet()"
+									title="{{ 'Pages.Session.SessionTimeline.backtoworksheet' | translate }}"
+									alt="" />
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="row" style="margin-top: 1rem">
+					<div class="col-md-12" style="text-align: center">
+						<div style="display: flex; justify-content: center; align-items: center">
+							<div *ngIf="chartType == 'Scale'">
+								<ngx-charts-bar-horizontal
+									[view]="horizontalView"
+									[scheme]="colorScheme"
+									[results]="question.options"
+									[gradient]="gradient"
+									[xAxis]="showXAxis"
+									[yAxis]="showYAxis"
+									[legend]="showLegend"
+									[legendPosition]="legendPosition"
+									[showXAxisLabel]="showXAxisLabel"
+									[showYAxisLabel]="showYAxisLabel"
+									[xAxisLabel]="xAxisLabel"
+									[yAxisLabel]="yAxisLabel"
+									(select)="onSelect($event)"
+									trimYAxisTicks="false"
+									maxYAxisTickLength="25"
+									[xAxisTickFormatting]="yAxisTickFormatting">
+								</ngx-charts-bar-horizontal>
+							</div>
+							<div *ngIf="chartType == 'Bar'">
+								<!-- <ngx-charts-bar-vertical
+									[view]="verticalBarview"
+									[scheme]="colorScheme"
+									[results]="question.options"
+									[gradient]="gradient"
+									[xAxis]="showXAxis"
+									[yAxis]="showYAxis"
+									[legend]="showLegend"
+									[legendPosition]="legendPosition"
+									[showXAxisLabel]="showXAxisLabel"
+									[showYAxisLabel]="showYAxisLabel"
+									[xAxisLabel]="xAxisLabel"
+									[yAxisLabel]="yAxisLabel"
+									(select)="onSelect($event)"
+									trimXAxisTicks="true"
+									maxXAxisTickLength="25"
+									[yAxisTickFormatting]="yAxisTickFormatting">
+								</ngx-charts-bar-vertical> -->
+
+								<!-- Bar Chart using Echarts -->
+								<!-- <div
+									echarts [options]="barChartOptions" class="chart" style="margin-bottom:-2.5rem;">
+								</div> -->
+							</div>
+							<div *ngIf="chartType == 'Pie'" style="margin-top: -2rem">
+								<!-- <ngx-charts-pie-chart
+									[view]="viewPiechart"
+									[scheme]="colorScheme"
+									[results]="question.options"
+									[gradient]="gradient"
+									[legend]="true"
+									[legendPosition]="legendPosition"
+									[labels]="false"
+									[doughnut]="isDoughnut"
+									(select)="onSelect($event)"
+									(activate)="onActivate($event)"
+									(deactivate)="onDeactivate($event)"
+									trimLabels="true"
+									maxLabelLength="1000">
+								</ngx-charts-pie-chart> -->
+
+								<!-- Pie charts using Echarts -->
+								<!-- <div *ngIf="chartType == 'Pie'" 
+									echarts [options]="pieChartOptions" class="chart" style="margin-bottom:-2.5rem;">
+								</div> -->
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Bar Chart using Echarts -->
+			<div
+				*ngIf="chartType == 'Bar'"
+				echarts
+				[options]="barChartOptions"
+				class="chart bar-chart"
+				style="margin-bottom: -2.5rem; margin-top: -4rem"></div>
+
+			<!-- Pie charts using Echarts -->
+			<div
+				*ngIf="chartType == 'Pie'"
+				echarts
+				[options]="pieChartOptions"
+				class="chart pie-chart"
+				style="margin-bottom: -2.5rem; margin-top: -2rem"></div>
+
+			<!-- <div
+				*ngFor="let question of allQuestion; let i = index"
+				style="text-align: left; margin-top: 0.7rem; margin-left: auto; margin-right: auto"
+				[ngStyle]="pieChartOptions ? { transform: 'translateX(22.5rem)' } : { transform: 'translateX(0rem)' }">
+				<img src="assets/images/refresh_icon.svg" (click)="refreshShowResult()" style="cursor: pointer" />
+			</div> -->
+		</div>
+
+		<div class="modal-body" *ngIf="worksheetType == 'Word Cloud'" style="min-height: 88vh">
+			<div class="row">
+				<div class="col-md-6">
+					<div style="text-align: left">
+						<img src="assets/images/refresh_icon.svg" (click)="refreshShowResult()" style="cursor: pointer" />
+					</div>
+				</div>
+
+				<div class="col-md-6">
+					<div style="text-align: right">
+						<img
+							*ngIf="showWBackWorksheetButton"
+							src="assets/images/back_arrow_icon.svg"
+							style="width: 50px; height: 50px; cursor: pointer"
+							(click)="backToWorksheet()"
+							title="{{ 'Pages.Session.SessionTimeline.backtoworksheet' | translate }}"
+							alt="" />
+					</div>
+				</div>
+			</div>
+
+			<div *ngIf="wordCloudFlag">
+				<app-word-cloud [id]="sessionId" [index]="refreshShowResultIndex"></app-word-cloud>
+			</div>
+		</div>
+
+		<div class="modal-body" style="min-height: 88vh; padding: 2.2rem" *ngIf="worksheetType == 'Survey'">
+			<!-- <div style="text-align: right">
+				<img src="assets/images/refresh_icon.svg" (click)="refreshShowResult()" style="cursor: pointer" />
+			</div> -->
+			<!-- <div class="row">
+				<div class="col-md-2"></div>
+				<div class="col-md-2">
+					<h3>
+						{{ totalSurveyRespose }}
+						{{ 'Pages.Session.SessionTimeline.Modal.responses' | translate }}
+					</h3>
+				</div>
+			</div> -->
+			<div class="row">
+				<div class="col-md-12">
+					<div class="fullscreen-header">
+						<div style="text-align: left; margin-top: 1rem">
+							<!-- <img
+								src="assets/images/refresh_icon.svg"
+								(click)="refreshShowResult()"
+								style="cursor: pointer"
+								title="{{ 'Pages.Session.SessionTimeline.refresh' | translate }}" /> -->
+						</div>
+						<div class="w-100" style="margin-top: 1rem; text-align: center">
+							<h3>
+								{{ totalSurveyRespose }}
+								{{ 'Pages.Session.SessionTimeline.Modal.responses' | translate }}
+							</h3>
+						</div>
+						<!-- margin-top: -5rem -->
+						<div style="text-align: right; margin-top: 1rem">
+							<!-- <button class="backto_Worksheet" (click)="backToWorksheet()">
+								{{ 'Pages.Session.SessionTimeline.backtoworksheet' | translate }}
+							</button> -->
+							<!-- <a
+								*ngIf="showWBackWorksheetButton"
+								class="btn btn-o btn-primary border_radius functionalBtn"
+								(click)="backToWorksheet()"
+								style="background-color: lightgray !important; color: black; border: 1px solid lightgray !important">
+								{{ 'Pages.Session.SessionTimeline.backtoworksheet' | translate }}</a
+							> -->
+							<img
+								*ngIf="showWBackWorksheetButton"
+								src="assets/images/back_arrow_icon.svg"
+								style="width: 50px; height: 50px; cursor: pointer"
+								(click)="backToWorksheet()"
+								title="{{ 'Pages.Session.SessionTimeline.backtoworksheet' | translate }}"
+								alt="" />
+						</div>
+					</div>
+				</div>
+			</div>
+			<div *ngFor="let item of surveyData">
+				<div *ngIf="item.type == 'Short answer'" style="margin-bottom: 5rem">
+					<div style="text-align: center">
+						<h3>{{ item.question }}</h3>
+					</div>
+					<div class="row">
+						<div class="col-md-2"></div>
+						<div class="col-md-4">
+							{{ item.shortAnswer.length }}
+							{{ 'Pages.Session.SessionTimeline.Modal.responses' | translate }}
+						</div>
+					</div>
+					<div *ngFor="let note of item.shortAnswer; let i = index">
+						<div class="row" *ngIf="i < showMoreCount || item.showMore">
+							<div class="col-md-2"></div>
+							<div class="col-md-8">
+								<h5>{{ note }}</h5>
+							</div>
+						</div>
+					</div>
+					<div *ngIf="item.shortAnswer.length > showMoreCount" style="text-align: center">
+						<p *ngIf="!item.showMore" (click)="item.showMore = !item.showMore">
+							{{ 'Pages.Session.SessionTimeline.Modal.more' | translate }}
+						</p>
+						<p *ngIf="item.showMore" (click)="item.showMore = !item.showMore">
+							{{ 'Pages.Session.SessionTimeline.Modal.less' | translate }}
+						</p>
+					</div>
+				</div>
+				<div *ngIf="item.type == 'Long answer'" style="margin-bottom: 5rem">
+					<div style="text-align: center">
+						<h3>{{ item.question }}</h3>
+					</div>
+					<div class="row">
+						<div class="col-md-2"></div>
+						<div class="col-md-4">
+							{{ item.longAnswer.length }}
+							{{ 'Pages.Session.SessionTimeline.Modal.responses' | translate }}
+						</div>
+					</div>
+					<div *ngFor="let note of item.longAnswer; let i = index">
+						<div class="row" *ngIf="i < showMoreCount || item.showMore">
+							<div class="col-md-2"></div>
+							<div class="col-md-8">
+								<h5>{{ note }}</h5>
+							</div>
+						</div>
+					</div>
+					<div *ngIf="item.longAnswer.length > showMoreCount" style="text-align: center">
+						<p *ngIf="!item.showMore" (click)="item.showMore = !item.showMore">
+							{{ 'Pages.Session.SessionTimeline.Modal.more' | translate }}
+						</p>
+						<p *ngIf="item.showMore" (click)="item.showMore = !item.showMore">
+							{{ 'Pages.Session.SessionTimeline.Modal.less' | translate }}
+						</p>
+					</div>
+				</div>
+				<div *ngIf="item.type == 'MCQ'" style="margin-bottom: 5rem">
+					<!-- For MCQ -->
+					<div style="text-align: center">
+						<h3>{{ item.question }}</h3>
+					</div>
+
+					<div class="row">
+						<div class="col-md-2"></div>
+						<div class="col-md-4">
+							{{ item.responses }}
+							{{ 'Pages.Session.SessionTimeline.Modal.responses' | translate }}
+						</div>
+					</div>
+
+					<div style="display: flex; justify-content: center; margin-top: -2rem">
+						<ngx-charts-pie-chart
+							[view]="viewPiechart"
+							[scheme]="colorScheme"
+							[results]="item.option"
+							[gradient]="gradient"
+							[legend]="showLegend"
+							[legendPosition]="legendPosition"
+							[labels]="showLabels"
+							[doughnut]="isDoughnut"
+							(select)="onSelect($event)"
+							(activate)="onActivate($event)"
+							(deactivate)="onDeactivate($event)"
+							trimLabels="true"
+							maxLabelLength="1000">
+						</ngx-charts-pie-chart>
+					</div>
+				</div>
+				<div *ngIf="item.type == 'Rating scale'" style="margin-bottom: 5rem">
+					<!-- For Rating Scale -->
+					<div style="text-align: center">
+						<h3>{{ item.question }}</h3>
+					</div>
+
+					<div class="row">
+						<div class="col-md-2"></div>
+						<div class="col-md-4">
+							{{ item.responses }}
+							{{ 'Pages.Session.SessionTimeline.Modal.responses' | translate }}
+						</div>
+					</div>
+
+					<div style="display: flex; justify-content: center">
+						<ngx-charts-bar-vertical
+							[view]="verticalBarview"
+							[scheme]="colorScheme"
+							[results]="item.option"
+							[gradient]="gradient"
+							[xAxis]="showXAxis"
+							[yAxis]="showYAxis"
+							[legend]="showLegend"
+							[showXAxisLabel]="showXAxisLabel"
+							[showYAxisLabel]="showYAxisLabel"
+							[xAxisLabel]="xAxisLabel"
+							[yAxisLabel]="yAxisLabel"
+							(select)="onSelect($event)"
+							trimXAxisTicks="true"
+							maxXAxisTickLength="25">
+						</ngx-charts-bar-vertical>
+					</div>
+				</div>
+
+				<div *ngIf="item.type == 'File upload'" style="margin-bottom: 5rem">
+					<!-- For Rating Scale -->
+					<div style="text-align: center">
+						<h3>{{ item.question }}</h3>
+					</div>
+					<div class="row">
+						<div class="col-md-2"></div>
+						<div class="col-md-4">
+							{{ item.responses }}
+							{{ 'Pages.Session.SessionTimeline.Modal.responses' | translate }}
+						</div>
+					</div>
+					<div style="text-align: center">
+						<a
+							class="btn border_radius functionalBtn"
+							(click)="downloadAllFile(item)"
+							[ngStyle]="{
+								'background-color': appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+								color: 'white'
+							}">
+							{{ 'Pages.Session.SessionTimeline.Modal.downloadAllFiles' | translate }}
+						</a>
+					</div>
+				</div>
+			</div>
+			<div style="text-align: center; margin-top: 1rem">
+				<img src="assets/images/refresh_icon.svg" (click)="refreshShowResult()" style="cursor: pointer" />
+			</div>
+		</div>
+
+		<div class="modal-body" style="min-height: 88vh; padding: 2.2rem" *ngIf="worksheetType == 'Offline Task'">
+			<!-- <div style="text-align: right">
+				<img src="assets/images/refresh_icon.svg" (click)="refreshShowResult()" style="cursor: pointer" />
+			</div> -->
+			<!-- <div class="row">
+				<div class="col-md-2"></div>
+				<div class="col-md-2">
+					<h3>
+						{{ totalSurveyRespose }}
+						{{ 'Pages.Session.SessionTimeline.Modal.responses' | translate }}
+					</h3>
+				</div>
+			</div> -->
+
+			<div class="row">
+				<div class="col-md-12">
+					<div class="fullscreen-header">
+						<div style="text-align: left; margin-top: 1rem"></div>
+						<div class="w-100" style="margin-top: 1rem; text-align: center">
+							<h3>
+								{{ totalSurveyRespose }}
+								{{ 'Pages.Session.SessionTimeline.Modal.responses' | translate }}
+							</h3>
+						</div>
+						<!-- margin-top: -5rem -->
+						<div style="text-align: right; margin-top: 1rem">
+							<!-- <a
+								*ngIf="showWBackWorksheetButton"
+								class="btn btn-o btn-primary border_radius functionalBtn"
+								(click)="backToWorksheet()"
+								style="background-color: lightgray !important; color: black; border: 1px solid lightgray !important">
+								{{ 'Pages.Session.SessionTimeline.backtoworksheet' | translate }}</a
+							> -->
+							<img
+								*ngIf="showWBackWorksheetButton"
+								src="assets/images/back_arrow_icon.svg"
+								style="width: 50px; height: 50px; cursor: pointer"
+								(click)="backToWorksheet()"
+								title="{{ 'Pages.Session.SessionTimeline.backtoworksheet' | translate }}"
+								alt="" />
+						</div>
+					</div>
+				</div>
+			</div>
+			<div *ngFor="let item of offlineTaskData">
+				<div style="margin-bottom: 5rem">
+					<div style="text-align: center">
+						<h3>{{ item.question }}</h3>
+					</div>
+					<div class="row">
+						<div class="col-md-2"></div>
+						<div class="col-md-4">
+							{{ item.responses }}
+							{{ 'Pages.Session.SessionTimeline.Modal.responses' | translate }}
+						</div>
+					</div>
+					<div *ngFor="let note of item.textNote; let i = index">
+						<div class="row" *ngIf="i < showMoreCount || item.showMore">
+							<div class="col-md-2"></div>
+							<div class="col-md-8">
+								<h5>{{ note }}</h5>
+							</div>
+						</div>
+					</div>
+					<div *ngIf="item && item.textNote && item.textNote.length > showMoreCount" style="text-align: center">
+						<p *ngIf="!item.showMore" (click)="item.showMore = !item.showMore">
+							{{ 'Pages.Session.SessionTimeline.Modal.more' | translate }}
+						</p>
+						<p *ngIf="item.showMore" (click)="item.showMore = !item.showMore">
+							{{ 'Pages.Session.SessionTimeline.Modal.less' | translate }}
+						</p>
+					</div>
+					<div style="text-align: center" *ngIf="item && item.uploadedFiles && item.uploadedFiles.length > 0">
+						<a
+							class="btn border_radius functionalBtn"
+							(click)="downloadAllFile(item)"
+							[ngStyle]="{
+								'background-color': appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+								color: 'white'
+							}">
+							{{ 'Pages.Session.SessionTimeline.Modal.downloadAllFiles' | translate }}
+						</a>
+					</div>
+				</div>
+			</div>
+			<div style="text-align: center; margin-top: 1rem">
+				<img src="assets/images/refresh_icon.svg" (click)="refreshShowResult()" style="cursor: pointer" />
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- see result full screen view -->
+<div class="modal-body" style="height: 88vh" #seeResultContainer style="background: #fff">
+	<div *ngIf="isFullscreen">
+		<!-- Custom Spinner Only for Fullscreen -->
+		<div *ngIf="showFullscreenLoader" class="fullscreen-spinner-overlay">
+			<div [innerHTML]="iconObject['search_loader']" class="spinner-img"></div>
+		</div>
+
+		<!-- Custom Fullscreen Toast -->
+		<div *ngIf="fullscreenToast.show" class="fullscreen-toast" [ngClass]="fullscreenToast.type">
+			<div class="toast-icon-container">
+				<span class="toast-icon">{{ getToastIcon(fullscreenToast.type) }}</span>
+			</div>
+			<div class="toast-content">
+				<div class="toast-title">{{ getToastTitle(fullscreenToast.type) }}</div>
+				<div class="toast-message">{{ fullscreenToast.message }}</div>
+			</div>
+		</div>
+
+		<div class="row" style="margin-bottom: 2rem; padding-top: 0.5%; display: flex; flex-direction: column">
+			<div class="col-md-12" style="text-align: center; margin-top: 1rem">
+				<div>
+					<p
+						style="font-size: 0.9rem; margin: 0; width: 95%; margin: 0 auto"
+						[ngStyle]="{ color: appService.whiteBrandingColor }">
+						{{ 'Pages.Session.SessionTimeline.Modal.worksheet' | translate }}
+						{{ workseetIndex }}/{{ allWorksheets.length }}
+					</p>
+					<p style="font-size: 1.3rem; color: black; margin-bottom: 1rem !important; width: 95%; margin: 0 auto">
+						{{ description }}
+					</p>
+				</div>
+
+				<div style="display: flex; justify-content: space-between; align-items: center; margin: 0 1% 0% 1%">
+					<div>
+						<a
+							class="btn export"
+							[ngStyle]="{ color: appService.whiteBrandingColor }"
+							(click)="exportLearnerQuizSubmissionToCsv()"
+							style="text-decoration: underline !important"
+							>{{ 'Pages.Session.SessionTimeline.export' | translate }}
+						</a>
+					</div>
+					<div style="display: flex; justify-content: center; align-items: center">
+						<a
+							(click)="unlockreAttemptsOfLearner()"
+							*ngIf="isQuizCompletion && showUnloackAllReattempts"
+							style="text-decoration: underline !important; margin-right: 0.6rem"
+							>{{ 'Pages.Session.SessionTimeline.unlockalllearnerreattempts' | translate }}
+						</a>
+						<p style="margin: 0">
+							{{ 'Pages.Session.SessionTimeline.learnercount' | translate }}:
+							{{ seeResultData.length }}
+						</p>
+						<img src="assets/images/refresh_icon.svg" (click)="refreshSeeResult()" style="cursor: pointer" />
+					</div>
+				</div>
+
+				<div class="col-md-12" style="margin-top: 1rem; margin-bottom: 0.5rem">
+					<div>
+						<input
+							id="search"
+							class="form-control"
+							(input)="getQuizLearnerByFilter($event.target.value)"
+							type="text"
+							[placeholder]="
+								isQuizCompletion
+									? ('Pages.Session.SessionTimeline.searchLearner.placeholder2' | translate)
+									: ('Pages.Session.SessionTimeline.searchLearner.placeholder' | translate)
+							"
+							autocomplete="off" />
+					</div>
+				</div>
+			</div>
+			<div class="panel panel-white" style="margin-bottom: 2rem; margin-top: 0.5rem; height: 60vh; overflow-y: auto">
+				<div class="sub table-responsive">
+					<table class="table table-striped table-hover">
+						<thead>
+							<tr style="height: 80px">
+								<th class="left tb-line-height tb-first-heading" style="word-wrap: break-word; width: 10vw">
+									{{ 'Pages.Session.SessionTimeline.Modal.learnerId' | translate }}
+								</th>
+								<th class="left tb-line-height tb-head-bg" style="word-wrap: break-word; width: 10vw">
+									{{ 'Pages.Session.SessionTimeline.Modal.participant' | translate }}
+								</th>
+								<th class="left tb-line-height tb-head-bg" style="word-wrap: break-word; width: 5vw">
+									{{ 'Pages.Session.SessionTimeline.Modal.QuizResponses' | translate }}
+								</th>
+								<th class="center tb-line-height tb-head-bg" style="width: 8vw">
+									{{ 'Pages.Session.SessionTimeline.Modal.totalmarks' | translate }}
+								</th>
+
+								<th *ngIf="isQuizCompletion" class="center tb-line-height tb-head-bg" style="width: 8vw">
+									{{ 'Pages.Session.SessionTimeline.Modal.status' | translate }}
+								</th>
+
+								<!-- <th *ngIf="isQuizCompletion" class="center tb-line-height tb-head-bg" style="width: 8vw">
+									{{ 'Pages.Session.SessionTimeline.Modal.attempt' | translate }}
+								</th> -->
+
+								<th *ngIf="isQuizCompletion" class="center tb-line-height tb-head-bg" style="width: 8vw">
+									{{ 'Pages.Session.SessionTimeline.Modal.action' | translate }}
+								</th>
+
+								<th
+									class="center tb-line-height tb-head-bg"
+									style="width: 12vw; text-transform: capitalize"
+									*ngFor="let qus of seeResultQuestionCount; let j = index"
+									[ngClass]="{
+										'tb-last-heading': seeResultQuestionCount.length == j + 1,
+										'tb-head-bg': seeResultQuestionCount.length != j + 1
+									}">
+									Q {{ j + 1 }} : {{ qus.question }} <br />
+									<span style="text-align: center">
+										({{ 'Pages.Session.SessionTimeline.Modal.correctresponses' | translate }} :
+										{{ qus.correctResponse ? qus.correctResponse : 0 }}%)</span
+									>
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr *ngFor="let participant of seeResultData; let i = index">
+								<td class="left" style="padding-left: 10x; padding-top: 15px" class="two-row-td-tag">
+									<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+										{{ participant && participant.account_id ? participant.account_id : '' }}
+									</p>
+								</td>
+								<td class="left" style="padding-left: 10x; padding-top: 15px" class="two-row-td-tag">
+									<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+										{{ participant && participant.fullName ? participant.fullName : '' }}
+									</p>
+								</td>
+								<td class="left" style="padding-left: 10x; padding-top: 15px" class="two-row-td-tag">
+									<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+										{{ participant && participant.response ? participant.response : '' }}
+									</p>
+								</td>
+								<td class="center" style="padding-top: 7px">{{ participant.total }}</td>
+
+								<td *ngIf="isQuizCompletion" class="left" style="padding-left: 10x; padding-top: 15px" class="center">
+									<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+										{{ participant && participant.status ? participant.status : '' }}
+									</p>
+								</td>
+
+								<!-- <td *ngIf="isQuizCompletion" class="left" style="padding-left: 10x; padding-top: 15px" class="center">
+									<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+										{{ participant && participant.attempt ? participant.attempt : '' }}
+									</p>
+								</td> -->
+
+								<td *ngIf="isQuizCompletion" class="left" style="padding-left: 10x; padding-top: 15px" class="center">
+									<p
+										class="two-row-p-tag"
+										style="-webkit-box-orient: vertical"
+										*ngIf="(participant && participant.action != 'Unlock Reattempts') || participant.status == 'Pass'">
+										{{ '-' }}
+									</p>
+									<p
+										class="two-row-p-tag"
+										style="-webkit-box-orient: vertical; text-decoration: underline"
+										*ngIf="participant && participant.action == 'Unlock Reattempts' && participant.status == 'Fail'"
+										(click)="unlockreAttemptsOfLearner(participant)">
+										<a>{{ 'Pages.Session.SessionTimeline.Modal.unlockreattempts' | translate }} </a>
+									</p>
+								</td>
+
+								<td *ngFor="let answer of participant.questions; let j = index" class="center" style="padding-top: 7px">
+									<p
+										class="option-padding"
+										[ngClass]="{
+											'correct-answer': answer.correctAns && !answer.wrongAns,
+											'wrong-answer': !answer.correctAns && answer.wrongAns,
+											'half-correct-answer': answer.correctAns && answer.wrongAns,
+											'no-answer': !answer.correctAns && !answer.wrongAns
+										}">
+										{{ answer.userAnswer }}
+									</p>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<!-- <div class="pagination-wrapper" style="width: 100%; margin-top: 1rem">
+				<div style="float: right">
+					<span>{{ 'Utils.perpage' | translate }}: &nbsp;</span>
+					<select class="default-dropdown" (change)="changeQuizResult($event.target.value)">
+						<option *ngFor="let count of pageQuizResultCount; let i = index" [selected]="i == 0">
+							{{ count }}
+						</option>
+					</select>
+				</div>
+				<pagination-controls (pageChange)="onQuizPageChangeEvent($event)" style="float: right"> </pagination-controls>
+			</div> -->
+		</div>
+	</div>
+</div>
+
+<!-- Learner Response ("Submitted" and "Not Submitted") full screen view -->
+<div class="modal-body" style="padding: 1% 4% 4% 4%; min-height: 88vh" #seeSubmissionContainer style="background: #fff">
+	<div *ngIf="isFullscreen">
+		<div>
+			<div style="margin-top: 2rem">
+				<div class="row">
+					<div class="col-md-12" style="text-align: center">
+						<p style="font-size: 0.9rem; margin: 0" [ngStyle]="{ color: appService.whiteBrandingColor }">
+							{{ 'Pages.Session.SessionTimeline.Modal.worksheet' | translate }}
+							{{ refreshSeeResultIndex + 1 }}/{{ allWorksheets.length }}
+						</p>
+					</div>
+				</div>
+				<!-- <div class="row">
+					<div class="col-md-12" style="text-align: center">
+						<p style="margin-top: 0.5rem">Learner Count : {{ afterFinalLearnerResponsesData.length }}</p>
+					</div>
+				</div> -->
+
+				<div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem">
+					<a
+						class="btn export"
+						[ngStyle]="{ color: appService.whiteBrandingColor }"
+						(click)="exportLearnerSubmissionToCsv()"
+						style="text-decoration: underline !important"
+						>{{ 'Pages.Session.SessionTimeline.export' | translate }}
+					</a>
+					<div style="display: flex; justify-content: center; align-items: center">
+						<p style="margin: 0">
+							{{ 'Pages.Session.SessionTimeline.learnercount' | translate }}:
+							{{ afterFinalLearnerResponsesData.length }}
+						</p>
+						<img
+							src="assets/images/refresh_icon.svg"
+							(click)="showLearnerResponses(null, page, limit, seeSubmissionContainer, true)"
+							style="cursor: pointer" />
+					</div>
+				</div>
+				<div class="row" style="margin-top: 1rem; margin-bottom: 1rem">
+					<div class="col-md-12">
+						<div>
+							<input
+								id="search"
+								class="form-control"
+								(input)="getLearnerByFilter($event.target.value)"
+								type="text"
+								placeholder="{{ 'Pages.Session.SessionTimeline.searchLearner.placeholder' | translate }}"
+								autocomplete="off"
+								[(ngModel)]="inputSearchTxt"
+								[ngModelOptions]="{ standalone: true }" />
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="panel panel-white" style="margin-bottom: 2rem; margin-top: 2rem; margin: 0">
+				<div class="sub table-responsive" style="height: 55vh">
+					<table class="table table-striped table-hover">
+						<thead>
+							<tr style="height: 80px">
+								<th
+									class="left tb-line-height tb-first-heading"
+									style="word-wrap: break-word; width: 10vw; padding-left: 2rem">
+									{{ 'Pages.Session.SessionTimeline.Modal.learnerId' | translate }}
+								</th>
+								<th
+									class="left tb-line-height tb-head-bg"
+									style="word-wrap: break-word; width: 10vw; padding-left: 2rem">
+									{{ 'Pages.Session.SessionTimeline.Modal.participant' | translate }}
+								</th>
+								<th
+									class="left tb-line-height tb-last-heading"
+									style="word-wrap: break-word; width: 10vw; padding-left: 2rem">
+									{{ worksheetType }} {{ 'Pages.Session.SessionTimeline.Modal.learnerResponse' | translate }}
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr
+								*ngFor="
+									let participant of afterFinalLearnerResponsesData
+										| paginate
+											: {
+													itemsPerPage: limit == 'all' ? totalCount : limit,
+													currentPage: page,
+													totalItems: totalCount
+											  };
+									let i = index
+								">
+								<td class="left" style="padding-left: 2rem; padding-top: 15px" class="two-row-td-tag">
+									<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+										{{ participant && participant.account_id ? participant.account_id : '' }}
+									</p>
+								</td>
+								<td class="left" style="padding-left: 2rem; padding-top: 15px" class="two-row-td-tag">
+									<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+										{{ participant && participant.fullName ? participant.fullName : '' }}
+									</p>
+								</td>
+								<td class="left" style="padding-left: 2rem; padding-top: 15px" class="two-row-td-tag">
+									<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+										{{ participant && participant.submit_status ? participant.submit_status : '' }}
+									</p>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="pagination-wrapper" style="width: 100%; margin-top: 1rem">
+				<div style="float: right">
+					<span>{{ 'Utils.perpage' | translate }}: &nbsp;</span>
+					<select class="default-dropdown" (change)="changeResult($event.target.value, seeSubmissionContainer)">
+						<option *ngFor="let count of pageResultCount; let i = index" [selected]="i == 0">
+							{{ count }}
+						</option>
+					</select>
+				</div>
+				<pagination-controls (pageChange)="onPageChangeEvent($event, seeSubmissionContainer)" style="float: right">
+				</pagination-controls>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div
+	class="modal fade credit-note"
+	id="viewuploadsmodel"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="myModalLabel"
+	aria-hidden="true"
+	data-backdrop="static"
+	data-keyboard="false">
+	<div class="modal-dialog" style="width: 96vw">
+		<div class="modal-content">
+			<div
+				class="modal-header"
+				[ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					<span *ngIf="worksheetType == 'Offline Task'">{{
+						'Pages.Session.SessionTimeline.OfflineTask.viewuploads' | translate
+					}}</span>
+					<span *ngIf="worksheetType != 'Offline Task'">{{
+						'Pages.Session.SessionTimeline.OfflineTask.Downloads' | translate
+					}}</span>
+				</h4>
+			</div>
+
+			<div class="modal-body" style="height: 84vh; overflow: hidden; padding: 0px 0px 40px 0px">
+				<div class="row p-15" *ngIf="worksheetType == 'Offline Task'">
+					<div class="col-md-9" style="margin-bottom: 1rem">
+						<p style="font-size: 1rem; color: black; margin-bottom: 0.3px">
+							{{ 'Pages.Session.SessionTimeline.OfflineTask.taskbrief' | translate }}
+						</p>
+						<p class="text-brief-para" data-toggle="tooltip" data-placement="top" [title]="briefText">
+							{{ briefText }}
+						</p>
+					</div>
+					<div class="col-md-3" style="text-align: right">
+						<button
+							class="btn border_radius"
+							[ngStyle]="{
+								'background-color': appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+								color: 'white'
+							}"
+							style="margin-right: 0.7rem; padding-left: 0.8rem; padding-right: 0.8rem"
+							(click)="submitGraded()"
+							*ngIf="isediGraded">
+							{{ 'Pages.Session.SessionTimeline.OfflineTask.submitgrades' | translate }}
+						</button>
+						<button
+							class="btn border_radius"
+							[ngStyle]="{
+								'background-color': appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+								color: 'white'
+							}"
+							style="margin-right: 0.7rem; padding-left: 1.35rem; padding-right: 1.35rem"
+							(click)="editGraded()"
+							*ngIf="!isediGraded">
+							{{ 'Pages.Session.SessionTimeline.OfflineTask.editgrades' | translate }}
+						</button>
+						<span
+							[innerHTML]="iconObject['refresh_icon']"
+							(click)="ShowPopupForViewuplaods({ otherDetails: selectedOfflineTaskDetails }, false)"></span>
+					</div>
+				</div>
+				<div class="row" style="padding: 0px 15px" *ngIf="worksheetType == 'Offline Task'">
+					<div class="col-md-6">
+						<div style="width: 50%">
+							<input
+								class="form-control"
+								(input)="getAssetsFilter($event.target.value)"
+								type="text"
+								[(ngModel)]="offlineTaskSearchText"
+								placeholder="
+								{{
+									type === 'drip'
+										? ('Pages.Session.SessionTimeline.OfflineTask.searchContacts' | translate)
+										: ('Pages.Session.SessionTimeline.OfflineTask.search' | translate)
+								}}"
+								autocomplete="off" />
+						</div>
+					</div>
+					<div class="col-md-6" *ngIf="worksheetType == 'Offline Task'">
+						<div style="text-align: right; padding-right: 15px">
+							<p style="color: #333; margin-bottom: 0.3px">{{ gradedCount }}/{{ totalGradedableCount }}</p>
+							<p style="color: #333">{{ 'Pages.Session.SessionTimeline.OfflineTask.responsesgraded' | translate }}</p>
+						</div>
+					</div>
+				</div>
+				<div style="height: 100%; overflow-y: scroll; overflow-x: hidden">
+					<div class="row p-15">
+						<div class="col-md-4" *ngFor="let que of questionList; let i = index" style="margin-bottom: 1rem">
+							<div
+								class="asset-title"
+								(click)="selectedQuestion(que, i)"
+								style="cursor: pointer"
+								[ngClass]="selectedQuestionIndex == i ? 'border-bottom' : 'no-border'">
+								<p
+									class="asset-popup-title"
+									[ngClass]="selectedQuestionIndex == i ? 'active' : 'not-active'"
+									data-toggle="tooltip"
+									data-placement="top"
+									*ngIf="que.title"
+									[title]="que.title">
+									{{ que.title }}
+								</p>
+							</div>
+						</div>
+					</div>
+					<hr style="margin: 0rem 1rem 1rem 1rem; height: auto; border: 0.1px solid rgba(211, 211, 211, 0.231372549)" />
+					<div class="row" style="padding: 0px 15px 7rem 15px; margin-bottom: 3rem">
+						<div
+							class="col-md-2"
+							*ngFor="
+								let item of questionUploadedAsset
+									| paginate
+										: { itemsPerPage: limit == 'all' ? totalCount : limit, currentPage: page, totalItems: totalCount };
+								index as i
+							">
+							<div class="asset-card">
+								<!-- For Image -->
+								<div
+									*ngIf="item.type == 'Image' && item?.isFileSubmission"
+									style="cursor: pointer"
+									[innerHTML]="iconObject['image_thumbnail']"
+									(click)="downloadLearnerUploadedFile(item, i)"></div>
+
+								<!--For PDF  -->
+								<div
+									*ngIf="item.type == 'PDF' && item?.isFileSubmission"
+									style="cursor: pointer"
+									[innerHTML]="iconObject['pdf_thumbnail']"
+									(click)="downloadLearnerUploadedFile(item, i)"></div>
+
+								<!--For S3 Uploaded Video  -->
+								<div
+									*ngIf="item.type == 'Video' && item.UploadedOnS3 && item?.isFileSubmission"
+									style="cursor: pointer"
+									[innerHTML]="iconObject['video_thumbnail']"
+									(click)="downloadLearnerUploadedFile(item, i)"></div>
+
+								<!-- <iframe
+									[src]="transform(item.vimeoPath)"
+									frameborder="0"
+									*ngIf="
+										item && item.type == 'Video' && item.isTranscoding && !item.UploadedOnS3 && item?.isFileSubmission
+									"
+									style="width: 100%; height: 17vh"
+									allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+									allowfullscreen></iframe> -->
+								<div
+									style="width: 100%; height: 17vh"
+									*ngIf="
+										item && item.type == 'Video' && item.isTranscoding && !item.UploadedOnS3 && item?.isFileSubmission
+									">
+									<div *ngIf="appService?.configurable_feature?.vimeo">
+										<iframe
+											[src]="transform(item.vimeoPath)"
+											frameborder="0"
+											style="width: 100%; height: 17vh"
+											allowfullscreen></iframe>
+									</div>
+
+									<div *ngIf="appService?.configurable_feature?.mediaCMS">
+										<app-video-player [VideoPath]="item.vimeoPath"></app-video-player>
+									</div>
+								</div>
+								<div
+									*ngIf="
+										item && item.type == 'Video' && !item.isTranscoding && !item.UploadedOnS3 && item?.isFileSubmission
+									"
+									style="text-align: center">
+									<img src="assets/images/transcoding.gif" style="height: 17vh; object-fit: contain" />
+								</div>
+
+								<!-- Offline Note -->
+								<div *ngIf="item?.offlineTaskNote && item?.isTextResponse" style="width: 100%">
+									<textarea style="width: 100%; height: 185px" value="{{ item.offlineTaskNote }}" disabled></textarea>
+									<!-- {{ item.offlineTaskNote }} -->
+								</div>
+
+								<div class="image-wrapper">
+									<div class="learner-details">
+										<p>{{ item.account_id }}</p>
+										<p>{{ item.fullName }}</p>
+									</div>
+									<div class="submit-div">
+										<input
+											type="text"
+											class="form-control"
+											placeholder="{{ 'Pages.Session.SessionTimeline.OfflineTask.entergrades' | translate }}"
+											[disabled]="!isediGraded"
+											[(ngModel)]="item.grade"
+											style="font-size: 0.813rem !important" />
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="pagination-wrapper" style="width: 100%; position: absolute; bottom: 0">
+							<!-- <div class="pagination-wrapper" style="width: 100%">
+								<pagination-controls (pageChange)="onPageChangeEvent($event)" style="float: right">
+								</pagination-controls>
+							</div> -->
+							<div style="float: right" *ngIf="showDownloadButton && questionUploadedAsset.length > 0">
+								<button
+									class="btn border_radius"
+									[ngStyle]="{
+										'background-color': appService.whiteBrandingColor,
+										border: '1px solid' + appService.whiteBrandingColor,
+										color: 'white'
+									}"
+									style="margin-right: 0.5rem"
+									(click)="downloadLearnerUploadedFileInZipFormat()">
+									{{ 'Pages.Session.SessionTimeline.OfflineTask.downloadall' | translate }}
+								</button>
+							</div>
+						</div>
+					</div>
+					<!-- <div style="padding: 0px 15px 7rem 15px; margin-bottom: 3rem" *ngIf="!questionUploadOnVimeo">
+						<button
+							class="btn border_radius"
+							[ngStyle]="{
+								'background-color': appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+								color: 'white'
+							}"
+							style="margin-right: 0.7rem; padding-left: 1.35rem; padding-right: 1.35rem"
+							(click)="downLoadAwsS3Data()">
+							{{ 'Pages.Session.SessionTimeline.OfflineTask.downloadAllFiles' | translate }}
+						</button>
+					</div> -->
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- List of Passed Learner -->
+<div
+	class="modal fade credit-note"
+	id="learnerPassed"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="myModalLabel"
+	aria-hidden="true"
+	data-backdrop="static"
+	data-keyboard="false">
+	<!-- <div class="modal-dialog" style="width: 50vw">
+		<div class="modal-content">
+			<div
+				class="modal-header"
+				[ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					<span>{{ 'Pages.Session.SessionTimeline.OfflineTask.assessments' | translate }}</span>
+				</h4>
+			</div>
+
+			<div class="modal-body" style="height: 84vh; overflow: hidden; padding: 0px 0px 40px 0px">
+				<div class="row" style="margin-top: 2rem">
+					<div class="col-md-12" *ngFor="let userData of passedLearnerList; let i = index">
+						<div style="text-align: center">
+							<p>
+								{{ userData.first + ' ' + userData.last }}
+							</p>
+						</div>
+					</div>
+				</div>
+				<div class="row" *ngIf="passedLearnerList.length > 0">
+					<div class="col-md-12" style="text-align: center">
+						<button
+							class="btn border_radius"
+							[ngStyle]="{
+								'background-color': appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+								color: 'white'
+							}"
+							style="margin-right: 0.5rem"
+							(click)="updatePassingUserData(sessionData.id)">
+							{{ 'Pages.Session.SessionTimeline.OfflineTask.confirm' | translate }}
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div> -->
+	<div class="modal-dialog" style="width: 75vw; margin-left: auto; margin-right: aut0">
+		<div class="modal-content">
+			<div
+				class="modal-header"
+				[ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="cancelLearnerPassPopup()">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					<span>{{ 'Pages.Session.SessionTimeline.OfflineTask.assessments' | translate }}</span>
+				</h4>
+			</div>
+			<div class="modal-body" style="padding: 1% 4% 1% 4%; min-height: 84vh">
+				<div>
+					<p style="font-size: 1.1rem; color: black; padding-top: 1rem">
+						<span>{{ 'Pages.Session.SessionTimeline.OfflineTask.assessmentitle' | translate }}</span>
+					</p>
+				</div>
+				<div>
+					<div class="row" style="margin-bottom: 1rem">
+						<div class="col-md-12">
+							<div>
+								<input
+									id="search"
+									class="form-control"
+									(input)="getPassLearnerByFilter($event.target.value)"
+									type="text"
+									placeholder="{{ 'Pages.Session.SessionTimeline.OfflineTask.assesmentplaceholder' | translate }}"
+									autocomplete="off"
+									[(ngModel)]="inputSearchPassTxt"
+									[ngModelOptions]="{ standalone: true }" />
+							</div>
+						</div>
+					</div>
+					<div class="panel panel-white" style="margin-bottom: 2rem; margin-top: 2rem; margin: 0">
+						<div class="sub table-responsive" style="height: 50vh">
+							<table class="table table-striped table-hover">
+								<thead>
+									<tr style="height: 80px">
+										<th
+											class="left tb-line-height tb-first-heading"
+											style="word-wrap: break-word; width: 10vw; padding-left: 2rem">
+											{{ 'Pages.Session.SessionTimeline.OfflineTask.learnerid' | translate }}
+										</th>
+										<th
+											class="left tb-line-height tb-last-heading"
+											style="word-wrap: break-word; width: 10vw; padding-left: 2rem">
+											{{ 'Pages.Session.SessionTimeline.OfflineTask.learnername' | translate }}
+										</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr *ngFor="let userData of afterFinalLearnerPassedData; let i = index">
+										<td class="left" style="padding-left: 2rem; padding-top: 15px" class="two-row-td-tag">
+											<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+												{{ userData.id }}
+											</p>
+										</td>
+										<td class="left" style="padding-left: 2rem; padding-top: 15px" class="two-row-td-tag">
+											<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+												{{ userData.first + ' ' + userData.last }}
+											</p>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<div
+						style="justify-content: end; display: flex; padding-right: 0; padding-top: 2rem"
+						*ngIf="passedLearnerList.length > 0">
+						<a
+							class="btn border_radius functionalBtn"
+							style="
+								margin-right: 2rem;
+								background-color: lightgray !important;
+								color: black;
+								border: 1px solid lightgray !important;
+							"
+							(click)="cancelLearnerPassPopup()">
+							{{ 'Pages.Session.SessionTimeline.OfflineTask.cancel' | translate }}
+						</a>
+
+						<a
+							class="btn border_radius functionalBtn"
+							[ngStyle]="{
+								'background-color': appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+								color: 'white'
+							}"
+							(click)="updatePassingUserData(sessionData.id)"
+							>{{ 'Pages.Session.SessionTimeline.OfflineTask.assigncertificate' | translate }}</a
+						>
+					</div>
+					<!-- <div class="pagination-wrapper" style="width: 100%; margin-top: 1rem">
+						<div style="float: right">
+							<span>{{ 'Utils.perpage' | translate }}: &nbsp;</span>
+							<select class="default-dropdown" (change)="changeResult($event.target.value)">
+								<option *ngFor="let count of pageResultCount; let i = index" [selected]="i == 0">
+									{{ count }}
+								</option>
+							</select>
+						</div>
+						<pagination-controls (pageChange)="onPageChangeEvent($event)" style="float: right"> </pagination-controls>
+					</div> -->
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div
+	class="modal fade credit-note"
+	id="recordSessionLinkModel"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="myModalLabel"
+	aria-hidden="true"
+	data-backdrop="static"
+	data-keyboard="false">
+	<div class="modal-dialog" style="width: 40%; margin-top: 15%; margin-left: auto; margin-right: auto">
+		<div class="modal-content">
+			<div
+				class="modal-header"
+				[ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}">
+				<button
+					type="button"
+					class="close"
+					data-dismiss="modal"
+					aria-label="Close"
+					(click)="cancelRecordSessionLinkPopUp()">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					<span>{{ 'Pages.Session.SessionTimeline.Modal.sessionlink' | translate }}</span>
+				</h4>
+			</div>
+			<div class="modal-body" style="margin-top: 1rem">
+				<div>
+					<input
+						type="text"
+						class="form-control"
+						placeholder="{{ 'Pages.Session.SessionTimeline.Modal.sessionlink' | translate }}"
+						[(ngModel)]="recordedSessionLink"
+						[ngModelOptions]="{ standalone: true }"
+						(keyup)="checkSessionRecordLink($event.target.value)" />
+				</div>
+				<div style="color: #d34053" *ngIf="RecordSessionLinkError == true">
+					{{ 'Pages.Session.SessionTimeline.recordLinkError' | translate }}
+				</div>
+				<div style="color: #d34053" *ngIf="RecordSessionValidLinkError == true">
+					{{ 'Pages.Session.SessionTimeline.recordValidLinkError' | translate }}
+				</div>
+				<div
+					class="visible-md visible-lg visible-sm visible-xs"
+					style="text-align: right; margin-bottom: 0.75rem; margin-top: 1.5rem">
+					<a
+						class="btn-xs action-pause-btn action-yes-no"
+						*ngIf="
+							recordedSessionLink != null &&
+							recordedSessionLink != '' &&
+							!RecordSessionLinkError &&
+							!RecordSessionValidLinkError &&
+							showViewRecordButton
+						"
+						[ngStyle]="{
+						color: appService.whiteBrandingColor,
+						border: '1px solid' + appService.whiteBrandingColor,
+					}"
+						(click)="viewRecordSessionLink()"
+						style="padding: 7px 30px; margin-right: 1%">
+						{{ 'Utils.Action.view' | translate }}
+					</a>
+					<a
+						class="btn-xs action-pause-btn action-yes-no"
+						[ngStyle]="{
+							color: appService.whiteBrandingColor,
+							border: '1px solid' + appService.whiteBrandingColor,
+						}"
+						(click)="saveRecordSessionLink(false)"
+						style="padding: 7px 23px; margin-right: 1%">
+						{{ 'Utils.Action.remove' | translate }}
+					</a>
+					<a
+						class="btn-xs action-edit-btn action-yes-no"
+						[ngStyle]="{
+							'background-color': appService.whiteBrandingColor,
+							border: '1px solid' + appService.whiteBrandingColor,
+							color: 'white'
+						}"
+						style="padding: 7px 30px"
+						(click)="saveRecordSessionLink(true)">
+						{{ 'Utils.Action.save' | translate }}
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

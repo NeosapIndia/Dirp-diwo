@@ -1,0 +1,239 @@
+<div class="pageDiv" style="min-height: calc(100vh - 95px)">
+	<div style="margin-top: 2rem">
+		<div class="row">
+			<div class="panel header-panel-white" style="display: flex">
+				<div class="col-md-3" style="padding-left: 0.5%" *ngIf="projectType == 'drip'">
+					<span class="mainTitle no-margin pageTitle_Main">{{ 'Pages.TeamSetups.Home.pagetitle' | translate }}</span>
+				</div>
+				<div class="col-md-9" style="padding-right: 0" *ngIf="projectType == 'drip' && showAddTeamSetup">
+					<a
+						class="btn border_radius pull-right add-edit-btn"
+						[ngStyle]="{
+							'background-color': appService.whiteBrandingColor,
+							border: '1px solid' + appService.whiteBrandingColor,
+							color: 'white'
+						}"
+						(click)="addTeamSetup()"
+						>{{ 'Pages.TeamSetups.Home.addteamsetups' | translate }}
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<form [formGroup]="FilterTeamSetupColumnForm">
+		<div style="margin-top: 2rem">
+			<div class="row">
+				<div class="panel panel-white" style="padding: 0.55% 0; display: flex">
+					<div class="col-md-4" style="padding-right: 0.55%">
+						<label>{{ 'Pages.TeamSetups.Home.Filter.Dropdown.title' | translate }}</label>
+						<div id="filterDiv" style="max-width: none; width: 100%; margin-left: 0">
+							<ng-multiselect-dropdown
+								[settings]="dropdownSettings"
+								class="mt-2 filter-search-columns"
+								placeholder="{{ 'Pages.TeamSetups.Home.Filter.Dropdown.placeholder' | translate }}"
+								[data]="FilterColumnArray"
+								formControlName="FilterColumn">
+							</ng-multiselect-dropdown>
+						</div>
+					</div>
+					<div class="col-md-8" style="padding-left: 0.5rem">
+						<label>{{ 'Utils.Filter.Search.title' | translate }}</label>
+						<input
+							class="form-control"
+							(input)="getTeamSetupByFilter($event.target.value)"
+							type="text"
+							placeholder="{{
+								this.FilterTeamSetupColumnForm.controls['FilterColumn'].value.length == 3
+									? ('Utils.Filter.Search.placeholder1' | translate)
+									: ('Utils.Filter.Search.placeholder2' | translate)
+							}}"
+							autocomplete="off"
+							[(ngModel)]="inputSearchTxt"
+							[ngModelOptions]="{ standalone: true }" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+
+	<div style="margin-top: 2rem">
+		<div class="row">
+			<div class="panel panel-white">
+				<div class="sub table-responsive">
+					<table class="table table-striped table-hover">
+						<thead *ngIf="!isApiCall">
+							<tr>
+								<th class="left tb-first-heading tb-line-height" style="padding-left: 1rem; word-wrap: break-word">
+									{{ 'Pages.TeamSetups.Home.Table.Header.clientId' | translate }}
+								</th>
+								<th class="left tb-head-bg tb-line-height" style="word-wrap: break-word">
+									{{ 'Pages.TeamSetups.Home.Table.Header.clientname' | translate }}
+								</th>
+								<th class="left tb-head-bg tb-line-height" style="word-wrap: break-word">
+									{{ 'Pages.TeamSetups.Home.Table.Header.parentclientname' | translate }}
+								</th>
+								<th class="left tb-head-bg tb-line-height" style="word-wrap: break-word">
+									{{ 'Pages.TeamSetups.Home.Table.Header.parentclientId' | translate }}
+								</th>
+								<th class="left tb-head-bg tb-line-height">
+									{{ 'Pages.TeamSetups.Home.Table.Header.status' | translate }}
+								</th>
+								<th class="left tb-last-heading tb-line-height" style="width: 7vw">
+									{{ 'Pages.TeamSetups.Home.Table.Header.actions' | translate }}
+								</th>
+							</tr>
+						</thead>
+						<tbody *ngIf="!isApiCall">
+							<tr
+								*ngFor="
+									let item of teamSetupData
+										| paginate
+											: {
+													itemsPerPage: limit == 'all' ? totalCount : limit,
+													currentPage: page,
+													totalItems: totalCount
+											  };
+									index as i
+								">
+								<td class="left" style="padding-left: 1rem; padding-top: 15px" class="two-row-td-tag">
+									<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+										{{ item.client_id }}
+									</p>
+								</td>
+								<td class="left" style="padding-top: 15px" class="two-row-td-tag">
+									<p class="two-row-p-tag" style="-webkit-box-orient: vertical">{{ item.name }}</p>
+								</td>
+								<td class="left" style="padding-top: 15px" class="two-row-td-tag">
+									<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+										{{ item.parent_client_id }}
+									</p>
+								</td>
+								<td class="left" style="padding-top: 15px" class="two-row-td-tag">
+									<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+										{{ item.parent_name }}
+									</p>
+								</td>
+
+								<td class="left" style="padding-top: 15px !important">
+									<span class="status-active">{{ 'Utils.Status.active' | translate }}</span>
+
+									<!-- <span *ngIf="item.WhatsAppSetup.status == 'Active'" class="status-active">{{
+										'Utils.Status.active' | translate
+									}}</span>
+									<span *ngIf="item.WhatsAppSetup.status == 'Deleted'" class="is_deleted-i status-expired">{{
+										'Utils.Status.deleted' | translate
+									}}</span> -->
+								</td>
+								<td class="left" style="padding: 0.938rem 1rem 0.938rem 0.75rem">
+									<div class="visible-md visible-lg visible-sm visible-xs">
+										<a
+											class="btn-xs action-edit-btn"
+											[ngStyle]="{
+												'background-color': appService.whiteBrandingColor,
+												border: '0.5px solid' + appService.whiteBrandingColor,
+												color: 'white'
+											}"
+											[ngClass]="{ 'edit-disabled': !writePermission }"
+											(click)="editTeamSetup(item.id)"
+											style="padding: 0.25rem 1.25rem"
+											>{{ 'Utils.Action.edit' | translate }}</a
+										>
+										<!-- <a
+											class="btn-xs action-delete-btn"
+											[ngClass]="{ 'edit-disabled': !writePermission }"
+											(click)="deleteTeamSetup(item)"
+											>{{ 'Utils.Action.delete' | translate }}</a
+										> -->
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<div
+						style="text-align: center; margin-top: 2rem; margin-bottom: 3rem"
+						*ngIf="teamSetupData && teamSetupData.length == 0 && !isApiCall && isDataLoaded">
+						<img src="assets/images/No Results.svg" alt="" style="width: 25%" />
+						<h3>{{ 'Utils.nodataToShow' | translate }}</h3>
+						<p style="width: 50%; margin: 0 auto">{{ 'Utils.nodataAvaliable' | translate }}</p>
+					</div>
+					<div style="text-align: center; margin-top: 9rem; margin-bottom: 9rem" *ngIf="isApiCall">
+						<!-- <img class="asset-img" src="assets/images/Circle-1.gif" style="width: 3%" /> -->
+						<div [innerHTML]="iconObject['search_loader']" class="asset-img"></div>
+					</div>
+					<div style="text-align: center; margin-top: 9rem; margin-bottom: 9rem" *ngIf="!isDataLoaded"></div>
+				</div>
+			</div>
+			<div class="pagination-wrapper" style="width: 100%">
+				<div style="float: right">
+					<span> {{ 'Utils.perpage' | translate }} : &nbsp;</span>
+					<select class="default-dropdown" (change)="changeResult($event.target.value)">
+						<option *ngFor="let count of pageResultCount; let i = index" [selected]="i == 0">
+							{{ count }}
+						</option>
+					</select>
+				</div>
+				<pagination-controls (pageChange)="onPageChangeEvent($event)" style="float: right"> </pagination-controls>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Suspend Client MODAL -->
+<div
+	class="modal fade credit-note"
+	id="teamSetupDeleteModel"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="myModalLabel"
+	aria-hidden="true"
+	data-backdrop="static"
+	data-keyboard="false">
+	<div class="modal-dialog" style="width: 40%; margin-top: 20%; margin-left: auto; margin-right: auto">
+		<div class="modal-content">
+			<div
+				class="modal-header"
+				[ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="cancelDeleteModal()">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					<span>{{ 'Pages.TeamSetups.Home.Modal.Delete.title' | translate }}</span>
+				</h4>
+			</div>
+			<div class="modal-body">
+				<span>{{ 'Pages.TeamSetups.Home.Modal.Delete.confirmation' | translate }}</span>
+				<div
+					class="visible-md visible-lg visible-sm visible-xs"
+					[ngStyle]="{
+						'background-color': appService.whiteBrandingColor,
+						border: '0.5px solid' + appService.whiteBrandingColor,
+						color: 'white'
+					}"
+					style="text-align: right; margin-bottom: 0.75rem; margin-top: 1.5rem">
+					<a
+						class="btn-xs action-edit-btn action-yes-no"
+						style="margin-right: 2%; padding: 7px 20px"
+						[ngStyle]="{
+							color: appService.whiteBrandingColor,
+							border: '0.5px solid' + appService.whiteBrandingColor,
+							
+						}"
+						(click)="onDeleteFormSubmit()"
+						>{{ 'Utils.yes' | translate }}</a
+					>
+					<a
+						class="btn-xs action-pause-btn action-yes-no"
+						style="padding: 7px 23px; margin-right: 1%"
+						(click)="cancelDeleteModal()"
+						>{{ 'Utils.no' | translate }}</a
+					>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

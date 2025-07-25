@@ -1,0 +1,973 @@
+<div class="container-fluid" style="margin: 2% 2% 2% 3%; min-height: calc(100vh - 110px)">
+	<div class="row add-edit-main-row">
+		<span>
+			<span
+				[routerLink]="['/assets-library']"
+				style="margin-left: 0.25rem; color: #637373; margin-right: 2px; cursor: pointer">
+				{{ 'Pages.Document.AddEdit.pagetitle' | translate }}</span
+			>
+			<img src="assets/images/arrow_forward.svg" style="width: 27px" />
+			<span style="margin-left: 3px" [ngStyle]="{ color: appService.whiteBrandingColor }">{{
+				'Pages.Document.AddEdit.subtitle' | translate
+			}}</span>
+		</span>
+	</div>
+
+	<div class="row section-wrapper" style="margin-top: 2rem" *ngIf="ownerClient">
+		<!-- <div class="form-title"><span>{{'Pages.Document.AddEdit.GetStarted.title' | translate }}</span></div> -->
+		<div class="card-body">
+			<div class="row" style="font-size: 1.3rem; text-align: center; color: black" *ngIf="!isEdit">
+				{{ 'Pages.Document.AddEdit.uploadingDocumentFor' | translate }} {{ ownerClient.name }}
+			</div>
+			<div class="row" style="font-size: 1.3rem; text-align: center; color: black" *ngIf="isEdit">
+				{{ 'Pages.Document.AddEdit.editingDocumentsFor' | translate }} {{ ownerClient.name }}
+			</div>
+		</div>
+	</div>
+
+	<div class="row section-wrapper" style="margin-top: 2rem">
+		<div class="form-title">
+			<span>{{ 'Pages.Document.AddEdit.GetStarted.title' | translate }}</span>
+		</div>
+		<div class="card-body">
+			<div class="row">
+				<div class="col-md-6 form-group" style="margin-top: -5px">
+					<label [ngClass]="{ error: isAssetCategorySelected }">{{
+						'Pages.Document.AddEdit.GetStarted.Category.title' | translate
+					}}</label>
+					<ng-select
+						[items]="assetCategory"
+						class="ng-select-wrap"
+						placeholder="{{ 'Pages.Document.AddEdit.GetStarted.Category.placeholder' | translate }}"
+						bindLabel="name"
+						bindValue="name"
+						[multiple]="false"
+						[clearable]="false"
+						[closeOnSelect]="true"
+						[searchable]="false"
+						[(ngModel)]="selectedDocumentCategory"
+						[disabled]="isEdit"
+						(change)="changeAssetCategory($event)">
+					</ng-select>
+					<div *ngIf="isAssetCategorySelected" class="error">
+						{{ 'Pages.Document.AddEdit.GetStarted.Category.error' | translate }}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div *ngIf="selectedDocumentCategory == 'Document' && !isEdit" class="row section-wrapper" style="margin-top: 2rem">
+		<div class="form-title">
+			<span>{{ 'Pages.Document.AddEdit.UploadMedia.title' | translate }}</span>
+		</div>
+		<div class="card-body">
+			<div class="row">
+				<div class="col-md-12">
+					<div style="display: flex; justify-content: center; margin-top: 10px">
+						<label
+							class="btn pad fileinput-button browse_lable big-button"
+							[ngStyle]="{
+								'background-color': appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+								color: 'white'
+							}">
+							<input
+								id="mediaWeb"
+								type="file"
+								accept=".jpg, .png, .pdf, .docx, .pptx"
+								(change)="uploadMedia($event, 'thumbnail')"
+								[multiple]="isMultipleSelected" />
+							{{ 'Pages.Document.AddEdit.UploadMedia.SelectMediaButton' | translate }}
+						</label>
+					</div>
+					<div style="text-align: center; margin-top: 1.25rem">
+						<span>{{ 'Pages.Document.AddEdit.UploadMedia.UploadMediaPlaceholder' | translate }}</span>
+					</div>
+					<div style="text-align: center; margin-top: 1rem">
+						<span [ngStyle]="{ color: appService.whiteBrandingColor }">{{
+							'Pages.Document.AddEdit.UploadMedia.limitPlaceHolder' | translate
+						}}</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- <div *ngIf="selectedDocumentCategory == 'Link' && !isEdit" class="row section-wrapper" style="margin-top: 2rem">
+		<div class="form-title">
+			<span>{{ 'Pages.Document.AddEdit.UploadYourLink.title' | translate }}</span>
+		</div>
+		<div class="card-body">
+			<div class="row">
+				<div class="col-md-12">
+					<div style="display: flex; justify-content: center; margin-top: 10px">
+						<a
+							class="btn pad fileinput-button browse_lable big-button"
+							(click)="pathFile.click()"
+							[ngStyle]="{
+								'background-color': appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+								color: 'white'
+							}">
+							{{ 'Pages.Document.AddEdit.UploadYourLink.BrowseLinkButtin' | translate }}</a
+						>
+						<input
+							type="file"
+							style="display: none"
+							id="historyFile"
+							class="btn btn-info border_radius"
+							#pathFile
+							(change)="pathExcel($event)" />
+					</div>
+					<div style="text-align: center; margin-top: 1.25rem">
+						<div style="text-align: center; margin-top: 1.25rem">
+							<a href="assets/file/Upload_link_asset_in_bulk.xlsx" id="download">
+								{{ 'Pages.Document.AddEdit.UploadYourLink.downloadTemplate' | translate }}</a
+							>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div> -->
+
+	<div *ngIf="selectedDocumentCategory == 'Link'">
+		<div class="row section-wrapper" style="margin-top: 2rem" *ngFor="let item of AssetLinks; let i = index">
+			<div class="form-title">
+				<span>{{ 'Pages.Document.AddEdit.UploadYourLink.title' | translate }}</span>
+				<img
+					src="assets/images/cancel_icon.svg"
+					*ngIf="i !== 0"
+					(click)="removeAssetLinks(i)"
+					style="width: 26px; float: right; margin-top: 1px; cursor: pointer" />
+			</div>
+			<div class="card-body form-group">
+				<div class="row">
+					<div class="col-md-6">
+						<label [ngClass]="{ error: item.AssetTitleError == true }">
+							{{ 'Pages.Document.AddEdit.UploadYourLink.documenttitle' | translate }}
+						</label>
+						<input
+							type="text"
+							class="form-control"
+							id="title"
+							placeholder="{{ 'Pages.Document.AddEdit.UploadYourLink.documenttitleplaceholder' | translate }}"
+							[(ngModel)]="item.title"
+							[ngModelOptions]="{ standalone: true }"
+							(keyup)="checkLinkAssetTitle(i, $event.target.value)" />
+						<div class="error invalid-feedback" *ngIf="item.AssetTitleError == true">
+							{{ 'Pages.Document.AddEdit.UploadYourLink.documenttitleError' | translate }}
+						</div>
+					</div>
+				</div>
+				<div class="row" style="margin-top: 0.75rem; margin-bottom: 1.25rem">
+					<div class="col-md-6">
+						<label [ngClass]="{ error: item.UploadLinkError == true || item.UploadValidLinkError == true }">
+							{{ 'Pages.Document.AddEdit.UploadYourLink.uploadthelinktitle' | translate }}
+						</label>
+						<textarea
+							class="form-control"
+							placeholder=""
+							[(ngModel)]="item.path"
+							[ngModelOptions]="{ standalone: true }"
+							(keyup)="checkUploadlink(i, $event.target.value)">
+						</textarea>
+						<div class="error invalid-feedback" *ngIf="item.UploadLinkError == true">
+							{{ 'Pages.Document.AddEdit.UploadYourLink.uploadLinkError' | translate }}
+						</div>
+						<div class="error invalid-feedback" *ngIf="item.uploadValidLinkError == true">
+							{{ 'Pages.Document.AddEdit.UploadYourLink.uploadValidLinkError' | translate }}
+						</div>
+					</div>
+					<div class="col-md-12" id="surveyForm" style="width: 100%; padding-left: 0px; padding-right: 0px"></div>
+				</div>
+			</div>
+		</div>
+
+		<!-- <div style="margin-top: 1rem" class="text-right" *ngIf="updateDocuments && !updateDocuments.documentId">
+			<a style="font-size: 0.875rem; color: grey">
+				<div class="info-icon-div">
+					<div>
+						<span style="margin-right: 5px">{{ 'Pages.Document.AddEdit.Addonemorelink' | translate }}</span>
+					</div>
+					<div>
+						<span
+							style="cursor: pointer"
+							
+							[innerHTML]="iconObject['add_icon_35']"
+							(click)="addMoreLinks()"></span>
+					</div>
+				</div>
+			</a>
+		</div> -->
+	</div>
+
+	<div *ngIf="selectedDocumentCategory == 'Document'">
+		<div *ngFor="let asset of selectedMediaAssetDetails; let i = index">
+			<div class="row section-wrapper" style="margin-top: 2rem">
+				<div class="form-title">
+					<span>
+						{{ 'Pages.Document.AddEdit.ConfirmOrUpdate.title' | translate }} {{ asset.type }}
+						{{ 'Pages.Document.AddEdit.ConfirmOrUpdate.title2' | translate }}
+					</span>
+					<img
+						src="assets/images/cancel_icon.svg"
+						style="width: 26px; float: right; margin-top: 1px; cursor: pointer"
+						*ngIf="selectedMediaAssetDetails.length > 1"
+						(click)="removeAsset(i)" />
+				</div>
+				<div class="card-body form-group">
+					<div class="row">
+						<div class="col-md-6" style="margin-top: -5px">
+							<label [ngClass]="{ error: asset.AssetTitleError == true }">
+								{{ 'Pages.Document.AddEdit.UploadYourLink.documenttitle' | translate }}
+							</label>
+							<input
+								type="text"
+								class="form-control"
+								id="title"
+								placeholder="{{ 'Pages.Document.AddEdit.UploadYourLink.documenttitleplaceholder' | translate }}"
+								(change)="asset.title = $event.target.value"
+								[value]="asset.title"
+								(keyup)="checkMediaAssetTitle(i, $event.target.value)" />
+							<div class="error invalid-feedback" *ngIf="asset.AssetTitleError == true">
+								{{ 'Pages.Document.AddEdit.UploadYourLink.documenttitleError' | translate }}
+							</div>
+						</div>
+						<div
+							class="col-md-6"
+							style="margin-top: -5px"
+							*ngIf="piplineDetails?.pipelineOption === 'Use LlamaParse' && asset.type == 'PDF'">
+							<label>
+								{{ 'Pages.Document.AddEdit.UploadYourLink.UseAdvancedDocumentParsing' | translate }}
+							</label>
+							<div>
+								<label class="switch">
+									<input
+										type="checkbox"
+										class="form-control js-switch"
+										[(ngModel)]="asset.advancedDocParsing"
+										[ngModelOptions]="{ standalone: true }" />
+									<span
+										class="slider round"
+										[ngStyle]="{
+											'background-color': asset.advancedDocParsing ? appService.whiteBrandingColor : '#ccc'
+										}">
+									</span>
+								</label>
+							</div>
+						</div>
+						<div class="col-md-12" *ngIf="asset.advancedDocParsing">
+							<form [formGroup]="ETLConfigForm" novalidate autocomplete="off">
+								<div class="row">
+									<!------------------------------------ New Field For llamaParse -------------------------------------------->
+									<!-- Parsing Instruction  -->
+									<div class="col-md-6">
+										<div
+											class="form-group"
+											[ngClass]="{
+												'has-error': f6.mode.invalid && (f6.mode.dirty || f6.mode.touched),
+												'has-success': f6.mode.valid && (f6.mode.dirty || f6.mode.touched)
+											}">
+											<label>{{ 'Pages.Document.AddEdit.AddETLConfigCredential.Mode.title' | translate }} </label>
+											<ng-select
+												[items]="llamaParseModeList"
+												class="ng-select-wrap"
+												placeholder="{{ 'Pages.Document.AddEdit.AddETLConfigCredential.Mode.placeholder' | translate }}"
+												bindLabel="name"
+												bindValue="name"
+												[multiple]="false"
+												[closeOnSelect]="true"
+												[searchable]="false"
+												[clearable]="false"
+												formControlName="mode">
+											</ng-select>
+											<div class="error" *ngIf="f6.mode.errors && f6.mode.touched">
+												<div *ngIf="f6.mode.errors.required">
+													{{ 'Pages.Document.AddEdit.AddETLConfigCredential.Mode.error' | translate }}
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<!-- ---Parsing Instruction -->
+									<div class="col-md-6">
+										<div
+											class="form-group"
+											[ngClass]="{
+												'has-error':
+													f6.parsingInstruction.invalid &&
+													(f6.parsingInstruction.dirty || f6.parsingInstruction.touched),
+												'has-success':
+													f6.parsingInstruction.valid && (f6.parsingInstruction.dirty || f6.parsingInstruction.touched)
+											}">
+											<label
+												>{{ 'Pages.Document.AddEdit.AddETLConfigCredential.parsingInstruction.title' | translate }}
+
+												<span
+													style="cursor: pointer"
+													[innerHTML]="iconObject['info_icon_20']"
+													title="{{
+														'Pages.Document.AddEdit.AddETLConfigCredential.parsingInstruction.info' | translate
+													}}"></span>
+											</label>
+											<textarea
+												style="padding: 0.8rem 1rem !important"
+												type="text"
+												class="form-control"
+												placeholder="{{
+													'Pages.Document.AddEdit.AddETLConfigCredential.parsingInstruction.placeholder' | translate
+												}}"
+												formControlName="parsingInstruction"
+												autocomplete="disabled">
+											</textarea>
+
+											<div class="error" *ngIf="f6.parsingInstruction.errors && f6.parsingInstruction.touched">
+												<div *ngIf="f6.parsingInstruction.errors.required">
+													{{ 'Pages.Document.AddEdit.AddETLConfigCredential.parsingInstruction.error' | translate }}
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<!-- is Formatting Instruction  -->
+									<div class="col-md-6">
+										<div
+											class="form-group"
+											[ngClass]="{
+												'has-error':
+													f6.isFormattingInstruction.invalid &&
+													(f6.isFormattingInstruction.dirty || f6.isFormattingInstruction.touched),
+												'has-success':
+													f6.isFormattingInstruction.valid &&
+													(f6.isFormattingInstruction.dirty || f6.isFormattingInstruction.touched)
+											}">
+											<label
+												>{{ 'Pages.Document.AddEdit.AddETLConfigCredential.parsingInstruction.title' | translate }}
+
+												<span
+													style="cursor: pointer"
+													[innerHTML]="iconObject['info_icon_20']"
+													title="{{
+														'Pages.Document.AddEdit.AddETLConfigCredential.parsingInstruction.info' | translate
+													}}"></span>
+											</label>
+											<div>
+												<label class="switch">
+													<input
+														type="checkbox"
+														class="form-control js-switch"
+														formControlName="isFormattingInstruction" />
+													<span
+														class="slider round"
+														[ngStyle]="{
+															'background-color': f6.isFormattingInstruction.value
+																? appService.whiteBrandingColor
+																: '#ccc'
+														}">
+													</span>
+												</label>
+											</div>
+										</div>
+									</div>
+
+									<!--  Take Screenshot -->
+									<div class="col-md-6">
+										<div
+											class="form-group"
+											[ngClass]="{
+												'has-error':
+													f6.takeScreenshot.invalid && (f6.takeScreenshot.dirty || f6.takeScreenshot.touched),
+												'has-success': f6.takeScreenshot.valid && (f6.takeScreenshot.dirty || f6.takeScreenshot.touched)
+											}">
+											<label
+												>{{ 'Pages.Document.AddEdit.AddETLConfigCredential.takeScreenshot.title' | translate }}
+
+												<span
+													style="cursor: pointer"
+													[innerHTML]="iconObject['info_icon_20']"
+													title="{{
+														'Pages.Document.AddEdit.AddETLConfigCredential.takeScreenshot.info' | translate
+													}}"></span>
+											</label>
+											<div>
+												<label class="switch">
+													<input type="checkbox" class="form-control js-switch" formControlName="takeScreenshot" />
+													<span
+														class="slider round"
+														[ngStyle]="{
+															'background-color': f6.takeScreenshot.value ? appService.whiteBrandingColor : '#ccc'
+														}">
+													</span>
+												</label>
+											</div>
+										</div>
+									</div>
+
+									<!-- Disable OCR -->
+									<div class="col-md-6">
+										<div
+											class="form-group"
+											[ngClass]="{
+												'has-error': f6.disableOcr.invalid && (f6.disableOcr.dirty || f6.disableOcr.touched),
+												'has-success': f6.disableOcr.valid && (f6.disableOcr.dirty || f6.disableOcr.touched)
+											}">
+											<label
+												>{{ 'Pages.Document.AddEdit.AddETLConfigCredential.disableOcr.title' | translate }}
+												<span
+													style="cursor: pointer"
+													[innerHTML]="iconObject['info_icon_20']"
+													title="{{
+														'Pages.Document.AddEdit.AddETLConfigCredential.disableOcr.info' | translate
+													}}"></span>
+											</label>
+											<div>
+												<label class="switch">
+													<input type="checkbox" class="form-control js-switch" formControlName="disableOcr" />
+													<span
+														class="slider round"
+														[ngStyle]="{
+															'background-color': f6.disableOcr.value ? appService.whiteBrandingColor : '#ccc'
+														}">
+													</span>
+												</label>
+											</div>
+										</div>
+									</div>
+
+									<!-- Annotate Links -->
+									<div class="col-md-6">
+										<div
+											class="form-group"
+											[ngClass]="{
+												'has-error': f6.annotateLinks.invalid && (f6.annotateLinks.dirty || f6.annotateLinks.touched),
+												'has-success': f6.annotateLinks.valid && (f6.annotateLinks.dirty || f6.annotateLinks.touched)
+											}">
+											<label
+												>{{ 'Pages.Document.AddEdit.AddETLConfigCredential.annotateLinks.title' | translate }}
+
+												<span
+													style="cursor: pointer"
+													[innerHTML]="iconObject['info_icon_20']"
+													title="{{
+														'Pages.Document.AddEdit.AddETLConfigCredential.annotateLinks.info' | translate
+													}}"></span>
+											</label>
+											<div>
+												<label class="switch">
+													<input type="checkbox" class="form-control js-switch" formControlName="annotateLinks" />
+													<span
+														class="slider round"
+														[ngStyle]="{
+															'background-color': f6.annotateLinks.value ? appService.whiteBrandingColor : '#ccc'
+														}">
+													</span>
+												</label>
+											</div>
+										</div>
+									</div>
+
+									<!-- Skip Diagonal Text -->
+									<div class="col-md-6">
+										<div
+											class="form-group"
+											[ngClass]="{
+												'has-error':
+													f6.skipDiagonalText.invalid && (f6.skipDiagonalText.dirty || f6.skipDiagonalText.touched),
+												'has-success':
+													f6.skipDiagonalText.valid && (f6.skipDiagonalText.dirty || f6.skipDiagonalText.touched)
+											}">
+											<label
+												>{{ 'Pages.Document.AddEdit.AddETLConfigCredential.skipDiagonalText.title' | translate }}
+
+												<span
+													style="cursor: pointer"
+													[innerHTML]="iconObject['info_icon_20']"
+													title="{{
+														'Pages.Document.AddEdit.AddETLConfigCredential.skipDiagonalText.info' | translate
+													}}"></span>
+											</label>
+											<div>
+												<label class="switch">
+													<input type="checkbox" class="form-control js-switch" formControlName="skipDiagonalText" />
+													<span
+														class="slider round"
+														[ngStyle]="{
+															'background-color': f6.skipDiagonalText.value ? appService.whiteBrandingColor : '#ccc'
+														}">
+													</span>
+												</label>
+											</div>
+										</div>
+									</div>
+
+									<!-- Do Not Unroll Columns -->
+									<div class="col-md-6">
+										<div
+											class="form-group"
+											[ngClass]="{
+												'has-error':
+													f6.doNotUnrollColumns.invalid &&
+													(f6.doNotUnrollColumns.dirty || f6.doNotUnrollColumns.touched),
+												'has-success':
+													f6.doNotUnrollColumns.valid && (f6.doNotUnrollColumns.dirty || f6.doNotUnrollColumns.touched)
+											}">
+											<label
+												>{{ 'Pages.Document.AddEdit.AddETLConfigCredential.doNotUnrollColumns.title' | translate }}
+
+												<span
+													style="cursor: pointer"
+													[innerHTML]="iconObject['info_icon_20']"
+													title="{{
+														'Pages.Document.AddEdit.AddETLConfigCredential.doNotUnrollColumns.info' | translate
+													}}"></span>
+											</label>
+											<div>
+												<label class="switch">
+													<input type="checkbox" class="form-control js-switch" formControlName="doNotUnrollColumns" />
+													<span
+														class="slider round"
+														[ngStyle]="{
+															'background-color': f6.doNotUnrollColumns.value ? appService.whiteBrandingColor : '#ccc'
+														}">
+													</span>
+												</label>
+											</div>
+										</div>
+									</div>
+
+									<!-- Target Pages -->
+									<div class="col-md-6">
+										<div
+											class="form-group"
+											[ngClass]="{
+												'has-error': f6.targetPages.invalid && (f6.targetPages.dirty || f6.targetPages.touched),
+												'has-success': f6.targetPages.valid && (f6.targetPages.dirty || f6.targetPages.touched)
+											}">
+											<label
+												>{{ 'Pages.Document.AddEdit.AddETLConfigCredential.targetPages.title' | translate }}
+
+												<span
+													style="cursor: pointer"
+													[innerHTML]="iconObject['info_icon_20']"
+													title="{{
+														'Pages.Document.AddEdit.AddETLConfigCredential.targetPages.info' | translate
+													}}"></span>
+											</label>
+											<div>
+												<input
+													type="text"
+													class="form-control"
+													placeholder="{{
+														'Pages.Document.AddEdit.AddETLConfigCredential.targetPages.placeholder' | translate
+													}}"
+													formControlName="targetPages"
+													autocomplete="disabled" />
+											</div>
+										</div>
+									</div>
+
+									<!-- Bounding Box -->
+									<div class="col-md-6">
+										<div
+											class="form-group"
+											[ngClass]="{
+												'has-error': f6.boundingBox.invalid && (f6.boundingBox.dirty || f6.boundingBox.touched),
+												'has-success': f6.boundingBox.valid && (f6.boundingBox.dirty || f6.boundingBox.touched)
+											}">
+											<label
+												>{{ 'Pages.Document.AddEdit.AddETLConfigCredential.boundingBox.title' | translate }}
+
+												<span
+													style="cursor: pointer"
+													[innerHTML]="iconObject['info_icon_20']"
+													title="{{
+														'Pages.Document.AddEdit.AddETLConfigCredential.boundingBox.info' | translate
+													}}"></span>
+											</label>
+											<div>
+												<input
+													type="text"
+													class="form-control"
+													placeholder="{{
+														'Pages.Document.AddEdit.AddETLConfigCredential.boundingBox.placeholder' | translate
+													}}"
+													formControlName="boundingBox"
+													autocomplete="disabled" />
+											</div>
+										</div>
+									</div>
+
+									<!-- pageSeparator -->
+									<div class="col-md-6">
+										<div
+											class="form-group"
+											[ngClass]="{
+												'has-error': f6.pageSeparator.invalid && (f6.pageSeparator.dirty || f6.pageSeparator.touched),
+												'has-success': f6.pageSeparator.valid && (f6.pageSeparator.dirty || f6.pageSeparator.touched)
+											}">
+											<label
+												>{{ 'Pages.Document.AddEdit.AddETLConfigCredential.pageSeparator.title' | translate }}
+
+												<span
+													style="cursor: pointer"
+													[innerHTML]="iconObject['info_icon_20']"
+													title="{{
+														'Pages.Document.AddEdit.AddETLConfigCredential.pageSeparator.info' | translate
+													}}"></span>
+											</label>
+											<div>
+												<input
+													type="text"
+													class="form-control"
+													placeholder="{{
+														'Pages.Document.AddEdit.AddETLConfigCredential.pageSeparator.placeholder' | translate
+													}}"
+													formControlName="pageSeparator"
+													autocomplete="disabled" />
+											</div>
+										</div>
+									</div>
+
+									<!-- Page Prefix -->
+									<div class="col-md-6">
+										<div
+											class="form-group"
+											[ngClass]="{
+												'has-error': f6.pagePrefix.invalid && (f6.pagePrefix.dirty || f6.pagePrefix.touched),
+												'has-success': f6.pagePrefix.valid && (f6.pagePrefix.dirty || f6.pagePrefix.touched)
+											}">
+											<label
+												>{{ 'Pages.Document.AddEdit.AddETLConfigCredential.pagePrefix.title' | translate }}
+												<span
+													style="cursor: pointer"
+													[innerHTML]="iconObject['info_icon_20']"
+													title="{{
+														'Pages.Document.AddEdit.AddETLConfigCredential.pagePrefix.info' | translate
+													}}"></span>
+											</label>
+											<div>
+												<input
+													type="text"
+													class="form-control"
+													placeholder="{{
+														'Pages.Document.AddEdit.AddETLConfigCredential.pagePrefix.placeholder' | translate
+													}}"
+													formControlName="pagePrefix"
+													autocomplete="disabled" />
+											</div>
+										</div>
+									</div>
+
+									<!-- Page Prefix -->
+									<div class="col-md-6">
+										<div
+											class="form-group"
+											[ngClass]="{
+												'has-error': f6.pageSuffix.invalid && (f6.pageSuffix.dirty || f6.pageSuffix.touched),
+												'has-success': f6.pageSuffix.valid && (f6.pageSuffix.dirty || f6.pageSuffix.touched)
+											}">
+											<label
+												>{{ 'Pages.Document.AddEdit.AddETLConfigCredential.pageSuffix.title' | translate }}
+
+												<span
+													style="cursor: pointer"
+													[innerHTML]="iconObject['info_icon_20']"
+													title="{{
+														'Pages.Document.AddEdit.AddETLConfigCredential.pageSuffix.info' | translate
+													}}"></span>
+											</label>
+											<div>
+												<input
+													type="text"
+													class="form-control"
+													placeholder="{{
+														'Pages.Document.AddEdit.AddETLConfigCredential.pageSuffix.placeholder' | translate
+													}}"
+													formControlName="pageSuffix"
+													autocomplete="disabled" />
+											</div>
+										</div>
+									</div>
+
+									<!-- Invalidate Cache -->
+									<div class="col-md-6">
+										<div
+											class="form-group"
+											[ngClass]="{
+												'has-error':
+													f6.invalidateCache.invalid && (f6.invalidateCache.dirty || f6.invalidateCache.touched),
+												'has-success':
+													f6.invalidateCache.valid && (f6.invalidateCache.dirty || f6.invalidateCache.touched)
+											}">
+											<label
+												>{{ 'Pages.Document.AddEdit.AddETLConfigCredential.invalidateCache.title' | translate }}
+
+												<span
+													style="cursor: pointer"
+													[innerHTML]="iconObject['info_icon_20']"
+													title="{{
+														'Pages.Document.AddEdit.AddETLConfigCredential.invalidateCache.info' | translate
+													}}"></span>
+											</label>
+											<div>
+												<label class="switch">
+													<input type="checkbox" class="form-control js-switch" formControlName="invalidateCache" />
+													<span
+														class="slider round"
+														[ngStyle]="{
+															'background-color': f6.invalidateCache.value ? appService.whiteBrandingColor : '#ccc'
+														}">
+													</span>
+												</label>
+											</div>
+										</div>
+									</div>
+
+									<!-- Do Not Cache -->
+									<div class="col-md-6">
+										<div
+											class="form-group"
+											[ngClass]="{
+												'has-error': f6.doNotCache.invalid && (f6.doNotCache.dirty || f6.doNotCache.touched),
+												'has-success': f6.doNotCache.valid && (f6.doNotCache.dirty || f6.doNotCache.touched)
+											}">
+											<label
+												>{{ 'Pages.Document.AddEdit.AddETLConfigCredential.doNotCache.title' | translate }}
+												<label>
+													<span
+														style="cursor: pointer"
+														[innerHTML]="iconObject['info_icon_20']"
+														title="{{
+															'Pages.Document.AddEdit.AddETLConfigCredential.doNotCache.info' | translate
+														}}"></span>
+												</label>
+											</label>
+											<div>
+												<label class="switch">
+													<input type="checkbox" class="form-control js-switch" formControlName="doNotCache" />
+													<span
+														class="slider round"
+														[ngStyle]="{
+															'background-color': f6.doNotCache.value ? appService.whiteBrandingColor : '#ccc'
+														}">
+													</span>
+												</label>
+											</div>
+										</div>
+									</div>
+								</div>
+							</form>
+						</div>
+						<div class="col-md-12" id="surveyForm" style="width: 100%; padding-left: 0px; padding-right: 0px"></div>
+					</div>
+				</div>
+
+				<div style="margin: 20px" *ngIf="asset && asset.path && asset.type == 'Image'">
+					<img id="imgpreviewEdit" [src]="assetBasePath + asset.path" alt="Image" style="width: 20%; height: 140px" />
+				</div>
+				<div style="margin: 20px" *ngIf="asset && !asset.path && asset.type == 'Image'">
+					<img id="imgpreview" [src]="asset.Preview[0]" alt="Image" style="width: 20%; height: 140px" />
+				</div>
+				<div style="margin: 20px" *ngIf="asset && asset.path && asset.type == 'Video' && asset.isTranscoding">
+					<!-- <iframe [src]="transform(asset.path)" style="width: 20%; height: 165px"></iframe> -->
+					<app-video-player [VideoPath]="asset.path"></app-video-player>
+				</div>
+				<!-- <div style="margin: 20px" *ngIf="asset && asset.path && asset.type == 'WhatsappVideo'">
+					<video style="width: 20%; height: 165px" controls>
+						<source [src]="assetBasePath + asset.path" />
+					</video>
+				</div> -->
+				<!-- <div style="margin: 20px" *ngIf="asset && asset.path && asset.type == 'Video' && !asset.isTranscoding">
+					<img src="assets/images/transcoding.gif" />
+				</div> -->
+			</div>
+		</div>
+	</div>
+
+	<div *ngIf="selectedDocumentCategory == 'Document' && isEdit" class="row section-wrapper" style="margin-top: 2rem">
+		<div class="form-title">
+			<span>{{ 'Pages.Document.AddEdit.UploadMedia.title' | translate }}</span>
+		</div>
+		<div class="card-body">
+			<div class="row">
+				<div class="col-md-12">
+					<div style="display: flex; justify-content: center; margin-top: 10px">
+						<label
+							class="btn pad fileinput-button browse_lable big-button"
+							[ngStyle]="{
+								'background-color': appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+								color: 'white'
+							}">
+							<input
+								id="mediaWeb"
+								type="file"
+								accept=".jpg, .png, .pdf, .docx, .pptx"
+								(change)="uploadMedia($event, 'thumbnail')"
+								[multiple]="isMultipleSelected" />
+							{{ 'Pages.Document.AddEdit.UploadMedia.SelectMediaButton' | translate }}
+						</label>
+					</div>
+					<div style="text-align: center; margin-top: 1.25rem">
+						<span>{{ 'Pages.Document.AddEdit.UploadMedia.UploadMediaPlaceholder' | translate }}</span>
+					</div>
+					<div style="text-align: center; margin-top: 1rem">
+						<span [ngStyle]="{ color: appService.whiteBrandingColor }">{{
+							'Pages.Document.AddEdit.UploadMedia.limitPlaceHolder' | translate
+						}}</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- <div *ngIf="selectedDocumentCategory == 'Link' && isEdit" class="row section-wrapper" style="margin-top: 2rem">
+		<div class="form-title">
+			<span>{{ 'Pages.Document.AddEdit.UploadYourLink.title' | translate }}</span>
+		</div>
+		<div class="card-body">
+			<div class="row">
+				<div class="col-md-12">
+					<div style="display: flex; justify-content: center; margin-top: 10px">
+						<a
+							class="btn pad fileinput-button browse_lable big-button"
+							(click)="pathFile.click()"
+							[ngStyle]="{
+								'background-color': appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+								color: 'white'
+							}">
+							{{ 'Pages.Document.AddEdit.UploadYourLink.BrowseLinkButtin' | translate }}</a
+						>
+						<input
+							type="file"
+							style="display: none"
+							id="historyFile"
+							class="btn btn-info border_radius"
+							#pathFile
+							(change)="pathExcel($event)" />
+					</div>
+					<div style="text-align: center; margin-top: 1.25rem">
+						<div style="text-align: center; margin-top: 1.25rem">
+							<a href="assets/file/Upload_link_asset_in_bulk.xlsx" id="download">
+								{{ 'Pages.Document.AddEdit.UploadYourLink.downloadTemplate' | translate }}</a
+							>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div> -->
+
+	<div
+		*ngIf="selectedDocumentCategory == 'Document' && selectedMediaAssetDetails.length > showAssetAtATime + 1"
+		style="margin-top: 2rem; text-align: center; cursor: pointer">
+		<div (click)="showMore()" style="font-size: 1.1rem">
+			{{ 'Pages.Document.AddEdit.showmore' | translate }}
+		</div>
+	</div>
+
+	<div style="float: right; margin-top: 2rem; margin-right: -15px">
+		<a
+			class="btn btn-o btn-primary border_radius functionalBtn"
+			style="
+				margin-right: 20px;
+				background-color: lightgray !important;
+				color: black;
+				border: 1px solid lightgray !important;
+			"
+			(click)="cancel()"
+			>{{ 'Utils.cancel' | translate }}</a
+		>
+		<a
+			*ngIf="updateDocuments && !updateDocuments.documentId"
+			class="btn border_radius functionalBtn"
+			[ngStyle]="{
+				'background-color': appService.whiteBrandingColor,
+				border: '1px solid' + appService.whiteBrandingColor,
+				color: 'white'
+			}"
+			(click)="saveDocument()"
+			>{{ 'Pages.Document.AddEdit.saveDocument' | translate }}</a
+		>
+		<a
+			*ngIf="updateDocuments && updateDocuments.documentId"
+			class="btn border_radius functionalBtn"
+			[ngStyle]="{
+				'background-color': appService.whiteBrandingColor,
+				border: '1px solid' + appService.whiteBrandingColor,
+				color: 'white'
+			}"
+			(click)="saveDocument()"
+			>{{ 'Pages.Document.AddEdit.updateDocument' | translate }}</a
+		>
+	</div>
+</div>
+
+<!-- Select Client List -->
+<div
+	class="modal fade credit-note"
+	id="selecteClientList"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="myModalLabel"
+	aria-hidden="true"
+	data-backdrop="static"
+	data-keyboard="false">
+	<div class="modal-dialog" style="width: 34%; margin-top: 15%; margin-left: 34%">
+		<div class="modal-content">
+			<div
+				class="modal-header"
+				[ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="cancelClientlistPopUp()">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					<span>{{ 'Select Account ' | translate }}</span>
+				</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-12 form-group" style="margin-top: -5px">
+						<!-- <label [ngClass]="{'error':isAssetCategorySelected}">{{'Pages.Document.AddEdit.GetStarted.Category.title' | translate }}</label> -->
+						<ng-select
+							[items]="clientList"
+							class="ng-select-wrap"
+							placeholder="{{ 'Pages.Document.AddEdit.Modal.SelectClientForRole.Account.placeholder' | translate }}"
+							bindLabel="nameWithClientId"
+							bindValue="id"
+							[multiple]="false"
+							[clearable]="true"
+							[closeOnSelect]="true"
+							[searchable]="true"
+							[(ngModel)]="selectedClientId"
+							(change)="selctedClient($event)">
+						</ng-select>
+					</div>
+				</div>
+				<div
+					class="visible-md visible-lg visible-sm visible-xs"
+					style="text-align: right; margin-bottom: 0.75rem; margin-top: 1.5rem">
+					<a
+						class="btn-xs action-pause-btn action-yes-no"
+						style="padding: 7px 23px; margin-right: 10px"
+						(click)="cancelClientlistPopUp()"
+						>{{ 'Utils.Action.cancel' | translate }}</a
+					>
+					<a
+						class="btn-xs action-edit-btn action-yes-no"
+						(click)="selectClient()"
+						style="margin-right: 9px; padding: 7px 20px"
+						>{{ 'Utils.ok' | translate }}</a
+					>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

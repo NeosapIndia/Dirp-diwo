@@ -1,0 +1,96 @@
+.btn-info {
+	background-color: #6513e1;
+	border-color: #6513e1;
+	color: #ffffff;
+}
+
+.top200 {
+	top: 200px;
+}
+
+.background {
+	background: #6513e1;
+	border-color: #6513e1;
+}
+
+.detailInfo td {
+	font-weight: bold;
+	padding: 9px;
+}
+
+.ellipsisWidth {
+	display: inline-block;
+	width: 138px;
+	white-space: nowrap;
+	overflow: hidden !important;
+	text-overflow: ellipsis;
+	margin-top: 1px;
+}
+
+.user-details-manage .table > tbody > tr > td,
+.user-details-manage .table > tbody > tr > th,
+.user-details-manage .table > tfoot > tr > td,
+.user-details-manage .table > tfoot > tr > th,
+.user-details-manage .table > thead > tr > td,
+.user-details-manage .table > thead > tr > th {
+	line-height: 1.42857143;
+	vertical-align: middle;
+	border-top: 0px solid #ddd;
+	white-space: nowrap;
+	/* padding: 6px; */
+}
+
+.button-style {
+	min-width: 162px;
+	border: none;
+	border-radius: 0px;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.32) !important;
+	margin-top: -8px;
+	text-align: left;
+	font-size: 0.9rem;
+}
+
+.div-style {
+	position: absolute;
+	right: -38px;
+	float: right;
+}
+
+.size {
+	font-size: 0.9rem;
+}
+
+.btn-icon-split {
+	padding: 0;
+	overflow: hidden;
+	display: inline-flex;
+	align-items: stretch;
+	justify-content: center;
+}
+
+.btn-icon-split .icon {
+	background: rgba(0, 0, 0, 0.15);
+	display: inline-block;
+	padding: 0.375rem 0.75rem;
+}
+
+.btn-icon-split .text {
+	display: inline-block;
+	padding: 0.375rem 0.75rem;
+}
+
+.border_radius {
+	border-radius: 80px;
+}
+
+/* .modal.show .modal-dialog {
+    transform: translate3d(-2.7rem, 0, 1rem);
+}
+
+.modal.fade .modal-dialog {
+    transform: translate3d(42px, -62px, -135px);
+} */
+
+.addUserModalCSS {
+	transform: translate3d(-2.7rem, 0, 1rem);
+}

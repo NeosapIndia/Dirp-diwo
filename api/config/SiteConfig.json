@@ -1,0 +1,32 @@
+{
+	"configurable_feature": {
+		"downloadable_reports": true,
+		"dashboard_widgets": true,
+		"broadside": false,
+		"zoom": true,
+		"teams": true,
+		"google_drive": false,
+		"aws_s3": true,
+		"whatsApp": true,
+		"documents": true,
+		"agents": true,
+		"pwa_email": true,
+		"pwa_phone": true,
+		"pwa_username": false,
+		"pwa_password": false,
+		"pwa_otp": true,
+		"pwa_lockout_attempts": 5,
+		"web_email": true,
+		"web_password": false,
+		"web_otp": true,
+		"web_lockout_attempts": 5,
+		"ipAddress_api": true,
+		"support": false,
+		"chatbot_status_schedular": true,
+		"mediaCMS": true,
+		"vimeo": false,
+		"sles": true,
+		"saas": false,
+		"arvr": false
+	}
+}

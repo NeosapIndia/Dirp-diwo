@@ -1,0 +1,176 @@
+<header id="header" class="navbar navbar-default navbar-static-top" style="position: fixed">
+	<!-- start: NAVBAR HEADER -->
+	<div class="navbar-header" style="background-color: #f9fafb !important; height: 90px">
+		<button
+			style="background-color: #ef4529 !important; border-color: #ef4529 !important; cursor: pointer"
+			href="#"
+			class="sidebar-mobile-toggler pull-left btn no-radius hidden-md hidden-lg btn btn-navbar sidebar-toggle"
+			data-toggle-class="app-slide-off"
+			data-toggle-target="#app"
+			data-toggle-click-outside="#sidebar">
+			<i class="fa fa-bars"></i>
+		</button>
+		<a *ngIf="projectName == 'drip'" class="navbar-brand" [routerLink]="['/home']">
+			<div style="width: 85%; background-color: #f9fafb">
+				<img *ngIf="adminLogo" [src]="adminLogo" class="header-logo" />
+				<img *ngIf="!adminLogo && appService.defaultWebLogo" [src]="appService.defaultWebLogo" class="header-logo" />
+				<img
+					*ngIf="!adminLogo && !appService.defaultWebLogo"
+					src="assets/images/drip_logo.png"
+					width="100%"
+					class="header-logo"
+					alt="Packet" />
+			</div>
+		</a>
+
+		<!-- <a *ngIf="adminLogo && projectType == 'drip'" class="navbar-brand" [routerLink]="['/home']">
+			<div style="width: 85%; background-color: #f9fafb">
+				<img
+					[src]="adminLogo"
+					width="100%"
+					class="header-logo"
+					alt="Packet" />
+			</div>
+		</a> -->
+
+		<a *ngIf="projectName == 'diwo'" class="navbar-brand" [routerLink]="['/diwo-home']">
+			<div style="width: 85%; background-color: #f9fafb">
+				<img *ngIf="adminLogo" [src]="adminLogo" class="header-logo" />
+				<img *ngIf="!adminLogo && appService.defaultWebLogo" [src]="appService.defaultWebLogo" class="header-logo" />
+				<img
+					*ngIf="!adminLogo && !appService.defaultWebLogo"
+					src="assets/images/diwo_logo.png"
+					width="100%"
+					class="header-logo"
+					alt="Packet" />
+			</div>
+		</a>
+
+		<!-- <a *ngIf="adminLogo && projectType == 'diwo'" class="navbar-brand" [routerLink]="['/diwo-home']">
+			<div style="width: 85%; background-color: #f9fafb">
+				<img
+					[src]="adminLogo"
+					width="100%"
+					class="header-logo"
+					alt="Packet" />
+			</div>
+		</a> -->
+
+		<!-- <a class="navbar-brand navbar-brand-collapsed"> <img src="assets/images/bablr-Adminapp-logo-white.png" alt="" style="width: 145px; left: 7px; margin-left: 90px; margin-top: -5px;" /> </a> -->
+
+		<!--  <button class="btn pull-right menu-toggler visible-xs-block" id="menu-toggler" data-toggle="collapse" href=".navbar-collapse" data-toggle-class="menu-open">
+        <i class="fa fa-folder closed-icon"></i><i class="fa fa-folder-open open-icon"></i><small><i class="fa fa-caret-down margin-left-5"></i></small>
+      </button> -->
+	</div>
+
+	<!-- end: NAVBAR HEADER -->
+	<!-- start: NAVBAR COLLAPSE -->
+	<div
+		class="navbar-collapse"
+		style="
+			background-color: white !important;
+			height: 80px !important;
+			border-bottom: 2px solid rgba(0, 0, 0, 0.07) !important;
+		">
+		<!-- collapse -->
+		<div class="nav-user-wrapper" style="height: 100%">
+			<div class="media" style="padding-top: 13px; height: 100%; overflow: unset; margin-left: 2.6%">
+				<!-- <div class="media-left">
+          <a class="profile-card-photo"><img alt="" src="assets/images/logo-mnt.png"></a>
+        </div> -->
+
+				<div class="media-body header-media-body" style="text-align: right">
+					<div style="float: left">
+						<span style="float: left; font-weight: 500 !important; font-size: 1rem; color: black">{{
+							'Pages.ProjectMainHeader.Hello' | translate
+						}}</span>
+						<br />
+						<span style="font-weight: 400 !important; font-size: 0.8rem; float: left"
+							>{{ 'Pages.ProjectMainHeader.Welcomebackto' | translate }} {{ clientName
+							}}{{ 'Pages.ProjectMainHeader.workspace' | translate }}</span
+						>
+					</div>
+					<div *ngIf="appService.checkNotifcation">
+						<div *ngIf="checkNotification()"></div>
+					</div>
+					<div style="float: right; margin-top: 4px; display: inline-flex">
+						<button style="padding-right: 1.45rem" (click)="goToNotification()">
+							<img style="height: 32px" *ngIf="newNotification" src="assets/images/bell_with_dot_icon.svg" />
+							<img style="height: 32px" *ngIf="!newNotification" src="assets/images/bell_icon.svg" />
+						</button>
+						<div>
+							<span class="media-heading" style="font-weight: 500; font-size: 0.8rem; color: black !important">
+								{{ appService?.userPersonalData?.first }} {{ appService?.userPersonalData?.last }}
+							</span>
+							<div style="font-weight: 400; font-size: 0.7rem">{{ active_role }}</div>
+							<div style="position: absolute; top: 15px; right: 16px">
+								<div class="dropdown">
+									<button href class="btn btn-transparent text-white dropdown-toggle" data-toggle="dropdown">
+										<img style="height: 32px" src="assets/images/expand_more.svg" />
+									</button>
+									<ul class="dropdown-menu animated fadeInRight pull-right">
+										<li *ngIf="isSwitchUser">
+											<a (click)="switchUser()" style="font-family: 'Poppins-Regular' !important">
+												{{ 'Pages.ProjectMainHeader.switchUserrole' | translate }}
+											</a>
+										</li>
+										<li>
+											<a style="font-family: 'Poppins-Regular' !important" [routerLink]="['/manage-account']">
+												{{ 'Pages.ProjectMainHeader.myProfile' | translate }}
+											</a>
+										</li>
+										<li>
+											<a (click)="logout()" style="font-family: 'Poppins-Regular' !important">{{
+												'Pages.ProjectMainHeader.logOut' | translate
+											}}</a>
+										</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<ul class="nav navbar-left hidden-sm hidden-xs">
+			<!-- <li class="sidebar-toggler-wrapper">
+          <div>
+            <button href="javascript:void(0)" (click)="navClose()" class="btn sidebar-toggler visible-md visible-lg">
+              <i class="fa fa-bars"></i>
+            </button>
+          </div> 
+        </li> -->
+		</ul>
+		<ul class="nav navbar-right">
+			<!-- start: MESSAGES DROPDOWN -->
+
+			<!-- end: MESSAGES DROPDOWN -->
+			<!-- start: ACTIVITIES DROPDOWN -->
+			<li class="dropdown">
+				<!-- <a href class="dropdown-toggle" data-toggle="dropdown"> <i class="fa fa-bell"></i> </a>
+          <ul class="dropdown-menu dropdown-light dropdown-messages dropdown-large animated fadeInUpShort">
+            <li>
+              <span class="dropdown-header"> You have new notifications</span>
+            </li>
+            <li>
+              <div class="drop-down-wrapper ps-container">
+                <div class="list-group no-margin">
+                  <a class="media list-group-item" href=""> <img class="img-circle" alt="..." src="assets/images/avatar-1.jpg"> <span class="media-body block no-margin"> Use awesome animate.css <small class="block text-grey">10 minutes ago</small> </span> </a>
+                  <a class="media list-group-item" href=""> <span class="media-body block no-margin"> 1.0 initial released <small class="block text-grey">1 hour ago</small> </span> </a>
+                </div>
+              </div>
+            </li>
+            <li class="view-all">
+              <a href="#"> See All </a>
+            </li>
+          </ul> -->
+			</li>
+			<!-- end: ACTIVITIES DROPDOWN -->
+		</ul>
+	</div>
+	<!-- <button class="sidebar-mobile-toggler dropdown-off-sidebar btn hidden-md hidden-lg"  data-toggle-class="app-offsidebar-open" data-toggle-target="#app" data-toggle-click-outside="#off-sidebar">
+      &nbsp;
+    </button> -->
+
+	<!-- end: NAVBAR COLLAPSE -->
+</header>

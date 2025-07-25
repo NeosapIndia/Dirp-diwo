@@ -1,0 +1,455 @@
+<ion-header *ngIf="!showNotesInput && !isSCORM">
+	<ion-toolbar class="toolbar-head">
+		<ion-buttons slot="start" style="padding-top: 6px" *ngIf="isMobile && isMobileView">
+			<ion-back-button (click)="back()" text=""></ion-back-button>
+		</ion-buttons>
+		<div class="header-content">
+			<!-- *ngIf="!isMobile && !isMobileView" -->
+			<ion-buttons class="back-button" *ngIf="isdesktopView || isTabletLandscapeView || isTablet" (click)="back()">
+				<img src="assets/images/workbook/arrow_back.svg" alt="" style="width: 1.875rem; height: 1.875rem" />
+			</ion-buttons>
+			<!-- <ion-title
+        class="center-title"
+        *ngIf="wsData && wsData[0]"
+        [ngClass]="{ 'ion-title-desktop': isdesktopView}"
+      >
+        {{ wsData[0].SessionUser.title }}
+      </ion-title>   -->
+
+			<div
+				class="center-title header-title"
+				*ngIf="wsData && wsData[0]"
+				[ngClass]="{ 'ion-title-desktop': isdesktopView }">
+				{{ wsData[0].SessionUser.title }}
+			</div>
+		</div>
+	</ion-toolbar>
+</ion-header>
+
+<ion-content
+	[fullscreen]="true"
+	class="ion-padding-horizontal"
+	(ionScroll)="getScrollPos($event)"
+	[scrollEvents]="true">
+	<ng-container *ngIf="!showNotesInput">
+		<ion-grid style="margin: 1rem auto 0; padding: 0">
+
+			<!-- All modules except SCORM -->
+			<ion-row
+				*ngIf="!isSCORM"
+				style="display: flex; justify-content: center"
+				[ngClass]="{ 'ion-main-row-desktop': isdesktopView || isTabletLandscapeView || isTablet}">
+				<ion-col
+					size-sm="12"
+					size-md="9"
+					size-lg="7"
+					class="main-col"
+					[ngClass]="{ 'ion-main-col-desktop': isdesktopView || isTabletLandscapeView || isTablet}">
+					<div
+						*ngIf="sessionData && sessionData.length > 0 && sessionData[0].recordedLink"
+						style="margin-bottom: 0.5rem; font-size: 14px"
+						[ngClass]="{ 'ion-worksheet-index-desktop': isdesktopView || isTabletLandscapeView || isTablet}">
+						<a [href]="sessionData[0].recordedLink" target="_blank">{{'Utils.sessionrecordedlink' | translate}}</a>
+					</div>
+					<div *ngFor="let item of wsData; index as i;">
+						<p
+							class="ws-index"
+							[ngClass]="{ 'ion-worksheet-index-desktop': isdesktopView || isTabletLandscapeView || isTablet }">
+							{{ sessionData[0]?.DiwoModuleId === 2 ? ('Utils.lesson' | translate) : ('Utils.worksheet' | translate) }}
+							{{ i + 1 }}/{{ totleCount }}
+						</p>
+
+						<div class="ws-wrapper">
+							<div class="img-head" *ngIf="item.SessionAssets[0].type =='Image'">
+								<!-- <img
+									*ngIf="item.SessionAssets.length > 0"
+									[src]="imageHost + item.SessionAssets[0].path"
+									class="ws-img"
+									(click)="navigateToWorksheet(item.id, i)" /> -->
+
+									<!-- <div #zoomContainer class="zoom-container">										
+										<img
+											*ngIf="item.SessionAssets.length > 0"
+											[src]="imageHost + item.SessionAssets[0].path"
+											class="ws-img"
+											(click)="navigateToWorksheet(item.id, i)"
+											
+											(load)="onImageLoad(i)"
+											/>
+									</div>									 -->
+
+
+									<!-- <div #zoomContainer class="zoom-container" style="overflow: visible; touch-action: none;">
+										<img
+											#zoomImage
+											*ngIf="item.SessionAssets.length > 0"
+											[src]="imageHost + item.SessionAssets[0].path"
+											class="ws-img zoomable-img"
+											(click)="navigateToWorksheet(item.id, i)"
+											(load)="onImageLoad(i)"
+											style="touch-action: none; will-change: transform;"
+										/>
+									</div>	 -->
+									
+									
+									<div
+										#zoomContainer
+										class="zoom-container"
+										[ngClass]="{ 'zoom-active': isZoomed }"
+										style="overflow: visible;"
+										>
+										<img
+											#zoomImage
+											*ngIf="item.SessionAssets.length > 0"
+											[src]="imageHost + item.SessionAssets[0].path"
+											class="ws-img zoomable-img"
+											(click)="navigateToWorksheet(item.id, i)"
+											(load)="onImageLoad(i)"
+											style="will-change: transform;"
+										/>
+									</div>
+
+
+							</div>
+							<div
+								*ngIf="item.SessionAssets[0].type =='Video' && appService?.configurable_feature?.vimeo"
+								style="
+									margin: 0rem 0rem 0rem 0rem;
+									overflow: hidden;
+									border-top-left-radius: 1rem;
+									border-top-right-radius: 1rem;
+								">
+								<app-vimeo-video
+									[video_asset]="item.SessionAssets[0]"
+									[assignPostId]="item.id"
+									[UserId]="userId"
+									videoType="Session_Asset"
+									[currentPlayTime]="item.seconds"
+									updateTime="true">
+								</app-vimeo-video>
+							</div>
+							<div
+								*ngIf="item.SessionAssets[0].type =='Video' && appService?.configurable_feature?.mediaCMS"
+								style="
+									margin: 0rem 0rem 0rem 0rem;
+									overflow: hidden;
+									border-top-left-radius: 1rem;
+									border-top-right-radius: 1rem;
+								">
+								<app-cms-video
+									[video_asset]="item.SessionAssets[0]"
+									[assignPostId]="item.id"
+									[UserId]="userId"
+									videoType="Session_Asset"
+									[currentPlayTime]="item.seconds"
+									updateTime="true">
+								</app-cms-video>
+							</div>
+
+							<div class="worksheet-data">
+								<div class="flag-div" [ngClass]="isRtl ? 'flag-div-rtl' : 'flag-div-ltr'">
+									<div
+										class="activity-type"
+										[ngClass]="{'activity-type-all' : (item.trainerInst !== null && isTrainer) && (item.type == 'Offline Task' || item.type == 'Learning Content' || item.type == 'Discussion') && item.flgFav &&  item.flgImp && item.flgGroupActivty}">
+										<div style="display: flex; align-items: center" (click)="navigateToWorksheet(item.id, i)">
+											<img
+												*ngIf="item.type == 'Quiz' || item.type =='Quiz (Randomised)'"
+												src="assets/images/workbook/quiz_clock_icon.svg"
+												class="worksheet-type-quiz-icon" />
+											<!-- Show content icon only if there is NO video -->
+											<img
+												*ngIf="!hasVideo(item.SessionAssets) && item.type === 'Learning Content' && !item.isGuideWorksheet"
+												src="assets/images/workbook/content_icon_grey.svg"
+												class="learning-content-icon" />
+
+											<!-- Show video icon only if there is a video -->
+											<img
+												*ngIf="hasVideo(item.SessionAssets) && item.type === 'Learning Content' && !item.isGuideWorksheet"
+												src="assets/images/workbook/module_video_icon.svg"
+												class="worksheet-video-icon" />
+
+											<img
+												*ngIf="item.type === 'Learning Content' && item.isGuideWorksheet"
+												src="assets/images/workbook/arvr_icon.svg"
+												class="worksheet-guide-icon" />
+
+											<img
+												*ngIf="item.type == 'Discussion'"
+												src="assets/images/workbook/group-discussion.svg"
+												class="worksheet-disc-type-icon" />
+
+											<img
+												*ngIf="item.type == 'Follow Us'"
+												src="assets/images/workbook/follow_us_icon.svg"
+												class="worksheet-type-icon" />
+
+											<img
+												*ngIf="item.type == 'Poll'"
+												src="assets/images/workbook/poll_icon_grey.svg"
+												class="worksheet-type-poll-icon" />
+											<img
+												*ngIf="item.type == 'Word Cloud'"
+												src="assets/images/workbook/word_cloud_icon.svg"
+												class="worksheet-type-icon" />
+											<img
+												*ngIf="item.type == 'Survey'"
+												src="assets/images/workbook/survey_icon_grey.svg"
+												class="worksheet-type-icon" />
+											<img
+												*ngIf="item.type == 'Offline Task'"
+												src="assets/images/workbook/offline_task_icon_grey.svg"
+												class="worksheet-type-icon" />
+
+											<img
+												*ngIf="item.type =='Spin The Wheel'"
+												src="assets/images/workbook/spin-the-wheel_grey.svg"
+												class="worksheet-type-icon" />
+
+											<p
+												[ngClass]="{
+												'worksheet-type-text-all' : (item.trainerInst !== null && isTrainer)&& item.flgFav && item.flgImp && item.flgGroupActivty ,
+                                            	'worksheet-type-text' : (item.trainerInst !== null && isTrainer) ||  item.flgFav || item.flgImp || item.flgGroupActivty,
+												'worksheet-type-text-rtl': isRtl,
+												'worksheet-type-text-ltr': !isRtl
+												}">
+												<!-- {{ item.type == 'Quiz (Randomised)' ? 'Quiz' : item.type}} -->
+												{{ item.activityTemplate}}
+											</p>
+										</div>
+									</div>
+
+									<div
+										class="flag-group"
+										style="display: flex"
+										[ngClass]="{'flag-group-all' : (item.trainerInst !== null && isTrainer) && (item.type == 'Offline Task' || item.type == 'Learning Content' || item.type == 'Discussion') && item.flgFav &&  item.flgImp && item.flgGroupActivty}">
+										<img
+											src="assets/images/workbook/trainerNote.svg"
+											(click)="showTrainerNote(i)"
+											*ngIf="item.trainerInst !== null && !item.isShowTrainerNote && isTrainer"
+											class="flag-icons"
+											[ngClass]="isRtl ? 'flag-icons-rtl' : 'flag-icons-ltr'" />
+
+										<!-- <img
+                                            src="assets/images/workbook/trainerNoteShow.svg"
+                                            (click)="showTrainerNote(i)"
+                                            *ngIf="item.trainerInst !== null && item.isShowTrainerNote && isTrainer"
+                                            class="flag-icons" /> -->
+
+										<div
+											*ngIf="item.trainerInst !== null && item.isShowTrainerNote && isTrainer"
+											(click)="showTrainerNote(i)"
+											class="flag-icons trainer-icon-select"
+											[ngClass]="isRtl ? 'flag-icons-rtl' : 'flag-icons-ltr'"
+											[ngStyle]="appBrandingInfo && appBrandingInfo.accent_color ? {'background-color' : appBrandingInfo.accent_color} : {'background-color': ''}"></div>
+
+										<!-- check icon has been added -->
+										<img
+											*ngIf="hasVideo(item.SessionAssets) && item.worksheetStatus === 'Completed' && item.type == 'Learning Content'"
+											src="assets/images/landrover/check_icon.png"
+											class="flag-check-icons"
+											[ngClass]="'lesson-check-icon'" />
+
+										<!-- <img *ngIf="hasVideo(item.SessionAssets) && item.SessionUser.worksheetStatus === 'Completed'" 
+                                            src="assets/images/landrover/check_icon.png" class="flag-icons"
+                                            [ngClass]="'lesson-check-icon'" /> -->
+
+										<img
+											src="assets/images/workbook/favorite_gray.svg"
+											*ngIf="item.flgFav && !item.isFav"
+											(click)="changeFlag(i,'Fav');"
+											class="flag-icons"
+											[ngClass]="isRtl ? 'flag-icons-rtl' : 'flag-icons-ltr'" />
+
+										<!-- <img
+                                            src="assets/images/workbook/favorite_selected_icon.svg"
+                                            *ngIf="item.flgFav && item.isFav"
+                                            (click)="changeFlag(i,'Fav');"
+                                            class="flag-icons" /> -->
+
+										<div
+											*ngIf="item.flgFav && item.isFav"
+											(click)="changeFlag(i,'Fav');"
+											class="flag-icons fav-icon-select"
+											[ngClass]="isRtl ? 'flag-icons-rtl' : 'flag-icons-ltr'"></div>
+
+										<img
+											src="assets/images/workbook/important.svg"
+											*ngIf="item.flgImp"
+											class="flag-icons"
+											[ngClass]="isRtl ? 'flag-icons-rtl' : 'flag-icons-ltr'" />
+
+										<!-- <img
+											src="assets/images/workbook/group_activity.svg"
+											*ngIf="item.flgGroupActivty"
+											class="flag-icons"
+											[ngClass]="isRtl ? 'flag-icons-rtl' : 'flag-icons-ltr'"
+											style="margin-right: 1rem" /> -->
+									</div>
+								</div>
+
+								<!-- <p class="description" *ngIf="item.description" (click)="navigateToWorksheet(item.id)">
+                                    {{item.description}}
+                                </p> -->
+
+								<div id="All_module_description{{item.id}}" class="description"></div>
+
+								<p class="trainer-note" *ngIf="item.trainerInst && item.isShowTrainerNote">{{item.trainerInst}}</p>
+
+								<div class="edit-learner-div" *ngIf="item.userNote">									
+									<div class="show-learner-note" [ngClass]="isRtl ? 'show-learner-note-rtl' : 'show-learner-note-ltr'">
+										<!-- <p class="learner-note">{{item.userNote}}</p> -->
+										<div class="learner-note" [innerHTML]="item.userNote"></div>
+									</div>
+
+									<div style="width: 9%; cursor: pointer" (click)="addEditLearnerNote(item, i)">
+										<img src="assets/images/workbook/edit_learner_note.svg" style="margin-bottom: 0.3rem" />
+									</div>
+								</div>
+
+								<div id="add-notes-label" (click)="addEditLearnerNote(item, i)" *ngIf="!item.userNote">
+									<p *ngIf="isMobile" style="color: darkgray">{{ 'Utils.taptoaddyournotes' | translate }}</p>
+									<p *ngIf="!isMobile" style="color: darkgray">{{ 'Utils.clicktoaddyournotes' | translate }}</p>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<ion-infinite-scroll *ngIf="totleCount > wsData.length &&isApiCall" (ionInfinite)="loadMore($event)">
+						<ion-infinite-scroll-content loadingSpinner="circles" loadingText="{{'Utils.loadingMoreData' | translate}}">
+						</ion-infinite-scroll-content>
+					</ion-infinite-scroll>
+
+					<div *ngIf="wsData && wsData[0] && wsData[0].SessionUser.isAllowedPDF">
+						<ion-button [disabled]="isMobile" class="btn-print" (click)="goToPrintPage()">
+							{{'Utils.printWorksheets' | translate}}
+						</ion-button>
+
+						<p *ngIf="isMobile" style="color: darkgray; font-size: 12px; text-align: center; margin-top: 0.5rem">
+							{{'Utils.onlyfordesktop' | translate}}
+						</p>
+					</div>
+				</ion-col>
+			</ion-row>
+
+			<div class="back-to-top-btn" *ngIf="backToTop" (click)="gotToTop()">
+				<ion-icon id="top-icon" name="chevron-up-outline"></ion-icon>
+			</div>
+
+			<!-- SCORM MODULE -->
+			<ion-row
+				style="display: flex; justify-content: center;"
+				*ngIf="isSCORM"
+				[ngClass]="{ 'ion-main-row-desktop': isdesktopView || isTabletLandscapeView || isTablet}">
+				<ion-col
+					size-sm="12"
+					size-md="12"
+					size-lg="12"	
+					class="main-col scorm-full-height-col"
+					[ngClass]="{ 'ion-main-col-desktop-scorm': (isdesktopView && isSCORM) || (isTabletLandscapeView && isSCORM) || (isTablet && isSCORM) }"					
+					>
+						
+						<app-scorm-player *ngIf="ScormAssetsData[0]?.launchFile" [scormSrc] = ScormAssetsData[0].launchFile ></app-scorm-player>
+
+				</ion-col>
+			</ion-row>
+
+		</ion-grid>
+
+		<ion-refresher
+			*ngIf="!showNotesInput"
+			ion-refresh-native
+			slot="fixed"
+			disabled="false"
+			(ionRefresh)="doRefresh($event)"
+			pullFactor="0.1"
+			pullMin="50"
+			pullMax="200">
+			<ion-refresher-content></ion-refresher-content>
+		</ion-refresher>
+	</ng-container>
+
+	<ng-container *ngIf="showNotesInput">
+		<ion-grid>
+			<ion-row style="height: 92vh; background-color: white; display: flex; justify-content: center" class="main-row">
+				<ion-col size-sm="12" size-md="9" size-lg="7" class="main-col">
+					<div class="modal-action-btn-div">
+						<a (click)="cancel()" style="align-self: center; cursor: pointer" class="cancel"
+							>{{'Utils.cancel' | translate}}</a
+						>
+						<ion-button shape="round" (click)="saveLearnerNote()" class="save">{{'Utils.save' | translate}}</ion-button>
+					</div>
+<!-- 
+					<textarea
+						rows="10"
+						placeholder="{{'Utils.Whathaveyoulearnedtoday' | translate}}"
+						[(ngModel)]="userNote"
+						class="learner-input"
+						[ngClass]="{ 'learner-input-desktop': isdesktopView || isTabletLandscapeView || isTablet}"></textarea> -->
+
+
+					<!-- Custom toolbar container -->
+					<div id="custom-toolbar" class="custom-toolbar-container">					
+						<span class="ql-formats">
+							<!-- Custom undo button -->
+							<button class="ql-undo" type="button">
+								<svg viewBox="0 0 18 18" width="18" height="18" class="custom-toolbar-icon">
+								<path class="ql-stroke" d="M10 3H5.5L7 4.5 5.5 6 2.5 3 5.5 0 7 1.5 5.5 3H10c2.2 0 4 1.8 4 4s-1.8 4-4 4h-5v1h5c2.8 0 5-2.2 5-5s-2.2-5-5-5Z" 
+									stroke-width="1.2"/>
+								</svg>
+							</button>
+
+							<!-- Custom redo button -->
+							<button class="ql-redo" type="button">
+								<svg viewBox="0 0 18 18" width="18" height="18" class="custom-toolbar-icon">
+								<path class="ql-stroke" d="M8 3h4.5L11 1.5 12.5 0l3 3-3 3L11 4.5 12.5 3H8c-2.2 0-4 1.8-4 4s1.8 4 4 4h5v1H8c-2.8 0-5-2.2-5-5s2.2-5 5-5Z"
+									stroke-width="1.2"/>
+								</svg>
+							</button>	
+						</span>
+						<span class="ql-formats">
+							<button class="ql-bold"></button>
+							<button class="ql-italic"></button>
+							<button class="ql-underline"></button>
+						</span>
+						<span class="ql-formats">
+							<button class="ql-header" value="1"></button>
+							<button class="ql-header" value="2"></button>
+						</span>
+						<span class="ql-formats" style="margin-right: 7px !important;">
+							<button class="ql-list" value="ordered"></button>
+							<button class="ql-list" value="bullet"></button>
+						</span>
+						<span class="ql-formats">
+							<button class="ql-link"></button>
+							<!-- <button class="ql-image"></button> -->
+						</span>
+						<!-- <span class="ql-formats">
+							<button class="ql-clean"></button>
+						</span> -->
+						<span class="ql-formats">
+							<button class="ql-strike"></button>
+						</span>
+
+						<span class="ql-formats">	
+							<button class="ql-align" value=""></button>			
+							<button class="ql-align" value="center"></button>		
+							<button class="ql-align" value="right"></button>				
+							<button class="ql-align" value="justify"></button>
+						</span>
+					</div>
+
+					<!-- Quill Editor -->
+					<quill-editor
+						#quillEditorRef
+						[(ngModel)]="userNote"
+						[modules]="quillModules"
+						placeholder="{{'Utils.Whathaveyoulearnedtoday' | translate}}"
+						class="learner-input"
+						[ngClass]="{ 'learner-input-desktop': isdesktopView || isTabletLandscapeView || isTablet }">
+					</quill-editor>
+
+				</ion-col>
+			</ion-row>
+		</ion-grid>
+	</ng-container>
+</ion-content>

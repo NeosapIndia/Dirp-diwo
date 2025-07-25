@@ -1,0 +1,353 @@
+<div class="container-fluid" style="margin: 2% 2% 2% 3%; min-height: calc(100vh - 110px)">
+	<!-- <div class="row add-edit-main-row">
+		<span>
+			<span
+				[routerLink]="['/drips-library']"
+				style="margin-left: 0.25rem; color: #637373; margin-right: 2px; cursor: pointer">
+				{{ 'Pages.Drips.AddEdit.pagetitle' | translate }}
+			</span>
+			<img src="assets/images/arrow_forward.svg" style="width: 27px" />
+			<span style="color: #6513e1; margin-left: 3px">
+				{{ 'Pages.Drips.AddEdit.subtitle' | translate }}
+			</span>
+		</span>
+	</div> -->
+
+	<div class="row">
+		<div class="col-md-12">
+			<div class="row section-wrapper" style="margin-top: 2rem">
+				<div class="form-title">
+					<span>{{ 'Pages.Drips.AddEdit.GetStarted.title' | translate }}</span>
+				</div>
+				<div class="row card-body">
+					<form [formGroup]="dripForm">
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group" style="margin-top: -5px">
+									<label>{{ 'Pages.Drips.AddEdit.GetStarted.DripTitle.title' | translate }}</label>
+									<input
+										type="text"
+										class="form-control"
+										placeholder="{{
+											type === 'drip'
+												? ('Pages.Drips.AddEdit.GetStarted.DripTitle.contactplaceholder' | translate)
+												: ('Pages.Drips.AddEdit.GetStarted.DripTitle.placeholder' | translate)
+										}}"
+										formControlName="drip_title" />
+									<div class="error" *ngIf="dripF.drip_title.errors && dripF.drip_title.touched">
+										<div *ngIf="dripF.drip_title.errors.required">
+											{{ 'Pages.Drips.AddEdit.GetStarted.DripTitle.error' | translate }}
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="col-md-6">
+								<div
+									class="form-group"
+									style="margin-top: -5px"
+									[ngClass]="{
+										'has-error': dripF.drip_type.invalid && (dripF.drip_type.dirty || dripF.drip_type.touched),
+										'has-success': dripF.drip_type.valid && (dripF.drip_type.dirty || dripF.drip_type.touched)
+									}">
+									<label>{{ 'Pages.Drips.AddEdit.GetStarted.DripType.title' | translate }}</label>
+									<ng-select
+										[items]="dripTypeList"
+										class="ng-select-wrap"
+										placeholder="{{ 'Pages.Drips.AddEdit.GetStarted.DripType.placeholder' | translate }}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="drip_type"
+										(change)="selectDripType($event)">
+									</ng-select>
+									<div class="error" *ngIf="dripF.drip_type.errors && dripF.drip_type.touched">
+										<div *ngIf="dripF.drip_type.errors.required">
+											{{ 'Pages.Drips.AddEdit.GetStarted.DripType.error' | translate }}
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</form>
+					<div class="row">
+						<div class="col-md-6">
+							<form [formGroup]="dripForm">
+								<div
+									class="form-group"
+									[ngClass]="{
+										'has-error':
+											dripF.drip_description.invalid &&
+											(dripF.drip_description.dirty || dripF.drip_description.touched),
+										'has-success':
+											dripF.drip_description.valid && (dripF.drip_description.dirty || dripF.drip_description.touched)
+									}">
+									<label>{{ 'Pages.Drips.AddEdit.GetStarted.DripDescription.title' | translate }}</label>
+									<textarea
+										class="form-control"
+										placeholder="{{
+											type === 'drip'
+												? ('Pages.Drips.AddEdit.GetStarted.DripDescription.contactplaceholder' | translate)
+												: ('Pages.Drips.AddEdit.GetStarted.DripDescription.placeholder' | translate)
+										}}"
+										formControlName="drip_description">
+									</textarea>
+									<div class="error" *ngIf="dripF.drip_description.errors && dripF.drip_description.touched">
+										<div *ngIf="dripF.drip_description.errors.required">
+											{{ 'Pages.Drips.AddEdit.GetStarted.DripDescription.error' | translate }}
+										</div>
+									</div>
+								</div>
+							</form>
+						</div>
+
+						<div class="col-md-12">
+							<form [formGroup]="dripForm">
+								<!-- <div class="col-md-4">
+									<div
+										class="form-group"
+										[ngClass]="{
+											'has-error':
+												dripF.showBackButton.invalid && (dripF.showBackButton.dirty || dripF.showBackButton.touched),
+											'has-success':
+												dripF.showBackButton.valid && (dripF.showBackButton.dirty || dripF.showBackButton.touched)
+										}">
+										<label>{{ 'Pages.Drips.AddEdit.GetStarted.showGotoHomepage' | translate }}</label>
+										<div>
+											<label class="switch">
+												<input type="checkbox" class="form-control js-switch" formControlName="showBackButton" />
+												<span class="slider round"> </span>
+											</label>
+										</div>
+									</div>
+								</div> -->
+								<div class="col-md-3">
+									<div class="form-group" *ngIf="selectedDripType != 1 && selectedDripType != 4">
+										<label>{{ 'Pages.Drips.AddEdit.GetStarted.loginRequired' | translate }}</label>
+										<div>
+											<label class="switch">
+												<input type="checkbox" class="form-control js-switch" formControlName="requiredLogging" />
+												<span class="slider round"> </span>
+											</label>
+										</div>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div *ngIf="selectedDripType == 5">
+				<!-- HEader Section -->
+				<div class="row section-wrapper" style="margin-top: 2rem">
+					<div class="form-title">
+						<span>BUILD YOUR DRIP > Header</span>
+					</div>
+					<div class="row card-body">
+						<form [formGroup]="emailNoneNativeForm">
+							<div class="row">
+								<div class="col-md-3">
+									<div class="form-group" style="margin-top: -5px">
+										<label>{{
+											'Pages.Drips.AddEdit.BuildYourDripWhatsapp.HeaderType.Header.changeimage' | translate
+										}}</label>
+
+										<div class="add-image-card">
+											<div class="add-image-card-div" style="width: auto">
+												<img src="assets/images/landrover/LandRoverMainImg.avif" />
+											</div>
+											<div class="add-image-card-text-div">
+												<p class="asset-title-para" data-toggle="tooltip" data-placement="top" title="Dummy">
+													{{ 'Land Rover' }}
+												</p>
+											</div>
+											<div style="display: flex; align-items: center">
+												<img src="assets/images/delete_icon.svg" style="width: 2rem; cursor: pointer" />
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="col-md-12" style="padding-left: 0; padding-right: 0">
+									<div class="col-md-6">
+										<div class="form-group">
+											<label> Header Text</label>
+
+											<input
+												type="text"
+												class="form-control"
+												placeholder="{{ 'Pages.Drips.AddEdit.BuildYourDripEmail.SubjectLine.placeholder' | translate }}"
+												formControlName="email_subject_line" />
+											<div class="error" *ngIf="f3.email_subject_line.errors && f3.email_subject_line.touched">
+												<div *ngIf="f3.email_subject_line.errors.required">
+													{{ 'Pages.Drips.AddEdit.BuildYourDripEmail.SubjectLine.error' | translate }}
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="col-md-12">
+									<div class="form-group">
+										<label>Header Description</label>
+
+										<textarea
+											class="form-control"
+											style="margin-bottom: 0.5rem"
+											placeholder="{{ 'Pages.Drips.AddEdit.BuildYourDripEmail.BodyCopy.placeholder' | translate }}"
+											formControlName="email_body">
+										</textarea>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+
+				<!-- block   -->
+				<div *ngFor="let item of blockList; let i = index">
+					<!-- [ngStyle]="i == 0 ? { 'margin-top': '2rem' } : { 'margin-top': '4rem' }" -->
+					<div class="row section-wrapper" style="margin-top: 2rem">
+						<div class="form-title">
+							<span>BUILD YOUR DRIP > BLOCK {{ i + 1 }}</span>
+						</div>
+						<div class="row card-body">
+							<form>
+								<div class="row">
+									<div class="col-md-3">
+										<div class="form-group" style="margin-top: -5px">
+											<label>{{
+												'Pages.Drips.AddEdit.BuildYourDripWhatsapp.HeaderType.Header.changeimage' | translate
+											}}</label>
+
+											<div class="add-image-card">
+												<div class="add-image-card-div" style="width: auto">
+													<img [src]="item.blockImage" />
+												</div>
+												<div class="add-image-card-text-div">
+													<p class="asset-title-para" data-toggle="tooltip" data-placement="top" title="Dummy">
+														{{ 'Land Rover' }}
+													</p>
+												</div>
+												<div style="display: flex; align-items: center">
+													<img src="assets/images/delete_icon.svg" style="width: 2rem; cursor: pointer" />
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-6">
+										<div class="form-group">
+											<label> Header Text</label>
+
+											<input
+												type="text"
+												class="form-control"
+												placeholder="{{ 'Pages.Drips.AddEdit.BuildYourDripEmail.SubjectLine.placeholder' | translate }}"
+												[(ngModel)]="item.headerText"
+												[ngModelOptions]="{
+													standalone: true
+												}" />
+										</div>
+									</div>
+
+									<div class="col-md-12">
+										<div class="form-group">
+											<label>Header Description</label>
+
+											<textarea
+												class="form-control"
+												style="margin-bottom: 0.5rem"
+												placeholder="{{ 'Pages.Drips.AddEdit.BuildYourDripEmail.BodyCopy.placeholder' | translate }}"
+												[(ngModel)]="item.headerDescription"
+												[ngModelOptions]="{
+													standalone: true
+												}">
+											</textarea>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-4">
+										<div class="form-group">
+											<label>{{ 'Pages.Drips.AddEdit.BuildYourDripEmail.CalltoAction.title' | translate }}</label>
+											<input
+												type="text"
+												class="form-control"
+												style="margin-bottom: 0.5rem"
+												placeholder="{{
+													'Pages.Drips.AddEdit.BuildYourDripEmail.CalltoAction.placeholder' | translate
+												}}"
+												maxlength="25"
+												[(ngModel)]="item.callToAction"
+												[ngModelOptions]="{
+													standalone: true
+												}" />
+										</div>
+									</div>
+									<div class="col-md-8">
+										<div class="form-group" style="margin-top: 1.2rem">
+											<label></label>
+
+											<input
+												type="text"
+												class="form-control"
+												placeholder="{{ 'hyper_link' }}"
+												[(ngModel)]="item.hyper_link"
+												[ngModelOptions]="{
+													standalone: true
+												}" />
+										</div>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+					<!-- <div class="col-md-12" style="cursor: pointer; margin-top: 1rem; padding-right: 0; margin-bottom: 1rem">
+						<img
+							src="assets/images/delete_icon.svg"
+							style="width: 2.4rem; cursor: pointer; float: right"
+							(click)="removeBlocks(i)" />
+					</div> -->
+				</div>
+
+				<div class="col-md-12" style="cursor: pointer; margin-top: 1rem; padding-right: 0" *ngIf="blockList.length < 3">
+					<img
+						src="assets/images/add_icon.svg"
+						title="Add more"
+						(click)="addMoreBlocks()"
+						alt=""
+						style="float: right" />
+				</div>
+
+				<div style="float: right; margin-top: 3rem">
+					<button
+						class="btn btn-o btn-primary border_radius functionalBtn"
+						style="
+							margin-right: 20px;
+							background-color: lightgray !important;
+							color: black;
+							border: 1px solid lightgray !important;
+						">
+						{{ 'Utils.cancel' | translate }}
+					</button>
+					<a
+						class="btn btn-o btn-primary border_radius functionalBtn"
+						style="
+							margin-right: 20px;
+							background-color: lightgray !important;
+							color: black;
+							border: 1px solid lightgray !important;
+						">
+						{{ 'Utils.Action.saveasdraft' | translate }}</a
+					>
+					<a class="btn btn-o btn-primary border_radius functionalBtn"> {{ 'Utils.Action.publishdrip' | translate }}</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

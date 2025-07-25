@@ -1,0 +1,93 @@
+.half-padding {
+	padding: 0.5rem 0;
+}
+
+ion-col {
+	box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.2);
+	margin-bottom: 1.1rem;
+}
+
+.back-to-top-btn {
+	background: var(--branding-color);
+	position: fixed;
+	border-radius: 50%;
+	width: 3rem;
+	height: 3rem;
+	color: #fff;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	transform: translateX(-50%);
+	right: 3%;
+	bottom: 5%;
+	z-index: 999;
+
+	#top-icon {
+		height: 45%;
+		width: 45%;
+	}
+}
+
+// .header-logo {
+//     height: 45px;
+//     vertical-align: middle;
+//     margin-top: 10px;
+//     margin-bottom: 10px;
+// }
+
+.header-logo {
+	height: 2.188rem;
+	margin: 0 auto; /* Horizontally center the logo */
+	// display: block; /* Ensure the logo is treated as a block element */
+	margin-top: 0.625rem;
+	margin-bottom: 0.25rem;
+}
+
+ion-title {
+	display: flex;
+	align-items: center; /* Vertically center within the ion-title */
+	justify-content: center; /* Horizontally center */
+	height: 100%; /* Make sure the ion-title occupies the full height */
+}
+
+.toolbar-head {
+	display: flex;
+	align-items: center; /* Vertically center the content within the toolbar */
+}
+
+ion-toolbar {
+	padding: 0 1rem;
+}
+
+ion-toolbar.toolbar-head {
+	height: 4.063rem;
+}
+
+ion-col.main-col {
+	padding-left: 0px;
+	padding-right: 0px;
+	border-radius: 1rem;
+	box-shadow: none;
+	margin-top: 1rem;
+	margin-bottom: 0.9rem;
+	margin-left: auto;
+	margin-right: auto;
+	// border: 2px solid lightgray;
+}
+
+/* Optional: Adjust for different screen sizes if necessary */
+// @media (min-width: 768px) {
+// 	ion-col.main-col {
+// 	  max-width: 80%; /* Adjust as needed */
+// 	}
+//   }
+
+.ion-main-col-desktop {
+	max-width: 40% !important;
+	width: 100% !important;
+}
+
+.ion-main-row-desktop {
+	display: flex;
+	flex-direction: column;
+}

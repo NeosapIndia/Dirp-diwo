@@ -1,0 +1,713 @@
+<div class="container-fluid" style="background-color: #ffffff; padding: 0px">
+	<div style="margin: 0%">
+		<div class="row">
+			<div class="col-md-2" (click)="backStep()">
+				<div class="arrow" style="justify-content: start">
+					<!-- <img style="width: 4rem; margin-left: 2rem; transform: rotate(180deg)" src="assets/images/arrow_icon.svg" /> -->
+					<div [innerHTML]="iconObject['arrow_icon_rotate']"></div>
+				</div>
+			</div>
+
+			<div class="col-md-8">
+				<div style="max-height: 130vh">
+					<div class="row">
+						<div class="col-md-1" *ngIf="sessionData && !sessionData.trainerSurvey"></div>
+						<div
+							[ngClass]="{
+								'col-md-12': sessionData && sessionData.trainerSurvey,
+								'col-md-10': sessionData && !sessionData.trainerSurvey
+							}">
+							<div class="row">
+								<div class="col-md-12">
+									<h3
+										class="session-step-count"
+										[ngStyle]="{
+											'margin-left': sessionData && sessionData.trainerSurvey ? '4rem' : '-1.5rem',
+											color: appService.whiteBrandingColor
+										}">
+										{{ 'Pages.Session.CloseSession.step' | translate }} {{ stepCount }}
+									</h3>
+								</div>
+							</div>
+
+							<!-- Status Bar -->
+							<div
+								class="row"
+								[ngStyle]="{
+									display: sessionData && sessionData.trainerSurvey ? 'flex' : '',
+									'justify-content': sessionData && sessionData.trainerSurvey ? 'center' : ''
+								}">
+								<div
+									[ngClass]="{
+										'col-md-2': sessionData && sessionData.trainerSurvey,
+										'col-md-3': sessionData && !sessionData.trainerSurvey
+									}"
+									*ngFor="let i of status"
+									[ngStyle]="{
+										'margin-top': i <= stepCount ? '-1px' : '0',
+										  
+									}">
+									<hr
+										class="active-step-status"
+										[ngStyle]="{ 'background-color': appService.whiteBrandingColor }"
+										*ngIf="i <= stepCount" />
+									<hr class="inactive-step-status" *ngIf="i > stepCount" />
+								</div>
+							</div>
+						</div>
+						<div class="col-md-1" *ngIf="sessionData && !sessionData.trainerSurvey"></div>
+					</div>
+
+					<!-- All Steps -->
+					<div class="row">
+						<div *ngIf="stepCount == 1">
+							<div class="step-heading" style="text-align: center; margin-top: 1%; margin-bottom: 1%">
+								<span>
+									{{ 'Pages.Session.CloseSession.ConfirmDetails.title' | translate }}
+								</span>
+							</div>
+							<div class="step-form" style="min-height: 23vh">
+								<div style="height: 20vh; display: grid; align-items: center">
+									<form [formGroup]="sessionForm">
+										<div class="row">
+											<div class="col-md-2"></div>
+											<div class="col-md-8">
+												<div class="form-group session-style">
+													<label>{{
+														'Pages.Session.CloseSession.ConfirmDetails.SessionTitle.title' | translate
+													}}</label>
+													<input
+														class="form-control"
+														type="text"
+														placeholder="{{
+															'Pages.Session.CloseSession.ConfirmDetails.SessionTitle.placeholder' | translate
+														}}"
+														formControlName="title" />
+													<div class="error" *ngIf="f1.title.errors && f1.title.touched">
+														<div *ngIf="f1.title.errors.required">
+															{{ 'Pages.Session.CloseSession.ConfirmDetails.SessionTitle.error' | translate }}
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-md-2"></div>
+											<div class="col-md-8">
+												<div class="form-group session-style">
+													<label>{{
+														'Pages.Session.CloseSession.ConfirmDetails.SessionLanguage.title' | translate
+													}}</label>
+													<input
+														class="form-control"
+														type="text"
+														placeholder="{{
+															'Pages.Session.CloseSession.ConfirmDetails.SessionLanguage.placeholder' | translate
+														}}"
+														formControlName="language" />
+													<div class="error" *ngIf="f1.language.errors && f1.language.touched">
+														<div *ngIf="f1.language.errors.required">
+															{{ 'Pages.Session.CloseSession.ConfirmDetails.SessionLanguage.error' | translate }}
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-md-2"></div>
+											<div class="col-md-8">
+												<div class="form-group session-style">
+													<label>{{
+														'Pages.Session.CloseSession.ConfirmDetails.SessionLocation.title' | translate
+													}}</label>
+													<input
+														class="form-control"
+														type="text"
+														formControlName="location"
+														placeholder="{{
+															'Pages.Session.CloseSession.ConfirmDetails.SessionLocation.placeholder' | translate
+														}}" />
+													<div class="error" *ngIf="f1.location.errors && f1.location.touched">
+														<div *ngIf="f1.location.errors.required">
+															{{ 'Pages.Session.CloseSession.ConfirmDetails.SessionLocation.error' | translate }}
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-md-2"></div>
+											<div class="col-md-4 session-style date">
+												<div class="form-group">
+													<label>{{ 'Pages.Session.CloseSession.ConfirmDetails.DateandTime.title' | translate }}</label>
+													<input
+														*ngIf="selectedDate"
+														type="text"
+														ngxDaterangepickerMd
+														[showDropdowns]="true"
+														onkeydown="return false"
+														name="sDate"
+														id="sDate"
+														[showClearButton]="false"
+														[(ngModel)]="selectedDate"
+														[showCancel]="true"
+														[singleDatePicker]="true"
+														[autoApply]="true"
+														[locale]="{ applyLabel: 'ok', format: 'DD-MM-YYYY' }"
+														placeholder="DD-MM-YYYY"
+														formControlName="date"
+														autocomplete="off"
+														(change)="DateChange($event)"
+														class="form-control" />
+													<div class="error" *ngIf="f1.date.errors && f1.date.touched">
+														<div *ngIf="f1.date.errors.required">
+															{{ 'Pages.Session.CloseSession.ConfirmDetails.DateandTime.error' | translate }}
+														</div>
+													</div>
+												</div>
+											</div>
+											<div class="col-md-4 session-style">
+												<div class="form-group">
+													<label style="visibility: hidden">
+														{{ 'Pages.Session.CloseSession.ConfirmDetails.Time.title' | translate }}
+													</label>
+													<ng-select
+														[items]="timePicker"
+														formControlName="time"
+														class="ng-select-wrap"
+														placeholder="{{ 'Pages.Session.CloseSession.ConfirmDetails.Time.title' | translate }}"
+														bindLabel="time"
+														bindValue="id"
+														[multiple]="false"
+														[closeOnSelect]="true"
+														[searchable]="false">
+													</ng-select>
+													<div class="error" *ngIf="f1.time.errors">
+														<div *ngIf="f1.time.errors.required">
+															{{ 'Pages.Session.CloseSession.ConfirmDetails.Time.error' | translate }}
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-md-2"></div>
+											<div class="col-md-4 session-style date">
+												<div class="form-group">
+													<label>{{
+														'Pages.Session.CloseSession.ConfirmDetails.DateandTimeEnd.title' | translate
+													}}</label>
+													<input
+														type="text"
+														ngxDaterangepickerMd
+														[showDropdowns]="true"
+														onkeydown="return false"
+														name="sEDate"
+														id="sEDate"
+														[showClearButton]="false"
+														[(ngModel)]="selectedEndDate"
+														[showCancel]="true"
+														[singleDatePicker]="true"
+														[autoApply]="true"
+														[locale]="{ applyLabel: 'ok', format: 'DD-MM-YYYY' }"
+														placeholder="DD-MM-YYYY"
+														formControlName="enddate"
+														autocomplete="off"
+														(change)="EndDateChange($event)"
+														class="form-control" />
+													<div class="error" *ngIf="f1.enddate.errors">
+														<div *ngIf="f1.enddate.errors.required">
+															{{ 'Pages.Session.CloseSession.ConfirmDetails.DateandTimeEnd.error' | translate }}
+														</div>
+													</div>
+												</div>
+											</div>
+											<div class="col-md-4 session-style">
+												<div class="form-group">
+													<label style="visibility: hidden">
+														{{ 'Pages.Session.CloseSession.ConfirmDetails.TimeEnd.title' | translate }}
+													</label>
+													<ng-select
+														[items]="timePicker"
+														formControlName="endtime"
+														class="ng-select-wrap"
+														placeholder="{{ 'Pages.Session.CloseSession.ConfirmDetails.TimeEnd.title' | translate }}"
+														bindLabel="time"
+														bindValue="id"
+														[multiple]="false"
+														[closeOnSelect]="true"
+														[searchable]="false">
+													</ng-select>
+													<div class="error" *ngIf="f1.endtime.errors">
+														<div *ngIf="f1.endtime.errors.required">
+															{{ 'Pages.Session.CloseSession.ConfirmDetails.TimeEnd.error' | translate }}
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</form>
+								</div>
+							</div>
+						</div>
+
+						<div *ngIf="stepCount == 2">
+							<div class="step-heading">
+								<span>{{ 'Pages.Session.CloseSession.ApprovedAttendance.title' | translate }}</span>
+							</div>
+							<div class="step-form">
+								<div class="row">
+									<div class="col-md-12">
+										<div
+											class="row"
+											style="
+												margin-bottom: 2rem;
+												max-height: 50vh;
+												overflow: auto;
+												padding-top: 0.5%;
+												overflow-x: hidden;
+											">
+											<div class="col-md-12 mar-bot" *ngFor="let item of allParticipants; let i = index">
+												<div class="row" style="display: flex; align-items: baseline">
+													<div class="col-md-4">
+														<p style="font-size: 1.2rem !important">{{ item.User.fullName }}</p>
+													</div>
+													<div class="col-md-2" style="text-align: right">
+														<span
+															class="btn-xs participant-status-approved"
+															style="font-size: 1rem !important"
+															*ngIf="item.attendanceStatus == 'Present'"
+															(click)="editAttendance('Absent', item.id)">
+															{{ 'Pages.Session.CloseSession.ApprovedAttendance.present' | translate }}
+														</span>
+														<span
+															class="btn-xs participant-status-not-approve"
+															style="font-size: 1rem !important"
+															*ngIf="item.attendanceStatus == 'Absent'"
+															(click)="editAttendance('Present', item.id)">
+															{{ 'Pages.Session.CloseSession.ApprovedAttendance.absent' | translate }}
+														</span>
+													</div>
+													<div class="col-md-6">
+														<input
+															class="form-control"
+															type="text"
+															placeholder="{{ 'Pages.Session.CloseSession.ApprovedAttendance.addnote' | translate }}"
+															[(ngModel)]="item.trainerNote"
+															(blur)="addUserNote(item.trainerNote, item.id)" />
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-md-12" style="text-align: center; font-size: 1.1rem; margin-top: 2%">
+												{{ 'Pages.Session.CloseSession.ApprovedAttendance.totalparticipantpresent' | translate }}:
+												{{ totalPresent }}
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div *ngIf="stepCount == 3 && sessionData && sessionData.trainerSurvey">
+							<div class="step-heading-3">
+								<span class="upload-photo-title">
+									{{ 'Pages.Session.CloseSession.TrainerSurvey.title' | translate }}</span
+								>
+								<div class="step-form" style="min-height: 13vh">
+									<div class="row">
+										<div class="card-body">
+											<div class="row">
+												<div class="col-md-12" *ngFor="let item of sessionData.SessionWorksheets; let i = index">
+													<div
+														style="display: flex; justify-content: center; margin-top: 10px; margin-bottom: 0.5rem"
+														*ngIf="item.trainerSurvey">
+														<a
+															class="btn border_radius pull-right add-edit-btn big-button"
+															[ngStyle]="{
+																'background-color': appService.whiteBrandingColor,
+																border: '1px solid' + appService.whiteBrandingColor,
+																color: 'white'
+															}"
+															style="font-weight: 400; width: 25%"
+															(click)="takeSurvey(item)"
+															[href]="takeSurveyUrl"
+															target="_blank"
+															>{{ 'Pages.Session.CloseSession.TrainerSurvey.takeSurvey' | translate }} {{ i + 1 }}
+														</a>
+														<img src="assets/images/check_icon.svg" class="check-img-icon" *ngIf="item.submit" />
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div *ngIf="stepCount == 4 && sessionData && sessionData.trainerSurvey">
+							<div class="step-heading-3">
+								<span class="upload-photo-title">
+									{{ 'Pages.Session.CloseSession.UploadSessionPhotos.title' | translate }}</span
+								>
+								<div class="step-form" style="min-height: 25vh">
+									<div class="row">
+										<!-- <div class="form-title">
+                                            <span>Upload media</span>
+                                        </div> -->
+										<div class="card-body">
+											<div class="row">
+												<div class="col-md-12">
+													<div style="display: flex; justify-content: center; margin-top: 10px">
+														<label
+															class="btn pad fileinput-button browse_lable big-button"
+															[ngStyle]="{
+																'background-color': appService.whiteBrandingColor,
+																border: '1px solid' + appService.whiteBrandingColor,
+																color: 'white'
+															}">
+															<input
+																id="mediaWeb"
+																type="file"
+																accept=".jpg, .png, .pdf, .mp4, .pptx"
+																maxlength="maxCount-showImagepreviews.length"
+																[(ngModel)]="uploadMediaModel"
+																(change)="uploadMedia($event)"
+																multiple />
+															{{ 'Pages.Session.CloseSession.UploadSessionPhotos.selectmediatoupload' | translate }}
+														</label>
+													</div>
+													<div style="text-align: center; margin-top: 0.9rem">
+														<span>
+															{{ 'Pages.Session.CloseSession.UploadSessionPhotos.filesupporttype' | translate }}
+															<!-- {{ 'Pages.Session.CloseSession.UploadSessionPhotos.maximumnumberoffiles' | translate }} -->
+														</span>
+														<span style="padding-left: 0.5rem; cursor: pointer">
+															<img
+																src="assets/images/info_icon.svg"
+																style="width: 25px"
+																title="{{
+																	'Pages.Session.CloseSession.UploadSessionPhotos.filesupportlimit' | translate
+																}}" />
+														</span>
+													</div>
+													<!-- <div style="text-align: center; margin-top: 0.7rem">
+														<span>
+															{{ 'Pages.Session.CloseSession.UploadSessionPhotos.maximumnumberoffiles' | translate }}
+														</span>
+													</div> -->
+													<!-- <div style="text-align: center; margin-top: 0.7rem">
+														<span style="font-size: 1.12rem; color: #6513e1">
+															{{ 'Pages.Session.CloseSession.UploadSessionPhotos.filesupportlimit' | translate }}
+														</span>
+													</div> -->
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div style="margin-top: 1rem">
+									<div class="row">
+										<div
+											class="col-md-2"
+											style="margin-top: 1rem"
+											*ngFor="let item of this.showImagepreviews; let i = index">
+											<img src="assets/images/cancel_icon.svg" class="cancel-img-icon" (click)="cancelImage(i, item)" />
+											<div class="asset-card">
+												<div *ngIf="item.fieldname == 'Image'">
+													<img
+														[src]="assetBasePath + item.path"
+														style="width: 100%; object-fit: contain; height: 85px" />
+												</div>
+												<div *ngIf="item.fieldname == 'Video'">
+													<video style="width: 100%; height: 85px" controls>
+														<source [src]="assetBasePath + item.path" />
+													</video>
+												</div>
+												<div *ngIf="item.fieldname == 'PDF'">
+													<img
+														src="/assets/images/pdf_preview_new2.png"
+														style="width: 100%; object-fit: cover; height: 85px" />
+												</div>
+												<div *ngIf="item.fieldname == 'PPT'">
+													<img
+														src="/assets/images/ppt_preview_new2.png"
+														style="width: 100%; object-fit: cover; height: 85px" />
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<!-- geoLocation -->
+								<div style="margin-top: 1.5rem">
+									<a
+										*ngIf="!f1.geoLocation.value && geoTag"
+										class="btn border_radius add-edit-btn"
+										[ngStyle]="{
+											'background-color': appService.whiteBrandingColor,
+											border: '1px solid' + appService.whiteBrandingColor,
+											color: 'white'
+										}"
+										style="text-align: center; float: none !important"
+										(click)="getUserLocation()"
+										>{{ 'Pages.Session.CloseSession.UploadSessionPhotos.addLocation' | translate }}
+									</a>
+									<div *ngIf="f1.geoLocation.value">
+										<p>{{ f1.geoLocation.value }}</p>
+										<img src="assets/images/location-icon.png" alt="" />
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div *ngIf="stepCount == 5 && sessionData && sessionData.trainerSurvey">
+							<div class="step-heading">
+								<span>{{ 'Pages.Session.CloseSession.ShareSessionFeedback.title' | translate }}</span>
+								<div class="step-form" style="min-height: 50vh">
+									<div class="row" style="margin-top: 2rem">
+										<div class="col-md-2"></div>
+										<div class="col-md-8 session-style">
+											<div class="form-group">
+												<label style="float: left">
+													{{ 'Pages.Session.CloseSession.ShareSessionFeedback.sessionfeedback' | translate }}
+												</label>
+												<textarea
+													class="form-control"
+													value="Session Title"
+													type="text"
+													placeholder="{{
+														'Pages.Session.CloseSession.ShareSessionFeedback.sessionfeedback' | translate
+													}}"
+													rows="6"
+													style="height: auto"
+													[(ngModel)]="sessionFeedback"></textarea>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-3"></div>
+										<div class="col-md-6">
+											<a
+												class="btn border_radius close-seesion-btn"
+												[ngStyle]="{
+													'background-color': appService.whiteBrandingColor,
+													border: '1px solid' + appService.whiteBrandingColor,
+													color: 'white'
+												}"
+												(click)="closeSession()"
+												[routerLink]="['/session']">
+												{{ 'Pages.Session.CloseSession.ShareSessionFeedback.submitandclose' | translate }}</a
+											>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div *ngIf="stepCount == 3 && sessionData && !sessionData.trainerSurvey">
+							<div class="step-heading-3">
+								<span class="upload-photo-title">
+									{{ 'Pages.Session.CloseSession.UploadSessionPhotos.title' | translate }}</span
+								>
+								<div class="step-form" style="min-height: 25vh">
+									<div class="row">
+										<!-- <div class="form-title">
+                                            <span>Upload media</span>
+                                        </div> -->
+										<div class="card-body">
+											<div class="row">
+												<div class="col-md-12">
+													<div style="display: flex; justify-content: center; margin-top: 10px">
+														<label
+															class="btn pad fileinput-button browse_lable big-button"
+															[ngStyle]="{
+																'background-color': appService.whiteBrandingColor,
+																border: '1px solid' + appService.whiteBrandingColor,
+																color: 'white'
+															}">
+															<input
+																id="mediaWeb"
+																type="file"
+																accept=".jpg, .png, .pdf, .mp4, .pptx"
+																maxlength="maxCount-showImagepreviews.length"
+																[(ngModel)]="uploadMediaModel"
+																(change)="uploadMedia($event)"
+																multiple />
+															{{ 'Pages.Session.CloseSession.UploadSessionPhotos.selectmediatoupload' | translate }}
+														</label>
+													</div>
+													<div style="text-align: center; margin-top: 0.9rem">
+														<div style="display: flex; align-items: center; justify-content: center">
+															<div>
+																<span>
+																	{{ 'Pages.Session.CloseSession.UploadSessionPhotos.filesupporttype' | translate }}
+																	<!-- {{ 'Pages.Session.CloseSession.UploadSessionPhotos.maximumnumberoffiles' | translate }} -->
+																</span>
+															</div>
+															<div style="margin-left: 0.5rem">
+																<!-- <img
+																		src="assets/images/info_icon.svg"
+																		style="width: 25px; margin-top: -5px"
+																		title="{{
+																			'Pages.Session.CloseSession.UploadSessionPhotos.filesupportlimit' | translate
+																		}}" /> -->
+																<div
+																	title="{{
+																		'Pages.Session.CloseSession.UploadSessionPhotos.filesupportlimit' | translate
+																	}}"
+																	style="cursor: pointer"
+																	[innerHTML]="iconObject['info_icon_25']"></div>
+															</div>
+														</div>
+													</div>
+													<!-- <div style="text-align: center; margin-top: 0.7rem">
+														<span>
+															{{ 'Pages.Session.CloseSession.UploadSessionPhotos.maximumnumberoffiles' | translate }}
+														</span>
+													</div> -->
+													<!-- <div style="text-align: center; margin-top: 0.7rem">
+														<span style="font-size: 1.12rem; color: #6513e1">
+															{{ 'Pages.Session.CloseSession.UploadSessionPhotos.filesupportlimit' | translate }}
+														</span>
+													</div> -->
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div style="margin-top: 1rem">
+									<div class="row">
+										<div
+											class="col-md-2"
+											style="margin-top: 1rem"
+											*ngFor="let item of this.showImagepreviews; let i = index">
+											<img src="assets/images/cancel_icon.svg" class="cancel-img-icon" (click)="cancelImage(i, item)" />
+											<div class="asset-card">
+												<div *ngIf="item.fieldname == 'Image'">
+													<img
+														[src]="assetBasePath + item.path"
+														style="width: 100%; object-fit: contain; height: 85px" />
+												</div>
+												<div *ngIf="item.fieldname == 'Video'">
+													<video style="width: 100%; height: 85px" controls>
+														<source [src]="assetBasePath + item.path" />
+													</video>
+												</div>
+												<div *ngIf="item.fieldname == 'PDF'">
+													<img
+														src="/assets/images/pdf_preview_new2.png"
+														style="width: 100%; object-fit: cover; height: 85px" />
+												</div>
+												<div *ngIf="item.fieldname == 'PPT'">
+													<img
+														src="/assets/images/ppt_preview_new2.png"
+														style="width: 100%; object-fit: cover; height: 85px" />
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<!-- geoLocation -->
+								<div style="margin-top: 1.5rem">
+									<a
+										*ngIf="!f1.geoLocation.value && geoTag"
+										class="btn border_radius add-edit-btn"
+										[ngStyle]="{
+											'background-color': appService.whiteBrandingColor,
+											border: '1px solid' + appService.whiteBrandingColor,
+											color: 'white'
+										}"
+										style="text-align: center; float: none !important"
+										(click)="getUserLocation()"
+										>{{ 'Pages.Session.CloseSession.UploadSessionPhotos.addLocation' | translate }}
+									</a>
+									<div *ngIf="f1.geoLocation.value">
+										<p>{{ f1.geoLocation.value }}</p>
+										<img src="assets/images/location-icon.png" alt="" />
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div *ngIf="stepCount == 4 && sessionData && !sessionData.trainerSurvey">
+							<div class="step-heading">
+								<span>{{ 'Pages.Session.CloseSession.ShareSessionFeedback.title' | translate }}</span>
+								<div class="step-form" style="min-height: 50vh">
+									<div class="row" style="margin-top: 2rem">
+										<div class="col-md-1"></div>
+										<div class="col-md-10 session-style">
+											<div class="form-group">
+												<label style="float: left">
+													{{ 'Pages.Session.CloseSession.ShareSessionFeedback.sessionfeedback' | translate }}
+												</label>
+												<textarea
+													class="form-control"
+													value="Session Title"
+													type="text"
+													placeholder="{{
+														'Pages.Session.CloseSession.ShareSessionFeedback.sessionfeedback' | translate
+													}}"
+													rows="6"
+													style="height: auto"
+													[(ngModel)]="sessionFeedback"></textarea>
+											</div>
+										</div>
+										<div class="col-md-1"></div>
+									</div>
+									<div
+										class="row"
+										style="display: flex; justify-content: center; align-items: center; margin-top: 5rem">
+										<div class="col-md-2"></div>
+										<div class="col-md-4" style="text-align: left !important">
+											<button
+												class="btn border_radius close-seesion-btn"
+												(click)="endSession()"
+												style="font-size: 1.5rem; width: 90%; padding: 0.8rem"
+												[ngStyle]="{
+													'background-color': appService.whiteBrandingColor,
+													border: '1px solid' + appService.whiteBrandingColor,
+													color: 'white'
+												}"
+												[disabled]="sessionData.status == 'Ended'">
+												{{ 'Pages.Session.CloseSession.ShareSessionFeedback.endsession' | translate }}
+											</button>
+										</div>
+
+										<div class="col-md-6" style="text-align: left !important">
+											<button
+												class="btn border_radius close-seesion-btn"
+												style="font-size: 1.5rem; padding: 0.8rem"
+												(click)="closeSession()"
+												[ngStyle]="{
+													'background-color': appService.whiteBrandingColor,
+													border: '1px solid' + appService.whiteBrandingColor,
+													color: 'white'
+												}">
+												{{ 'Pages.Session.CloseSession.ShareSessionFeedback.endedandclosed' | translate }}
+											</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div
+				class="col-md-2"
+				(click)="forwardStep()"
+				*ngIf="
+					(stepCount !== 5 && sessionData && sessionData.trainerSurvey) ||
+					(stepCount !== 4 && sessionData && !sessionData.trainerSurvey)
+				">
+				<div class="arrow" style="justify-content: end">
+					<!-- <img style="width: 4rem; margin-right: 2rem" src="assets/images/arrow_icon.svg" /> -->
+					<div [innerHTML]="iconObject['arrow_icon']"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

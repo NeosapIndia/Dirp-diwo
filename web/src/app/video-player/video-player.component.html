@@ -1,0 +1,27 @@
+<!-- <div class="wrap-element" *ngIf="appService?.configurable_feature?.mediaCMS">
+	<div class="media-cms-player">
+		<video #videoPlayer disablePictureInPicture controls></video>
+	</div>
+</div> -->
+
+<div class="wrap-element" *ngIf="appService?.configurable_feature?.mediaCMS">
+	<div class="media-cms-player">
+		<mux-player
+			[src]="VideoPath"
+			controls
+			#videoPlayer
+			prefer-ui="desktop"
+			playsinline
+			stream-type="on-demand"
+			preload="metadata"
+			playback-engine="mse"
+			playbackEngine="mse"
+			accent-color="#4971E3">
+		</mux-player>
+	</div>
+</div>
+
+<!------- For Vimeo Video -->
+<div class="vimeo-wrapper" *ngIf="appService?.configurable_feature?.vimeo">
+	<iframe *ngIf="vimeoVideoUrl" [src]="vimeoVideoUrl" width="100%" frameborder="0" allowfullscreen> </iframe>
+</div>

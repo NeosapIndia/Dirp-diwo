@@ -1,0 +1,77 @@
+<ion-header *ngIf="projectType == 'drip'&& !isdesktopView && !isTabletLandscapeView">
+	<ion-toolbar class="toolbar-head-drip">
+		<ion-title class="ion-text-center drip">
+			<img
+				*ngIf="appBrandingInfo"
+				[src]="imageBaseURL + appBrandingInfo.learner_app_icon_path"
+				class="header-logo-drip" />
+			<img
+				*ngIf="!appBrandingInfo && appService.defaultPWALogo"
+				[src]="appService.defaultPWALogo"
+				class="header-logo-drip" />
+			<img
+				*ngIf="!appBrandingInfo &&!appService.defaultPWALogo"
+				src="assets/icons/icon-128x128.png"
+				class="header-logo-drip" />
+		</ion-title>
+	</ion-toolbar>
+</ion-header>
+
+<ion-header *ngIf="projectType == 'diwo' && !isdesktopView && !isTabletLandscapeView">
+	<ion-toolbar class="toolbar-head">
+		<ion-title class="ion-text-center">
+			<img *ngIf="appBrandingInfo" [src]="imageBaseURL + appBrandingInfo.learner_app_icon_path" class="header-logo" />
+			<img
+				*ngIf="!appBrandingInfo && appService.defaultPWALogo"
+				[src]="appService.defaultPWALogo"
+				class="header-logo" />
+			<img
+				*ngIf="!appBrandingInfo &&!appService.defaultPWALogo"
+				src="assets/icon/diwo_full_logo.png"
+				class="header-logo" />
+		</ion-title>
+	</ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding-horizontal">
+	<ion-grid>
+		<ion-row [ngClass]="{ 'ion-main-row-desktop': isdesktopView || isTabletLandscapeView}">
+			<ion-col
+				size-sm="12"
+				size-md="9"
+				size-lg="7"
+				class="main-col"
+				[ngClass]="{ 'ion-main-col-desktop': isdesktopView || isTabletLandscapeView}">
+				<div
+					style="font-size: 2.1rem; text-align: center"
+					*ngIf="responseFlag && notificationList.length === 0"
+					class="like-whiteBox"></div>
+				<ion-list *ngFor="let item of notificationList; let i=index" class="ion-no-padding">
+					<ion-item
+						lines="none"
+						[ngClass]="{ 'ion-item-mobile': !isdesktopView && !isTabletLandscapeView, 'ion-item-desktop': isdesktopView || isTabletLandscapeView }">
+						<ion-avatar slot="start" *ngIf="item.isRead" class="icon-read">
+							<ion-icon name="notifications-outline"></ion-icon>
+						</ion-avatar>
+						<ion-avatar
+							slot="start"
+							*ngIf="!item.isRead"
+							class="icon-notRead"
+							[ngStyle]=" appBrandingInfo && appBrandingInfo.accent_color ? {'background' : appBrandingInfo.accent_color} : {'background': 'var(--branding-color)'}">
+							<ion-icon name="notifications-outline"></ion-icon>
+						</ion-avatar>
+						<ion-label [ngClass]="{'ion-item-label-desktop': isdesktopView || isTabletLandscapeView }">
+							<h2>{{item.message}}</h2>
+							<p style="font-size: 14px" class="date_size">{{item.createdAt | date :'dd MMM yyyy hh:mm a' }}</p>
+						</ion-label>
+					</ion-item>
+				</ion-list>
+			</ion-col>
+		</ion-row>
+
+		<ion-infinite-scroll (ionInfinite)="loadMore($event)">
+			<ion-infinite-scroll-content loadingSpinner="circles" loadingText="{{'Utils.loadingMoreData' | translate}}">
+			</ion-infinite-scroll-content>
+		</ion-infinite-scroll>
+	</ion-grid>
+</ion-content>

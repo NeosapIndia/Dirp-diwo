@@ -1,0 +1,164 @@
+<ion-content no-bounce has-bouncing="false" forceOverscroll="false">
+	<div *ngIf="!showModal && !showClientList" class="main-login-section">
+		<div *ngIf="!showModal" style="width: 100%" class="ion-text-center head-logo">
+			<img *ngIf="projectName == 'drip'" src="assets/icon/drip_logo.png" class="logo-icon" />
+			<img *ngIf="projectName == 'diwo'" src="assets/icon/diwo_logo.png" style="width: 8rem" />
+		</div>
+		<div *ngIf="!isOptForm">
+			<form *ngIf="!showModal && !showClientList" [formGroup]="form" (ngSubmit)="submit(form.value)" class="form-div">
+				<ion-row class="row_bottom_border full-width" style="border: none">
+					<ion-col class="ion-no-padding" (click)="changeCountry()">
+						<ion-item class="ion-no-padding">
+							<ion-label *ngIf="!selectedCountryName" style="font-size: 1.1rem !important"
+								>{{'Utils.country' | translate}}</ion-label
+							>
+							<img
+								*ngIf="selectedCountryName"
+								src="assets/country_flag/{{selectedCountryCode}}.png"
+								style="height: 35px; width: 50px; margin-right: 15px" />
+							<span class="span_message ion-float-right" style="color: #b6b5b5; margin-right: 8%"
+								>{{selectedCountryName}}</span
+							>
+							<span class="right-edit-icon">
+								<img style="height: 1.1rem !important; width: auto" src="assets/icon/rightArrow.png"
+							/></span>
+						</ion-item>
+					</ion-col>
+				</ion-row>
+				<ion-item
+					*ngIf="selectedCountryCode"
+					style="--color: gray; margin-top: 3rem; margin-bottom: 3rem"
+					class="ion-margin-bottom ion-no-padding"
+					[ngClass]="{ 'red-border': emailError == true }">
+					<ion-input
+						*ngIf="verifyUseingPhone"
+						style="padding-top: 2px"
+						type="tel"
+						[placeholder]="'Utils.registerMobile' | translate"
+						(ionChange)="checkEmailOrMobile($event,'phone')"
+						[(ngModel)]="loginInputText"
+						[ngModelOptions]="{standalone: true}"
+						[disabled]="sessionData == null"></ion-input>
+					<ion-input
+						*ngIf="!verifyUseingPhone"
+						style="padding-top: 2px"
+						type="text"
+						[placeholder]="'Utils.registerEmail' | translate"
+						(ionChange)="checkEmailOrMobile($event,'email')"
+						[(ngModel)]="loginInputText"
+						[ngModelOptions]="{standalone: true}"
+						[disabled]="sessionData == null"></ion-input>
+				</ion-item>
+				<ion-button
+					*ngIf="selectedCountryCode"
+					expand="block"
+					type="submit"
+					class="login"
+					[disabled]="sessionData == null">
+					{{ 'Utils.login' | translate }}</ion-button
+				>
+			</form>
+
+			<p class="emailPhoneBaseLogin" (click)="switchLogin('Email')" *ngIf="verifyUseingPhone">
+				{{'Utils.switchToEmailBased' | translate}}
+			</p>
+
+			<p class="emailPhoneBaseLogin" (click)="switchLogin('Phone')" *ngIf="!verifyUseingPhone">
+				{{'Utils.switchToPhoneBased' | translate}}
+			</p>
+		</div>
+
+		<div *ngIf="isOptForm">
+			<form [formGroup]="formOTP" (ngSubmit)="submit2(formOTP.value)" class="form-div-otp">
+				<ion-label position="stacked" style="color: gray; font-size: 1.1rem !important">
+					{{ 'Utils.enterOTP' | translate }}
+				</ion-label>
+				<p style="font-size: 18px; color: gray" *ngIf="otpFlage">{{otp}}</p>
+
+				<input
+					class="otp_input ion-text-center"
+					autocomplete="off"
+					type="tel"
+					formControlName="otp4"
+					id="otp4"
+					#otp4
+					maxlength="4"
+					(input)="otpValue($event)" />
+
+				<div style="color: gray; font-size: 1rem; margin-top: 10%">{{otpSendText}}</div>
+				<ion-button
+					fill="clear"
+					type="button"
+					(click)="getResentlogin_otp()"
+					style="margin-top: 5%; --ion-color-base: var(--branding-color)">
+					{{ 'Utils.resentOTP' | translate }}
+				</ion-button>
+			</form>
+		</div>
+	</div>
+
+	<div
+		*ngIf="showModal"
+		style="height: 100%"
+		style="--background: white; background: white; padding: 6%; min-height: -webkit-fill-available">
+		<ion-row style="width: 100%">
+			<ion-searchbar
+				[(ngModel)]="searhValue"
+				(ngModelChange)="_filter(searhValue)"
+				type="text"
+				placeholder="{{'Utils.search' | translate}}"
+				style="--background: #f2f2f2; --border-radius: 3rem; --border: 1px #f2f2f2">
+			</ion-searchbar>
+		</ion-row>
+		<div *ngFor="let country of filterCountryData; let i=index">
+			<ion-row *ngIf="countryList.length != i+1" style="width: 100%" (click)="selectcountry(country.name, country)">
+				<ion-list class="no__padding" style="height: 4rem" lines="none">
+					<ion-item class="no__padding">
+						<img
+							src="assets/country_flag/{{country.countryCode}}.png"
+							style="height: 3rem; width: 5rem; margin-right: 15px" />
+						<span>{{country.name}}</span>
+					</ion-item>
+				</ion-list>
+			</ion-row>
+			<ion-row *ngIf="countryList.length == i+1" style="width: 100%" (click)="selectcountry(country.name, country)">
+				<ion-list class="no__padding" lines="none">
+					<ion-item class="no__padding">
+						<img
+							src="assets/country_flag/{{country.countryCode}}.png"
+							style="height: 3rem; width: 5rem; margin-right: 15px" />
+						<span>{{country.name}}</span>
+					</ion-item>
+				</ion-list>
+			</ion-row>
+		</div>
+	</div>
+
+	<div
+		*ngIf="showClientList"
+		style="height: 100%"
+		style="--background: white; background: white; padding: 6%; min-height: -webkit-fill-available">
+		<div *ngFor="let client of clientList; let i=index">
+			<ion-row *ngIf="clientList.length != i+1" style="width: 100%" (click)="selecteClient(client)">
+				<ion-list class="no__padding" style="height: 4rem" lines="none">
+					<ion-item class="no__padding">
+						<!-- <img
+						src="assets/country_flag/{{country.countryCode}}.png"
+						style="height: 3rem; width: 5rem; margin-right: 15px" /> -->
+						<span>{{client.Client.name}}</span>
+					</ion-item>
+				</ion-list>
+			</ion-row>
+			<ion-row *ngIf="clientList.length == i+1" style="width: 100%" (click)="selecteClient(client)">
+				<ion-list class="no__padding" lines="none">
+					<ion-item class="no__padding">
+						<!-- <img
+						src="assets/country_flag/{{country.countryCode}}.png"
+						style="height: 3rem; width: 5rem; margin-right: 15px" /> -->
+						<span>{{client.Client.name}}</span>
+					</ion-item>
+				</ion-list>
+			</ion-row>
+		</div>
+	</div>
+</ion-content>

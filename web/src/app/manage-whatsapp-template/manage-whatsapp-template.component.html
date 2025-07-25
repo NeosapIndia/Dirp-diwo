@@ -1,0 +1,282 @@
+<div class="pageDiv WT" style="min-height: calc(100vh - 95px)">
+	<div style="margin-top: 2rem">
+		<div class="row">
+			<div class="panel header-panel-white" style="display: flex">
+				<div class="col-md-3" style="padding-left: 0.5%">
+					<span class="mainTitle no-margin pageTitle_Main">{{
+						'Pages.WhatsAppTemplate.Home.pagetitle' | translate
+					}}</span>
+				</div>
+				<div class="col-md-9" style="padding-right: 0"></div>
+			</div>
+		</div>
+	</div>
+
+	<form [formGroup]="FilterWhatsappTemplateColumnForm">
+		<div style="margin-top: 2rem">
+			<div class="row">
+				<div class="panel panel-white" style="padding: 0.55% 0; display: flex">
+					<div class="col-md-4" style="padding-right: 0.55%">
+						<label>{{ 'Pages.WhatsAppTemplate.Home.Filter.Dropdown.title' | translate }}</label>
+						<div id="filterDiv" style="max-width: none; width: 100%; margin-left: 0">
+							<ng-multiselect-dropdown
+								[settings]="dropdownSettings"
+								class="mt-2 filter-search-columns"
+								placeholder="{{ 'Pages.WhatsAppTemplate.Home.Filter.Dropdown.placeholder' | translate }}"
+								[data]="FilterColumnArray"
+								formControlName="FilterColumn">
+							</ng-multiselect-dropdown>
+						</div>
+					</div>
+					<div class="col-md-8" style="padding-left: 0.5rem">
+						<label>{{ 'Utils.Filter.Search.title' | translate }}</label>
+						<input
+							class="form-control"
+							(input)="getWTByFilter($event.target.value)"
+							type="text"
+							placeholder="{{
+								this.FilterWhatsappTemplateColumnForm.controls['FilterColumn'].value.length == 5
+									? ('Utils.Filter.Search.placeholder1' | translate)
+									: ('Utils.Filter.Search.placeholder2' | translate)
+							}}"
+							autocomplete="off"
+							[(ngModel)]="inputSearchTxt"
+							[ngModelOptions]="{ standalone: true }" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+
+	<div style="margin-top: 2rem">
+		<div class="row">
+			<div class="panel panel-white" style="margin-bottom: 2rem">
+				<div class="sub table-responsive">
+					<table class="table table-striped table-hover" id="sample-table-3">
+						<thead *ngIf="!isApiCall">
+							<tr>
+								<th
+									class="left tb-first-heading tb-line-height"
+									style="padding-left: 1rem; word-wrap: break-word; width: 12vw">
+									{{ 'Pages.WhatsAppTemplate.Home.Table.Header.dripname' | translate }}
+								</th>
+								<th class="left tb-head-bg tb-line-height" style="word-wrap: break-word">
+									{{ 'Pages.WhatsAppTemplate.Home.Table.Header.channelType' | translate }}
+								</th>
+								<th class="left tb-head-bg tb-line-height" style="word-wrap: break-word">
+									{{ 'Pages.WhatsAppTemplate.Home.Table.Header.category' | translate }}
+								</th>
+								<th class="left tb-head-bg tb-line-height" style="word-wrap: break-word">
+									{{ 'Pages.WhatsAppTemplate.Home.Table.Header.mediatype' | translate }}
+								</th>
+								<th class="left tb-head-bg tb-line-height" style="width: 6">
+									{{ 'Pages.WhatsAppTemplate.Home.Table.Header.dripId' | translate }}
+								</th>
+								<th class="left tb-head-bg tb-line-height" style="width: 8vw">
+									{{ 'Pages.WhatsAppTemplate.Home.Table.Header.templateId' | translate }}
+								</th>
+								<th class="left tb-head-bg tb-line-height" style="width: 9vw">
+									{{ 'Pages.WhatsAppTemplate.Home.Table.Header.status' | translate }}
+								</th>
+								<th class="left tb-head-bg tb-line-height" style="width: 9vw">
+									{{ 'Pages.WhatsAppTemplate.Home.Table.Header.Quality' | translate }}
+								</th>
+								<th
+									class="left tb-last-heading tb-line-height"
+									style="min-width: 126px; max-width: 126px; width: 126px">
+									{{ 'Pages.WhatsAppTemplate.Home.Table.Header.actions' | translate }}
+								</th>
+							</tr>
+						</thead>
+						<tbody *ngIf="!isApiCall">
+							<tr
+								*ngFor="
+									let item of whatsAppTemplateData
+										| paginate
+											: {
+													itemsPerPage: limit == 'all' ? totalCount : limit,
+													currentPage: page,
+													totalItems: totalCount
+											  };
+									index as i
+								">
+								<td class="left two-row-td-tag" style="padding-left: 1rem; padding-top: 15px">
+									<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+										{{ item.drip_title ? item.drip_title : '-' }}
+									</p>
+								</td>
+								<td class="left two-row-td-tag" style="padding-top: 15px">
+									<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+										{{ item.whatsApp_template_data.type }}
+									</p>
+								</td>
+								<td class="left two-row-td-tag" style="padding-top: 15px">
+									<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+										{{ item.whatsApp_template_data.tempCategory }}
+									</p>
+								</td>
+								<td class="left two-row-td-tag" style="padding-top: 15px">
+									<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+										{{ item.whatsApp_template_data.header_type ? item.whatsApp_template_data.header_type : '-' }}
+									</p>
+								</td>
+								<td class="left two-row-td-tag" style="padding-top: 15px">
+									<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+										{{ item.id }}
+									</p>
+								</td>
+								<td class="left two-row-td-tag" style="padding-top: 15px">
+									<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+										{{
+											item.whatsApp_template_data && item.whatsApp_template_data.templateId
+												? item.whatsApp_template_data.templateId
+												: '-'
+										}}
+									</p>
+								</td>
+								<td class="left" style="padding-top: 15px">
+									<span
+										*ngIf="item.whatsApp_template_data && item.whatsApp_template_data.templateStatus == 'Pending'"
+										class="status-pending"
+										>{{ 'Utils.Status.pending' | translate }}</span
+									>
+									<span
+										*ngIf="item.whatsApp_template_data && item.whatsApp_template_data.templateStatus == 'Enabled'"
+										class="status-enabled"
+										>{{ 'Utils.Status.enabled' | translate }}</span
+									>
+									<span
+										*ngIf="item.whatsApp_template_data && item.whatsApp_template_data.templateStatus == 'Flagged'"
+										class="status-flagged"
+										>{{ 'Utils.Status.flagged' | translate }}</span
+									>
+									<span
+										*ngIf="item.whatsApp_template_data && item.whatsApp_template_data.templateStatus == 'Rejected'"
+										class="status-rejected"
+										>{{ 'Utils.Status.rejected' | translate }}</span
+									>
+									<span
+										*ngIf="item.whatsApp_template_data && item.whatsApp_template_data.templateStatus == 'Disabled'"
+										class="status-disabled"
+										>{{ 'Utils.Status.disabled' | translate }}</span
+									>
+									<span
+										*ngIf="item.whatsApp_template_data && item.whatsApp_template_data.templateStatus == 'Not Created'"
+										class="status-not-created"
+										>{{ 'Utils.Status.notcreated' | translate }}</span
+									>
+								</td>
+
+								<td class="left two-row-td-tag" style="padding-top: 15px">
+									<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+										{{
+											item.whatsApp_template_data && item.whatsApp_template_data.templateStatus == 'Enabled'
+												? item.whatsApp_template_data.quality
+												: 'NA'
+										}}
+									</p>
+								</td>
+
+								<td class="left" style="padding: 0.938rem 1rem 0.938rem 0.75rem">
+									<div class="visible-md visible-lg visible-sm visible-xs">
+										<!-- <a class="btn-xs action-edit-btn" (click)="onPrintTemplete(item)"
+                                            [ngClass]="{'print-disabled':  item.whatsApp_template_data.templateStatus == 'Disabled' }"
+                                            style="padding: 4px 31px;">{{'Utils.Action.print'| translate}}</a> -->
+										<a
+											class="btn-xs action-pause-btn"
+											[ngStyle]="{
+												color: appService.whiteBrandingColor,
+												border: '0.5px solid' + appService.whiteBrandingColor,
+												
+											}"
+											style="padding: 0.25rem 1.313rem"
+											[ngClass]="{ 'delete-disabled ': item.whatsApp_template_data.templateStatus == 'Disabled' }"
+											(click)="onEditDrip(item)"
+											>{{ 'Utils.Action.editdrip' | translate }}</a
+										>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<div
+						style="text-align: center; margin-top: 2rem; margin-bottom: 3rem"
+						*ngIf="whatsAppTemplateData && whatsAppTemplateData.length == 0 && !isApiCall && isDataLoaded">
+						<img src="assets/images/No Results.svg" alt="" style="width: 25%" />
+						<h3>{{ 'Utils.nodataToShow' | translate }}</h3>
+						<p style="width: 50%; margin: 0 auto">{{ 'Utils.nodataAvaliable' | translate }}</p>
+					</div>
+					<div style="text-align: center; margin-top: 9rem; margin-bottom: 9rem" *ngIf="isApiCall">
+						<!-- <img class="asset-img" src="assets/images/Circle-1.gif" style="width: 3%" /> -->
+						<div [innerHTML]="iconObject['search_loader']" class="asset-img"></div>
+					</div>
+					<div style="text-align: center; margin-top: 9rem; margin-bottom: 9rem" *ngIf="!isDataLoaded"></div>
+				</div>
+			</div>
+			<div class="pagination-wrapper" style="width: 100%">
+				<div style="float: right">
+					<span> {{ 'Utils.perpage' | translate }}: &nbsp;</span>
+					<select class="default-dropdown" (change)="changeResult($event.target.value)">
+						<option *ngFor="let count of pageResultCount; let i = index" [selected]="i == 0">
+							{{ count }}
+						</option>
+					</select>
+				</div>
+				<pagination-controls (pageChange)="onPageChangeEvent($event)" style="float: right"> </pagination-controls>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- edit status modal  -->
+<!-- <div class="modal fade credit-note" id="editStatusModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" style="width:45%; margin-top: 15%; margin-left: 35%;">
+        <div class="modal-content ">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="cancel()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    <span>Edit Status</span>
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="statusForm">
+                    <div class="form-group"
+                        [ngClass]="{ 'has-error': f1.templateId.invalid && (f1.templateId.dirty || f1.templateId.touched) , 'has-success': f1.templateId.valid && ( f1.templateId.dirty || f1.templateId.touched)}">
+                        <label class="form-label">WhatsApp Template Id</label>
+                        <input class="form-control" type="text" placeholder="Enter WhatsApp template ID"
+                            formControlName="templateId">
+                        <div class="error" *ngIf="f1.templateId.errors && f1.templateId.touched">
+                            <div *ngIf="f1.templateId.errors.required">WhatsApp Template Id is required
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-top: 0.75rem;"
+                        [ngClass]="{ 'has-error': f1.templateStatus.invalid && (f1.templateStatus.dirty || f1.templateStatus.touched) , 'has-success': f1.templateStatus.valid && ( f1.templateStatus.dirty || f1.templateStatus.touched)}">
+                        <label class="form-label">WhatsApp Template Status</label>
+                        <ng-select [items]="whatsappStatus" style="font-size: 1rem;"
+                            placeholder="Select WhatsApp Template Status" bindLabel="name" bindValue="name"
+                            [multiple]="false" [closeOnSelect]="true" [searchable]="false"
+                            formControlName="templateStatus">
+                        </ng-select>
+                        <div class="error" *ngIf="f1.templateStatus.errors && f1.templateStatus.touched">
+                            <div *ngIf="f1.templateStatus.errors.required">WhatsApp Template Status is required
+                            </div>
+                        </div>
+                    </div>
+                    <div class="visible-md visible-lg visible-sm visible-xs"
+                        style="text-align: right; margin-bottom: 0.75rem; margin-top: 1.5rem;">
+                        <a class="btn-xs action-edit-btn"
+                            style="margin-right: 19px; padding: 7px 20px; border-radius: 30px; font-size: 16px;"
+                            (click)="onStatusFormSubmit()">Submit</a>
+                        <a class="btn-xs action-pause-btn"
+                            style="padding: 7px 23px; border-radius: 30px; font-size: 16px;"
+                            (click)="cancel()">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div> -->

@@ -1,0 +1,730 @@
+<div class="container-fluid" style="margin: 2% 2% 2% 3%" id="container">
+	<div class="row add-edit-main-row">
+		<span>
+			<span
+				(click)="gotoGroupHomePage()"
+				style="margin-left: 0.25rem; color: #637373; margin-right: 2px; cursor: pointer"
+				>{{
+					type === 'drip'
+						? ('Pages.LearnerGroup.AddEdit.pagetitleContact' | translate)
+						: ('Pages.LearnerGroup.AddEdit.pagetitle' | translate)
+				}}</span
+			>
+			<img src="assets/images/arrow_forward.svg" style="width: 27px" />
+			<span style="margin-left: 3px" [ngStyle]="{ color: appService.whiteBrandingColor }">{{
+				type === 'drip'
+					? ('Pages.LearnerGroup.AddEdit.subtitleContact' | translate)
+					: ('Pages.LearnerGroup.AddEdit.subtitle' | translate)
+			}}</span>
+		</span>
+	</div>
+	<div class="row section-wrapper" style="margin-top: 2rem" *ngIf="ownerClient.name && ownerClient.fullName">
+		<!-- <div class="form-title"><span>{{'Pages.Assets.AddEdit.GetStarted.title' | translate }}</span></div> -->
+		<div class="card-body">
+			<div class="row" style="font-size: 1.3rem; text-align: center; color: black">
+				{{
+					type === 'drip'
+						? ('Pages.LearnerGroup.AddEdit.creatingContactGroupForAccount' | translate)
+						: ('Pages.LearnerGroup.AddEdit.creatingLearnerGroupForAccount' | translate)
+				}}
+				- {{ ownerClient.name }} {{ 'Utils.User' | translate }} - {{ ownerClient.fullName }}
+			</div>
+		</div>
+	</div>
+	<form role="form" [formGroup]="learnerGroupForm" novalidate>
+		<div class="row section-wrapper" style="margin-top: 2rem">
+			<div class="form-title">
+				<span>{{ 'Pages.LearnerGroup.AddEdit.GetStarted.title' | translate }}</span>
+			</div>
+			<div class="row card-body">
+				<div class="row">
+					<div class="col-md-6" style="padding-right: 30px">
+						<div
+							class="form-group"
+							style="margin-top: -4px"
+							[ngClass]="{
+								'has-error': f.title.invalid && (f.title.dirty || f.title.touched),
+								'has-success': f.title.valid && (f.title.dirty || f.title.touched)
+							}">
+							<label>{{
+								type === 'drip'
+									? ('Pages.LearnerGroup.AddEdit.GetStarted.Title.titlenameContact' | translate)
+									: ('Pages.LearnerGroup.AddEdit.GetStarted.Title.titlename' | translate)
+							}}</label>
+							<input
+								type="text"
+								class="form-control"
+								id="title"
+								placeholder="{{
+									type === 'drip'
+										? ('Pages.LearnerGroup.AddEdit.GetStarted.Title.placeholderContact' | translate)
+										: ('Pages.LearnerGroup.AddEdit.GetStarted.Title.placeholder' | translate)
+								}}"
+								formControlName="title"
+								autocomplete="disabled" />
+							<div *ngIf="f.title.errors && f.title.touched" class="error invalid-feedback">
+								<div *ngIf="f.title.errors.required">
+									{{
+										type === 'drip'
+											? ('Pages.LearnerGroup.AddEdit.GetStarted.Title.errorContact' | translate)
+											: ('Pages.LearnerGroup.AddEdit.GetStarted.Title.error' | translate)
+									}}
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group" style="margin-top: -4px; padding-right: 15px">
+							<label>{{ 'Pages.LearnerGroup.AddEdit.GetStarted.Description.title' | translate }} </label>
+							<input
+								type="text"
+								class="form-control"
+								id="description"
+								placeholder="{{
+									type === 'drip'
+										? ('Pages.LearnerGroup.AddEdit.GetStarted.Description.placeholderContact' | translate)
+										: ('Pages.LearnerGroup.AddEdit.GetStarted.Description.placeholder' | translate)
+								}}"
+								formControlName="description"
+								autocomplete="disabled" />
+						</div>
+					</div>
+				</div>
+
+				<div class="row" style="margin-top: 1.5rem">
+					<div class="col-md-6">
+						<p style="font-size: 1rem" *ngIf="finalSelectedList.length == 1">
+							{{ finalSelectedList.length }}
+							{{
+								type === 'drip'
+									? ('Pages.LearnerGroup.AddEdit.GetStarted.ifContactcountone' | translate)
+									: ('Pages.LearnerGroup.AddEdit.GetStarted.iflearnercountone' | translate)
+							}}
+						</p>
+
+						<p style="font-size: 1rem" *ngIf="finalSelectedList.length == 0 || finalSelectedList.length > 1">
+							{{ finalSelectedList.length }}
+							{{
+								type === 'drip'
+									? ('Pages.LearnerGroup.AddEdit.GetStarted.ifContactcountmany' | translate)
+									: ('Pages.LearnerGroup.AddEdit.GetStarted.iflearnercountmany' | translate)
+							}}
+						</p>
+
+						<!-- <p style="font-size: 1.1rem;" *ngIf="showLearnecount && selectedUserIds.length > 1">
+                            <span
+                                *ngIf="selectedUserIds.length == totalLearnerCount">{{'Pages.LearnerGroup.AddEdit.GetStarted.all'
+                                | translate }}</span> {{selectedUserIds.length}}
+                            {{'Pages.LearnerGroup.AddEdit.GetStarted.iflearnercountmany' | translate }}
+                        </p> -->
+					</div>
+				</div>
+				<div class="row" style="margin-top: 1.5rem">
+					<div class="col-md-6">
+						<a
+							class="btn border_radius createBtn"
+							[ngStyle]="{
+								'background-color': appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+								color: 'white'
+							}"
+							(click)="saveLearnerGroup()"
+							*ngIf="learnerGroupForm.value.id">
+							{{
+								type === 'drip'
+									? ('Pages.LearnerGroup.AddEdit.GetStarted.updateContactgroup' | translate)
+									: ('Pages.LearnerGroup.AddEdit.GetStarted.updatelearnergroup' | translate)
+							}}
+						</a>
+						<a
+							class="btn border_radius createBtn"
+							[ngStyle]="{
+								'background-color': appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+								color: 'white'
+							}"
+							(click)="saveLearnerGroup()"
+							*ngIf="!learnerGroupForm.value.id">
+							{{
+								type === 'drip'
+									? ('Pages.LearnerGroup.AddEdit.GetStarted.saveContactgroup' | translate)
+									: ('Pages.LearnerGroup.AddEdit.GetStarted.savelearnergroup' | translate)
+							}}
+						</a>
+						<a
+							class="btn border_radius createBtn"
+							style="margin-left: 5%"
+							(click)="seeLearnerGroup()"
+							*ngIf="finalSelectedList.length > 0"
+							[ngStyle]="{
+								'background-color': appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+								color: 'white'
+							}">
+							{{
+								type === 'drip'
+									? ('Pages.LearnerGroup.AddEdit.GetStarted.seeContactgroup' | translate)
+									: ('Pages.LearnerGroup.AddEdit.GetStarted.seelearnergroup' | translate)
+							}}
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="row section-wrapper" style="margin-top: 2rem">
+			<div class="row" style="margin: 1.25rem 0.25rem; display: flex; align-items: center">
+				<div class="col-md-8 col-xs-4 col-sm-4" style="font-size: 0.9rem">
+					{{
+						type === 'drip'
+							? ('Pages.LearnerGroup.AddEdit.GetStarted.filterstofindContacts' | translate)
+							: ('Pages.LearnerGroup.AddEdit.GetStarted.filterstofindlearners' | translate)
+					}}
+				</div>
+				<!-- <div
+					class="col-md-4"
+					style="display: flex; justify-content: end"
+					*ngIf="!isAddLearnerToGroup && selectedUserIds.length > 0">
+					<button
+						type="submit"
+						class="btn btn-default border_radius add-to-learner"
+						(click)="removeFromLearnersToGroup()">
+						<img src="assets/images/expand_less_icon.svg" style="height: 27px; width: 34px; margin-top: -0.25rem" />
+						{{
+							type === 'drip'
+								? ('Pages.LearnerGroup.AddEdit.GetStarted.removeformContactrgroup' | translate)
+								: ('Pages.LearnerGroup.AddEdit.GetStarted.removeformlearnergroup' | translate)
+						}}
+					</button>
+				</div> -->
+			</div>
+
+			<!-- filter start -->
+			<div class="row card-body" id="learnerList">
+				<div
+					class="col-md-6 form-group"
+					style="padding-left: 0; padding-right: 30px"
+					[ngClass]="{
+						'has-error': f.selectedClient.invalid && (f.selectedClient.dirty || f.selectedClient.touched),
+						'has-success': f.selectedClient.valid && (f.selectedClient.dirty || f.selectedClient.touched)
+					}">
+					<label class="labelAlignment">{{
+						'Pages.LearnerGroup.AddEdit.GetStarted.ClientSelection.title' | translate
+					}}</label>
+					<ng-select
+						[items]="lastLevelClientList"
+						placeholder="{{ 'Pages.LearnerGroup.AddEdit.GetStarted.ClientSelection.placeholder' | translate }}"
+						bindLabel="clientIdWithName"
+						bindValue="id"
+						[multiple]="true"
+						[closeOnSelect]="false"
+						[searchable]="true"
+						formControlName="selectedClient"
+						(change)="changeClientForLearnerRole()">
+					</ng-select>
+					<div class="error labelAlignment" *ngIf="f.selectedClient.errors && f.selectedClient.touched">
+						<div *ngIf="f.selectedClient.errors.required">
+							{{ 'Pages.LearnerGroup.AddEdit.GetStarted.ClientSelection.error' | translate }}
+						</div>
+					</div>
+				</div>
+
+				<div class="col-md-6 form-group" style="padding-right: 15px">
+					<label class="labelAlignment">{{
+						'Pages.LearnerGroup.AddEdit.GetStarted.FilterSelection.title' | translate
+					}}</label>
+					<ng-select
+						[items]="FilterGroupList"
+						placeholder="{{ 'Pages.LearnerGroup.AddEdit.GetStarted.FilterSelection.placeholder' | translate }}"
+						bindLabel="label"
+						bindValue="value"
+						[multiple]="true"
+						[closeOnSelect]="false"
+						[searchable]="true"
+						[(ngModel)]="selectdFilter"
+						[ngModelOptions]="{ standalone: true }"
+						(change)="onChangeFilter($event)">
+					</ng-select>
+				</div>
+			</div>
+
+			<hr
+				style="
+					background-image: none;
+					border: 0 none;
+					/* height: 0.5px; */
+					width: 95%;
+					margin: 0 auto;
+					background-color: rgba(0, 0, 0, 0.07);
+					margin-right: 2.5rem;
+				"
+				*ngIf="finalFilter.length > 0" />
+
+			<!-- Filters DropDowns -->
+			<div class="row card-body" *ngIf="finalFilter.length > 0" style="margin-top: 0px">
+				<div class="row">
+					<div
+						class="col-md-6 form-group"
+						style="padding-right: 30px; margin-top: 1rem; min-height: 80px"
+						*ngFor="let item of finalFilter; let i = index">
+						<label class="labelAlignment">{{ item.label }}</label>
+						<ng-select
+							*ngIf="item.isCustomField"
+							[items]="item.options"
+							bindLabel="label"
+							bindValue="label"
+							[multiple]="true"
+							[closeOnSelect]="false"
+							[searchable]="true"
+							[(ngModel)]="item.selectedOptions"
+							[ngModelOptions]="{ standalone: true }"
+							(change)="onSelectCustomField($event, item.label)"
+							placeholder="{{ 'Pages.LearnerGroup.AddEdit.GetStarted.CustomFields.placeholder' | translate }}">
+						</ng-select>
+						<ng-select
+							*ngIf="!item.isCustomField && item.label == 'Tags'"
+							[items]="tagsList"
+							bindLabel="nameWithClientId"
+							bindValue="nameWithClientId"
+							[multiple]="true"
+							[closeOnSelect]="false"
+							[searchable]="true"
+							formControlName="tagsWithClientId"
+							(change)="selectTag($event)"
+							placeholder="{{ 'Pages.LearnerGroup.AddEdit.GetStarted.LearnerTags.placeholder' | translate }}">
+						</ng-select>
+						<ng-select
+							*ngIf="!item.isCustomField && item.label == 'Job Role'"
+							[items]="jobRoleList"
+							bindLabel="nameWithClientId"
+							bindValue="id"
+							[multiple]="true"
+							[closeOnSelect]="false"
+							[searchable]="true"
+							formControlName="jobRole"
+							(change)="selectJobRole($event)"
+							placeholder="{{ 'Pages.LearnerGroup.AddEdit.GetStarted.JobRole.placeholder' | translate }}">
+						</ng-select>
+					</div>
+				</div>
+			</div>
+
+			<div class="row card-body">
+				<div class="col-md-2 listLearner-div" *ngIf="showlistLearner">
+					<button
+						type="submit"
+						class="btn border_radius listLearner"
+						[ngStyle]="{
+							'background-color': appService.whiteBrandingColor,
+							border: '1px solid' + appService.whiteBrandingColor,
+							color: 'white'
+						}"
+						(click)="fetchLearner(page, limit)">
+						{{
+							type === 'drip'
+								? ('Pages.LearnerGroup.AddEdit.GetStarted.listContact' | translate)
+								: ('Pages.LearnerGroup.AddEdit.GetStarted.listlearner' | translate)
+						}}
+					</button>
+				</div>
+			</div>
+
+			<div class="row card-body" *ngIf="isFilterEmpty">
+				<div class="col-md-6" style="padding-left: 0">
+					<p>
+						{{
+							type === 'drip'
+								? ('Pages.LearnerGroup.AddEdit.GetStarted.noContactFound' | translate)
+								: ('Pages.LearnerGroup.AddEdit.GetStarted.noLearnerFound' | translate)
+						}}
+					</p>
+				</div>
+			</div>
+
+			<div class="row card-body">
+				<!-- <div class="col-md-6" style="padding-top: 21px; padding-left: 0px">
+					<p style="padding: 1%; font-size: 1.1rem; color: black" *ngIf="!isAddLearnerToGroup">
+						{{
+							type === 'drip'
+								? ('Pages.LearnerGroup.AddEdit.GetStarted.Contactgroup' | translate)
+								: ('Pages.LearnerGroup.AddEdit.GetStarted.learnergroup' | translate)
+						}}
+						: {{ f.title.value }}
+					</p>
+					<p style="padding: 1%; font-size: 1.1rem; color: black" *ngIf="isAddLearnerToGroup">
+						{{ 'Pages.LearnerGroup.AddEdit.GetStarted.filteredresult' | translate }}
+					</p>
+				</div> -->
+				<div
+					class="col-md-12"
+					style="padding-left: 0rem; margin-top: 1.5rem"
+					*ngIf="learnerList.length > 0 || (learnerList.length == 0 && isSearchGroup)">
+					<label>{{ 'Utils.Filter.Search.title' | translate }}</label>
+					<input
+						id="searchbox"
+						class="form-control"
+						(input)="getLearnerGroupsLearnerByFilter($event.target.value, true)"
+						type="text"
+						placeholder="{{ 'Utils.Filter.Search.placeholder1' | translate }}"
+						autocomplete="off"
+						[(ngModel)]="inputSearchTxt"
+						[ngModelOptions]="{ standalone: true }" />
+				</div>
+			</div>
+
+			<!-- *ngIf="allContentData && allContentData.length>0" -->
+			<div class="row card-body" style="display: flex; align-items: center">
+				<!-- <div class="col-md-6" style="padding-top: 21px; padding-left: 0px"> -->
+				<!-- <p style="padding: 1%; font-size: 1.2rem; color: black" *ngIf="!isAddLearnerToGroup">
+						{{ 'Pages.LearnerGroup.AddEdit.GetStarted.learnergroup' | translate }} : {{ f.title.value }}
+					</p>
+					<p style="padding: 1%; font-size: 1.2rem; color: black" *ngIf="isAddLearnerToGroup">
+						{{ 'Pages.LearnerGroup.AddEdit.GetStarted.filteredresult' | translate }}
+					</p> -->
+				<!-- </div> -->
+
+				<div class="col-md-6 optionDiv" style="padding-top: 8px">
+					<button
+						*ngIf="showSelectAllOption && !selectAllFlag"
+						class="btn border_radius selectionBtn"
+						[ngStyle]="{
+							'background-color': appService.whiteBrandingColor,
+							border: '1px solid' + appService.whiteBrandingColor,
+							color: 'white'
+						}"
+						(click)="selectAllLearner(true)">
+						{{ 'Pages.LearnerGroup.AddEdit.GetStarted.selectall' | translate }} {{ totalLearnerCount }}
+
+						{{
+							type === 'drip'
+								? ('Pages.LearnerGroup.AddEdit.GetStarted.contacts' | translate)
+								: ('Pages.LearnerGroup.AddEdit.GetStarted.learners' | translate)
+						}}
+					</button>
+					<button
+						class="btn border_radius selectionBtn"
+						(click)="selectAllLearner(false)"
+						*ngIf="showSelectAllOption && selectAllFlag">
+						{{ 'Pages.LearnerGroup.AddEdit.GetStarted.clearselection' | translate }}
+					</button>
+					<div *ngIf="showSelectAllOption" style="padding-left: 1rem">
+						{{ 'Pages.LearnerGroup.AddEdit.GetStarted.all' | translate }}
+						{{ limit > learnerList.length ? learnerList.length : limit }}
+						{{
+							type === 'drip'
+								? ('Pages.LearnerGroup.AddEdit.GetStarted.Contactonthispageselected' | translate)
+								: ('Pages.LearnerGroup.AddEdit.GetStarted.learneronthispageselected' | translate)
+						}}
+					</div>
+				</div>
+
+				<!-- <div class="col-md-4 optionDiv" *ngIf="showSelectAllOption && selectAllFlag">
+					<button class="btn border_radius selectionBtn" (click)="selectAllLearner(false)">
+						{{ 'Pages.LearnerGroup.AddEdit.GetStarted.clearselection' | translate }}
+					</button>
+				</div> -->
+
+				<div class="col-md-6" *ngIf="selectedUserIds.length > 0" style="padding-top: 8px">
+					<div
+						style="display: flex; justify-content: end; align-items: center"
+						*ngIf="isAddLearnerToGroup && selectedUserIds.length > 0">
+						<p style="margin: 0; padding-right: 0.5rem">
+							{{ selectAllFlag ? totalLearnerCount : selectedUserIds.length }}
+							{{
+								type === 'drip'
+									? ('Pages.LearnerGroup.AddEdit.GetStarted.selectedContactcount' | translate)
+									: ('Pages.LearnerGroup.AddEdit.GetStarted.selectedlearnercount' | translate)
+							}}
+						</p>
+
+						<button
+							type="submit"
+							[ngStyle]="{
+								'background-color': appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+								color: 'white'
+							}"
+							class="btn border_radius selectionBtn"
+							(click)="addLearnersToGroup()">
+							<img src="assets/images/expand_less_icon.svg" style="height: 27px; width: 34px; margin-top: -0.25rem" />
+							{{
+								type === 'drip'
+									? ('Pages.LearnerGroup.AddEdit.GetStarted.addtoContactsgroup' | translate)
+									: ('Pages.LearnerGroup.AddEdit.GetStarted.addtolearnergroup' | translate)
+							}}
+						</button>
+					</div>
+					<div *ngIf="!isAddLearnerToGroup && selectedUserIds.length > 0">
+						<button
+							type="submit"
+							[ngStyle]="{
+								'background-color': appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+								color: 'white'
+							}"
+							class="btn border_radius selectionBtn"
+							(click)="removeFromLearnersToGroup()">
+							<img src="assets/images/expand_less_icon.svg" style="height: 27px; width: 34px; margin-top: -0.25rem" />
+							{{
+								type === 'drip'
+									? ('Pages.LearnerGroup.AddEdit.GetStarted.removeformContactrgroup' | translate)
+									: ('Pages.LearnerGroup.AddEdit.GetStarted.removeformlearnergroup' | translate)
+							}}
+						</button>
+					</div>
+				</div>
+				<!-- <div
+					class="col-md-4"
+					style="display: flex; justify-content: end"
+					*ngIf="isAddLearnerToGroup && selectedUserIds.length > 0">
+					<button type="submit" class="btn btn-default border_radius add-to-learner" (click)="addLearnersToGroup()">
+						<img src="assets/images/expand_less_icon.svg" style="height: 27px; width: 34px; margin-top: -0.25rem" />
+						{{
+							type === 'drip'
+								? ('Pages.LearnerGroup.AddEdit.GetStarted.addtoContactsgroup' | translate)
+								: ('Pages.LearnerGroup.AddEdit.GetStarted.addtolearnergroup' | translate)
+						}}
+					</button>
+				</div> -->
+			</div>
+
+			<!-- *ngIf="allContentData && allContentData.length > 0" -->
+			<!-- <div >
+                <p style="padding: 1%;margin-top: -60px;font-size: 1.2rem;padding-left: 1%;color: black;" *ngIf="!isAddLearnerToGroup">
+                    Learner Group : {{f.title.value}}
+                </p>
+                <p  style="padding: 1%;margin-top: -60px;font-size: 1.2rem;padding-left: 1%;color: black;" *ngIf="isAddLearnerToGroup">
+                    Filtered Result
+                </p>
+            </div> -->
+			<div
+				class="panel panel-white"
+				style="
+					margin: 0px;
+					border: 0px solid rgba(0, 0, 0, 0.07);
+					border-top: 2px solid rgba(0, 0, 0, 0.07);
+					border-radius: 0px;
+				">
+				<div *ngIf="tableLoade" class="sub table-responsive">
+					<div style="text-align: center; margin-top: 9rem; margin-bottom: 9rem">
+						<!-- <img class="asset-img" src="assets/images/Circle-1.gif" style="width: 3%" /> -->
+						<div [innerHTML]="iconObject['search_loader']" class="asset-img"></div>
+						<h5 style="margin-top: 5px">
+							{{ 'Utils.fetchingContacts' | translate }} {{ totalLearnerCount }}
+							{{ 'Pages.Learners.Home.Contactpagetitle' | translate }}
+						</h5>
+					</div>
+				</div>
+				<div *ngIf="!tableLoade && learnerList.length > 0" class="sub table-responsive" style="margin-bottom: 0.2rem">
+					<table class="table table-striped table-hover">
+						<thead>
+							<tr>
+								<th class="left tb-head-bg tb-line-height" style="padding-left: 1rem">
+									<input
+										*ngIf="learnerList.length > 0"
+										type="checkbox"
+										id="selectBoxId"
+										class="widthauto padTop5 purple_checkbox"
+										#selectAll
+										[checked]="selectedUserIds.length == totalLearnerCount"
+										(change)="selectDeselct(selectAll.checked)" />
+								</th>
+								<th class="left padLeft15 tb-head-bg tb-line-height">
+									{{
+										type === 'drip'
+											? ('Pages.LearnerGroup.AddEdit.Table.Header.contactAccId' | translate)
+											: ('Pages.LearnerGroup.AddEdit.Table.Header.accId' | translate)
+									}}
+								</th>
+								<th class="left tb-head-bg tb-line-height">
+									{{
+										type === 'drip'
+											? ('Pages.LearnerGroup.AddEdit.Table.Header.contactFullname' | translate)
+											: ('Pages.LearnerGroup.AddEdit.Table.Header.fullname' | translate)
+									}}
+								</th>
+								<th class="left tb-head-bg tb-line-height">
+									{{ 'Pages.LearnerGroup.AddEdit.Table.Header.email' | translate }}
+								</th>
+								<th class="left tb-head-bg tb-line-height">
+									{{ 'Pages.LearnerGroup.AddEdit.Table.Header.mobile' | translate }}
+								</th>
+								<th class="left tb-head-bg tb-line-height">
+									{{ 'Pages.LearnerGroup.AddEdit.Table.Header.parentclient' | translate }}
+								</th>
+								<th
+									class="left tb-head-bg tb-line-height"
+									style="max-width: 145px; min-width: 145px"
+									*ngIf="type == 'drip' && appService?.configurable_feature?.whatsApp">
+									{{ 'Pages.LearnerGroup.AddEdit.Table.Header.Whatsappstatus' | translate }}
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr
+								*ngFor="
+									let learner of learnerList
+										| paginate
+											: {
+													itemsPerPage: limit == 'all' ? totalLearnerCount : limit,
+													currentPage: page,
+													totalItems: totalLearnerCount
+											  };
+									let i = index
+								">
+								<td class="left" style="padding-left: 1rem; padding-top: 8px">
+									<input
+										[id]="'checkbox-' + learner.id"
+										[placeholder]="placeholder()"
+										type="checkbox"
+										class="widthauto padTop5 purple_checkbox"
+										(change)="onCheck($event.target.checked, learner, i)" />
+								</td>
+								<td class="left" style="padding-top: 7px">{{ learner.account_id }}</td>
+								<td lass="left two-row-td-tag" style="padding-top: 15px">
+									<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+										{{ learner.first }} {{ learner.last }}
+									</p>
+								</td>
+								<td lass="left  two-row-td-tag" style="padding-top: 15px">
+									<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+										{{ learner.email }}
+									</p>
+								</td>
+								<td class="left" style="padding-top: 7px">{{ learner.phone }}</td>
+								<td class="left" style="padding-top: 7px">{{ learner.Clients[0].name }}</td>
+								<td
+									class="left"
+									style="padding: 12px"
+									*ngIf="type == 'drip' && appService?.configurable_feature?.whatsApp">
+									<span class="status-pending" *ngIf="learner.whatsAppStatus == 'Pending'">{{
+										'Utils.Status.pending' | translate
+									}}</span>
+									<span class="status-opted-in" *ngIf="learner.whatsAppStatus == 'OptedIn'">{{
+										'Utils.Status.optedin' | translate
+									}}</span>
+									<span class="status-opted-out" *ngIf="learner.whatsAppStatus == 'OptedOut'">{{
+										'Utils.Status.optedout' | translate
+									}}</span>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div style="padding: 0px 24px; width: 100%; margin-top: 20px" *ngIf="learnerList.length > 0">
+					<div style="float: right">
+						<span> {{ 'Utils.perpage' | translate }} : &nbsp;</span>
+						<select class="default-dropdown" (change)="changeResult($event.target.value)">
+							<option *ngFor="let count of pageResultCount; let i = index" [selected]="i == 0">
+								{{ count }}
+							</option>
+						</select>
+					</div>
+					<pagination-controls (pageChange)="onPageChangeEvent($event)" style="float: right"> </pagination-controls>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+
+<!-- Select Client List -->
+<div
+	class="modal fade credit-note"
+	id="selecteClientList"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="myModalLabel"
+	aria-hidden="true"
+	data-backdrop="static"
+	data-keyboard="false">
+	<div class="modal-dialog" style="width: 34%; margin-top: 10%; margin-left: 34%">
+		<div class="modal-content">
+			<div
+				class="modal-header"
+				[ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="cancelClientlistPopUp()">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					<span>{{ 'Select Account ' | translate }}</span>
+				</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-12 form-group" style="margin-top: -5px">
+						<label>{{ 'Pages.LearnerGroup.AddEdit.Modal.SelectClientForRole.Account.title' | translate }}</label>
+						<ng-select
+							[items]="client_List"
+							class="ng-select-wrap"
+							placeholder="{{ 'Pages.LearnerGroup.AddEdit.Modal.SelectClientForRole.Account.placeholder' | translate }}"
+							bindLabel="nameWithClientId"
+							bindValue="id"
+							[multiple]="false"
+							[clearable]="true"
+							[closeOnSelect]="true"
+							[searchable]="true"
+							[(ngModel)]="ownerClient.id"
+							(change)="selctedClient($event)">
+						</ng-select>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12 form-group" style="margin-top: -5px">
+						<label>{{ 'Pages.LearnerGroup.AddEdit.Modal.SelectClientForRole.Role.title' | translate }}</label>
+						<ng-select
+							[items]="ownUserRoleList"
+							class="ng-select-wrap"
+							placeholder="{{ 'Pages.LearnerGroup.AddEdit.Modal.SelectClientForRole.Role.placeholder' | translate }}"
+							bindLabel="name"
+							bindValue="RoleId"
+							[multiple]="false"
+							[clearable]="true"
+							[closeOnSelect]="true"
+							[searchable]="true"
+							[(ngModel)]="ownerClient.RoleId"
+							(change)="selectRole($event)">
+						</ng-select>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12 form-group" style="margin-top: -5px">
+						<label>{{ 'Pages.LearnerGroup.AddEdit.Modal.SelectClientForRole.User.title' | translate }}</label>
+						<ng-select
+							[items]="userListForOwnList"
+							class="ng-select-wrap"
+							placeholder="{{ 'Pages.LearnerGroup.AddEdit.Modal.SelectClientForRole.User.placeholder' | translate }}"
+							bindLabel="fullName"
+							bindValue="id"
+							[multiple]="false"
+							[clearable]="true"
+							[closeOnSelect]="true"
+							[searchable]="true"
+							[(ngModel)]="ownerClient.UserId"
+							(change)="selctedUser($event)">
+						</ng-select>
+					</div>
+				</div>
+				<div
+					class="visible-md visible-lg visible-sm visible-xs"
+					style="text-align: right; margin-bottom: 0.75rem; margin-top: 1.5rem">
+					<a
+						class="btn-xs action-pause-btn"
+						style="padding: 7px 23px; border-radius: 30px; font-size: 0.9rem; margin-right: 10px"
+						(click)="cancelClientlistPopUp()"
+						>{{ 'Utils.Action.cancel' | translate }}</a
+					>
+					<a
+						class="btn-xs action-edit-btn"
+						(click)="selectClient()"
+						style="margin-right: 9px; padding: 7px 20px; border-radius: 30px; font-size: 0.9rem"
+						>{{ 'Utils.ok' | translate }}</a
+					>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

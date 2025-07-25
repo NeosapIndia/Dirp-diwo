@@ -1,0 +1,357 @@
+<div class="pageDiv home" style="min-height: calc(100vh - 95px)">
+	<!-- <div style="margin-top: 2rem">
+		<div class="row">
+			<div class="panel header-panel-white">
+				<div class="col-md-3" style="padding-left: 0.5%">
+					<span class="mainTitle no-margin pageTitle_Main">{{ 'Pages.HomePage.pagetitle' | translate }}</span>
+				</div>
+			</div>
+		</div>
+	</div> -->
+	<div style="margin-top: 3rem">
+		<div class="row">
+			<div class="panel panel-white-2" *ngFor="let item of AllCount">
+				<div class="col-md-3" style="padding-left: 0; padding-right: 1.25rem">
+					<div class="sub-card" [routerLink]="['/learners']">
+						<!-- <img src="assets/images/groups.svg" alt="" /> -->
+						<div [innerHTML]="iconObject['groups']"></div>
+						<div class="total-count">{{ item.activeLearer }}</div>
+						<p class="title">{{ 'Pages.HomePage.nofactivelearners' | translate }}</p>
+					</div>
+				</div>
+				<div class="col-md-3" style="padding-left: 0.625rem">
+					<div class="sub-card" [routerLink]="['/drip-flows']">
+						<!-- <img src="assets/images/family_history.svg" alt="" /> -->
+						<div [innerHTML]="iconObject['family_history']"></div>
+
+						<div class="total-count">{{ item.LiveDripFlow }}</div>
+						<p class="title">{{ 'Pages.HomePage.noflivedripflows' | translate }}</p>
+					</div>
+				</div>
+				<div class="col-md-3" style="padding-right: 0.625rem">
+					<div class="sub-card" [routerLink]="['/drips-library']">
+						<!-- <img src="assets/images/water_drop.svg" alt="" /> -->
+						<div [innerHTML]="iconObject['water_drop']"></div>
+
+						<div class="total-count">{{ item.UniqueDrips }}</div>
+						<p class="title">{{ 'Pages.HomePage.nofuniquedrips' | translate }}</p>
+					</div>
+				</div>
+				<div class="col-md-3" style="padding-right: 0; padding-left: 1.25rem">
+					<div class="sub-card" [routerLink]="['/assets-library']">
+						<!-- <img src="assets/images/perm_media.svg" alt="" /> -->
+						<div [innerHTML]="iconObject['perm_media']"></div>
+
+						<div class="total-count">{{ item.UniqueAssets }}</div>
+						<p class="title">{{ 'Pages.HomePage.nofuniqueassets' | translate }}</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<app-drip-analytics-chart></app-drip-analytics-chart>
+	<!-- <div style="margin-top: 3rem">
+		<div class="row">
+			<div class="panel panel-white-4">
+				<div class="report-header">
+					{{ 'Pages.HomePage.DripActivity.title' | translate }}
+				</div>
+				<div style="padding: 20px" #container>
+					<div class="row">
+						<div class="col-md-9 head-title"></div>
+						<div class="col-md-3">
+							<ng-select
+								[items]="Monthdata"
+								class="ng-select-wrap"
+								placeholder="{{ 'Pages.HomePage.DripActivity.placeholder' | translate }}"
+								bindLabel="name"
+								bindValue="value"
+								[multiple]="false"
+								[closeOnSelect]="true"
+								[searchable]="false"
+								[clearable]="false"
+								(change)="selectedMonthsForVerticalChart($event)"
+								[ngModelOptions]="{ standalone: true }"
+								[(ngModel)]="selectedMonthForDripActivity">
+							</ng-select>
+						</div>
+					</div>
+					<div class="row" style="margin-top: 1rem" *ngIf="!isApiCall">
+						<ngx-charts-bar-vertical-2d
+							[view]="view"
+							[scheme]="colorScheme"
+							[results]="verticalGraphResult"
+							[gradient]="gradient"
+							[xAxis]="showXAxis"
+							[yAxis]="showYAxis"
+							[showXAxisLabel]="showXAxisLabel"
+							[showYAxisLabel]="showYAxisLabel"
+							(select)="onSelect($event)"
+							(activate)="onActivate($event)"
+							(deactivate)="onDeactivate($event)">
+						</ngx-charts-bar-vertical-2d>
+					</div>
+					<div
+						class="row"
+						style="text-align: center; margin-top: 2rem; margin-bottom: 3rem"
+						*ngIf="verticalGraphResult && verticalGraphResult.length == 0 && !isApiCall">
+						<img src="assets/images/No Results.svg" alt="" style="width: 25%" />
+						<h3>{{ 'Utils.nodataToShow' | translate }}</h3>
+						<p style="width: 50%; margin: 0 auto">{{ 'Utils.nodataAvaliable' | translate }}</p>
+					</div>
+					<div style="text-align: center; margin-top: 9rem; margin-bottom: 9rem" *ngIf="isApiCall">
+						<img class="asset-img" src="assets/images/Circle-1.gif" style="width: 3%" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</div> -->
+
+	<div style="margin-top: 0.2rem" *ngIf="showDownloadReport">
+		<div class="row">
+			<div class="panel panel-white-4">
+				<div class="report-header">
+					{{ 'Pages.HomePage.ReportDownload.title' | translate }}
+				</div>
+				<div style="padding: 20px">
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group" style="margin-top: 0">
+								<label> {{ 'Pages.HomePage.ReportDownload.Pickyourreport.title' | translate }}</label>
+								<ng-select
+									[items]="Reportdata"
+									class="ng-select-wrap"
+									placeholder="{{ 'Pages.HomePage.ReportDownload.Pickyourreport.placeholder' | translate }}"
+									bindLabel="name"
+									bindValue="id"
+									[multiple]="false"
+									[closeOnSelect]="true"
+									[searchable]="false"
+									[clearable]="false"
+									(change)="selectedReport($event)"
+									[ngModelOptions]="{ standalone: true }"
+									[(ngModel)]="selectedReportName">
+								</ng-select>
+							</div>
+						</div>
+						<div class="col-md-6 head-title" *ngIf="selectedReportName != 3">
+							<div
+								class="form-group"
+								style="margin-top: 0"
+								[ngClass]="{ 'has-error': isdateRangeSelected, 'has-success': !isdateRangeSelected }">
+								<label>{{ 'Pages.HomePage.ReportDownload.Pickyourperiod.title' | translate }}</label>
+								<input
+									type="text"
+									ngxDaterangepickerMd
+									[showDropdowns]="true"
+									onkeydown="return false"
+									[(ngModel)]="selectedDate"
+									[showCustomRangeLabel]="true"
+									[alwaysShowCalendars]="true"
+									[ranges]="ranges"
+									[linkedCalendars]="true"
+									[isInvalidDate]="isInvalidDate"
+									[showClearButton]="true"
+									[showCancel]="true"
+									placeholder="DD-MM-YYYY - DD-MM-YYYY"
+									[autoApply]="false"
+									[locale]="{ applyLabel: 'apply', format: 'DD-MM-YYYY' }"
+									(startDateChanged)="startDateClicked($event)"
+									(endDateChanged)="endDateClicked($event)"
+									(change)="onReportDateChange()"
+									class="form-control"
+									autocomplete="off"
+									[ngModelOptions]="{ standalone: true }" />
+							</div>
+							<div *ngIf="isdateRangeSelected" class="error" style="color: #a94442">
+								{{ 'Pages.Analytics.Home.ReportDownload.Pickyourperiod.error' | translate }}
+							</div>
+						</div>
+					</div>
+					<div class="row" style="text-align: end; margin-top: 2rem">
+						<a
+							[ngStyle]="{
+								'background-color': appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor
+							}"
+							class="btn btn-primary border_radius functionalBtn"
+							style="margin-right: 15px"
+							(click)="downloadReport()"
+							>{{ 'Utils.Action.download' | translate }}</a
+						>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div style="margin-top: 0.2rem" *ngIf="SubscriptionData">
+		<div class="row" style="margin-bottom: 2rem">
+			<div class="panel panel-white-2">
+				<div class="col-md-4" style="padding-left: 0; padding-right: 1.25rem">
+					<div class="license-sub-card">
+						<p class="license-title">
+							<span *ngIf="SubscriptionData.status != 'Expired'">
+								{{ 'Pages.HomePage.Subscription.expireson' | translate }}
+							</span>
+							<span *ngIf="SubscriptionData.status == 'Expired'">
+								{{ 'Pages.HomePage.Subscription.expiredon' | translate }}
+							</span>
+						</p>
+						<div class="license-total-count">
+							{{
+								SubscriptionData && SubscriptionData.endDate != null
+									? (SubscriptionData && SubscriptionData.endDate | DateFormat)
+									: '-'
+							}}
+						</div>
+					</div>
+					<div class="mb-3 text-danger" *ngIf="SubscriptionData && SubscriptionData.status == 'Suspended'">
+						{{ 'Pages.HomePage.Subscription.temporarilysuspended' | translate }}
+					</div>
+				</div>
+				<div class="col-md-4" style="padding-right: 0.625rem; padding-left: 0.625rem">
+					<div class="license-sub-card">
+						<p class="license-title">
+							{{
+								type === 'drip'
+									? ('Pages.HomePage.Subscription.contactavailable' | translate)
+									: ('Pages.HomePage.Subscription.available' | translate)
+							}}
+						</p>
+
+						<div class="license-total-count">
+							{{
+								SubscriptionData && SubscriptionData.unlLearner == true
+									? ('Pages.HomePage.Subscription.unlimited' | translate)
+									: SubscriptionData && SubscriptionData.learnerCount - SubscriptionData.useLearnerCount
+							}}
+						</div>
+					</div>
+				</div>
+				<div class="col-md-4" style="padding-right: 0; padding-left: 1.25rem">
+					<div class="license-sub-card">
+						<p class="license-title">
+							{{ '' | translate }}
+
+							{{
+								type === 'drip'
+									? ('Pages.HomePage.Subscription.contactuse' | translate)
+									: ('Pages.HomePage.Subscription.use' | translate)
+							}}
+						</p>
+						<div class="license-total-count">
+							{{
+								SubscriptionData && SubscriptionData.unlLearner == true
+									? ('Pages.HomePage.Subscription.unlimited' | translate)
+									: SubscriptionData && SubscriptionData.useLearnerCount
+							}}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div
+	class="modal fade credit-note"
+	id="policyModel"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="myModalLabel"
+	aria-hidden="true"
+	data-backdrop="static"
+	data-keyboard="false">
+	<div class="modal-dialog" style="width: 40%; margin-top: 15%; margin-left: auto; margin-right: auto">
+		<div class="modal-content">
+			<div
+				class="modal-header"
+				[ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}">
+				<!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="cancel()">
+                    <span aria-hidden="true">&times;</span>
+                </button> -->
+				<h4 class="modal-title" id="myModalLabel">
+					<span>{{ 'Pages.HomePage.policyaccept' | translate }}</span>
+				</h4>
+			</div>
+			<div class="modal-body">
+				<p *ngIf="isExistingUser">
+					{{ 'Pages.HomePage.welcome3' | translate }}
+					<span>
+						{{ policies }}
+					</span>
+					{{ 'Pages.HomePage.welcome2' | translate }}
+				</p>
+
+				<p *ngIf="!isExistingUser">
+					{{ 'Pages.HomePage.welcome1' | translate }}
+					<span>
+						{{ policies }}
+					</span>
+					{{ 'Pages.HomePage.welcome2' | translate }}
+				</p>
+				<div>
+					<p
+						*ngFor="let name of policyNames"
+						style="margin-bottom: 0px; margin-top: 0.3rem; text-decoration: underline">
+						<span (click)="redirctToURL(name)" style="cursor: pointer">{{ name }}</span>
+					</p>
+				</div>
+				<div
+					class="visible-md visible-lg visible-sm visible-xs"
+					style="text-align: right; margin-bottom: 0.75rem; margin-top: 1.5rem">
+					<a class="btn-xs action-edit-btn anchor-tag-btn" (click)="acceptPolicy()">{{
+						'Utils.Action.accept' | translate
+					}}</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div
+	class="modal fade credit-note"
+	id="notificationModel"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="myModalLabel"
+	aria-hidden="true"
+	data-backdrop="static"
+	data-keyboard="false">
+	<div class="modal-dialog" style="width: 34%; margin-top: 23%; margin-left: 41%">
+		<div class="modal-content">
+			<div
+				class="modal-header"
+				[ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="nextNotification()">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					<span>{{ 'Pages.HomePage.notification' | translate }}</span>
+				</h4>
+			</div>
+			<div class="modal-body">
+				<span *ngIf="notificationList && notificationList.length > 0">
+					{{ notificationList[selectedNotifcationIndex].message }}
+				</span>
+				<div
+					class="visible-md visible-lg visible-sm visible-xs"
+					style="text-align: right; margin-bottom: 0.75rem; margin-top: 1.5rem">
+					<a class="btn-xs action-edit-btn anchor-tag-btn" (click)="nextNotification()">{{
+						'Pages.HomePage.okay' | translate
+					}}</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

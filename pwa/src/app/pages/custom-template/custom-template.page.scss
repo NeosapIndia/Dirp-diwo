@@ -1,0 +1,52 @@
+::ng-deep.html_td {
+	line-height: 0px !important;
+}
+
+::ng-deep.close-icon-div {
+	// display: none;
+	position: relative;
+	// border: 1px solid #ccc;
+	// background: black;
+}
+
+// ::ng-deep.close-icon {
+// 	position: absolute;
+// 	top: 10px;
+// 	right: 10px;
+// 	font-size: 26px;
+// 	cursor: pointer;
+// 	color: #000;
+// 	border-radius: 50%;
+// 	background: #ced1d1;
+// 	padding: 0px 10px;
+// }
+
+::ng-deep.close-icon {
+	width: 28px;
+	height: 28px;
+	// background-color: #00000080;
+	background-color: #00000047;
+	border: none;
+	border-radius: 50%;
+	color: #fff;
+	font-size: 13px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	cursor: pointer;
+	outline: none;
+	line-height: 1;
+	position: absolute;
+	// right: 15px;
+	// top: 15px;
+	right: 10px;
+	top: 13px;
+}
+
+::ng-deep.close-icon:hover {
+	background-color: rgba(0, 0, 0, 0.7); /* Darker background on hover */
+}
+
+::ng-deep.close-icon:focus {
+	outline: 2px solid white; /* Visible focus outline for accessibility */
+}

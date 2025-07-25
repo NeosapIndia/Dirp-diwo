@@ -1,0 +1,173 @@
+<ion-header *ngIf="isMobile && isMobileView">
+	<ion-toolbar class="toolbar-head">
+		<img *ngIf="clientBranding" [src]="imageBaseURL + clientBranding.learner_app_icon_path" class="header-logo" />
+		<img *ngIf="!clientBranding && appService.defaultPWALogo" [src]="appService.defaultPWALogo" class="header-logo" />
+		<img
+			*ngIf="!clientBranding &&!appService.defaultPWALogo"
+			src="assets/icon/diwo_full_logo.png"
+			class="header-logo" />
+	</ion-toolbar>
+</ion-header>
+
+<ion-content
+	[fullscreen]="true"
+	class="ion-padding-horizontal"
+	[scrollEvents]="true"
+	(ionScroll)="getScrollPos($event)">
+	<ion-grid>
+		<!-- My Modules -->
+		<ion-row [ngClass]="{ 'ion-main-row-desktop': isdesktopView || isTabletLandscapeView || isTablet}">
+			<ion-col
+				size-sm="12"
+				size-md="9"
+				size-lg="7"
+				class="page-wrapper2 main-col"
+				[ngClass]="{ 'ion-main-col-desktop': isdesktopView || isTabletLandscapeView || isTablet}">
+				<div class="ion-sort-desktop">
+					<p class="mymodules">{{'Utils.mymodules' | translate}}</p>
+				</div>
+
+				<!-- SearchBox -->
+				<ion-row class="ion--header-search-main-row">
+					<ion-col class="no-padding">
+						<ion-header id="header-desktop-searchbar">
+							<div class="custom-search-container">
+								<input
+									type="text"
+									[(ngModel)]="searchQuery"
+									(ngModelChange)="filterData()"
+									class="custom-search-input"
+									[placeholder]="'Utils.searchboxPlaceholder' | translate" />
+								<ion-icon name="search" class="custom-search-icon"></ion-icon>
+							</div>
+						</ion-header>
+					</ion-col>
+				</ion-row>
+
+				<!-- When there is filteredAssignToDosWorkbookListData -->	
+				<ion-row class="custom-gutter" *ngIf="filteredAssignToDosWorkbookListData && filteredAssignToDosWorkbookListData.length > 0">
+					<ion-col
+						*ngFor="let item of filteredAssignToDosWorkbookListData"
+						size-sm="6"
+						size-md="3"
+						size-lg="3"
+						size="6"
+						class="page-wrapper">
+						<div class="custom-card" (click)="redirectToSingle(item)">
+							<div
+								*ngIf="item && item.Session"
+								[ngClass]="{'notLive' : (item.Session.status == 'Planned' || item.Session.status == 'Live') && item.attendanceStatus != 'Present' || item.expStatus == 'Expired','live' : ((item.Session.status == 'Live' || item.Session.status == 'Closed' || item.Session.status == 'Planned' || item.Session.status == 'Ended') && item.attendanceStatus == 'Present' && item.expStatus != 'Expired'),
+									'notLive2' : ((item.Session.status == 'Closed' && item.ModuleStatus =='Not Started')|| (item.Session.status == 'Planned' && item.attendanceStatus == 'Present' && item.expStatus != 'Expired' && item.Session.DiwoModuleId !=1))
+								 }">
+								<div class="wb-img">
+									<img [src]="item.imagePath" class="wbImg" />
+								</div>
+								<div class="wb-details">
+									<p class="wb-name">{{item.title}}</p>
+									<p class="moduletype-name">{{item.ModuleTypeName}}</p>
+									<div *ngIf="item.Session.DiwoModuleId ==1">
+										<p
+											class="assigned-date"
+											*ngIf="item.Session.status == 'Planned' && item.attendanceStatus != 'Present' && item.expStatus != 'Expired'">
+											{{'Utils.sessionNotStarted' | translate}}
+										</p>
+										<p
+											class="assigned-date"
+											*ngIf="item.Session.status == 'Planned' && item.attendanceStatus == 'Present' && item.expStatus != 'Expired'">
+											{{'Utils.sessionStartingSoon' | translate}}
+											<span class="dot-startingsoon"></span>
+										</p>
+										<p
+											class="assigned-date"
+											*ngIf="item.Session.status == 'Ended' && item.attendanceStatus == 'Present' && item.expStatus != 'Expired'">
+											{{'Utils.sessionOpen' | translate}}
+											<span class="dot-startingsoon"></span>
+										</p>
+										<p
+											class="assigned-date"
+											*ngIf="item.Session.status == 'Live' && item.attendanceStatus == 'Present' && item.expStatus != 'Expired'">
+											{{'Utils.sessionLive' | translate}}
+											<span class="dot-live"></span>
+										</p>
+										<p
+											class="assigned-date"
+											*ngIf="item.Session.status == 'Live' && item.attendanceStatus != 'Present' && item.expStatus != 'Expired'">
+											{{'Utils.sessionnotLive' | translate}}
+										</p>
+										<p
+											class="assigned-date"
+											*ngIf="item.ModuleStatus !='Not Started' && item.Session.status == 'Closed' && item.attendanceStatus == 'Present'&& item.expStatus != 'Expired'">
+											{{'Utils.sessionAttendedOn' | translate}} {{item.Session.SessionStartDate}}
+										</p>
+										<p
+											class="assigned-date"
+											*ngIf="item.ModuleStatus =='Not Started' && item.Session.status == 'Closed' && item.attendanceStatus == 'Present'&& item.expStatus != 'Expired'">
+											{{'Utils.sessionNotStarted' | translate}}
+										</p>
+										<p class="assigned-date" *ngIf="item.expStatus == 'Expired'">
+											{{'Utils.sessionExpired' | translate}}
+										</p>
+										<p class="learnerstatus" *ngIf="item.ModuleStatus=='Certified'">{{item.ModuleStatus}}</p>
+									</div>
+									<div *ngIf="item.Session.DiwoModuleId !=1">
+										<p
+											class="assigned-date"
+											*ngIf="item.Session.status == 'Live' && item.attendanceStatus == 'Present' && item.expStatus != 'Expired'">
+											{{'Utils.sessiondueOn' | translate}} {{item.Session.enddateWithTime}}
+										</p>
+										<p class="learnerstatus">{{item.ModuleStatus}}</p>
+									</div>
+								</div>
+							</div>
+							<div *ngIf="item && item.Session == null" class="notLive">
+								<div class="wb-img">
+									<img [src]="item.imagePath" class="wbImg" />
+								</div>
+								<div class="wb-details">
+									<p class="wb-name">{{item.title}}</p>
+									<p class="moduletype-name">{{item.ModuleTypeName}}</p>
+									<p class="assigned-date">{{'Utils.sessionNotStarted' | translate}}</p>
+								</div>
+							</div>
+						</div>
+					</ion-col>
+				</ion-row>
+
+				<!-- When there is no filteredAssignToDosWorkbookListData -->			
+				<ion-row class="custom-gutter" *ngIf="!filteredAssignToDosWorkbookListData || filteredAssignToDosWorkbookListData.length == 0" >
+					<ion-col						
+						size-sm="12"
+						size-md="12"
+						size-lg="12"
+						class="page-wrapper2 main-col">
+
+						<div class="no-todos-card">						
+							<span class="no_modules_icon" [innerHTML]="iconObject['no_modules_icon']"></span>
+							<span style="font-weight:501; margin-bottom: 1rem;">{{'Utils.noModulesAvailable' | translate}}</span>
+							<span style="padding: 0 1rem; text-align: center;">																
+								{{'Utils.noLearningModulesAssignedText' | translate}}								
+							</span>							
+						</div>
+
+					</ion-col>
+				</ion-row>
+
+				
+			</ion-col>
+		</ion-row>
+
+		<div class="back-to-top-btn" *ngIf="backToTop" (click)="gotToTop()">
+			<ion-icon id="top-icon" name="chevron-up-outline"></ion-icon>
+		</div>
+	</ion-grid>
+	<ion-refresher
+		ion-refresh-native
+		slot="fixed"
+		disabled="false"
+		(ionRefresh)="doRefresh($event)"
+		pullFactor="0.1"
+		pullMin="50"
+		pullMax="200">
+		<ion-refresher-content></ion-refresher-content>
+	</ion-refresher>
+</ion-content>

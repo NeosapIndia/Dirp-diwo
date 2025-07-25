@@ -1,0 +1,187 @@
+.section-wrapper {
+	border: 2px solid rgba(0, 0, 0, 0.07) !important;
+	border-radius: 12px;
+	box-shadow: 0 1px 1px 0 rgb(0 0 0 / 20%);
+}
+
+.container {
+	padding: 4px;
+}
+
+textarea {
+	border: 2px solid rgba(0, 0, 0, 0.07) !important;
+	border-radius: 8px;
+	padding: 15px 15px !important;
+	line-height: 160% !important;
+}
+
+.form-group {
+	margin-bottom: 8px;
+	margin-top: 12px;
+}
+
+hr {
+	background-image: none;
+	border: 0 none;
+	height: 0.5px;
+	margin: 20px 0;
+	background-color: #c8c7cc;
+}
+
+.ng-select .ng-select-container {
+	align-items: center;
+	padding: 6px 7px 6px 4px;
+	border: 2px solid rgba(0, 0, 0, 0.07) !important;
+	border-radius: 8px;
+}
+
+/* Table Header Css */
+
+.tb-head-bg {
+	background-color: #f9fafb;
+}
+
+.tb-first-heading {
+	background-color: #f9fafb;
+	border-radius: 15px 0px 0px 0px !important;
+}
+
+.tb-last-heading {
+	background-color: #f9fafb;
+	border-radius: 0px 15px 0px 0px !important;
+}
+
+.edit-disabled {
+	color: white !important;
+	background-color: #8890a4 !important;
+	border: 0.5px solid #8890a4 !important;
+	cursor: initial !important;
+}
+
+.btn-info:active.edit-disabled,
+.btn-info.active.edit-disabled,
+.btn-info.active.edit-disabled:focus,
+.btn-info:active.edit-disabled:focus,
+.btn-info:active.edit-disabled:hover {
+	color: white !important;
+	background-color: #8890a4 !important;
+	border: 0.5px solid #8890a4 !important;
+}
+
+.delete-disabled {
+	color: #8890a4 !important;
+	border: 0.5px solid #8890a4 !important;
+}
+
+.info-icon-div {
+	display: inline-flex;
+	align-items: center;
+}
+
+.add_module_btn {
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-end;
+	align-items: center;
+	height: 6rem;
+	padding-right: 0;
+}
+
+.table_para {
+	line-height: 1.6em;
+	max-height: 3.5em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 2;
+}
+
+.switch {
+	position: relative;
+	display: inline-block;
+	width: 60px;
+	height: 30px;
+}
+
+.slider.round {
+	border-radius: 34px;
+}
+
+.switch input {
+	display: none;
+}
+
+.slider {
+	position: absolute;
+	cursor: pointer;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: #ccc;
+	-webkit-transition: 0.4s;
+	transition: 0.4s;
+}
+
+input:checked + .slider {
+	background-color: #6513e1;
+}
+
+input:checked + .slider:before {
+	-webkit-transform: translateX(26px);
+	-ms-transform: translateX(26px);
+	transform: translateX(26px);
+}
+
+.slider.round:before {
+	border-radius: 50%;
+}
+
+.slider:before {
+	position: absolute;
+	content: '';
+	height: 22px;
+	width: 22px;
+	left: 4px;
+	bottom: 4px;
+	background-color: white;
+	-webkit-transition: 0.4s;
+	transition: 0.4s;
+}
+
+.cancel_btn {
+	padding: 4px 30px !important;
+}
+
+.replace_btn {
+	padding: 4px 25px !important;
+}
+
+/* in-flight clone */
+.gu-mirror {
+	position: fixed !important;
+	margin: 0 !important;
+	z-index: 9999 !important;
+	opacity: 0.8;
+	-ms-filter: 'progid:DXImageTransform.Microsoft.Alpha(Opacity=80)';
+	filter: alpha(opacity=80);
+	pointer-events: none;
+}
+/* high-performance display:none; helper */
+.gu-hide {
+	left: -9999px !important;
+}
+/* added to mirrorContainer (default = body) while dragging */
+.gu-unselectable {
+	-webkit-user-select: none !important;
+	-moz-user-select: none !important;
+	-ms-user-select: none !important;
+	user-select: none !important;
+}
+/* added to the source element while its mirror is dragged */
+.gu-transit {
+	opacity: 0.2;
+	-ms-filter: 'progid:DXImageTransform.Microsoft.Alpha(Opacity=20)';
+	filter: alpha(opacity=20);
+}

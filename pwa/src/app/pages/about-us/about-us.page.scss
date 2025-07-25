@@ -1,0 +1,129 @@
+ion-header ion-title {
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	margin: auto;
+	position: absolute;
+	width: fit-content;
+	height: fit-content;
+	color: var(grey);
+}
+
+ion-label {
+	font-size: 1.1rem !important;
+}
+
+.otp_btn {
+	height: 4.6rem;
+	font-size: 2rem;
+	text-transform: none;
+	box-shadow: none;
+}
+
+form {
+	margin-top: 30%;
+
+	@media (orientation: landscape) {
+		margin-top: 0;
+	}
+
+	@media only screen and (min-width: 768px) and (orientation: landscape) {
+		width: 70%;
+		margin: auto;
+	}
+}
+
+img {
+	width: 12rem;
+}
+
+.scroll-content {
+	@media (orientation: landscape) {
+		overflow-y: hidden;
+	}
+}
+
+ion-header ion-icon {
+	font-size: 3.2rem !important;
+}
+
+.otp_input {
+	color: darkgray;
+	border-style: none;
+	width: 100%;
+	height: 2rem;
+	font-size: 1.5rem;
+	border-bottom: 1px solid;
+	margin: 0px 0px;
+	border-radius: 0 !important;
+	background-color: #fff;
+	margin-top: 6%;
+	letter-spacing: 65px;
+	// text-align: left !important;
+	// padding-left: 12%;
+	outline: none;
+}
+
+.text-input-md {
+	//margin: 10px 20px;
+	text-align: center;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+td:nth-of-type(4) {
+	padding: 0 10px;
+	padding-right: 0px;
+}
+
+td:nth-of-type(1) {
+	padding: 0 10px;
+	padding-left: 0px;
+}
+
+td {
+	border: none;
+	padding: 0 10px;
+	width: 25%;
+}
+
+.button-clear-md-blue.activated {
+	background-color: transparent !important;
+}
+
+/*@media screen and (orientation:landscape) {
+ion-header ion-icon {
+font-size: 5vw !important;
+}
+}*/
+
+.input-cover {
+	touch-action: none !important;
+	display: none !important;
+}
+
+.about-us-image {
+	width: 30%;
+}
+
+.center {
+	display: block;
+	margin: auto;
+	width: 50%;
+}
+
+.appVersion {
+	text-align: center;
+	height: 3rem;
+	font-size: 1rem;
+}
+
+.header-logo {
+	height: 2.188rem;
+	vertical-align: middle;
+	margin-top: 0.625rem;
+	margin-bottom: 0.25rem;
+}

@@ -1,0 +1,20 @@
+/* To learn more about this file see: https://angular.io/config/tsconfig. */
+{
+	"compileOnSave": false,
+	"compilerOptions": {
+		"baseUrl": "./",
+		"outDir": "./dist/out-tsc",
+		"sourceMap": true,
+		"declaration": false,
+		"types": ["jquery", "node"],
+		"module": "ES2022",
+		"moduleResolution": "node",
+		"emitDecoratorMetadata": true,
+		"experimentalDecorators": true,
+		"target": "ES2022",
+		"typeRoots": ["node_modules/@types"],
+		"noImplicitAny": false,
+		"lib": ["ES2022", "dom"],
+		"skipLibCheck": true
+	}
+}

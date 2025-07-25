@@ -1,0 +1,29 @@
+.container-fluid {
+	padding-left: 0;
+	padding-right: 0;
+	margin-top: 8rem;
+}
+
+.header-panel-white {
+	margin: 0 !important;
+}
+
+.panel-white,
+.partition-white {
+	margin: 0 0 1.9% 0 !important;
+}
+
+.form-group {
+	margin-bottom: 8px;
+	margin-top: 6px;
+}
+
+.action-edit-btn {
+	padding: 0.25rem 1.25rem;
+}
+
+.form-control[disabled],
+.form-control[readonly],
+fieldset[disabled] .form-control {
+	background: #f9f9f9 !important;
+}

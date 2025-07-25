@@ -1,0 +1,125 @@
+///////////////////////////////////////////////////////////////////////////////// WOrking OLD CODE ////////////
+
+// .wrap-element {
+// 	position: relative;
+// 	overflow: hidden;
+// 	// padding-top: 56.25%;
+// 	margin: 0;
+// }
+
+// .media-cms-player {
+// 	width: 100%;
+// 	height: auto;
+// 	display: flex;
+// 	justify-content: center;
+// 	align-items: center;
+// 	overflow: hidden;
+// 	aspect-ratio: 16 / 9;
+
+// 	width: 100%;
+// 	height: 100%;
+// 	box-sizing: border-box;
+// 	margin: 0;
+// 	padding: 0;
+// 	display: block;
+// }
+
+// .media-cms-player video {
+// 	width: 100%;
+// 	height: 100%;
+// 	object-fit: contain;
+// 	max-width: 100%;
+// 	display: block;
+// 	margin: 0;
+// 	padding: 0;
+// }
+
+// ::ng-deep .video-container video {
+// 	display: block;
+// 	max-width: 100%;
+// 	max-height: 100%;
+// 	object-fit: contain;
+// }
+
+///////////////////////////////////// MUX PLAYER //////////////////////////////////////
+
+.wrap-element {
+	position: relative !important;
+	// padding-block-start: 56.25% !important; /* 16:9 Aspect Ratio */
+	margin: 0;
+	overflow: visible !important; /* Allow controls to overflow */
+}
+
+.wrap-element.worksheet-page-style {
+	position: absolute !important;
+	inset: 0;
+	padding-block-start: unset !important;
+	overflow: visible !important;
+}
+
+/* Adjust media player container */
+.media-cms-player {
+	position: relative; /* Changed from absolute */
+	width: 100%;
+	height: 100%;
+	// max-height: 80vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	overflow: visible !important; /* Important to show controls */
+	aspect-ratio: 16 / 9;
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+	z-index: 10; /* Keep it on top */
+}
+
+/* Ensure mux-player fills the container */
+.media-cms-player mux-player {
+	width: 100% !important;
+	height: 100% !important;
+	object-fit: contain;
+	// max-height: 80vh;
+	max-width: 100%;
+	display: block;
+	margin: 0;
+	padding: 0;
+	aspect-ratio: 16 / 9;
+
+	/* Ensure controls are always visible */
+	::ng-deep .mux-controls {
+		opacity: 1 !important;
+		visibility: visible !important;
+	}
+}
+
+/* Video element inside mux-player */
+.media-cms-player video {
+	width: 100% !important;
+	height: 100% !important;
+	object-fit: contain;
+	max-height: 80vh;
+	max-width: 100%;
+	display: block;
+	margin: 0;
+	padding: 0;
+}
+
+/* Deep styles for internal video container */
+::ng-deep.video-container video {
+	display: block;
+	max-width: 100%;
+	max-height: 100%;
+	object-fit: contain;
+}
+
+::ng-deep.video-container media-play-button {
+	width: 85px;
+	height: 85px;
+	border-radius: 50%;
+	transition: 0.4s;
+	padding: 24px;
+	--media-control-background: #0000007d;
+	--media-control-hover-background: #0000007d;
+	cursor: pointer;
+}

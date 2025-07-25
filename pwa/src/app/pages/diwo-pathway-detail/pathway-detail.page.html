@@ -1,0 +1,357 @@
+<ion-header *ngIf="isMobile && isMobileView">
+	<!-- !isdesktopView && !isTabletLandscapeView   -->
+	<ion-toolbar class="toolbar-head">
+		<ion-buttons slot="start" style="padding-top: 6px" *ngIf="!isdesktopView">
+			<ion-back-button (click)="back()" text=""></ion-back-button>
+		</ion-buttons>
+		<ion-title class="ion-text-center">
+			<img *ngIf="clientBranding" [src]="imageBaseURL + clientBranding.learner_app_icon_path" class="header-logo" />
+			<img *ngIf="!clientBranding && appService.defaultPWALogo" [src]="appService.defaultPWALogo" class="header-logo" />
+			<img
+				*ngIf="!clientBranding &&!appService.defaultPWALogo"
+				src="assets/icon/diwo_full_logo.png"
+				class="header-logo" />
+		</ion-title>
+
+		<ion-buttons slot="end" style="visibility: hidden" *ngIf="!isdesktopView">
+			<ion-back-button (click)="back()" text=""></ion-back-button>
+		</ion-buttons>
+	</ion-toolbar>
+</ion-header>
+
+<ion-content
+	[fullscreen]="true"
+	class="ion-padding-horizontal"
+	[scrollEvents]="true"
+	(ionScroll)="getScrollPos($event)">
+	<ion-grid>
+		<!-- My Learnering Pathways -->
+		<ion-row [ngClass]="{ 'ion-main-row-desktop': isdesktopView || isTabletLandscapeView || isTablet	}">
+			<ion-col
+				size-sm="12"
+				size-md="9"
+				size-lg="7"
+				class="page-wrapper2 main-col"
+				[ngClass]="{ 'ion-main-col-desktop': isdesktopView || isTabletLandscapeView || isTablet	}">
+				<div *ngIf="isdesktopView || isTabletLandscapeView || isTablet	">
+					<nav class="breadcrumb">
+						<ul>
+							<li><a (click)="goToHome()">{{'Utils.home' | translate}}</a></li>
+							<li>
+								<a (click)="goToAllPathways()">{{'Utils.allpathways' | translate}}</a>
+							</li>
+						</ul>
+					</nav>
+				</div>
+
+				<div class="pathway-content-details">
+					<ion-row>
+						<!-- Left Section (30%) -->
+						<ion-col size="12" size-sm="12" size-md="4" size-lg="3">
+							<!-- <div class="pathway-content-details-image"> -->
+							<!-- <div class="pathway-content-image">
+								<img src="assets/images/landrover/blog-1.avif" alt="Pathway Image" />								
+							</div> -->
+
+							<div
+								class="pathway-content-image"
+								[ngClass]="isRtl ? 'pathway-content-image-rtl' : 'pathway-content-image-ltr'">
+								<img [src]="pathwayAssetBasePath + pathwayList?.avatar_file_name" />
+							</div>
+
+							<!-- </div> -->
+						</ion-col>
+
+						<!-- Right Section (70%) -->
+						<ion-col size="12" size-sm="12" size-md="8" size-lg="9" class="pathway-content">
+							<div class="pathway-details">
+								<!-- Inner Row for Capsule and Learner Status -->
+								<div class="pathway-title-row">
+									<ion-row>
+										<!-- Capsule (auto columns) -->
+										<ion-col size="auto">
+											<span class="capsule"> {{'Utils.pathway' | translate}} </span>
+										</ion-col>
+
+										<!-- Learner Status (auto column) -->
+										<ion-col size="auto">
+											<p
+												class="learnerstatus"
+												*ngIf="pathwayList"
+												[ngClass]="{
+						  'red-shade': pathwayStatus == 'Not Started',
+						  'yellow-shade': pathwayStatus == 'In Progress',
+						  'green-shade': pathwayStatus == 'Completed' || pathwayStatus == 'Certified'
+						}">
+												{{ pathwayStatus }}
+											</p>
+										</ion-col>
+									</ion-row>
+								</div>
+
+								<div class="class">
+									<p *ngIf="pathwayList?.title" class="pathway-title">{{ pathwayList.title }}</p>
+								</div>
+
+								<p class="pathway-subtitle" *ngIf="pathwayList?.subtitle">{{ pathwayList.subtitle }}</p>
+								<p class="pathway-description" *ngIf="pathwayList?.description">{{ pathwayList.description }}</p>
+
+								<div class="outcomes-section" *ngIf="pathwayList?.outcomesArray?.length > 0">
+									<div *ngFor="let outcome of pathwayList.outcomesArray" class="l_outcomes-btn">{{ outcome }}</div>
+								</div>
+							</div>
+						</ion-col>
+					</ion-row>
+				</div>
+
+				<div class="pathway-module_eduration-section">
+					<ion-row>
+						<!-- First Section -->
+						<ion-col size="12" size-sm="4" size-md="4" size-lg="3" class="page-wrapper">
+							<div
+								class="pathway-module_eduration"
+								[ngClass]="isRtl ? 'pathway-module_eduration-rtl' : 'pathway-module_eduration-ltr'">
+								<!-- <img src="assets/images/workbook/course.svg" alt="" /> -->
+								<div [innerHTML]="iconObject['course_image']" class="course_image"></div>
+								<span class="course-worksheet-count">
+									{{'Utils.courses' | translate}} - {{ pathwayList && pathwayList.totalCourses ?
+									pathwayList.totalCourses : '0' }}</span
+								>
+							</div>
+						</ion-col>
+
+						<!-- Second Section -->
+						<ion-col size="12" size-sm="4" size-md="4" size-lg="3" class="page-wrapper">
+							<div
+								class="pathway-module_eduration"
+								[ngClass]="isRtl ? 'pathway-module_eduration-rtl' : 'pathway-module_eduration-ltr'">
+								<!-- <img src="assets/images/workbook/workbook.svg" alt="" /> -->
+								<div [innerHTML]="iconObject['workbook_image']" class="workbook_image"></div>
+								<!-- <span
+                  >{{'Utils.modules' | translate}} - {{ pathwayList &&
+                  pathwayList.totalModules ? pathwayList.totalModules : '0'
+                  }}</span
+                > -->
+								<span>{{'Utils.modules' | translate}} - {{ totalModules }}</span>
+							</div>
+						</ion-col>
+
+						<!-- Third Section -->
+						<ion-col size="12" size-sm="4" size-md="4" size-lg="3" class="page-wrapper">
+							<div
+								class="pathway-module_eduration_min"
+								[ngClass]="isRtl ? 'pathway-module_eduration_min_rtl' : 'pathway-module_eduration_min_ltr'">
+								<!-- <img src="assets/images/workbook/eduration.svg" alt="" /> -->
+								<div [innerHTML]="iconObject['eduration_image']" class="eduration_image"></div>
+								<span [title]="pathwayList && pathwayList.e_duration"
+									>{{'Utils.eduration' | translate}} - {{ pathwayList && pathwayList.e_duration ? pathwayList.e_duration
+									+ ' ' + 'Minutes' : '' }}</span
+								>
+							</div>
+						</ion-col>
+					</ion-row>
+				</div>
+
+				<div class="course-accordian-section">
+					<ion-accordion-group [multiple]="true" [value]="'accordion-' + 0">
+						<ion-accordion *ngFor="let item of pathwayCourseList; let i = index" [value]="'accordion-' + i">
+							<ion-item slot="header" *ngIf="!item.isAssignmentCertification">
+								<ion-label>
+									<div class="accordain-header">
+										<span class="course-count">{{'Utils.course' | translate}} {{ i + 1 }}</span>
+										<span class="course-name"> {{ item?.Course?.title }} </span>
+									</div>
+								</ion-label>
+							</ion-item>
+							<div slot="content" class="accordion-content" *ngIf="!item.isAssignmentCertification">
+								<div class="accordion-item-content">
+									<div class="accordion-image">
+										<div class="accordion-item-image">
+											<img
+												[src]="courseAssetBasePath + item?.Course?.avatar_file_name"
+												alt="{{ item?.Course?.title }}" />
+										</div>
+										<div class="wb-details">
+											<p
+												class="assigned-date"
+												[ngClass]="{
+												'red-shade': item.courseStatus == 'Not Started',
+												'yellow-shade': item.courseStatus == 'In Progress',
+												'green-shade': item.courseStatus == 'Completed' || item.courseStatus == 'Certified'
+											 }">
+												{{item?.courseStatus}}
+											</p>
+										</div>
+									</div>
+									<div
+										class="accordion-description"
+										[ngClass]="isRtl ? 'accordion-description-rtl' : 'accordion-description-ltr'">
+										<!-- <p class="truncated" *ngIf="item.Course.description">{{ item.Course.description
+											}}</p>
+										<a *ngIf="item.Course.description && isDescriptionTruncated(item.Course.description)"
+											(click)="courseReadMore(item)">
+											{{ 'Utils.readmore' | translate }}
+										</a> -->
+
+										<p
+											class="truncated"
+											*ngIf="item.Course.description"
+											[ngClass]="{'expanded': expandedItems[item.CourseId]}">
+											{{ item.Course.description }}
+										</p>
+
+										<!-- <a *ngIf="item.Course.description.length > maxCharacters"
+											(click)="toggleReadMore(item, 'Course')">
+											{{ expandedItems[item.CourseId] ? ('Utils.readless' | translate) :
+											('Utils.readmore' | translate) }}
+										</a> -->
+
+										<a
+											*ngIf="item.Course && item.Course.description && isDescriptionTruncated(item.Course.description)"
+											(click)="toggleReadMore(item, 'Course')">
+											{{ expandedItems[item.CourseId] ? ('Utils.readless' | translate) : ('Utils.readmore' | translate)
+											}}
+										</a>
+
+										<!-- <div class="course-outcomes-section"
+											[ngClass]="{ 'course-outcomes-section-no-descrip': !item.description}"
+											*ngIf="item && item.Course&&item.Course.outcomesArray &&  item.Course.outcomesArray.length > 0 && isdesktopView">
+											<div *ngFor="let outcome of item.Course.outcomesArray"
+												class="course_l_outcomes-btn">
+												{{ outcome }}
+											</div>
+										</div> -->
+
+										<div
+											class="course-outcomes-section"
+											[ngClass]="{ 'course-outcomes-section-no-descrip': !item.description}"
+											*ngIf="item && item.Course&&item.Course.outcomesArray &&  item.Course.outcomesArray.length > 0 ">
+											<div *ngFor="let outcome of item.Course.outcomesArray" class="course_l_outcomes-btn">
+												{{ outcome }}
+											</div>
+										</div>
+
+										<div class="course_eduration" [ngClass]="isRtl ? 'course_eduration-rtl' : 'course_eduration-ltr'">
+											<!-- <img src="assets/images/workbook/eduration.svg" alt="" /> -->
+											<div [innerHTML]="iconObject['eduration_image']" class="eduration_image"></div>
+											<span>
+												{{ item && item?.Course?.e_duration ? item.Course.e_duration + ' ' + 'Minutes' : '-' }}
+												{{'Utils.etocomplete' | translate}}
+											</span>
+										</div>
+
+										<div>
+											<ion-button (click)="courseReadMore(item)" class="seecoursedetails">
+												{{'Utils.seecoursedetails' | translate}}
+											</ion-button>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<!-- ////////////////certificate module showing at last///////////////////////////// -->
+							<ion-item slot="header" *ngIf="item.isAssignmentCertification">
+								<ion-label>
+									<div class="accordain-header">
+										<span class="course-count">{{'Utils.certification' | translate}}</span>
+										<span class="course-name"> {{ item.Workbook?.title }} </span>
+									</div>
+								</ion-label>
+							</ion-item>
+							<div slot="content" class="accordion-content" *ngIf="item.isAssignmentCertification">
+								<div class="accordion-item-content">
+									<div class="accordion-image">
+										<div class="accordion-item-image">
+											<img [src]="imageBaseURL + item.Workbook?.DiwoAssets[0].path" alt="{{  item.Workbook?.title }}" />
+										</div>
+										<div class="wb-details">
+											<p
+												class="assigned-date"
+												[ngClass]="{
+												'red-shade': item.ModuleStatus == 'Not Started',
+												'yellow-shade': item.ModuleStatus == 'In Progress',
+												'green-shade': item.ModuleStatus == 'Completed' || item.ModuleStatus == 'Certified'
+											 }">
+												{{item?.ModuleStatus}}
+											</p>
+										</div>
+									</div>
+									<div
+										class="accordion-description"
+										[ngClass]="isRtl ? 'accordion-description-rtl' : 'accordion-description-ltr'">
+										<!-- <p class="truncated" *ngIf="item.Workbook?.descrip">{{ item.Workbook?.descrip }}
+										</p>
+
+										<a *ngIf="item.Workbook?.descrip && isDescriptionTruncated( item.Workbook.descrip)"
+											(click)="courseReadMore(item)">
+											{{ 'Utils.readmore' | translate }}
+										</a> -->
+
+										<p
+											class="truncated"
+											*ngIf="item.Workbook?.descrip"
+											[ngClass]="{'expanded': expandedItems[item.WorkbookId]}">
+											{{ item.Workbook?.descrip }}
+										</p>
+
+										<a *ngIf="item.Workbook?.descrip.length > maxCharacters" (click)="toggleReadMore(item, 'Workbook')">
+											{{ expandedItems[item.WorkbookId] ? ('Utils.readless' | translate) : ('Utils.readmore' |
+											translate) }}
+										</a>
+
+										<!-- <div class="course-outcomes-section"
+											[ngClass]="{ 'course-outcomes-section-no-descrip': !item.Workbook.descrip}"
+											*ngIf="item && item.Workbook&& item.Workbook.outcomesArray &&  item.Workbook.outcomesArray.length > 0 && isdesktopView">
+											<div *ngFor="let outcome of item.Workbook.outcomesArray"
+												class="course_l_outcomes-btn">
+												{{ outcome }}
+											</div>
+										</div> -->
+
+										<div
+											class="course-outcomes-section"
+											[ngClass]="{ 'course-outcomes-section-no-descrip': !item.Workbook.descrip}"
+											*ngIf="item && item.Workbook&& item.Workbook.outcomesArray &&  item.Workbook.outcomesArray.length > 0 ">
+											<div *ngFor="let outcome of item.Workbook.outcomesArray" class="course_l_outcomes-btn">
+												{{ outcome }}
+											</div>
+										</div>
+
+										<div class="course_eduration" [ngClass]="isRtl ? 'course_eduration-rtl' : 'course_eduration-ltr'">
+											<!-- <img src="assets/images/workbook/eduration.svg" alt="" /> -->
+											<div [innerHTML]="iconObject['eduration_image']" class="eduration_image"></div>
+											<span>
+												{{ item && item.Workbook && item.Workbook.e_duration ? item.Workbook.e_duration + ' ' +
+												'Minutes' : '-' }} {{'Utils.etocomplete' | translate}}
+											</span>
+										</div>
+
+										<div>
+											<ion-button (click)="workbookReadMore(item)" class="seecoursedetails">
+												{{'Utils.starthemodule' | translate}}
+											</ion-button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</ion-accordion>
+					</ion-accordion-group>
+				</div>
+			</ion-col>
+		</ion-row>
+
+		<div class="back-to-top-btn" *ngIf="backToTop" (click)="gotToTop()">
+			<ion-icon id="top-icon" name="chevron-up-outline"></ion-icon>
+		</div>
+	</ion-grid>
+	<ion-refresher
+		ion-refresh-native
+		slot="fixed"
+		disabled="false"
+		(ionRefresh)="doRefresh($event)"
+		pullFactor="0.1"
+		pullMin="50"
+		pullMax="200">
+		<ion-refresher-content></ion-refresher-content>
+	</ion-refresher>
+</ion-content>

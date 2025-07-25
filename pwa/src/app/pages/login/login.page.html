@@ -1,0 +1,168 @@
+<!-- isMobile && isMobileView -->
+<ion-content no-bounce has-bouncing="false" forceOverscroll="false" style="--background: #f2f2f2">
+	<ion-content>
+		<div class="login-container" *ngIf="!showModal" [ngStyle]="getBackgroundStyle()">
+			<div class="select-box">
+				<div class="select-container" [class.open]="isLangOpen">
+					<span class="icon" [innerHTML]="iconObject['language']"></span>
+					<select
+						class="lang-select"
+						(change)="changeLang($event)"
+						[(ngModel)]="selectedLang"
+						(mousedown)="onLangOpen()"
+						(blur)="onLangClose()">
+						<option *ngFor="let lang of languages" [value]="lang.code">{{ lang.label }}</option>
+					</select>
+				</div>
+			</div>
+			<div class="login-box">
+				<div style="width: 100%" class="ion-text-center" *ngIf="appService.loginPWALogo">
+					<img [src]="appService.loginPWALogo" class="logo-image" />
+				</div>
+				<div style="width: 100%" class="ion-text-center" *ngIf="!appService.loginPWALogo">
+					<img *ngIf="projectName == 'drip'" src="assets/icon/drip_logo.png" class="logo-image-default" />
+					<img *ngIf="projectName == 'diwo'" src="assets/icon/diwo_logo.png" class="logo-image-default" />
+				</div>
+
+				<h2 class="signIn-txt">{{'Utils.signin' | translate}}</h2>
+
+				<ion-row class="row_bottom_border full-width" style="border: none">
+					<ion-col class="ion-no-padding" (click)="changeCountry()">
+						<ion-item class="ion-no-padding" style="--border-style: none; --background: none">
+							<ion-label *ngIf="!selectedCountryName" style="font-size: 1.1rem !important">
+								{{'Utils.country' | translate}}
+							</ion-label>
+							<img
+								*ngIf="selectedCountryName"
+								src="assets/country_flag/{{selectedCountryCode}}.png"
+								style="height: 30px; width: 40px; margin-inline-end: 15px" />
+							<span class="span_message ion-float-right"> {{selectedCountryName}} </span>
+							<span class="right-edit-icon" [class.rtl]="isRtl">
+								<img style="height: 1.1rem !important; width: auto" src="assets/icon/rightArrow.png" />
+							</span>
+						</ion-item>
+					</ion-col>
+				</ion-row>
+
+				<form [formGroup]="form">
+					<div class="email-phone-username">
+						<ion-label position="floating" class="input-labels">{{ getPlaceholder()}}</ion-label>
+						<ion-item class="input-box">
+							<ion-input
+								[placeholder]="getPlaceholder()"
+								[type]="getInputType()"
+								formControlName="loginInput"
+								(keyup.enter)="nextStep()"></ion-input>
+						</ion-item>
+					</div>
+
+					<div class="password" *ngIf="configurable_feature && configurable_feature.pwa_password">
+						<ion-label position="floating" class="input-labels">{{ 'Utils.password' | translate }}</ion-label>
+						<ion-item class="input-box">
+							<ion-input
+								[type]="showPassword ? 'text' : 'password'"
+								formControlName="password"
+								placeholder="Password"
+								(keyup.enter)="nextStep()"></ion-input>
+							<ion-icon slot="end" [name]="showPassword ? 'eye-off' : 'eye'" (click)="togglePassword()"></ion-icon>
+						</ion-item>
+					</div>
+
+					<div class="otp" *ngIf="isOtpStep && configurable_feature && configurable_feature.pwa_otp">
+						<ion-label position="floating" class="input-labels"
+							>{{ 'Utils.otp' | translate }}
+							<span *ngIf="isOtpStep && otp">{{ '(' + otp + ')'}}</span>
+						</ion-label>
+						<ion-item class="input-box" *ngIf="isOtpStep && configurable_feature && configurable_feature.pwa_otp">
+							<ion-input type="text" formControlName="otp" placeholder="OTP" (keyup.enter)="signIn()"></ion-input>
+						</ion-item>
+					</div>
+
+					<a
+						fill="clear"
+						type="button"
+						(click)="getlogin_otp()"
+						class="resentOTP"
+						*ngIf="isOtpStep && configurable_feature && configurable_feature.pwa_otp">
+						{{ 'Utils.resentOTP' | translate }}
+					</a>
+
+					<div style="color: gray; font-size: 0.75rem; margin-top: 0.5rem" *ngIf="isOtpStep && otpSendText">
+						{{otpSendText}}
+					</div>
+
+					<div
+						class="clicktorecivedotp-text"
+						*ngIf="!isOtpStep && configurable_feature && configurable_feature.pwa_otp">
+						{{'Utils.clicktorecivedotp' | translate}}
+					</div>
+
+					<ion-button
+						expand="full"
+						type="submit"
+						class="signIn-btn"
+						(click)="nextStep()"
+						*ngIf="!isOtpStep && configurable_feature && configurable_feature.pwa_otp">
+						{{'Utils.next' | translate}}
+					</ion-button>
+
+					<ion-button
+						expand="full"
+						type="submit"
+						class="signIn-btn"
+						(click)="nextStep()"
+						*ngIf="!isOtpStep && configurable_feature && !configurable_feature.pwa_otp">
+						{{'Utils.signinbtn' | translate}}
+					</ion-button>
+
+					<ion-button expand="full" type="button" class="signIn-btn" (click)="signIn()" *ngIf="isOtpStep">
+						{{'Utils.signinbtn' | translate}}
+					</ion-button>
+				</form>
+
+				<a
+					(click)="resetPassword()"
+					class="reset-password"
+					*ngIf="configurable_feature && configurable_feature.pwa_password">
+					{{'Utils.resetpasswordbtn' | translate}}
+				</a>
+
+				<p class="custom-branding-text" *ngIf="appService.loginPWAText">{{appService.loginPWAText}}</p>
+			</div>
+		</div>
+
+		<div *ngIf="showModal" class="country-selection">
+			<ion-row style="width: 100%">
+				<ion-searchbar
+					[(ngModel)]="searhValue"
+					(ngModelChange)="_filter(searhValue)"
+					type="text"
+					placeholder="{{'Utils.search' | translate}}"
+					style="--background: #f2f2f2; --border-radius: 3rem; --border: 1px #f2f2f2">
+				</ion-searchbar>
+			</ion-row>
+			<div *ngFor="let country of filterCountryData; let i=index">
+				<ion-row *ngIf="countryList.length != i+1" style="width: 100%" (click)="selectcountry(country.name, country)">
+					<ion-list class="no__padding" style="height: 4rem" lines="none">
+						<ion-item class="no__padding">
+							<img
+								src="assets/country_flag/{{country.countryCode}}.png"
+								style="height: 3rem; width: 5rem; margin-right: 15px" />
+							<span>{{country.name}}</span>
+						</ion-item>
+					</ion-list>
+				</ion-row>
+				<ion-row *ngIf="countryList.length == i+1" style="width: 100%" (click)="selectcountry(country.name, country)">
+					<ion-list class="no__padding" lines="none">
+						<ion-item class="no__padding">
+							<img
+								src="assets/country_flag/{{country.countryCode}}.png"
+								style="height: 3rem; width: 5rem; margin-right: 15px" />
+							<span>{{country.name}}</span>
+						</ion-item>
+					</ion-list>
+				</ion-row>
+			</div>
+		</div>
+	</ion-content>
+</ion-content>

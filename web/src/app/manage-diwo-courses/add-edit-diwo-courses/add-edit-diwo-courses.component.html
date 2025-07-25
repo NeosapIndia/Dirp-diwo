@@ -1,0 +1,897 @@
+<div class="container-fluid" style="margin: 2% 2% 2% 3%; min-height: calc(100vh - 110px)">
+	<div class="row add-edit-main-row">
+		<span>
+			<span
+				[routerLink]="['/diwo-courses']"
+				style="margin-left: 0.25rem; color: #637373; margin-right: 2px; cursor: pointer">
+				{{ 'Pages.DiwoCourses.AddEdit.pagetitle' | translate }}</span
+			>
+			<img src="assets/images/arrow_forward.svg" style="width: 27px" />
+			<span style="margin-left: 3px" [ngStyle]="{ color: appService.whiteBrandingColor }">
+				{{ 'Pages.DiwoCourses.AddEdit.subtitle' | translate }}</span
+			>
+		</span>
+		<div *ngIf="isViewMode" style="margin-top: 1rem; display: flex; align-items: center">
+			<p>{{ 'Pages.DiwoCourses.Home.Table.Header.viewtooltip' | translate }}</p>
+		</div>
+	</div>
+
+	<!-- Basic Course Detail Section -->
+	<form [formGroup]="courseForm">
+		<div class="row section-wrapper" style="margin-top: 2rem">
+			<div class="form-title">
+				<span>{{ 'Pages.DiwoCourses.AddEdit.BasicInfo.title' | translate }}</span>
+			</div>
+			<div class="row card-body">
+				<div class="row" style="margin-top: -5px">
+					<div class="col-md-12">
+						<div
+							class="form-group"
+							style="margin-top: 0"
+							[ngClass]="{
+								'has-error': f.title.invalid && (f.title.dirty || f.title.touched),
+								'has-success': f.title.valid && (f.title.dirty || f.title.touched)
+							}">
+							<label>{{ 'Pages.DiwoCourses.AddEdit.BasicInfo.CourseTitle.title' | translate }}</label>
+							<input
+								type="text"
+								class="form-control"
+								id="exampleInputEmail1"
+								placeholder="{{ 'Pages.DiwoCourses.AddEdit.BasicInfo.CourseTitle.placeholder' | translate }}"
+								formControlName="title"
+								[maxlength]="maxLengthForCourseTitle"
+								(keyup)="checkCharacterLimitForCourseTitle()" />
+
+							<span class="characteleft"
+								>{{ 'Utils.charactersleft' | translate }} -
+								{{
+									characterRemainsForCourseTitle != null || characterRemainsForCourseTitle != undefined
+										? characterRemainsForCourseTitle + '/' + maxLengthForCourseTitle
+										: maxLengthForCourseTitle + '/' + maxLengthForCourseTitle
+								}}</span
+							>
+							<div class="error" *ngIf="f.title.errors && f.title.touched">
+								<div *ngIf="f.title.errors.required">
+									{{ 'Pages.DiwoCourses.AddEdit.BasicInfo.CourseTitle.error' | translate }}
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- <div class="col-md-12">
+						<div class="form-group">
+							<label>
+								{{ 'Pages.DiwoCourses.AddEdit.BasicInfo.CourseSubTitle.title' | translate }}
+							</label>
+							<textarea
+								type="text"
+								class="form-control"
+								placeholder="{{ 'Pages.DiwoCourses.AddEdit.BasicInfo.CourseSubTitle.placeholder' | translate }}"
+								formControlName="subtitle">
+							</textarea>
+						</div>
+					</div> -->
+					<div class="col-md-12">
+						<div
+							class="form-group"
+							[ngClass]="{
+								'has-error': f.description.invalid && (f.description.dirty || f.description.touched),
+								'has-success': f.description.valid && (f.description.dirty || f.description.touched)
+							}">
+							<label>
+								{{ 'Pages.DiwoCourses.AddEdit.BasicInfo.Description.title' | translate }}
+							</label>
+							<textarea
+								type="text"
+								class="form-control"
+								placeholder="{{ 'Pages.DiwoCourses.AddEdit.BasicInfo.Description.placeholder' | translate }}"
+								formControlName="description"
+								[maxlength]="maxLengthForCourseDescription"
+								(keyup)="checkCharacterLimitForCourseDescription()">
+							</textarea>
+							<span class="characteleft"
+								>{{ 'Utils.charactersleft' | translate }} -
+								{{
+									characterRemainsForCourseDescription != null || characterRemainsForCourseDescription != undefined
+										? characterRemainsForCourseDescription + '/' + maxLengthForCourseDescription
+										: maxLengthForCourseDescription + '/' + maxLengthForCourseDescription
+								}}</span
+							>
+						</div>
+					</div>
+					<!-- <div class="col-md-12">
+						<div
+							class="form-group"
+							[ngClass]="{
+								'has-error': f.e_duration.invalid && (f.e_duration.dirty || f.e_duration.touched),
+								'has-success': f.e_duration.valid && (f.e_duration.dirty || f.e_duration.touched)
+							}">
+							<label>{{ 'Pages.DiwoCourses.AddEdit.BasicInfo.Eduration.title' | translate }}</label>
+							<input
+								type="number"
+								class="form-control"
+								id="exampleInputEmail2"
+								placeholder="{{ 'Pages.DiwoCourses.AddEdit.BasicInfo.Eduration.placeholder' | translate }}"
+								formControlName="e_duration" />
+							<div class="error" *ngIf="f.e_duration.errors && f.e_duration.touched">
+								<div *ngIf="f.e_duration.errors.required">
+									{{ 'Pages.DiwoCourses.AddEdit.BasicInfo.Eduration.error' | translate }}
+								</div>
+							</div>
+						</div>
+					</div> -->
+					<div class="col-md-12">
+						<div
+							class="form-group"
+							[ngClass]="{
+								'has-error': f.l_outcomes.invalid && (f.l_outcomes.dirty || f.l_outcomes.touched),
+								'has-success': f.l_outcomes.valid && (f.l_outcomes.dirty || f.l_outcomes.touched)
+							}">
+							<label>{{ 'Pages.DiwoCourses.AddEdit.BasicInfo.Outcomes.title' | translate }}</label>
+							<input
+								type="text"
+								class="form-control"
+								id="exampleInputEmail2"
+								placeholder="{{ 'Pages.DiwoCourses.AddEdit.BasicInfo.Outcomes.placeholder' | translate }}"
+								formControlName="l_outcomes" />
+							<div class="error" *ngIf="f.l_outcomes.errors && f.l_outcomes.touched">
+								<div *ngIf="f.l_outcomes.errors.required">
+									{{ 'Pages.DiwoCourses.AddEdit.BasicInfo.Outcomes.error' | translate }}
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- <div class="col-md-12" id="surveyForm" style="padding-left: 0px; padding-right: 0px"></div> -->
+				</div>
+
+				<div class="row">
+					<div class="col-md-6">
+						<div class="fileupload-buttonbar">
+							<div
+								class="form-group"
+								[ngClass]="{
+									'has-error': f.avatar.invalid && (f.avatar.dirty || f.avatar.touched),
+									'has-success': f.avatar.valid && (f.avatar.dirty || f.avatar.touched)
+								}">
+								<label>{{ 'Pages.DiwoCourses.AddEdit.BasicInfo.Avatar.title' | translate }}</label>
+								<div style="display: flex">
+									<div>
+										<label
+											class="btn center pad fileinput-button browse_lable"
+											[ngStyle]="{
+												'background-color': appService.whiteBrandingColor,
+												border: '1px solid' + appService.whiteBrandingColor,
+												color: 'white !iimportant'
+											}"
+											style="
+												padding: 10px 20px;
+												border-radius: 22px;
+												color: white !important;
+												margin-bottom: 0px;
+												margin-top: 2px;
+											">
+											<input
+												id="mediaWeb"
+												type="file"
+												accept="image/*"
+												(change)="uploadImage($event)"
+												[disabled]="isViewMode"
+												[ngClass]="{ 'edit-disabled': isViewMode }" />
+											{{ 'Pages.DiwoCourses.AddEdit.BasicInfo.Avatar.browseimage' | translate }}
+										</label>
+									</div>
+									<table
+										*ngIf="!courseForm.value.avatar"
+										role="presentation"
+										class="table table-striped"
+										style="margin-bottom: 0px">
+										<tbody class="files">
+											<tr class="template-upload fade in">
+												<td>
+													<p class="name imgName">
+														{{ 'Pages.DiwoCourses.AddEdit.BasicInfo.Avatar.recommendedratio16:9' | translate }}
+													</p>
+												</td>
+												<td style="position: absolute; right: 0"></td>
+											</tr>
+										</tbody>
+									</table>
+									<div style="margin-top: 2px">
+										<table
+											*ngIf="courseForm.value.avatar"
+											role="presentation"
+											class="table table-striped"
+											style="margin-bottom: 0px">
+											<tbody class="files">
+												<tr class="template-upload fade in">
+													<td>
+														<p class="name imgName">{{ courseForm.value.avatar }}</p>
+													</td>
+													<td style="position: absolute; right: 0">
+														<label
+															[ngStyle]="{
+																'background-color': appService.whiteBrandingColor,
+																border: '1px solid' + appService.whiteBrandingColor,
+																color: 'white'
+															}"
+															class="btn cancel border_radius"
+															[ngClass]="{ 'edit-disabled': isViewMode }">
+															<span (click)="onDeleteThumnail()">{{
+																'Pages.DiwoCourses.AddEdit.BasicInfo.Avatar.delete' | translate
+															}}</span>
+														</label>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+								<div *ngIf="courseForm.value.avatar">
+									<div class="row">
+										<div class="col-md-4">
+											<img [src]="assetBasePath + f.avatar_file_name.value" style="width: 100%" />
+										</div>
+									</div>
+								</div>
+								<span class="fileupload-loading"></span>
+								<div class="error" *ngIf="f.avatar.errors && f.avatar.touched" style="color: #a94442">
+									<div *ngIf="f.avatar.errors.required">
+										{{ 'Pages.DiwoCourses.AddEdit.BasicInfo.Avatar.error' | translate }}
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+
+	<!-- Cousre MOdule Table -->
+	<div class="row" style="margin-left: -15px; margin-right: -15px; margin-top: 2rem">
+		<div class="panel panel-white" style="border-radius: 12px 12px 12px 12px; margin: 0px">
+			<div class="sub table-responsive">
+				<table class="table table-striped table-hover" id="sample-table-3">
+					<thead>
+						<tr style="height: 80px">
+							<th
+								class="left tb-head-bg tb-line-height"
+								style="
+									padding-left: 1rem;
+									width: 5vw;
+									word-wrap: break-word;
+									border-radius: 10px 0px 0px 0px !important;
+								"></th>
+							<th class="left tb-head-bg tb-line-height" style="word-wrap: break-word; width: 9vw">
+								{{ 'Pages.DiwoCourses.AddEdit.ModuleTable.Header.moduleId' | translate }}
+							</th>
+
+							<th class="left tb-head-bg tb-line-height" style="word-wrap: break-word; width: 15vw">
+								{{ 'Pages.DiwoCourses.AddEdit.ModuleTable.Header.moduleType' | translate }}
+							</th>
+							<th class="left tb-head-bg tb-line-height" style="word-wrap: break-word; width: 15vw">
+								{{ 'Pages.DiwoCourses.AddEdit.ModuleTable.Header.modulename' | translate }}
+							</th>
+							<th class="left tb-head-bg tb-line-height" style="word-wrap: break-word; width: 9vw">
+								{{ 'Pages.DiwoCourses.AddEdit.ModuleTable.Header.lastupdated' | translate }}
+							</th>
+							<th
+								class="left tb-head-bg tb-line-height"
+								style="border-radius: 0px 10px 0px 0px !important; width: 400px; min-width: 400px; max-width: 400px">
+								{{ 'Pages.DiwoCourses.AddEdit.ModuleTable.Header.actions' | translate }}
+							</th>
+						</tr>
+					</thead>
+					<tbody dragula="MANY_ITEMS" [(dragulaModel)]="finalModulesforCourse">
+						<tr
+							*ngFor="let module of finalModulesforCourse; let i = index"
+							[attr.data-index]="i"
+							style="height: 5em; cursor: pointer; background-color: #fff">
+							<td
+								class="pt-05"
+								style="max-width: 18vw; word-wrap: break-word; padding-top: 15px !important; padding-left: 1rem">
+								<p class="table_para">
+									<span [innerHTML]="iconObject['drag_drop_indicator']" style="height: 30px; cursor: pointer"></span>
+								</p>
+							</td>
+							<td class="pt-05" style="max-width: 18vw; word-wrap: break-word; padding-top: 15px !important">
+								<div style="display: flex">
+									<div>
+										<p class="table_para" *ngIf="module.ModuleId == module.BaseWorkbookId">
+											{{ module.ModuleId }}
+										</p>
+										<p class="table_para" *ngIf="module.ModuleId != module.BaseWorkbookId">
+											{{ module.BaseWorkbookId + '.' + module.version }}
+										</p>
+									</div>
+									<div style="margin-left: 0.5rem" *ngIf="module?.default == false">
+										<span
+											class="info-icon"
+											[title]="'Pages.DiwoCourses.AddEdit.Toaster.newVersion' | translate"
+											[innerHTML]="iconObject['info_icon_20']"></span>
+									</div>
+								</div>
+							</td>
+							<td class="pt-05" style="max-width: 18vw; word-wrap: break-word; padding-top: 15px !important">
+								<p
+									data-toggle="tooltip"
+									data-placement="top"
+									[title]="module.ModuleTypeName"
+									class="two-row-p-tag"
+									style="-webkit-box-orient: vertical">
+									{{ module.ModuleTypeName }}
+								</p>
+							</td>
+							<td class="pt-05" style="max-width: 18vw; word-wrap: break-word; padding-top: 15px !important">
+								<p
+									data-toggle="tooltip"
+									data-placement="top"
+									[title]="module.ModuleName"
+									class="two-row-p-tag"
+									style="-webkit-box-orient: vertical">
+									{{ module.ModuleName }}
+								</p>
+							</td>
+							<td class="pt-05" style="max-width: 18vw; word-wrap: break-word; padding-top: 15px !important">
+								<p class="table_para">
+									{{ module.ModuleLastUpdated != null ? (module.ModuleLastUpdated | DateFormat) : '-' }}
+								</p>
+							</td>
+							<td class="left" style="padding: 15px 5px 15px 9px">
+								<div class="visible-md visible-lg visible-sm visible-xs">
+									<a
+										class="btn-xs action-edit-btn"
+										[ngStyle]="{
+											'background-color': appService.whiteBrandingColor,
+											border: '1px solid' + appService.whiteBrandingColor,
+											color: 'white'
+										}"
+										(click)="previewModule(module)"
+										style="padding: 6px 24px"
+										[href]="viewWorkBookUrl"
+										target="_blank">
+										{{ 'Utils.Action.preview' | translate }}
+									</a>
+									<button
+										class="btn-xs action-edit-btn"
+										[ngStyle]="{
+											'background-color': appService.whiteBrandingColor,
+											border: '1px solid' + appService.whiteBrandingColor,
+											color: 'white'
+										}"
+										style="margin-left: 5px; padding: 4px 24px"
+										(click)="replaceCoureModule(i)"
+										[disabled]="isViewMode"
+										[ngClass]="{ 'edit-disabled': isViewMode }">
+										{{ 'Utils.Action.replace' | translate }}
+									</button>
+									<button
+										*ngIf="module?.default == false"
+										class="btn-xs action-edit-btn"
+										[ngStyle]="{
+											'background-color': appService.whiteBrandingColor,
+											border: '1px solid' + appService.whiteBrandingColor,
+											color: 'white'
+										}"
+										style="margin-left: 5px; padding: 4px 24px"
+										(click)="updateModule(module, false, 'Normal Module')"
+										[disabled]="isViewMode"
+										[ngClass]="{ 'edit-disabled': isViewMode }">
+										{{ 'Utils.Action.update' | translate }}
+									</button>
+									<button
+										class="btn-xs action-delete-btn"
+										[ngStyle]="{
+											color: appService.whiteBrandingColor,
+											border: '0.5px solid' + appService.whiteBrandingColor
+										}"
+										style="padding: 4px 11px; font-size: 0.75rem"
+										(click)="removeCoureModule(i, module.ModuleIndex)"
+										[disabled]="isViewMode"
+										[ngClass]="{ 'edit-disabled': isViewMode }">
+										{{ 'Utils.Action.remove' | translate }}
+									</button>
+								</div>
+							</td>
+						</tr>
+					</tbody>
+					<!-- Certification Module -->
+					<tbody>
+						<tr
+							*ngFor="let module of courseCertificationDetails; let i = index"
+							[attr.data-index]="i"
+							style="height: 5em; cursor: pointer; background-color: #fff">
+							<td
+								class="pt-05"
+								style="max-width: 18vw; word-wrap: break-word; padding-top: 15px !important; padding-left: 1rem"></td>
+							<td class="pt-05" style="max-width: 18vw; word-wrap: break-word; padding-top: 15px !important">
+								<div style="display: flex">
+									<div>
+										<p class="table_para" *ngIf="module?.default != false">
+											{{ module.ModuleId }}
+										</p>
+										<p class="table_para" *ngIf="module?.default == false">
+											{{ module.BaseWorkbookId + '.' + module.version }}
+										</p>
+									</div>
+									<div style="margin-left: 0.5rem" *ngIf="module?.default == false">
+										<span
+											class="info-icon"
+											[title]="'Pages.DiwoCourses.AddEdit.Toaster.newVersion' | translate"
+											[innerHTML]="iconObject['info_icon_20']"></span>
+									</div>
+								</div>
+							</td>
+							<td class="pt-05" style="max-width: 18vw; word-wrap: break-word; padding-top: 15px !important">
+								<p
+									data-toggle="tooltip"
+									data-placement="top"
+									[title]="module.ModuleTypeName"
+									class="two-row-p-tag"
+									style="-webkit-box-orient: vertical">
+									{{ module.ModuleTypeName + ' ' + '(' + 'Certification module' + ')' }}
+								</p>
+							</td>
+							<td class="pt-05" style="max-width: 18vw; word-wrap: break-word; padding-top: 15px !important">
+								<p
+									data-toggle="tooltip"
+									data-placement="top"
+									[title]="module.ModuleName"
+									class="two-row-p-tag"
+									style="-webkit-box-orient: vertical">
+									{{ module.ModuleName }}
+								</p>
+							</td>
+							<td class="pt-05" style="max-width: 18vw; word-wrap: break-word; padding-top: 15px !important">
+								<p class="table_para">
+									{{ module.ModuleLastUpdated != null ? (module.ModuleLastUpdated | DateFormat) : '-' }}
+								</p>
+							</td>
+							<td class="left" style="padding: 15px 5px 15px 9px">
+								<div class="visible-md visible-lg visible-sm visible-xs">
+									<a
+										class="btn-xs action-edit-btn"
+										[ngStyle]="{
+											'background-color': appService.whiteBrandingColor,
+											border: '1px solid' + appService.whiteBrandingColor,
+											color: 'white'
+										}"
+										(click)="previewModule(module)"
+										style="padding: 6px 24px"
+										[href]="viewWorkBookUrl"
+										target="_blank">
+										{{ 'Utils.Action.preview' | translate }}
+									</a>
+									<button
+										class="btn-xs action-edit-btn"
+										[ngStyle]="{
+											'background-color': appService.whiteBrandingColor,
+											border: '1px solid' + appService.whiteBrandingColor,
+											color: 'white'
+										}"
+										style="margin-left: 5px; padding: 4px 24px"
+										(click)="replaceCoureCertificateModule(module)"
+										[disabled]="isViewMode"
+										[ngClass]="{ 'edit-disabled': isViewMode }">
+										{{ 'Utils.Action.replace' | translate }}
+									</button>
+									<button
+										*ngIf="module?.default == false"
+										class="btn-xs action-edit-btn"
+										[ngStyle]="{
+											'background-color': appService.whiteBrandingColor,
+											border: '1px solid' + appService.whiteBrandingColor,
+											color: 'white'
+										}"
+										style="margin-left: 5px; padding: 4px 24px"
+										(click)="updateModule(module, false, 'Certificate Module')"
+										[disabled]="isViewMode"
+										[ngClass]="{ 'edit-disabled': isViewMode }">
+										{{ 'Utils.Action.update' | translate }}
+									</button>
+									<button
+										class="btn-xs action-delete-btn"
+										[ngStyle]="{
+											color: appService.whiteBrandingColor,
+											border: '0.5px solid' + appService.whiteBrandingColor
+										}"
+										style="padding: 4px 11px; font-size: 0.75rem"
+										(click)="removeCoureCertificationModule(i, module.ModuleIndex)"
+										[disabled]="isViewMode"
+										[ngClass]="{ 'edit-disabled': isViewMode }">
+										{{ 'Utils.Action.remove' | translate }}
+									</button>
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<div
+					style="text-align: center; margin-top: 2rem; margin-bottom: 3rem"
+					*ngIf="finalModulesforCourse && finalModulesforCourse.length == 0">
+					<p style="width: 50%; margin: 0 auto">
+						{{ 'Pages.DiwoCourses.AddEdit.ModuleTable.nodatatoshow' | translate }}
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-6"></div>
+		<div class="col-md-6 add_module_btn">
+			<a style="float: right; font-size: 0.875rem; color: grey">
+				<div class="info-icon-div">
+					<div style="margin-right: 5px; margin-top: -5px">
+						<label>{{ 'Pages.DiwoCourses.AddEdit.ModuleTable.addonemoduletocourse' | translate }}</label>
+					</div>
+					<div>
+						<label style="cursor: pointer">
+							<span
+								class="info-icon"
+								[innerHTML]="iconObject['add_icon_35']"
+								(click)="showModeleSelectionScreen()"></span>
+						</label>
+					</div>
+				</div>
+				<div class="info-icon-div" *ngIf="!courseForm.value.haveCertification && this.finalModulesforCourse.length > 0">
+					<div style="margin-right: 5px; margin-left: 5px; margin-top: -5px">
+						<label>{{ 'Pages.DiwoCourses.AddEdit.ModuleTable.addCertifictionCourse' | translate }}</label>
+					</div>
+					<div>
+						<label style="cursor: pointer">
+							<span class="info-icon" [innerHTML]="iconObject['add_icon_35']" (click)="addCertification()"></span>
+						</label>
+					</div>
+				</div>
+			</a>
+		</div>
+	</div>
+
+	<!-- Add Module Section -->
+	<form [formGroup]="courseModuleForm" *ngIf="showModuleAddScreen">
+		<div class="row section-wrapper">
+			<!-- <div class="form-title">
+				<span>{{ 'Pages.DiwoCourses.AddEdit.AddModule.title' | translate }}</span>
+			</div> -->
+			<div class="row card-body">
+				<div class="row">
+					<div class="col-md-6">
+						<div
+							class="form-group"
+							style="margin-top: 0"
+							[ngClass]="{
+								'has-error': f2.ModuleTypeId.invalid && (f2.ModuleTypeId.dirty || f2.ModuleTypeId.touched),
+								'has-success': f2.ModuleTypeId.valid && (f2.ModuleTypeId.dirty || f2.ModuleTypeId.touched)
+							}">
+							<label>{{ 'Pages.DiwoCourses.AddEdit.AddModule.ModuleType.title' | translate }}</label>
+							<ng-select
+								[items]="allModuleTypeList"
+								class="ng-select-wrap"
+								placeholder="{{ 'Pages.DiwoCourses.AddEdit.AddModule.ModuleType.placeholder' | translate }}"
+								bindLabel="type"
+								bindValue="id"
+								[multiple]="false"
+								[closeOnSelect]="true"
+								[searchable]="true"
+								formControlName="ModuleTypeId"
+								(change)="getModuleListByModuleType($event)"
+								[disabled]="isViewMode">
+							</ng-select>
+							<div class="error" *ngIf="f2.ModuleTypeId.errors && f2.ModuleTypeId.touched">
+								<div *ngIf="f2.ModuleTypeId.errors.required">
+									{{ 'Pages.DiwoCourses.AddEdit.AddModule.ModuleType.error' | translate }}
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div
+							class="form-group"
+							style="margin-top: 0"
+							[ngClass]="{
+								'has-error': f2.ModuleId.invalid && (f2.ModuleId.dirty || f2.ModuleId.touched),
+								'has-success': f2.ModuleId.valid && (f2.ModuleId.dirty || f2.ModuleId.touched)
+							}">
+							<label>{{ 'Pages.DiwoCourses.AddEdit.AddModule.ModuleName.title' | translate }}</label>
+							<ng-select
+								[items]="allModuleList"
+								class="ng-select-wrap"
+								placeholder="{{ 'Pages.DiwoCourses.AddEdit.AddModule.ModuleName.placeholder' | translate }}"
+								bindLabel="title"
+								bindValue="id"
+								[multiple]="false"
+								[closeOnSelect]="true"
+								[searchable]="true"
+								formControlName="ModuleId"
+								(change)="onPickModule($event)"
+								[disabled]="isViewMode">
+							</ng-select>
+							<div class="error" *ngIf="f2.ModuleId.errors && f2.ModuleId.touched">
+								<div *ngIf="f2.ModuleId.errors.required">
+									{{ 'Pages.DiwoCourses.AddEdit.AddModule.ModuleName.error' | translate }}
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-md-12">
+						<button
+							class="btn border_radius"
+							style="padding: 4px 35px; float: right; margin-top: 2rem; margin-left: 5px"
+							[ngStyle]="{
+								'background-color': appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+								color: 'white'
+							}"
+							[ngClass]="{ replace_btn: editModuleIndex != null }"
+							(click)="addModulesToCourse()"
+							[disabled]="isViewMode"
+							[ngClass]="{ 'edit-disabled': isViewMode }">
+							{{
+								editModuleIndex == null
+									? ('Pages.DiwoCourses.AddEdit.AddModule.addmoduletocourse' | translate)
+									: ('Pages.DiwoCourses.AddEdit.AddModule.replacemoduletocourse' | translate)
+							}}
+						</button>
+
+						<button
+							class="btn-xs action-delete-btn"
+							style="padding: 4px 30px; float: right; margin-top: 2rem"
+							[ngClass]="{ cancel_btn: editModuleIndex != null }"
+							[ngStyle]="{
+											color: appService.whiteBrandingColor,
+											border: '0.5px solid' + appService.whiteBrandingColor,
+											
+										}"
+							(click)="cancelModulesToCourse()">
+							{{ 'Utils.cancel' | translate }}
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+
+	<!-- Add Certification Module Section -->
+
+	<div class="row section-wrapper" *ngIf="addCertificationModule">
+		<!-- <div class="form-title">
+				<span>{{ 'Pages.DiwoCourses.AddEdit.AddModule.title' | translate }}</span>
+			</div> -->
+		<div class="row card-body">
+			<div class="row">
+				<div class="col-md-6">
+					<div class="form-group" style="margin-top: 0">
+						<label>{{ 'Pages.DiwoCourses.AddEdit.AddModule.ModuleType.title' | translate }}</label>
+						<ng-select
+							[items]="allModuleTypeList"
+							class="ng-select-wrap"
+							placeholder="{{ 'Pages.DiwoCourses.AddEdit.AddModule.ModuleType.placeholder' | translate }}"
+							bindLabel="type"
+							bindValue="id"
+							[multiple]="false"
+							[closeOnSelect]="true"
+							[searchable]="true"
+							[(ngModel)]="courseCerticationModuleDetails.DiwoModuleId"
+							(change)="getCertificateModuleListByModuleType($event)">
+						</ng-select>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="form-group" style="margin-top: 0">
+						<label>{{ 'Pages.DiwoCourses.AddEdit.AddModule.ModuleName.title' | translate }}</label>
+						<ng-select
+							[items]="allCertificateModuleList"
+							class="ng-select-wrap"
+							placeholder="{{ 'Pages.DiwoCourses.AddEdit.AddModule.ModuleName.placeholder' | translate }}"
+							bindLabel="title"
+							bindValue="id"
+							[multiple]="false"
+							[closeOnSelect]="true"
+							[searchable]="true"
+							[(ngModel)]="courseCerticationModuleDetails.WorkbookId"
+							(change)="onPickCertificateModule($event)">
+						</ng-select>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-12">
+					<button
+						class="btn border_radius"
+						style="padding: 4px 35px; float: right; margin-top: 2rem; margin-left: 5px"
+						[ngStyle]="{
+							'background-color': appService.whiteBrandingColor,
+							border: '1px solid' + appService.whiteBrandingColor,
+							color: 'white'
+						}"
+						[ngClass]="{ replace_btn: editModuleIndex != null }"
+						(click)="addCertificationModulesToCourse()"
+						[ngClass]="{ 'edit-disabled': isViewMode }">
+						{{ 'Pages.DiwoCourses.AddEdit.AddModule.addmoduletocourse' | translate }}
+					</button>
+
+					<button
+						class="btn-xs action-delete-btn"
+						style="padding: 4px 30px; float: right; margin-top: 2rem"
+						[ngClass]="{ cancel_btn: editModuleIndex != null }"
+						[ngStyle]="{
+											color: appService.whiteBrandingColor,
+											border: '0.5px solid' + appService.whiteBrandingColor,
+											
+										}"
+						(click)="cancelCertificateModulesToCourse()">
+						{{ 'Utils.cancel' | translate }}
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row" style="float: right; margin-top: 2rem">
+		<button
+			class="btn btn-o btn-primary border_radius functionalBtn"
+			style="
+				margin-right: 1.25rem;
+				background-color: lightgray !important;
+				color: black;
+				border: 1px solid lightgray !important;
+			"
+			(click)="cancel()">
+			{{ 'Utils.cancel' | translate }}
+		</button>
+		<button
+			class="btn btn-o btn-primary border_radius functionalBtn"
+			style="
+				margin-right: 1.25rem;
+				background-color: lightgray !important;
+				color: black;
+				border: 1px solid lightgray !important;
+			"
+			(click)="saveCourse(false)"
+			[disabled]="isViewMode">
+			{{ 'Pages.DiwoCourses.AddEdit.saveasdraft' | translate }}
+		</button>
+		<button
+			class="btn border_radius functionalBtn"
+			[ngStyle]="{
+				'background-color': appService.whiteBrandingColor,
+				border: '1px solid' + appService.whiteBrandingColor,
+				color: 'white'
+			}"
+			style="margin-right: 7px"
+			(click)="saveCourse(true)"
+			[disabled]="isViewMode">
+			{{ 'Pages.DiwoCourses.AddEdit.publishcourse' | translate }}
+		</button>
+	</div>
+</div>
+
+<!-- Select Updated version of the Module -->
+<div
+	class="modal fade credit-note"
+	id="updateModuleVersion"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="myModalLabel"
+	aria-hidden="true"
+	data-backdrop="static"
+	data-keyboard="false">
+	<div class="modal-dialog" style="width: 40%; margin-top: 15%; margin-left: auto; margin-right: auto">
+		<div class="modal-content">
+			<div
+				class="modal-header"
+				[ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}">
+				<button
+					type="button"
+					class="close"
+					data-dismiss="modal"
+					aria-label="Close"
+					(click)="cancelModuleVersionPopUp()">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					<span>{{ 'Pages.DiwoCourses.AddEdit.AddModule.NewVersion.title' | translate }}</span>
+				</h4>
+			</div>
+			<div class="modal-body">
+				<span>{{ 'Pages.DiwoCourses.AddEdit.AddModule.NewVersion.confirmation' | translate }}</span>
+				<div
+					class="visible-md visible-lg visible-sm visible-xs"
+					style="text-align: right; margin-bottom: 0.75rem; margin-top: 1.5rem">
+					<a
+						class="btn-xs action-edit-btn action-yes-no"
+						[ngStyle]="{
+							'background-color': appService.whiteBrandingColor,
+							border: '0.5px solid' + appService.whiteBrandingColor,
+							color: 'white'
+						}"
+						style="margin-right: 2%; padding: 7px 20px"
+						(click)="updateToNewVersionOfModule()"
+						>{{ 'Utils.yes' | translate }}</a
+					>
+					<a
+						class="btn-xs action-pause-btn action-yes-no"
+						[ngStyle]="{
+							color: appService.whiteBrandingColor,
+							border: '0.5px solid' + appService.whiteBrandingColor,
+						}"
+						style="padding: 7px 23px; margin-right: 1%"
+						(click)="cancelModuleVersionPopUp()"
+						>{{ 'Utils.no' | translate }}</a
+					>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Select Updated version of the Module -->
+<div
+	class="modal fade credit-note"
+	id="update_Module_Version"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="myModalLabel"
+	aria-hidden="true"
+	data-backdrop="static"
+	data-keyboard="false">
+	<div class="modal-dialog" style="width: 40%; margin-top: 15%; margin-left: auto; margin-right: auto">
+		<div class="modal-content">
+			<div
+				class="modal-header"
+				[ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}">
+				<button
+					type="button"
+					class="close"
+					data-dismiss="modal"
+					aria-label="Close"
+					(click)="cancelModuleVersionPopUp()">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					<span>{{ 'Pages.DiwoCourses.AddEdit.AddModule.updateVersion.title' | translate }}</span>
+				</h4>
+			</div>
+			<div class="modal-body">
+				<span>{{ 'Pages.DiwoCourses.AddEdit.AddModule.updateVersion.confirmation' | translate }}</span>
+				<div
+					class="visible-md visible-lg visible-sm visible-xs"
+					style="text-align: right; margin-bottom: 0.75rem; margin-top: 1.5rem">
+					<a
+						class="btn-xs action-edit-btn action-yes-no"
+						[ngStyle]="{
+							'background-color': appService.whiteBrandingColor,
+							border: '0.5px solid' + appService.whiteBrandingColor,
+							color: 'white'
+						}"
+						style="margin-right: 2%; padding: 7px 20px"
+						(click)="updateToNewVersionOfModule()"
+						>{{ 'Utils.yes' | translate }}</a
+					>
+					<a
+						class="btn-xs action-pause-btn action-yes-no"
+						[ngStyle]="{
+							color: appService.whiteBrandingColor,
+							border: '0.5px solid' + appService.whiteBrandingColor,
+						}"
+						style="padding: 7px 23px; margin-right: 1%"
+						(click)="cancelModuleVersionPopUp()"
+						>{{ 'Utils.no' | translate }}</a
+					>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

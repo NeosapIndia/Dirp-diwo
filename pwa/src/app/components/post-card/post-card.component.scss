@@ -1,0 +1,283 @@
+ion-card {
+	box-shadow: none !important;
+}
+
+ion-card-content {
+	p {
+		// margin-bottom: 16px;
+		color: var(--ion-color-dark);
+		font-size: 1em;
+		line-height: 22px;
+	}
+
+	ion-slide {
+		height: auto;
+		max-height: 56vh;
+	}
+
+	img.card-image {
+		object-fit: cover;
+		width: 100%;
+		// border-radius: 10px;
+	}
+}
+
+.card-footer {
+	display: flex;
+	justify-content: space-between;
+	flex-direction: row;
+	align-items: center;
+	padding-top: 0.6rem;
+	font-size: 14px;
+	text-align: justify;
+
+	// line-height: 1.4;
+	// height: 50px;
+	ul {
+		padding-left: 0;
+		margin: 0;
+
+		li {
+			display: inline-block;
+			vertical-align: middle;
+
+			ion-item {
+				--padding-start: 0;
+				--padding-end: 0.8em;
+			}
+
+			ion-label {
+				font-size: 13px;
+				color: var(--ion-color-light);
+			}
+
+			ion-icon {
+				font-size: 24px;
+				padding: 0.5em 0.2em;
+			}
+		}
+	}
+}
+
+ion-item {
+	--inner-padding-end: 0;
+}
+
+.separator {
+	width: 100%;
+	height: 1px;
+	background: rgba(228, 228, 228, 0.4);
+}
+
+#description {
+	padding: 0 0.5rem;
+	text-align: justify;
+	color: black;
+	font-weight: 300;
+	font-size: 0.8rem;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	padding: 0 0.8rem 0 0.8rem;
+}
+
+.avtar {
+	margin-left: 0.625rem;
+}
+
+.worksheet-data {
+	padding: 1rem 1rem;
+}
+
+p {
+	margin: 0;
+}
+
+.description {
+	overflow: hidden;
+	display: -webkit-box;
+	-webkit-line-clamp: 4;
+	-webkit-box-orient: vertical;
+	color: #000 !important;
+	font-size: 1rem !important;
+	line-height: 23px !important;
+	font-weight: 300;
+	text-align: left;
+}
+
+.description {
+	margin: 1rem 0 0 0;
+	cursor: pointer;
+	white-space: pre-line;
+}
+
+.flag-div {
+	// display: flex;
+	// justify-content: flex-end;
+	// justify-content: space-between;\
+	display: flex;
+	justify-content: flex-end;
+	margin-right: -1rem;
+	position: relative;
+	// margin-right: -1rem;
+	// position: relative;
+}
+
+.activity-type {
+	position: absolute;
+	left: 0;
+	// width: 50%;
+	height: 100%;
+	border-radius: 0.7rem;
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+}
+
+.flag-group {
+	// width: 50%;
+	// display: flex;
+	// // justify-content: flex-end;
+	// justify-content: space-between;
+
+	width: 50%;
+	display: flex;
+	justify-content: flex-end;
+}
+
+.flag-icons {
+	width: 30px;
+	height: 30px;
+	margin-right: 0.7rem;
+}
+
+.worksheet-type-icon {
+	width: 30px;
+	height: 30px;
+}
+
+.learning-content-icon {
+	width: 22px;
+	height: 22px;
+}
+
+.worksheet-type-text {
+	margin-left: 0.5rem;
+	color: #000 !important;
+	font-size: 1rem !important;
+}
+
+.wrap-element {
+	// position: relative;
+	overflow: hidden;
+	padding-top: 56.25%;
+}
+
+.wrapped-iframe {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	border: 0;
+}
+.fav-icon-select {
+	width: 30px;
+	height: 30px;
+	mask: url('../../../assets/images/workbook/favorite_selected_icon.svg') no-repeat center / contain;
+	-webkit-mask: url('../../../assets/images/workbook/favorite_selected_icon.svg') no-repeat center / contain;
+	background-color: var(--branding-color);
+}
+
+.bookmark-icon-select {
+	width: 30px;
+	height: 30px;
+	mask: url('../../../assets/images/workbook/bookmark_selected_icon.svg') no-repeat center / contain;
+	-webkit-mask: url('../../../assets/images/workbook/bookmark_selected_icon.svg') no-repeat center / contain;
+	background-color: var(--branding-color);
+}
+
+/* your-component.component.scss */
+
+.video-container {
+	position: relative;
+	width: 100%;
+	padding-bottom: 56.25%; /* 16:9 aspect ratio for responsive design (adjust as needed) */
+}
+
+.video-container iframe {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}
+
+.full-width-height {
+	width: 100%;
+	height: 100%;
+}
+
+#submit-btn {
+	margin: 0 0 0.75rem 0;
+	height: 2.3rem;
+	font-size: 1rem;
+	--color: white;
+	text-transform: none;
+	box-shadow: none;
+	--background: var(--branding-color);
+	--border-radius: 0.625rem;
+}
+
+.submit-btn {
+	--background: var(--branding-color) !important;
+}
+
+.clear-form {
+	align-self: center;
+	--background: var(--branding-color);
+}
+
+.wrap-element {
+	// position: relative;
+	overflow: hidden;
+	padding-top: 56.25%;
+}
+
+//Carousel
+.slider-container {
+	position: relative;
+}
+
+.prev-button,
+.next-button {
+	position: absolute;
+	top: 39%;
+	transform: translateY(-50%);
+	z-index: 10;
+	width: 40px;
+	height: 40px;
+	background-color: #fffcfc80;
+	border-radius: 50%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border: 2px solid lightgray;
+}
+
+.prev-button {
+	left: 10px;
+}
+
+.next-button {
+	right: 10px;
+}
+
+:host(::ng-deep.button-clear) {
+	--background-activated: transparent;
+	--background-focused: #fffcfc80 !important;
+	--background-hover: #fffcfc80 !important;
+	--color: #fffcfc80 !important;
+}

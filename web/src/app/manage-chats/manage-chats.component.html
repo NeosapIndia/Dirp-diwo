@@ -1,0 +1,297 @@
+<div class="pageDiv chats" style="min-height: calc(100vh - 95px)">
+	<div style="margin-top: 2rem">
+		<div class="row">
+			<div class="panel header-panel-white" style="display: flex">
+				<div class="col-md-3" style="padding-left: 0.5%" *ngIf="projectType == 'drip'">
+					<span class="mainTitle no-margin pageTitle_Main">{{ 'Pages.Chats.Home.pagetitle' | translate }}</span>
+				</div>
+				<div class="col-md-3" style="padding-left: 0.5%" *ngIf="projectType == 'diwo'">
+					<span class="mainTitle no-margin pageTitle_Main">{{ 'Pages.Chats.Home.pagetitleMsg' | translate }}</span>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<form [formGroup]="FilterChatsColumnForm">
+		<div style="margin-top: 2rem">
+			<div class="row">
+				<div class="panel panel-white" style="padding: 0.55% 0; display: flex">
+					<div class="col-md-4" style="padding-right: 0.55%">
+						<label>{{ 'Pages.DripFlow.Home.Filter.Dropdown.title' | translate }}</label>
+						<div id="filterDiv" style="max-width: none; width: 100%; margin-left: 0">
+							<ng-multiselect-dropdown
+								[settings]="dropdownSettings"
+								class="mt-2 filter-search-columns"
+								placeholder="{{ 'Pages.DripFlow.Home.Filter.Dropdown.placeholder' | translate }}"
+								[data]="FilterColumnArray"
+								formControlName="FilterColumn">
+							</ng-multiselect-dropdown>
+						</div>
+					</div>
+					<div class="col-md-5" style="padding-left: 0.5rem; padding-right: 0px">
+						<label>{{ 'Utils.Filter.Search.title' | translate }}</label>
+						<input
+							class="form-control"
+							(input)="getChatsByFilter($event.target.value)"
+							type="text"
+							placeholder="{{
+								this.FilterChatsColumnForm.controls['FilterColumn'].value.length == 4
+									? ('Utils.Filter.Search.placeholder1' | translate)
+									: ('Utils.Filter.Search.placeholder2' | translate)
+							}}"
+							autocomplete="off"
+							[(ngModel)]="inputSearchTxt"
+							[ngModelOptions]="{ standalone: true }" />
+					</div>
+					<div class="col-md-3">
+						<label>{{ 'Utils.Filter.Search.datetitle' | translate }}</label>
+						<input
+							type="text"
+							ngxDaterangepickerMd
+							[showDropdowns]="true"
+							onkeydown="return false"
+							[(ngModel)]="selectedDate"
+							[showCustomRangeLabel]="true"
+							[alwaysShowCalendars]="true"
+							[ranges]="ranges"
+							[linkedCalendars]="true"
+							[isInvalidDate]="isInvalidDate"
+							[showClearButton]="true"
+							[showCancel]="true"
+							placeholder="DD-MM-YYYY - DD-MM-YYYY"
+							[autoApply]="false"
+							[locale]="{ applyLabel: 'ok', format: 'DD-MM-YYYY' }"
+							(startDateChanged)="startDateClicked($event)"
+							(endDateChanged)="endDateClicked($event)"
+							class="form-control"
+							autocomplete="off"
+							[ngModelOptions]="{ standalone: true }"
+							(change)="onSelectFilterDate($event)" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+
+	<div style="margin-top: 2rem">
+		<div class="row">
+			<div class="panel panel-white">
+				<div class="sub table-responsive">
+					<table class="table table-striped table-hover">
+						<thead *ngIf="!isApiCall">
+							<tr>
+								<th
+									class="left tb-first-heading tb-line-height"
+									style="padding-left: 1rem; word-wrap: break-word; width: 18vw">
+									{{ 'Pages.Chats.Home.Table.Header.contactname' | translate }}
+								</th>
+								<th class="left tb-head-bg tb-line-height" style="word-wrap: break-word; width: 18vw">
+									{{ 'Pages.Chats.Home.Table.Header.messagepreview' | translate }}
+								</th>
+								<th class="left tb-head-bg tb-line-height" style="word-wrap: break-word; width: 12vw">
+									{{ 'Pages.Chats.Home.Table.Header.lastmessagereceived' | translate }}
+								</th>
+								<th class="left tb-head-bg tb-line-height" style="word-wrap: break-word; width: 12vw">
+									{{ 'Pages.Chats.Home.Table.Header.status' | translate }}
+								</th>
+								<th class="left tb-head-bg tb-line-height" style="word-wrap: break-word; width: 12vw">
+									{{ 'Pages.Chats.Home.Table.Header.responsestatus' | translate }}
+								</th>
+								<th
+									class="left tb-last-heading tb-line-height"
+									style="width: 214px; max-width: 214px; min-width: 214px">
+									{{ 'Pages.Chats.Home.Table.Header.actions' | translate }}
+								</th>
+							</tr>
+						</thead>
+						<tbody *ngIf="!isApiCall">
+							<tr
+								*ngFor="
+									let item of chatsData
+										| paginate
+											: {
+													itemsPerPage: limit == 'all' ? totalCount : limit,
+													currentPage: page,
+													totalItems: totalCount
+											  };
+									index as i
+								">
+								<td class="left" style="padding-left: 1rem; padding-top: 15px" class="two-row-td-tag">
+									<p class="two-row-p-tag" style="-webkit-box-orient: vertical">{{ item.first }} {{ item.last }}</p>
+								</td>
+								<td class="left" style="padding-top: 15px" class="two-row-td-tag">
+									<p class="two-row-p-tag" style="-webkit-box-orient: vertical">{{ item.data }}</p>
+								</td>
+								<td class="left" style="padding-top: 15px" class="two-row-td-tag">
+									<p class="two-row-p-tag" style="-webkit-box-orient: vertical">
+										{{ item.createdAt != null ? (item.createdAt | DateFormat) : '-' }}
+									</p>
+								</td>
+								<td class="left" style="padding-top: 15px !important">
+									<span class="status-active" *ngIf="item.status == 'Active'">{{
+										'Utils.Status.active' | translate
+									}}</span>
+									<span *ngIf="item.status == 'Inactive'" class="status-inActive" style="padding: 0.375rem 1.7rem">{{
+										'Utils.Status.inactive' | translate
+									}}</span>
+								</td>
+								<td class="left" style="padding-top: 15px !important">
+									<span class="status-active" *ngIf="item.respStatus == 'Read'" style="padding: 0.375rem 2.2rem">{{
+										'Utils.Status.read' | translate
+									}}</span>
+									<span *ngIf="item.respStatus == 'Unread'" class="status-unread">{{
+										'Utils.Status.unread' | translate
+									}}</span>
+									<span *ngIf="item.respStatus == 'Replied'" class="status-resolved" style="padding: 0.375rem 1.8rem">{{
+										'Utils.Status.replied' | translate
+									}}</span>
+								</td>
+								<td class="left" style="padding: 0.938rem 1rem 0.938rem 0.75rem">
+									<div class="visible-md visible-lg visible-sm visible-xs">
+										<button
+											class="btn-xs action-edit-btn"
+											[ngStyle]="{
+												'background-color': appService.whiteBrandingColor,
+												border: '1px solid' + appService.whiteBrandingColor,
+												color: 'white'
+											}"
+											(click)="replyMessagePopup(item)"
+											style="padding: 0.25rem 1.25rem">
+											{{ 'Utils.Action.view' | translate }}
+										</button>
+										<button
+											class="btn-xs action-pause-btn"
+											[ngStyle]="{
+												color: appService.whiteBrandingColor,
+												border: '1px solid' + appService.whiteBrandingColor
+											}"
+											[ngClass]="{ 'btn-disabled': item.respStatus == 'Read' || item.respStatus == 'Replied' }"
+											[disabled]="item.respStatus == 'Read' || item.respStatus == 'Replied'"
+											(click)="markAsRead(item, true)"
+											style="margin-left: 5px; padding: 0.25rem 0.813rem">
+											{{ 'Utils.Action.markasread' | translate }}
+										</button>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<div
+						style="text-align: center; margin-top: 2rem; margin-bottom: 3rem"
+						*ngIf="chatsData && chatsData.length == 0 && !isApiCall && isDataLoaded">
+						<img src="assets/images/No Results.svg" alt="" style="width: 25%" />
+						<h3>{{ 'Utils.nodataToShow' | translate }}</h3>
+						<p style="width: 50%; margin: 0 auto">{{ 'Utils.nodataAvaliable' | translate }}</p>
+					</div>
+					<div style="text-align: center; margin-top: 9rem; margin-bottom: 9rem" *ngIf="isApiCall">
+						<!-- <img class="asset-img" src="assets/images/Circle-1.gif" style="width: 3%" /> -->
+						<div [innerHTML]="iconObject['search_loader']" class="asset-img"></div>
+					</div>
+					<div style="text-align: center; margin-top: 9rem; margin-bottom: 9rem" *ngIf="!isDataLoaded"></div>
+				</div>
+			</div>
+			<div class="pagination-wrapper" style="width: 100%">
+				<div style="float: right">
+					<span> {{ 'Utils.perpage' | translate }} : &nbsp;</span>
+					<select class="default-dropdown" (change)="changeResult($event.target.value)">
+						<option *ngFor="let count of pageResultCount; let i = index" [selected]="i == 0">
+							{{ count }}
+						</option>
+					</select>
+				</div>
+				<pagination-controls (pageChange)="onPageChangeEvent($event)" style="float: right"> </pagination-controls>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Reply MODAL -->
+<div
+	class="modal fade credit-note"
+	id="whatsAppMessageReplyModel"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="myModalLabel"
+	aria-hidden="true"
+	data-backdrop="static"
+	data-keyboard="false">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div
+				class="modal-header"
+				[ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="cancelReplyModal()">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					<!-- <span>{{ 'Pages.Chats.Home.Modal.Reply.title' | translate }}</span> -->
+					<span>{{ selectedMessageData && selectedMessageData.selectedLearnerName }}</span>
+				</h4>
+			</div>
+			<div class="modal-body">
+				<!-- <div style="text-align: center">
+					<p>{{ selectedMessageData && selectedMessageData.selectedLearnerName }}</p>
+				</div> -->
+				<div class="chat-popup">
+					<div class="chat-box" *ngFor="let chat of userChatsData">
+						<div class="chat-message received" *ngIf="chat.type == 'received'">
+							<div class="message-content">
+								<span>{{ chat.data }}</span>
+								<div class="message-time">{{ chat.createdAt }}</div>
+							</div>
+						</div>
+						<div class="chat-message sent" *ngIf="chat.type == 'sent_reply'">
+							<div class="message-content">
+								<span>{{ chat.data }}</span>
+								<div class="message-time">{{ chat.createdAt }}</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<textarea
+						type="text"
+						class="form-control"
+						id="first"
+						rows="2"
+						placeholder="{{ 'Pages.Chats.Home.Modal.Reply.placeholder' | translate }}"
+						[(ngModel)]="sendReplyMessage"
+						autocomplete="disabled"></textarea>
+				</div>
+				<div
+					class="visible-md visible-lg visible-sm visible-xs"
+					style="text-align: right; margin-bottom: 0.75rem; margin-top: 1.5rem">
+					<button
+						class="btn-xs action-edit-btn action-yes-no"
+						[ngStyle]="{
+							'background-color': appService.whiteBrandingColor,
+							border: '1px solid' + appService.whiteBrandingColor,
+							color: 'white'
+						}"
+						style="margin-right: 2%; padding: 7px 20px"
+						[ngClass]="{ 'btn-disabled-reply': selectedMessageData && selectedMessageData.messageStatus == 'Inactive' }"
+						[disabled]="selectedMessageData && selectedMessageData.messageStatus == 'Inactive'"
+						(click)="onSendReply()">
+						{{ 'Utils.Action.reply' | translate }}
+					</button>
+
+					<a
+						class="btn-xs action-pause-btn action-yes-no"
+						[ngStyle]="{
+							color: appService.whiteBrandingColor,
+							border: '1px solid' + appService.whiteBrandingColor,
+						}"
+						style="padding: 7px 23px; margin-right: 1%"
+						(click)="cancelReplyModal()"
+						>{{ 'Utils.Action.cancel' | translate }}</a
+					>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

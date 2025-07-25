@@ -1,0 +1,82 @@
+<ion-header *ngIf="!isdesktopView && !isTabletLandscapeView">
+	<ion-toolbar class="toolbar-head">
+		<ion-title class="ion-text-center">
+			<img *ngIf="clientBranding" [src]="imageBaseURL + clientBranding.learner_app_icon_path" class="header-logo" />
+			<img *ngIf="!clientBranding && appService.defaultPWALogo" [src]="appService.defaultPWALogo" class="header-logo" />
+			<img
+				*ngIf="!clientBranding &&!appService.defaultPWALogo"
+				src="assets/icons/icon-128x128.png"
+				class="header-logo" />
+		</ion-title>
+	</ion-toolbar>
+</ion-header>
+
+<ion-content
+	[fullscreen]="true"
+	class="ion-padding-horizontal"
+	[scrollEvents]="true"
+	(ionScroll)="getScrollPos($event)">
+	<div *ngIf="getAppBranding()"></div>
+	<ion-grid>
+		<div *ngIf="appService.allDripReloadPage">
+			<div *ngIf="forReloadData()"></div>
+		</div>
+
+		<ion-row [ngClass]="{ 'ion-main-row-desktop': isdesktopView || isTabletLandscapeView}">
+			<ion-col
+				size-sm="12"
+				size-md="9"
+				size-lg="7"
+				*ngFor="let item of lists"
+				class="main-col"
+				[ngClass]="{ 'ion-main-col-desktop': isdesktopView || isTabletLandscapeView}">
+				<app-post-card
+					[title]="item.title"
+					[avatar]="item.avatar"
+					[name]="item.name"
+					[date]="item.date"
+					[description]="item.description"
+					[images]="item.images"
+					[videos]="item.videos"
+					[htmlPage]="item.htmlPage"
+					[pdfs]="item.pdfs"
+					[links]="item.links"
+					[comments]="item.comments"
+					[asset_details]="item.asset_details"
+					[createdAt]="item.createdAt"
+					[isLiked]="item.isLiked"
+					[isBookmarked]="item.isBookmarked"
+					[postId]="item.postId"
+					[id]="item.id"
+					[tempType]="item.tempType"
+					[score]="item.score"
+					[externalLink]="item.externalLink"
+					[externalLinkLabel]="item.externalLinkLabel"
+					[clickExternalLink]="item.clickExternalLink"
+					[userId]="userId"
+					[consumed]="item.consumed"
+					[isDripClickAction]="item.isDripClickAction">
+				</app-post-card>
+			</ion-col>
+		</ion-row>
+
+		<ion-infinite-scroll (ionInfinite)="loadMore($event)">
+			<ion-infinite-scroll-content loadingSpinner="circles" loadingText="{{'Utils.loadingMoreData' | translate}}">
+			</ion-infinite-scroll-content>
+		</ion-infinite-scroll>
+
+		<div class="back-to-top-btn" *ngIf="backToTop" (click)="gotToTop()">
+			<ion-icon id="top-icon" name="chevron-up-outline"></ion-icon>
+		</div>
+	</ion-grid>
+	<ion-refresher
+		ion-refresh-native
+		slot="fixed"
+		disabled="false"
+		(ionRefresh)="doRefresh($event)"
+		pullFactor="0.1"
+		pullMin="50"
+		pullMax="200">
+		<ion-refresher-content></ion-refresher-content>
+	</ion-refresher>
+</ion-content>

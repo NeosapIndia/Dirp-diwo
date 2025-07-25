@@ -1,0 +1,83 @@
+<ion-header>
+	<ion-toolbar class="toolbar-head" [ngClass]="{ 'ion-toolbar-desktop': isdesktopView || isTabletLandscapeView}">
+		<ion-grid>
+			<ion-row
+				class="ion--header-search-main-row"
+				[ngClass]="{ 'ion--header-search-main-row-dektop': isdesktopView || isTabletLandscapeView}">
+				<ion-col size="auto" *ngIf="!isdesktopView && !isTabletLandscapeView">
+					<ion-label class="search-txt"> {{ 'Utils.search' | translate }} </ion-label>
+				</ion-col>
+				<ion-col *ngIf="isdesktopView || isTabletLandscapeView">
+					<ion-header id="header-desktop-searchbar">
+						<ion-searchbar
+							(ionInput)="onSearch($event)"
+							[(ngModel)]="selectedSearchText"
+							class="ion-no-padding ion-input-searchbar-desktop"
+							animated
+							placeholder="{{'Utils.typeYourKeywords' | translate}}">
+						</ion-searchbar>
+					</ion-header>
+				</ion-col>
+				<ion-col size="auto">
+					<ion-select
+						[(ngModel)]="selectedsArray"
+						[compareWith]="compareWith"
+						multiple="true"
+						[cancelText]="'Utils.cancel' | translate"
+						[okText]="'Utils.ok' | translate"
+						(ionChange)="onChangeDropdown($event)">
+						<ion-select-option *ngFor="let item of filterArray" [value]="item"> {{ item.label }} </ion-select-option>
+					</ion-select>
+				</ion-col>
+			</ion-row>
+		</ion-grid>
+	</ion-toolbar>
+</ion-header>
+
+<!-- for mobile seach header -->
+<ion-header *ngIf="!isdesktopView && !isTabletLandscapeView">
+	<ion-searchbar
+		(ionInput)="onSearch($event)"
+		[(ngModel)]="selectedSearchText"
+		class="ion-no-padding ion-input-searchbar-mobile"
+		animated
+		placeholder="{{'Utils.typeYourKeywords' | translate}}">
+	</ion-searchbar>
+</ion-header>
+
+<ion-content>
+	<ion-grid style="margin: 0; padding: 0">
+		<ion-row [ngClass]="{ 'ion-main-row-desktop': isdesktopView || isTabletLandscapeView}">
+			<ion-col size="4" size-lg="3" size-md="3" class="main-col" *ngFor="let item of incomingData;">
+				<ion-card class="ion-no-margin" style="border-radius: 0px" (click)="navigateToDetail(item)">
+					<ion-card-content class="ion-no-padding">
+						<ion-slides style="height: 100%" pager="false" [options]="imgConfig">
+							<ion-slide *ngFor="let asset of item.asset_details" #slides class="swiper-no-swiping">
+								<img class="image-section" *ngIf="asset.displayType == 'Image'" [src]="imageHost + asset.path" />
+								<div
+									class="image-section accent_color_video"
+									*ngIf="asset.displayType == 'Video'"
+									[ngStyle]="appBrandingInfo && appBrandingInfo.accent_color ? {'background-color' : appBrandingInfo.accent_color} : {'background-color': ''}"></div>
+							</ion-slide>
+						</ion-slides>
+					</ion-card-content>
+				</ion-card>
+			</ion-col>
+		</ion-row>
+		<ion-infinite-scroll (ionInfinite)="loadMore($event)">
+			<ion-infinite-scroll-content loadingSpinner="circles" loadingText="Loading more data...">
+			</ion-infinite-scroll-content>
+		</ion-infinite-scroll>
+	</ion-grid>
+
+	<ion-refresher
+		ion-refresh-native
+		slot="fixed"
+		disabled="false"
+		(ionRefresh)="doRefresh($event)"
+		pullFactor="0.1"
+		pullMin="50"
+		pullMax="200">
+		<ion-refresher-content></ion-refresher-content>
+	</ion-refresher>
+</ion-content>

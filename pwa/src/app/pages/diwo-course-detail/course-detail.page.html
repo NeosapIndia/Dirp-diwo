@@ -1,0 +1,389 @@
+<ion-header *ngIf="isMobile && isMobileView">
+	<ion-toolbar class="toolbar-head">
+		<ion-buttons slot="start" style="padding-top: 6px" *ngIf="!isdesktopView">
+			<ion-back-button (click)="back()" text=""></ion-back-button>
+		</ion-buttons>
+
+		<ion-title class="ion-text-center">
+			<img *ngIf="clientBranding" [src]="imageBaseURL + clientBranding.learner_app_icon_path" class="header-logo" />
+			<img *ngIf="!clientBranding && appService.defaultPWALogo" [src]="appService.defaultPWALogo" class="header-logo" />
+			<img
+				*ngIf="!clientBranding &&!appService.defaultPWALogo"
+				src="assets/icon/diwo_full_logo.png"
+				class="header-logo" />
+		</ion-title>
+
+		<ion-buttons slot="end" style="visibility: hidden" *ngIf="!isdesktopView">
+			<ion-back-button (click)="back()" text=""></ion-back-button>
+		</ion-buttons>
+	</ion-toolbar>
+</ion-header>
+
+<ion-content
+	[fullscreen]="true"
+	class="ion-padding-horizontal"
+	[scrollEvents]="true"
+	(ionScroll)="getScrollPos($event)">
+	<ion-grid>
+		<!-- My Learnering Pathways -->
+		<ion-row [ngClass]="{ 'ion-main-row-desktop': isdesktopView || isTabletLandscapeView || isTablet	}">
+			<ion-col
+				size-sm="12"
+				size-md="9"
+				size-lg="7"
+				class="page-wrapper2 main-col"
+				[ngClass]="{ 'ion-main-col-desktop': isdesktopView || isTabletLandscapeView || isTablet	}">
+				<div *ngIf="isdesktopView || isTabletLandscapeView || isTablet">
+					<nav class="breadcrumb">
+						<ul>
+							<li><a (click)="goToHome()">{{'Utils.home' | translate}}</a></li>
+							<li *ngIf="totalCourses !=null">
+								<a (click)="goToAllPathways()">{{'Utils.allpathways' | translate}}</a>
+							</li>
+							<li *ngIf="totalCourses !=null && pathwayData && pathwayData.title">
+								<a (click)="showPathwayDetail(pathwayData)">{{pathwayData.title}}</a>
+							</li>
+							<li>
+								<a (click)="goToAllCourses()">{{'Utils.allcourses' | translate}}</a>
+							</li>
+						</ul>
+					</nav>
+				</div>
+
+				<div class="course-content-details" *ngIf="isdesktopView || isTabletLandscapeView || isTablet	|| isMobileView">
+					<ion-row>
+						<!-- Left Section (30%) -->
+						<ion-col size="12" size-sm="12" size-md="4" size-lg="3">
+							<div
+								class="course-content-image"
+								[ngClass]="isRtl ? 'course-content-image-rtl' : 'course-content-image-ltr'">
+								<img [src]="courseAssetBasePath + courseList[0]?.avatar_file_name" />
+							</div>
+						</ion-col>
+
+						<!-- Right Section (70%) -->
+						<ion-col size="12" size-sm="12" size-md="8" size-lg="9" class="course-content">
+							<div class="course-detail-section">
+								<!-- Inner Row for Capsule and Learner Status -->
+								<div class="course-title-row">
+									<ion-row>
+										<!-- Capsule (Auto columns) -->
+										<ion-col size="auto">
+											<span class="capsule">{{'Utils.course' | translate}}</span>
+										</ion-col>
+
+										<!-- Learner Status (Auto column) -->
+										<ion-col size="auto">
+											<p
+												class="learnerstatus"
+												[ngClass]="{
+												'red-shade': courseStatus == 'Not Started',
+												'yellow-shade': courseStatus == 'In Progress',
+												'green-shade': courseStatus == 'Completed' || courseStatus == 'Certified'
+											}">
+												{{ courseStatus }}
+											</p>
+										</ion-col>
+									</ion-row>
+								</div>
+
+								<!-- Course Title -->
+								<div class="course-title-container">
+									<p class="course-title" *ngIf="courseList[0] && courseList[0].title">{{ courseList[0].title }}</p>
+								</div>
+
+								<!-- Course Subtitle -->
+								<p class="course-subtitle" *ngIf="courseList[0] && courseList[0].subtitle">
+									{{ courseList[0].subtitle }}
+								</p>
+
+								<!-- Course Description -->
+								<p class="course-description" *ngIf="courseList[0] && courseList[0].description">
+									{{ courseList[0].description }}
+								</p>
+
+								<!-- Learning Outcomes -->
+								<div
+									class="outcomes-section"
+									*ngIf="courseList[0] && courseList[0].outcomesArray && courseList[0].outcomesArray.length > 0">
+									<div *ngFor="let outcome of courseList[0].outcomesArray" class="l_outcomes-btn">{{ outcome }}</div>
+								</div>
+							</div>
+						</ion-col>
+					</ion-row>
+				</div>
+
+				<div class="course-module_eduration-section">
+					<ion-row>
+						<!-- First Section -->
+						<ion-col
+							size="12"
+							size-sm="4"
+							size-md="4"
+							size-lg="3"
+							class="page-wrapper"
+							*ngIf="totalCourses != null && !isdesktopView && !isTabletLandscapeView && !isTablet">
+							<div
+								class="course-module_eduration"
+								[ngClass]="isRtl ? 'course-module_eduration-rtl' : 'course-module_eduration-ltr'">
+								<div [innerHTML]="iconObject['course_image']" class="course_image"></div>
+
+								<div
+									*ngIf="pathwayData && pathwayData.title"
+									class="pathway-course-worksheet-count"
+									[title]="pathwayData.title">
+									{{'Utils.course' | translate}} {{ selectedCourseIndex + 1 }} {{'Utils.of' | translate}}
+									{{totalCourses}} {{'Utils.in' | translate}}
+									<a class="pathway-name-anchor" (click)="showPathwayDetail(pathwayData)">{{pathwayData.title}}</a>
+								</div>
+							</div>
+						</ion-col>
+
+						<!-- Second Section -->
+						<ion-col size="12" size-sm="4" size-md="4" size-lg="3" class="page-wrapper">
+							<div
+								class="course-module_eduration"
+								[ngClass]="isRtl ? 'course-module_eduration-rtl' : 'course-module_eduration-ltr'">
+								<div [innerHTML]="iconObject['workbook_image']" class="workbook_image"></div>
+
+								<span>{{'Utils.modules' | translate}} - {{ totalModules }}</span>
+							</div>
+						</ion-col>
+
+						<!-- Third Section -->
+						<ion-col size="12" size-sm="4" size-md="4" size-lg="3" class="page-wrapper">
+							<div
+								class="course-module_eduration"
+								[ngClass]="isRtl ? 'course-module_eduration-rtl' : 'course-module_eduration-ltr'">
+								<div [innerHTML]="iconObject['eduration_image']" class="eduration_image"></div>
+								<span [title]="courseList[0]&&courseList[0].e_duration"
+									>{{'Utils.eduration' | translate}} - {{ courseList[0] && courseList[0].e_duration ?
+									courseList[0].e_duration + ' ' + 'Minutes' : '' }}</span
+								>
+							</div>
+						</ion-col>
+					</ion-row>
+				</div>
+
+				<div class="course-accordian-section">
+					<ion-accordion-group [multiple]="true" [value]="'accordion-' + 0">
+						<ion-accordion *ngFor="let item of allData; let i = index" [value]="'accordion-' + i">
+							<ion-item slot="header">
+								<ion-label>
+									<div class="accordain-header">
+										<span class="module-count">{{'Utils.module' | translate}} {{ i + 1 }}</span>
+										<span class="workbook-name">
+											{{ item.Workbook?.title }}
+											<span *ngIf="item.Workbook?.DiwoModule?.id == 1"
+												>{{ '(' + ('Utils.ilt' | translate) + ')' }}</span
+											>
+											<span *ngIf="item.Workbook?.DiwoModule?.id == 2"
+												>{{ '(' + ('Utils.vbt' | translate) + ')' }}</span
+											>
+											<span *ngIf="item.Workbook?.DiwoModule?.id == 3"
+												>{{ '(' + ('Utils.wbt' | translate) + ')' }}</span
+											>
+											<span *ngIf="item.Workbook?.DiwoModule?.id == 4">{{ '(' + ('Utils.wt' | translate) + ')' }}</span>
+										</span>
+									</div>
+								</ion-label>
+							</ion-item>
+							<div slot="content" class="accordion-content">
+								<div class="accordion-item-content">
+									<div class="accordion-image">
+										<div class="accordion-item-image">
+											<img [src]="imageBaseURL + item.Workbook?.DiwoAssets[0]?.path" alt="{{ item.Workbook?.title }}" />
+										</div>
+
+										<div class="wb-details" *ngIf="item &&item.SessionUsers[0] &&item.SessionUsers[0].Session">
+											<div *ngIf="item.Workbook?.DiwoModule?.id ==1">
+												<p
+													class="assigned-date"
+													*ngIf="item.SessionUsers[0].Session.status == 'Planned' && item.SessionUsers[0].attendanceStatus != 'Present' && item.SessionUsers[0].expStatus != 'Expired'">
+													{{'Utils.sessionNotStarted' | translate}}
+												</p>
+												<p
+													class="assigned-date"
+													*ngIf="item.SessionUsers[0].Session.status == 'Planned' && item.SessionUsers[0].attendanceStatus == 'Present' && item.SessionUsers[0].expStatus != 'Expired'">
+													{{'Utils.sessionStartingSoon' | translate}}
+													<span class="dot-startingsoon"></span>
+												</p>
+												<p
+													class="assigned-date"
+													*ngIf="item.SessionUsers[0].Session.status == 'Live' && item.SessionUsers[0].attendanceStatus == 'Present' && item.SessionUsers[0].expStatus != 'Expired'">
+													{{'Utils.sessionLive' | translate}}
+													<span class="dot-live"></span>
+												</p>
+												<p
+													class="assigned-date"
+													*ngIf="item.SessionUsers[0].Session.status == 'Live' && item.SessionUsers[0].attendanceStatus != 'Present' && item.SessionUsers[0].expStatus != 'Expired'">
+													{{'Utils.sessionnotLive' | translate}}
+												</p>
+												<p
+													class="assigned-date"
+													*ngIf="item.SessionUsers[0].Session.status == 'Closed' && item.SessionUsers[0].attendanceStatus == 'Present'&& item.SessionUsers[0].expStatus != 'Expired'">
+													{{'Utils.sessionAttendedOn' | translate}} {{item.SessionUsers[0].Session.SessionStartDate}}
+												</p>
+												<p class="assigned-date" *ngIf="item.SessionUsers[0].expStatus == 'Expired'">
+													{{'Utils.sessionExpired' | translate}}
+												</p>
+												<p
+													class="learnerstatus"
+													*ngIf="item.SessionUsers[0].ModuleStatus=='Certified'"
+													[ngClass]="{																							
+													'green-shade': item.SessionUsers[0].ModuleStatus == 'Certified'
+												  }">
+													{{item.SessionUsers[0].ModuleStatus}}
+												</p>
+											</div>
+											<div *ngIf="item.Workbook?.DiwoModule?.id !=1">
+												<p
+													class="assigned-date"
+													*ngIf="item.SessionUsers[0].Session.status == 'Live' && item.SessionUsers[0].attendanceStatus == 'Present' && item.SessionUsers[0].expStatus != 'Expired'">
+													{{'Utils.sessiondueOn' | translate}} {{item.SessionUsers[0].Session.enddateWithTime}}
+												</p>
+												<!-- <p class="learnerstatus" [ngClass]="{
+													'red-shade': item.SessionUsers[0].ModuleStatus == 'Not Started',
+													'yellow-shade': item.SessionUsers[0].ModuleStatus == 'In Progress',
+													'green-shade': item.SessionUsers[0].ModuleStatus == 'Completed' || item.SessionUsers[0].ModuleStatus == 'Certified'
+												 }">{{item.SessionUsers[0].ModuleStatus}}</p> -->
+
+												<p class="modulestatus">{{item.SessionUsers[0].ModuleStatus}}</p>
+											</div>
+										</div>
+										<div *ngIf="item &&item.SessionUsers[0] &&item.SessionUsers[0].Session == null">
+											<p class="assigned-date">{{'Utils.sessionNotStarted' | translate}}</p>
+										</div>
+									</div>
+									<div
+										class="accordion-description"
+										[ngClass]="isRtl ? 'accordion-description-rtl' : 'accordion-description-ltr'">
+										<p
+											[ngClass]="{'truncated': !item.showFullDescription, 'expanded': item.showFullDescription}"
+											*ngIf="item.Workbook && item.Workbook.descrip">
+											{{ item.Workbook.descrip }}
+										</p>
+
+										<a
+											*ngIf="item.Workbook && item.Workbook.descrip && isDescriptionTruncated(item.Workbook.descrip, item.showFullDescription)"
+											(click)="moduleReadMore(item)">
+											{{ 'Utils.readmore' | translate }}
+										</a>
+
+										<a
+											*ngIf="item.Workbook && item.Workbook.descrip && item.showFullDescription"
+											(click)="moduleReadMore(item)">
+											{{ 'Utils.readless' | translate }}
+										</a>
+
+										<div
+											class="module-outcomes-section"
+											[ngClass]="{ 'module-outcomes-section-no-descrip': item.Workbook &&!item.Workbook.descrip}"
+											*ngIf="item && item.Workbook && item.Workbook.outcomesArray &&  item.Workbook.outcomesArray.length > 0 ">
+											<div *ngFor="let outcome of item.Workbook.outcomesArray" class="module_l_outcomes-btn">
+												{{ outcome }}
+											</div>
+										</div>
+
+										<div
+											class="module_eduration"
+											[ngClass]="isRtl ? 'module_eduration-rtl' : 'module_eduration-ltr'"
+											*ngIf="item && item.Workbook.e_duration">
+											<div [innerHTML]="iconObject['eduration_image']" class="eduration_image"></div>
+											<span> {{item.Workbook.e_duration + ' ' + 'Minutes'}} {{'Utils.etocomplete' | translate}} </span>
+										</div>
+
+										<div
+											*ngIf="item && item.worksheetTypes && item.worksheetTypes.length > 0"
+											class="module-worksheets-section"
+											[ngClass]="isRtl ? 'module-worksheets-section-rtl' : 'module-worksheets-section-ltr'">
+											<div [innerHTML]="iconObject['workbook_image']" class="workbook_image"></div>
+											<span>
+												<ng-container *ngIf="item.worksheetTypesCountSum as sum">
+													{{ sum }} {{ (item.Workbook?.DiwoModule?.id != 1) ? ('Utils.lesson' | translate) + (sum > 1 ?
+													's' : '') : ('Utils.worksheet' | translate) + (sum > 1 ? 's' : '') }}
+												</ng-container>
+											</span>
+										</div>
+
+										<div>
+											<div class="start-viewmodule-section">
+												<ion-button
+													*ngIf="item.SessionUsers[0]&&item.SessionUsers[0].ModuleStatus =='Not Started'"
+													(click)="workbookReadMore(item)"
+													class="starthemodule"
+													[disabled]="item && item.SessionUsers&&item.SessionUsers[0] &&item.SessionUsers[0].Session&&item.SessionUsers[0].Session.status !='Live' || !item.SessionUsers[0]?.Session">
+													{{'Utils.starthemodule' | translate}}
+												</ion-button>
+
+												<div
+													*ngIf="item.SessionUsers[0].Session && item.Workbook?.DiwoModule?.id != 1 && item.SessionUsers[0]?.Session?.status !== 'Live' &&  item.SessionUsers[0]?.Session?.status !== 'Closed' && item.SessionUsers[0]?.ModuleStatus =='Not Started'"
+													class="startmoduleinfotext">
+													<span class="info-icon" [innerHTML]="iconObject['info_icon_20']"> </span>
+													<p>{{'Utils.ThisModuleWillBeAvailablesoon' | translate}}</p>
+												</div>
+
+												<div
+													*ngIf="item.SessionUsers[0].Session && item.Workbook?.DiwoModule?.id != 1 && item.SessionUsers[0]?.Session?.status == 'Closed'  && item.SessionUsers[0]?.ModuleStatus =='Not Started'"
+													class="startmoduleinfotext">
+													<span class="info-icon" [innerHTML]="iconObject['info_icon_20']"> </span>
+													<p>{{'Utils.ThisModuleWillBeNotAvailable' | translate}}</p>
+												</div>
+
+												<div
+													*ngIf="item.SessionUsers[0] && item.Workbook?.DiwoModule?.id == 1 &&
+													(!item.SessionUsers[0]?.Session || item.SessionUsers[0]?.Session?.status == 'Planned')
+													&& item.SessionUsers[0]?.ModuleStatus =='Not Started'"
+													class="startmoduleinfotext">
+													<span class="info-icon" [innerHTML]="iconObject['info_icon_20']"> </span>
+													<p>{{'Utils.ThisModuleWillBeAvailablesoon' | translate}}</p>
+												</div>
+
+												<div
+													*ngIf="item.SessionUsers[0] && item.Workbook?.DiwoModule?.id == 1 &&
+													(item.SessionUsers[0]?.Session?.status == 'Closed')
+													&& item.SessionUsers[0]?.ModuleStatus =='Not Started'"
+													class="startmoduleinfotext">
+													<span class="info-icon" [innerHTML]="iconObject['info_icon_20']"> </span>
+													<p>{{'Utils.ThisModuleWillBeNotAvailable' | translate}}</p>
+												</div>
+											</div>
+
+											<ion-button
+												*ngIf="item.SessionUsers[0]&&item.SessionUsers[0].ModuleStatus =='In Progress'"
+												(click)="workbookReadMore(item)"
+												class="starthemodule"
+												[disabled]="item && item.SessionUsers&&item.SessionUsers[0] &&item.SessionUsers[0].Session&&item.SessionUsers[0].Session.status !='Live'">
+												{{'Utils.resumemodule' | translate}}
+											</ion-button>
+											<ion-button
+												*ngIf="item.SessionUsers[0]&&item.SessionUsers[0].ModuleStatus =='Completed' || item.SessionUsers[0]&&item.SessionUsers[0].ModuleStatus =='Certified'"
+												(click)="workbookReadMore(item)"
+												class="starthemodule">
+												{{'Utils.viewmodule' | translate}}
+											</ion-button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</ion-accordion>
+					</ion-accordion-group>
+				</div>
+			</ion-col>
+		</ion-row>
+
+		<div class="back-to-top-btn" *ngIf="backToTop" (click)="gotToTop()">
+			<ion-icon id="top-icon" name="chevron-up-outline"></ion-icon>
+		</div>
+	</ion-grid>
+	<ion-refresher
+		ion-refresh-native
+		slot="fixed"
+		disabled="false"
+		(ionRefresh)="doRefresh($event)"
+		pullFactor="0.1"
+		pullMin="50"
+		pullMax="200">
+		<ion-refresher-content></ion-refresher-content>
+	</ion-refresher>
+</ion-content>

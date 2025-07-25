@@ -1,0 +1,156 @@
+.section-wrapper {
+	border: 2px solid rgba(0, 0, 0, 0.07) !important;
+	border-radius: 12px;
+	box-shadow: 0 1px 1px 0 rgb(0 0 0 / 20%);
+}
+
+.card {
+	box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.2);
+	transition: 0.3s;
+	border-radius: 5px;
+}
+
+.card:hover {
+	box-shadow: 0 12px 24px 0 rgba(0, 0, 0, 0.2);
+}
+
+.container {
+	padding: 4px;
+}
+
+.form-group {
+	margin-bottom: 8px;
+	margin-top: 12px;
+}
+
+hr {
+	background-image: none;
+	border: 0 none;
+	height: 0.5px;
+	margin: 20px 0;
+	background-color: #c8c7cc;
+}
+
+.ng-select .ng-select-container {
+	align-items: center;
+	padding: 6px 7px 6px 4px;
+	border: 2px solid rgba(0, 0, 0, 0.07) !important;
+	border-radius: 8px;
+}
+
+.arrow {
+	height: 100vh;
+	display: flex;
+	align-items: center;
+	cursor: pointer;
+}
+
+.step-heading {
+	text-align: center;
+	margin-top: 5%;
+	margin-bottom: 5%;
+}
+
+.step-heading span {
+	font-size: 1.7rem;
+	font-weight: 450;
+	color: #000;
+}
+
+.step-form {
+	min-height: 60vh;
+	display: grid;
+	align-items: center;
+}
+
+.participant-status-approved {
+	padding: 6px 40px;
+	background: #e0f8ef;
+	border-radius: 16px;
+	color: #18a16f;
+	font-size: 0.7rem;
+	cursor: pointer;
+}
+
+.participant-status-not-approve {
+	padding: 6px 23px;
+	background: #fff1da;
+	border-radius: 16px;
+	color: #ffa70b;
+	font-size: 0.7rem;
+	cursor: pointer;
+}
+
+.session-step-count {
+	margin-bottom: 0px;
+	color: #6513e1;
+	margin-bottom: -1.5%;
+	color: #6513e1;
+	font-size: 1rem;
+	margin-top: 4%;
+}
+
+.active-step-status {
+	height: 4px;
+	background-color: #6513e1;
+	margin-left: -23px;
+}
+
+.inactive-step-status {
+	height: 3px;
+	margin-left: -23px;
+}
+
+::-webkit-scrollbar {
+	width: 5px;
+}
+
+/* Track */
+
+::-webkit-scrollbar-track {
+	background: #ffffff;
+}
+
+/* Handle */
+
+::-webkit-scrollbar-thumb {
+	background: #888;
+}
+
+/* Handle on hover */
+
+::-webkit-scrollbar-thumb:hover {
+	background: #555;
+}
+
+.mar-bot {
+	margin-bottom: 10px;
+}
+
+.skip {
+	text-align: center;
+	color: var(--check-box-color);
+	font-size: 1.5rem;
+	margin-top: 2%;
+	cursor: pointer;
+}
+
+.conduct-seesion-btn {
+	font-size: 1.5rem;
+	font-weight: 500;
+	padding-left: 0.8rem;
+	padding-right: 0.8rem;
+	width: 70%;
+	padding-top: 1%;
+	padding-bottom: 1%;
+}
+
+.error div {
+	font-size: 1.2rem;
+	color: #d34053;
+	float: left;
+}
+
+::ng-deep.date .md-drppicker.drops-down-auto.ltr.shown {
+	top: -205px !important;
+}

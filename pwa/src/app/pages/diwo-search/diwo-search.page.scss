@@ -1,0 +1,123 @@
+ion-item-option {
+	background: none;
+}
+
+ion-button {
+	--border-radius: 50%;
+	margin-left: 0;
+	margin-right: 0;
+	margin-top: 0;
+	margin-bottom: 0;
+	width: 48px;
+	height: 48px;
+}
+
+.item-options-ios {
+	border-bottom-style: none;
+}
+
+.ios > ion-button {
+	width: auto !important;
+	height: auto !important;
+	--padding-start: 0;
+	--padding-end: 0;
+}
+
+ion-col.main-col {
+	padding-left: 1px !important;
+	padding-right: 1px !important;
+	padding-top: 1px !important;
+	padding-bottom: 1px !important;
+}
+
+ion-searchbar {
+	--background: #f9f9f9;
+	--box-shadow: none;
+	--cancel-button-color: var(--ion-color-primary);
+	--clear-button-color: var(--ion-color-primary);
+}
+
+ion-toolbar.toolbar-head {
+	height: 65px;
+}
+
+.card-content-md {
+	line-height: 0.5 !important;
+}
+
+.search-txt {
+	// padding: 0 5px;
+	font-size: 20px;
+	font-weight: 500;
+	letter-spacing: 0.0125em;
+	color: #424242;
+}
+
+.header-md::after {
+	bottom: 39px !important;
+}
+
+ion-item.dropdown-select {
+	padding-top: 5px;
+	--border-width: 0px !important;
+	--border-color: #ffffff;
+	border-style: hidden;
+}
+
+.item-interactive.item-has-focus {
+	--highlight-background: #3880ff00 !important;
+}
+
+::ng-deep[aria-checked='true'].sc-ion-alert-md .alert-checkbox-icon.sc-ion-alert-md {
+	border-color: var(--branding-color) !important;
+	background-color: var(--branding-color) !important;
+}
+
+::ng-deep.alert-button.sc-ion-alert-md {
+	color: var(--branding-color) !important;
+	text-transform: capitalize;
+}
+
+ion-select::part(icon) {
+	color: var(--branding-color) !important;
+}
+
+//WEB Optimization
+.ion-main-row-desktop {
+	width: 93%;
+	margin: 0 auto;
+	display: flex;
+	flex-direction: row !important;
+}
+
+.ion--header-search-main-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.ion--header-search-main-row-dektop {
+	margin: 0 auto;
+	width: 92.8%;
+}
+
+.ion-input-searchbar-mobile {
+	--background: #f9f9f9;
+}
+
+.ion-input-searchbar-desktop {
+	--background: var(--ion-dynamic-background-color) !important;
+	margin-left: -25px !important;
+}
+
+#header-desktop-searchbar {
+	margin-left: -10px;
+}
+
+::ng-deep#header-desktop-searchbar.header-md::after {
+	bottom: 0px !important;
+}
+
+.ion-toolbar-desktop {
+	--background: var(--ion-dynamic-background-color) !important;
+}

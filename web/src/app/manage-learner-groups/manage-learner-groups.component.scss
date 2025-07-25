@@ -1,0 +1,37 @@
+tr {
+	height: 80px;
+}
+
+.pageDiv {
+	padding-left: 1.9%;
+	padding-right: 0.9%;
+}
+
+::ng-deep.learnerGroup .md-drppicker.drops-down-auto.ltr.double.show-ranges.shown {
+	left: -19.5rem !important;
+	width: 37.5rem !important;
+}
+
+::ng-deep.md-drppicker .btn {
+	border-radius: 8px;
+	margin-left: 8px;
+	padding: 0 12px;
+	background-color: var(--check-box-color);
+}
+::ng-deep.md-drppicker .btn.btn-default {
+	background-color: lightgray;
+}
+
+::ng-deep button.btn.btn-default.clear {
+	background-color: lightgray !important;
+}
+
+::ng-deep.md-drppicker .clear svg {
+	display: none;
+}
+
+.edit-disabled {
+	color: white !important;
+	background-color: #8890a4 !important;
+	border: 0.5px solid #8890a4 !important;
+}

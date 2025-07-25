@@ -1,0 +1,4903 @@
+<div class="container-fluid" style="margin: 2% 2% 2% 3%">
+	<div class="row add-edit-main-row">
+		<span>
+			<span
+				[routerLink]="['/drip-flows']"
+				style="margin-left: 0.25rem; color: #637373; margin-right: 2px; cursor: pointer">
+				{{ 'Pages.DripFlow.AddEdit.pagetitle' | translate }}</span
+			>
+			<img src="assets/images/arrow_forward.svg" style="width: 27px" />
+			<span style="margin-left: 3px" [ngStyle]="{ color: appService.whiteBrandingColor }">{{
+				'Pages.DripFlow.AddEdit.subtitle' | translate
+			}}</span>
+		</span>
+	</div>
+	<div class="row section-wrapper" style="margin-top: 2rem" *ngIf="ownerClient.name && ownerClient.fullName">
+		<!-- <div class="form-title"><span>{{'Pages.Assets.AddEdit.GetStarted.title' | translate }}</span></div> -->
+		<div class="card-body">
+			<div class="row" style="font-size: 1.3rem; text-align: center; color: black">
+				{{ 'Pages.DripFlow.AddEdit.creatingDripFlowForAccount' | translate }} - {{ ownerClient.name }}
+				{{ 'Utils.User' | translate }} - {{ ownerClient.fullName }}
+			</div>
+		</div>
+	</div>
+	<form [formGroup]="dripFlowDetailsForm">
+		<div class="row section-wrapper" style="margin-top: 2rem">
+			<div class="form-title">
+				<span>{{ 'Pages.DripFlow.AddEdit.GetStarted.title' | translate }}</span>
+			</div>
+			<div class="row card-body">
+				<div class="row" style="margin-top: -5px">
+					<!-- Flow Type -->
+					<div class="col-md-12">
+						<div class="row">
+							<div class="col-md-6">
+								<div
+									class="form-group"
+									style="margin-bottom: 1rem"
+									[ngClass]="{
+										'has-error': f.flowType.invalid && (f.flowType.dirty || f.flowType.touched),
+										'has-success': f.flowType.valid && (f.flowType.dirty || f.flowType.touched)
+									}">
+									<label>{{ 'Pages.DripFlow.AddEdit.GetStarted.FlowType.title' | translate }}</label>
+
+									<ng-select
+										*ngIf="!disableField"
+										[items]="flowType"
+										class="ng-select-wrap"
+										placeholder="{{ 'Pages.DripFlow.AddEdit.GetStarted.FlowType.placeholder' | translate }}"
+										bindLabel="name"
+										bindValue="value"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="flowType"
+										(change)="selectFlowType()">
+									</ng-select>
+
+									<input
+										type="text"
+										class="form-control"
+										*ngIf="disableField"
+										value="{{ f.flowType.value }}"
+										disabled="true" />
+
+									<div *ngIf="f.flowType.errors && f.flowType.touched" class="error invalid-feedback">
+										<div *ngIf="f.flowType.errors.required">
+											{{ 'Pages.DripFlow.AddEdit.GetStarted.FlowType.error' | translate }}
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-6">
+						<div
+							class="form-group"
+							style="margin-top: 0px"
+							[ngClass]="{
+								'has-error': f.title.invalid && (f.title.dirty || f.title.touched),
+								'has-success': f.title.valid && (f.title.dirty || f.title.touched)
+							}">
+							<label>{{ 'Pages.DripFlow.AddEdit.GetStarted.DripFlowTitle.title' | translate }}</label>
+							<input
+								*ngIf="!disableField"
+								type="text"
+								class="form-control"
+								placeholder="{{ 'Pages.DripFlow.AddEdit.GetStarted.DripFlowTitle.placeholder' | translate }}"
+								formControlName="title" />
+							<input
+								*ngIf="disableField"
+								type="text"
+								class="form-control"
+								value="{{ f.title.value }}"
+								disabled="true" />
+							<div class="error" *ngIf="f.title.errors && f.title.touched">
+								<div *ngIf="f.title.errors.required">
+									{{ 'Pages.DripFlow.AddEdit.GetStarted.DripFlowTitle.error' | translate }}
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-6">
+						<div
+							class="form-group"
+							style="margin-top: 0px"
+							[ngClass]="{
+								'has-error': f.learnerGroup.invalid && (f.learnerGroup.dirty || f.learnerGroup.touched),
+								'has-success': f.learnerGroup.valid && (f.learnerGroup.dirty || f.learnerGroup.touched)
+							}">
+							<label for="learnerGroup">
+								{{ 'Pages.DripFlow.AddEdit.GetStarted.LearnerGroup.title' | translate }}</label
+							>
+							<ng-select
+								[items]="learnerGroupList"
+								class="ng-select-wrap"
+								placeholder="{{ 'Pages.DripFlow.AddEdit.GetStarted.LearnerGroup.placeholder' | translate }}"
+								bindLabel="title"
+								bindValue="id"
+								[multiple]="true"
+								[closeOnSelect]="false"
+								[searchable]="true"
+								formControlName="learnerGroup"
+								(change)="selectLearnerGroup($event)">
+							</ng-select>
+							<div *ngIf="f.learnerGroup.errors && f.learnerGroup.touched" class="error invalid-feedback">
+								<div *ngIf="f.learnerGroup.errors.required">
+									{{ 'Pages.DripFlow.AddEdit.GetStarted.LearnerGroup.error' | translate }}
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-12">
+						<div class="form-group">
+							<label>{{ 'Pages.DripFlow.AddEdit.GetStarted.DripFlowDescription.title' | translate }}</label>
+							<textarea
+								class="form-control"
+								placeholder="{{ 'Pages.DripFlow.AddEdit.GetStarted.DripFlowDescription.placeholder' | translate }}"
+								formControlName="description"></textarea>
+						</div>
+					</div>
+
+					<!-- Start Rule -->
+					<div class="col-md-6" *ngIf="f.flowType.value">
+						<div
+							class="form-group"
+							[ngClass]="{
+								'has-error': f.startRule.invalid && (f.startRule.dirty || f.startRule.touched),
+								'has-success': f.startRule.valid && (f.startRule.dirty || f.startRule.touched)
+							}">
+							<label for="startRule">{{
+								'Pages.DripFlow.AddEdit.GetStarted.DripFlowStartRule.title' | translate
+							}}</label>
+
+							<!-- ----for Campaign---- -->
+							<ng-select
+								*ngIf="!disableField && !isChannelFlow && f.flowType.value === 'Campaign'"
+								[items]="startRules"
+								class="ng-select-wrap"
+								placeholder="{{ 'Pages.DripFlow.AddEdit.GetStarted.DripFlowStartRule.placeholder' | translate }}"
+								bindLabel="label"
+								bindValue="name"
+								[multiple]="false"
+								[closeOnSelect]="true"
+								[searchable]="false"
+								formControlName="startRule">
+							</ng-select>
+
+							<!-- ----for Conversational---- -->
+							<ng-select
+								*ngIf="!disableField && !isChannelFlow && f.flowType.value === 'Conversational'"
+								[items]="startRulesForConversational"
+								class="ng-select-wrap"
+								placeholder="{{ 'Pages.DripFlow.AddEdit.GetStarted.DripFlowStartRule.placeholder' | translate }}"
+								bindLabel="label"
+								bindValue="name"
+								[multiple]="false"
+								[closeOnSelect]="true"
+								[searchable]="false"
+								formControlName="startRule">
+							</ng-select>
+
+							<!-- ----for Campaign---- -->
+							<ng-select
+								*ngIf="!disableField && isChannelFlow && f.flowType.value === 'Campaign'"
+								[items]="startRulesForChannel"
+								class="ng-select-wrap"
+								placeholder="{{ 'Pages.DripFlow.AddEdit.GetStarted.DripFlowStartRule.placeholder' | translate }}"
+								bindLabel="label"
+								bindValue="name"
+								[multiple]="false"
+								[closeOnSelect]="true"
+								[searchable]="false"
+								formControlName="startRule">
+							</ng-select>
+							<input
+								type="text"
+								class="form-control"
+								*ngIf="disableField"
+								value="{{ f.startRule.value }}"
+								disabled="true" />
+
+							<div *ngIf="f.startRule.errors && f.startRule.touched" class="error invalid-feedback">
+								<div *ngIf="f.startRule.errors.required">
+									{{ 'Pages.DripFlow.AddEdit.GetStarted.DripFlowStartRule.error' | translate }}
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-12" id="dripSelctionForm">
+						<div class="row">
+							<!-- <div class="col-md-4">
+                                <div class="form-group"
+                                    [ngClass]="{ 'has-error': f.startRule.invalid && (f.startRule.dirty || f.startRule.touched) ,'has-success': f.startRule.valid && ( f.startRule.dirty || f.startRule.touched)}">
+                                    <label for="startRule">{{'Pages.DripFlow.AddEdit.GetStarted.DripFlowStartRule.title'
+                                        |
+                                        translate }}</label>
+                                    <ng-select [items]="startRules" style="font-size: 1rem;"
+                                        placeholder="{{'Pages.DripFlow.AddEdit.GetStarted.DripFlowStartRule.placeholder' | translate }}"
+                                        bindLabel="name" bindValue="name" [multiple]="false" [closeOnSelect]="true"
+                                        [searchable]="false" formControlName="startRule">
+                                    </ng-select>
+                                    <div *ngIf=" f.startRule.errors && f.startRule.touched"
+                                        class="error invalid-feedback">
+                                        <div *ngIf="f.startRule.errors.required">
+                                            {{'Pages.DripFlow.AddEdit.GetStarted.DripFlowStartRule.error' | translate
+                                            }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> -->
+
+							<!-- Start on date -->
+
+							<div class="col-md-12" *ngIf="f.startRule.value == 'Start on date'">
+								<div class="row">
+									<div
+										class="col-md-3 form-group"
+										[ngClass]="{
+											'has-error': f.startDate.invalid && (f.startDate.dirty || f.startDate.touched),
+											'has-success': f.startDate.valid && (f.startDate.dirty || f.startDate.touched)
+										}">
+										<label class="date-div">{{
+											'Pages.DripFlow.AddEdit.GetStarted.StartDate.title' | translate
+										}}</label>
+										<input
+											*ngIf="!disableField"
+											type="text"
+											ngxDaterangepickerMd
+											[showDropdowns]="true"
+											onkeydown="return false"
+											name="sDate"
+											id="sDate"
+											[showClearButton]="false"
+											[(ngModel)]="selectedStartOnDate"
+											[showCancel]="true"
+											[singleDatePicker]="true"
+											[autoApply]="true"
+											[locale]="{ applyLabel: 'ok', format: 'DD-MM-YYYY' }"
+											placeholder="{{ 'Pages.DripFlow.AddEdit.GetStarted.StartDate.placeholder' | translate }}"
+											formControlName="startDate"
+											autocomplete="off"
+											(change)="checkValidationOnDate()"
+											class="form-control" />
+										<input
+											type="text"
+											class="form-control"
+											*ngIf="disableField"
+											value="{{ startDate }}"
+											disabled="true" />
+										<div class="error" *ngIf="f.startDate.errors && f.startDate.touched">
+											<div *ngIf="f.startDate.errors.required">
+												{{ 'Pages.DripFlow.AddEdit.GetStarted.StartDate.error' | translate }}
+											</div>
+										</div>
+									</div>
+									<div
+										class="form-group col-md-3"
+										[ngClass]="{
+											'has-error': f.startTimeId.invalid && (f.startTimeId.dirty || f.startTimeId.touched),
+											'has-success': f.startTimeId.valid && (f.startTimeId.dirty || f.startTimeId.touched)
+										}">
+										<label class="date-div" style="visibility: hidden">{{
+											'Pages.DripFlow.AddEdit.GetStarted.StartTime.title' | translate
+										}}</label>
+										<ng-select
+											*ngIf="!disableField"
+											[items]="timePicker"
+											class="ng-select-wrap"
+											placeholder="{{ 'Pages.DripFlow.AddEdit.GetStarted.StartTime.placeholder' | translate }}"
+											bindLabel="time"
+											bindValue="id"
+											[multiple]="false"
+											[closeOnSelect]="true"
+											[searchable]="true"
+											formControlName="startTimeId"
+											(change)="checkValidationOnDate()">
+										</ng-select>
+										<input
+											type="text"
+											class="form-control"
+											*ngIf="disableField"
+											value="{{ timePicker[f.startTimeId.value].time }}"
+											disabled="true" />
+										<div class="error" *ngIf="f.startTimeId.errors && f.startTimeId.touched">
+											<div *ngIf="f.startTimeId.errors.required">
+												{{ 'Pages.DripFlow.AddEdit.GetStarted.StartTime.error' | translate }}
+											</div>
+										</div>
+									</div>
+									<!-- <div
+										class="form-group col-md-3"
+										[ngClass]="{
+											'has-error': f.startAfter.invalid && (f.startAfter.dirty || f.startAfter.touched),
+											'has-success': f.startAfter.valid && (f.startAfter.dirty || f.startAfter.touched)
+										}">
+										<label class="date-div">{{
+											'Pages.DripFlow.AddEdit.GetStarted.StartAfter.title' | translate
+										}}</label>
+										<input type="number" class="form-control" formControlName="startAfter" />
+										<div class="error" *ngIf="f.startAfter.errors && f.startAfter.touched">
+											<div *ngIf="f.startAfter.errors.required">
+												{{ 'Pages.DripFlow.AddEdit.GetStarted.StartAfter.error' | translate }}
+											</div>
+										</div>
+									</div> -->
+									<div class="form-group col-md-3"></div>
+								</div>
+							</div>
+
+							<!-- Start when learner is added to group -->
+							<div class="col-md-12" *ngIf="f.startRule.value == 'Start when learner is added to group'">
+								<!-- <div class="row">
+									<div
+										class="form-group col-md-6"
+										[ngClass]="{
+											'has-error':
+												f.learnerGroupForRule.invalid && (f.learnerGroupForRule.dirty || f.learnerGroupForRule.touched),
+											'has-success':
+												f.learnerGroupForRule.valid && (f.learnerGroupForRule.dirty || f.learnerGroupForRule.touched)
+										}">
+										<label class="date-div">{{
+											'Pages.DripFlow.AddEdit.GetStarted.LearnerGroup.title' | translate
+										}}</label>
+										<ng-select
+											[items]="selected_learner_group"
+											class="ng-select-wrap"
+											placeholder="{{ 'Pages.DripFlow.AddEdit.GetStarted.LearnerGroup.placeholder' | translate }}"
+											bindLabel="title"
+											bindValue="id"
+											[multiple]="true"
+											[closeOnSelect]="false"
+											[searchable]="true"
+											formControlName="learnerGroupForRule">
+										</ng-select>
+										<div class="error" *ngIf="f.learnerGroupForRule.errors && f.learnerGroupForRule.touched">
+											<div *ngIf="f.learnerGroupForRule.errors.required">
+												{{ 'Pages.DripFlow.AddEdit.GetStarted.LearnerGroup.error' | translate }}
+											</div>
+										</div>
+									</div>
+
+									<div
+										class="form-group col-md-3"
+										[ngClass]="{
+											'has-error': f.startAfter.invalid && (f.startAfter.dirty || f.startAfter.touched),
+											'has-success': f.startAfter.valid && (f.startAfter.dirty || f.startAfter.touched)
+										}">
+										<label class="date-div">{{
+											'Pages.DripFlow.AddEdit.GetStarted.StartAfter.title' | translate
+										}}</label>
+										<input type="number" class="form-control" formControlName="startAfter" />
+										<div class="error" *ngIf="f.startAfter.errors && f.startAfter.touched">
+											<div *ngIf="f.startAfter.errors.required">
+												{{ 'Pages.DripFlow.AddEdit.GetStarted.StartAfter.error' | translate }}
+											</div>
+										</div>
+									</div>
+								</div> -->
+							</div>
+
+							<!-- Start when tag is added to learner -->
+
+							<div class="col-md-12" *ngIf="f.startRule.value == 'Start when tag is added to learner'">
+								<div class="row">
+									<div
+										class="form-group col-md-6"
+										[ngClass]="{
+											'has-error': f.tags.invalid && (f.tags.dirty || f.tags.touched),
+											'has-success': f.tags.valid && (f.tags.dirty || f.tags.touched)
+										}">
+										<label class="date-div">{{ 'Pages.DripFlow.AddEdit.GetStarted.AddTags.title' | translate }}</label>
+										<input
+											type="text"
+											class="form-control"
+											placeholder="{{ 'Pages.DripFlow.AddEdit.GetStarted.AddTags.placeholder' | translate }}"
+											formControlName="tags"
+											(blur)="checkReserveTags(1)" />
+										<div class="error" *ngIf="f.tags.errors && f.tags.touched">
+											<div *ngIf="f.tags.errors.required">
+												{{ 'Pages.DripFlow.AddEdit.GetStarted.AddTags.error' | translate }}
+											</div>
+										</div>
+									</div>
+
+									<div
+										class="form-group col-md-3"
+										[ngClass]="{
+											'has-error': f.operator.invalid && (f.operator.dirty || f.operator.touched),
+											'has-success': f.operator.valid && (f.operator.dirty || f.operator.touched)
+										}">
+										<label class="date-div">{{ 'Pages.DripFlow.AddEdit.GetStarted.Operator.title' | translate }}</label>
+										<ng-select
+											[items]="operators"
+											class="ng-select-wrap"
+											placeholder="{{ 'Pages.DripFlow.AddEdit.GetStarted.Operator.placeholder' | translate }}"
+											bindLabel="name"
+											formControlName="operator"
+											bindValue="name"
+											[multiple]="false"
+											[closeOnSelect]="true"
+											[searchable]="false">
+										</ng-select>
+										<div class="error" *ngIf="f.operator.errors && f.operator.touched">
+											<div *ngIf="f.operator.errors.required">
+												{{ 'Pages.DripFlow.AddEdit.GetStarted.Operator.error' | translate }}
+											</div>
+										</div>
+									</div>
+
+									<!-- <div
+										class="form-group col-md-3"
+										[ngClass]="{
+											'has-error': f.startAfter.invalid && (f.startAfter.dirty || f.startAfter.touched),
+											'has-success': f.startAfter.valid && (f.startAfter.dirty || f.startAfter.touched)
+										}">
+										<label class="date-div">{{
+											'Pages.DripFlow.AddEdit.GetStarted.StartAfter.title' | translate
+										}}</label>
+										<input type="number" class="form-control" formControlName="startAfter" />
+										<div class="error" *ngIf="f.startAfter.errors && f.startAfter.touched">
+											<div *ngIf="f.startAfter.errors.required">
+												{{ 'Pages.DripFlow.AddEdit.GetStarted.StartAfter.error' | translate }}
+											</div>
+										</div>
+									</div> -->
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-12" *ngIf="f.startRule.value != null">
+						<div class="row">
+							<div
+								class="col-md-3 form-group"
+								[ngClass]="{
+									'has-error': f.endDate.invalid && (f.endDate.dirty || f.endDate.touched),
+									'has-success': f.endDate.valid && (f.endDate.dirty || f.endDate.touched)
+								}">
+								<label class="date-div">{{ 'Pages.DripFlow.AddEdit.GetStarted.EndDate.title' | translate }}</label>
+								<input
+									type="text"
+									ngxDaterangepickerMd
+									[showDropdowns]="true"
+									onkeydown="return false"
+									name="eDate"
+									id="eDate"
+									[showClearButton]="false"
+									[(ngModel)]="selectedendOnDate"
+									[showCancel]="true"
+									[singleDatePicker]="true"
+									[autoApply]="true"
+									[locale]="{ applyLabel: 'ok', format: 'DD-MM-YYYY' }"
+									placeholder="{{ 'Pages.DripFlow.AddEdit.GetStarted.EndDate.placeholder' | translate }}"
+									formControlName="endDate"
+									autocomplete="off"
+									(change)="checkValidationOnDate()"
+									class="form-control" />
+								<div class="error" *ngIf="f.endDate.errors && f.endDate.touched">
+									<div *ngIf="f.endDate.errors.required">
+										{{ 'Pages.DripFlow.AddEdit.GetStarted.EndDate.error' | translate }}
+									</div>
+								</div>
+							</div>
+							<div
+								class="form-group col-md-3"
+								[ngClass]="{
+									'has-error': f.endTimeId.invalid && (f.endTimeId.dirty || f.endTimeId.touched),
+									'has-success': f.endTimeId.valid && (f.endTimeId.dirty || f.endTimeId.touched)
+								}">
+								<label class="date-div" style="visibility: hidden">
+									{{ 'Pages.DripFlow.AddEdit.GetStarted.EndTime.title' | translate }}</label
+								>
+								<ng-select
+									[items]="timePicker"
+									class="ng-select-wrap"
+									placeholder="{{ 'Pages.DripFlow.AddEdit.GetStarted.EndTime.placeholder' | translate }}"
+									bindLabel="time"
+									bindValue="id"
+									[multiple]="false"
+									[closeOnSelect]="true"
+									[searchable]="true"
+									formControlName="endTimeId"
+									(change)="checkValidationOnDate()">
+								</ng-select>
+								<div class="error" *ngIf="f.endTimeId.errors && f.endTimeId.touched">
+									<div *ngIf="f.endTimeId.errors.required">
+										{{ 'Pages.DripFlow.AddEdit.GetStarted.EndTime.error' | translate }}
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+
+	<form [formGroup]="dripFlowDripForm" style="margin-top: 2rem" *ngIf="pageLoad">
+		<div class="row section-wrapper">
+			<div class="form-title">
+				<span>{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.title' | translate }}</span>
+			</div>
+			<div class="row card-body">
+				<div class="row" style="margin-top: -7px">
+					<div class="col-md-12">
+						<div class="row" style="margin-top: -7px">
+							<div class="col-md-4">
+								<div
+									class="form-group"
+									style="margin-top: 0px"
+									[ngClass]="{
+										'has-error': f2.dripFlowType.invalid && (f2.dripFlowType.dirty || f2.dripFlowType.touched),
+										'has-success': f2.dripFlowType.valid && (f2.dripFlowType.dirty || f2.dripFlowType.touched)
+									}">
+									<label style="margin-top: 0.5rem"
+										>{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.selectTYpeOfDrip' | translate }}
+									</label>
+									<div
+										style="display: flex; align-content: flex-start; justify-content: space-between; margin-top: 11px">
+										<div class="custom-radio">
+											<input
+												type="radio"
+												value="Send a Drip"
+												name="dripFlowType"
+												formControlName="dripFlowType"
+												(change)="onChangeNodeType()" />
+											<label style="font-size: 0.9rem; margin-left: 8px; color: black" for="Send a Drip" checked>{{
+												'Pages.DripFlow.AddEdit.BuildYourDripFlow.sendadrip' | translate
+											}}</label>
+										</div>
+										<div *ngIf="!isChannelFlow" class="custom-radio">
+											<input
+												type="radio"
+												value="Take Action"
+												name="dripFlowType"
+												formControlName="dripFlowType"
+												(change)="onChangeNodeType()" />
+											<label style="font-size: 0.9rem; margin-left: 8px; color: black" for="Take Action">{{
+												'Pages.DripFlow.AddEdit.BuildYourDripFlow.takeaction' | translate
+											}}</label>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- -------------------------------------------- Send a Drip---------------------------------------------------------------- -->
+				<div *ngIf="f2.dripFlowType.value == 'Send a Drip'">
+					<!-- <div class="row">
+                        <div class="form-group col-md-12" style="margin-top: -5px;"
+                            [ngClass]="{'has-error': f2.dripName.invalid && (f2.dripName.dirty || f2.dripName.touched) ,'has-success': f2.dripName.valid && ( f2.dripName.dirty || f2.dripName.touched)}">
+                            <label>{{'Pages.DripFlow.AddEdit.BuildYourDripFlow.Drip.title'| translate }}
+                                </label>
+                            <input type="text" class="form-control"
+                                placeholder="{{'Pages.DripFlow.AddEdit.BuildYourDripFlow.Drip.placeholder'| translate }}"
+                                formControlName="dripName">
+                            <div class="error" *ngIf="f2.dripName.errors && f2.dripName.touched">
+                                <div *ngIf="f2.dripName.errors.required">
+                                    {{'Pages.DripFlow.AddEdit.BuildYourDripFlow.Drip.error'| translate }}
+                                </div>
+                            </div>
+                        </div>
+                    </div> -->
+
+					<div class="row">
+						<div
+							class="form-group col-md-6"
+							[ngClass]="{
+								'has-error': f2.dripType.invalid && (f2.dripType.dirty || f2.dripType.touched),
+								'has-success': f2.dripType.valid && (f2.dripType.dirty || f2.dripType.touched)
+							}">
+							<label>{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.ChooseDrip.title1' | translate }} </label>
+							<ng-select
+								*ngIf="!isChannelFlow && haveTeamSetup"
+								[items]="dripTypeList"
+								class="ng-select-wrap"
+								placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.ChooseDrip.placeholder' | translate }}"
+								bindLabel="label"
+								bindValue="name"
+								[multiple]="false"
+								[closeOnSelect]="true"
+								[searchable]="false"
+								formControlName="dripType"
+								(change)="getPostListByPostType($event)">
+							</ng-select>
+							<ng-select
+								*ngIf="!isChannelFlow && !haveTeamSetup"
+								[items]="dripTypeListWithoutTeam"
+								class="ng-select-wrap"
+								placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.ChooseDrip.placeholder' | translate }}"
+								bindLabel="label"
+								bindValue="name"
+								[multiple]="false"
+								[closeOnSelect]="true"
+								[searchable]="false"
+								formControlName="dripType"
+								(change)="getPostListByPostType($event)">
+							</ng-select>
+
+							<ng-select
+								*ngIf="isChannelFlow"
+								[items]="dripTypeListForChannel"
+								class="ng-select-wrap"
+								placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.ChooseDrip.placeholder' | translate }}"
+								bindLabel="label"
+								bindValue="name"
+								[multiple]="false"
+								[closeOnSelect]="true"
+								[searchable]="false"
+								formControlName="dripType"
+								(change)="getPostListByPostType($event)">
+							</ng-select>
+							<div class="error" *ngIf="f2.dripType.errors && f2.dripType.touched">
+								<div *ngIf="f2.dripType.errors.required">
+									{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.ChooseDrip.error' | translate }}
+								</div>
+							</div>
+						</div>
+
+						<div
+							class="form-group col-md-6"
+							[ngClass]="{
+								'has-error': f2.dripId.invalid && (f2.dripId.dirty || f2.dripId.touched),
+								'has-success': f2.dripId.valid && (f2.dripId.dirty || f2.dripId.touched)
+							}">
+							<label>{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.PickYourDrip.title' | translate }}</label>
+							<ng-select
+								[items]="allDripList"
+								class="ng-select-wrap"
+								placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.PickYourDrip.placeholder' | translate }}"
+								bindLabel="drip_title"
+								bindValue="id"
+								[multiple]="false"
+								[closeOnSelect]="true"
+								[searchable]="true"
+								formControlName="dripId"
+								(change)="onPostPicked($event)">
+							</ng-select>
+							<div class="error" *ngIf="f2.dripId.errors && f2.dripId.touched">
+								<div *ngIf="f2.dripId.errors.required">
+									{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.PickYourDrip.error' | translate }}
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div
+							class="col-md-6 form-group"
+							[ngClass]="{
+								'has-error': f2.dripTriggerRule.invalid && (f2.dripTriggerRule.dirty || f2.dripTriggerRule.touched),
+								'has-success': f2.dripTriggerRule.valid && (f2.dripTriggerRule.dirty || f2.dripTriggerRule.touched)
+							}">
+							<label>{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.DripTrigger.title2' | translate }}</label>
+
+							<!-- With User Base Activity -->
+							<ng-select
+								*ngIf="
+									showUserActivityBaseOption &&
+									!isChannelFlow &&
+									(!dripFlowDetailsForm.value.startRule || dripFlowDetailsForm.value.startRule === 'Start on date')
+								"
+								[items]="drip_trigger_ruleList"
+								class="ng-select-wrap"
+								placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.DripTrigger.placeholder' | translate }}"
+								bindLabel="label"
+								bindValue="name"
+								[multiple]="false"
+								[closeOnSelect]="true"
+								[searchable]="false"
+								formControlName="dripTriggerRule"
+								(change)="selecteDripTriggerRule($event)">
+							</ng-select>
+							<!-- Without User Base Activity -->
+
+							<ng-select
+								*ngIf="
+									!showUserActivityBaseOption &&
+									!isChannelFlow &&
+									(!dripFlowDetailsForm.value.startRule || dripFlowDetailsForm.value.startRule === 'Start on date')
+								"
+								[items]="drip_trigger_rule_List_without_user_base_activity"
+								class="ng-select-wrap"
+								placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.DripTrigger.placeholder' | translate }}"
+								bindLabel="label"
+								bindValue="name"
+								[multiple]="false"
+								[closeOnSelect]="true"
+								[searchable]="false"
+								formControlName="dripTriggerRule"
+								(change)="selecteDripTriggerRule($event)">
+							</ng-select>
+
+							<ng-select
+								*ngIf="
+									showUserActivityBaseOption &&
+									!isChannelFlow &&
+									dripFlowDetailsForm.value.startRule &&
+									dripFlowDetailsForm.value.startRule !== 'Start on date'
+								"
+								[items]="drip_trigger_ruleList2"
+								class="ng-select-wrap"
+								placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.DripTrigger.placeholder' | translate }}"
+								bindLabel="label"
+								bindValue="name"
+								[multiple]="false"
+								[closeOnSelect]="true"
+								[searchable]="false"
+								formControlName="dripTriggerRule"
+								(change)="selecteDripTriggerRule($event)">
+							</ng-select>
+							<!-- Without User Base Activity -->
+
+							<ng-select
+								*ngIf="
+									!showUserActivityBaseOption &&
+									!isChannelFlow &&
+									dripFlowDetailsForm.value.startRule &&
+									dripFlowDetailsForm.value.startRule !== 'Start on date'
+								"
+								[items]="drip_trigger_rule_List_without_user_base_activity2"
+								class="ng-select-wrap"
+								placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.DripTrigger.placeholder' | translate }}"
+								bindLabel="label"
+								bindValue="name"
+								[multiple]="false"
+								[closeOnSelect]="true"
+								[searchable]="false"
+								formControlName="dripTriggerRule"
+								(change)="selecteDripTriggerRule($event)">
+							</ng-select>
+
+							<ng-select
+								*ngIf="isChannelFlow"
+								[items]="drip_trigger_rule_List_for_channel"
+								class="ng-select-wrap"
+								placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.DripTrigger.placeholder' | translate }}"
+								bindLabel="label"
+								bindValue="name"
+								[multiple]="false"
+								[closeOnSelect]="true"
+								[searchable]="false"
+								formControlName="dripTriggerRule"
+								(change)="selecteDripTriggerRule($event)">
+							</ng-select>
+
+							<div class="error" *ngIf="f2.dripTriggerRule.errors && f2.dripTriggerRule.touched">
+								<div *ngIf="f2.dripTriggerRule.errors.required">
+									{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.DripTrigger.error' | translate }}
+								</div>
+							</div>
+						</div>
+
+						<!-- <div class="col-md-6" *ngIf="f2.dripTriggerRule.value == 'Send on drip flow start date'">
+							<div class="row">
+								<div
+									class="form-group col-md-6"
+									[ngClass]="{
+										'has-error': f2.sendAfter.invalid && (f2.sendAfter.dirty || f2.sendAfter.touched),
+										'has-success': f2.sendAfter.valid && (f2.sendAfter.dirty || f2.sendAfter.touched)
+									}">
+									<label class="date-div">{{
+										'Pages.DripFlow.AddEdit.BuildYourDripFlow.SendAfter.title' | translate
+									}}</label>
+									<input type="number" class="form-control" formControlName="sendAfter" />
+									<div class="error" *ngIf="f2.sendAfter.errors && f2.sendAfter.touched">
+										<div *ngIf="f2.sendAfter.errors.required">
+											{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.SendAfter.error' | translate }}
+										</div>
+									</div>
+								</div>
+							</div>
+						</div> -->
+
+						<div class="col-md-6" *ngIf="f2.dripTriggerRule.value == 'Send on date'">
+							<div class="row">
+								<div
+									class="col-md-6 form-group"
+									[ngClass]="{
+										'has-error': f2.dripTriggerDate.invalid && (f2.dripTriggerDate.dirty || f2.dripTriggerDate.touched),
+										'has-success': f2.dripTriggerDate.valid && (f2.dripTriggerDate.dirty || f2.dripTriggerDate.touched)
+									}">
+									<label>{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.SendDate.title' | translate }}</label>
+									<input
+										type="text"
+										ngxDaterangepickerMd
+										[showDropdowns]="true"
+										onkeydown="return false"
+										name="sDate"
+										id="sDate"
+										[showClearButton]="false"
+										[(ngModel)]="selecteddripTriggerDate"
+										[showCancel]="true"
+										[singleDatePicker]="true"
+										[autoApply]="true"
+										[locale]="{ applyLabel: 'ok', format: 'DD-MM-YYYY' }"
+										placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.SendDate.placeholder' | translate }}"
+										[formControl]="dripFlowDripForm.controls['dripTriggerDate']"
+										autocomplete="off"
+										(change)="DateChangeForDripTriggerDate()"
+										class="form-control" />
+									<div class="error" *ngIf="f2.dripTriggerDate.errors && f2.dripTriggerDate.touched">
+										<div *ngIf="f2.dripTriggerDate.errors.required">
+											{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.SendDate.error' | translate }}
+										</div>
+									</div>
+								</div>
+
+								<div
+									class="col-md-6 form-group"
+									[ngClass]="{
+										'has-error':
+											f2.dripTriggerTimeId.invalid && (f2.dripTriggerTimeId.dirty || f2.dripTriggerTimeId.touched),
+										'has-success':
+											f2.dripTriggerTimeId.valid && (f2.dripTriggerTimeId.dirty || f2.dripTriggerTimeId.touched)
+									}">
+									<label>
+										{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.PickSendTime.title' | translate }}
+									</label>
+									<ng-select
+										[items]="timePicker"
+										class="ng-select-wrap"
+										placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.PickSendTime.placeholder' | translate }}"
+										bindLabel="time"
+										bindValue="id"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="true"
+										formControlName="dripTriggerTimeId"
+										(change)="selectTimeIntoDrip()"
+										(change)="DateChangeForDripTriggerDate()">
+									</ng-select>
+									<div class="error" *ngIf="f2.dripTriggerTimeId.errors && f2.dripTriggerTimeId.touched">
+										<div *ngIf="f2.dripTriggerTimeId.errors.required">
+											{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.PickSendTime.error' | translate }}
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="col-md-6" *ngIf="f2.dripTriggerRule.value == 'Send based on system activity'">
+							<div class="row">
+								<div
+									class="col-md-6 form-group"
+									[ngClass]="{
+										'has-error':
+											f2.systemActionType.invalid && (f2.systemActionType.dirty || f2.systemActionType.touched),
+										'has-success':
+											f2.systemActionType.valid && (f2.systemActionType.dirty || f2.systemActionType.touched)
+									}">
+									<label>{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.SystemAction.title' | translate }}</label>
+									<ng-select
+										*ngIf="f2.index.value == 0"
+										[items]="drip_system_action_type_only_tag"
+										class="ng-select-wrap"
+										placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.SystemAction.placeholder' | translate }}"
+										bindLabel="name"
+										bindValue="name"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="systemActionType"
+										(change)="selectDependancyDrip($event)">
+									</ng-select>
+
+									<!-- For Conversational -->
+									<ng-select
+										*ngIf="
+											f2.index.value != 0 &&
+											selected_send_a_drip_list.length > 0 &&
+											selected_take_action_list.length == 0 &&
+											f.flowType.value === 'Conversational'
+										"
+										[items]="drip_system_action_type_with_tag_drip_with_ticket_comment"
+										class="ng-select-wrap"
+										placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.SystemAction.placeholder' | translate }}"
+										bindLabel="name"
+										bindValue="name"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="systemActionType"
+										(change)="selectDependancyDrip($event)">
+									</ng-select>
+
+									<!-- ----- for Campaign  ----->
+									<ng-select
+										*ngIf="
+											f2.index.value != 0 &&
+											selected_send_a_drip_list.length > 0 &&
+											selected_take_action_list.length == 0 &&
+											f.flowType.value === 'Campaign'
+										"
+										[items]="drip_system_action_type_with_tag_drip"
+										class="ng-select-wrap"
+										placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.SystemAction.placeholder' | translate }}"
+										bindLabel="name"
+										bindValue="name"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="systemActionType"
+										(change)="selectDependancyDrip($event)">
+									</ng-select>
+
+									<ng-select
+										*ngIf="
+											f2.index.value != 0 &&
+											selected_send_a_drip_list.length == 0 &&
+											selected_take_action_list.length > 0
+										"
+										[items]="drip_system_action_type_with_tag_action"
+										class="ng-select-wrap"
+										placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.SystemAction.placeholder' | translate }}"
+										bindLabel="name"
+										bindValue="name"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="systemActionType"
+										(change)="selectDependancyDrip($event)">
+									</ng-select>
+
+									<ng-select
+										*ngIf="
+											f2.index.value != 0 &&
+											selected_send_a_drip_list.length > 0 &&
+											selected_take_action_list.length > 0
+										"
+										[items]="drip_system_action_type"
+										class="ng-select-wrap"
+										placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.SystemAction.placeholder' | translate }}"
+										bindLabel="name"
+										bindValue="name"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="systemActionType"
+										(change)="selectDependancyDrip($event)">
+									</ng-select>
+
+									<div class="error" *ngIf="f2.systemActionType.errors && f2.systemActionType.touched">
+										<div *ngIf="f2.systemActionType.errors.required">
+											{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.SystemAction.error' | translate }}
+										</div>
+									</div>
+								</div>
+
+								<div
+									class="col-md-6 form-group"
+									*ngIf="
+										f2.systemActionType.value == 'Based on drip sent' ||
+										f2.systemActionType.value == 'Based on previous action taken'
+									"
+									[ngClass]="{
+										'has-error':
+											f2.dependencyDripIndex.invalid &&
+											(f2.dependencyDripIndex.dirty || f2.dependencyDripIndex.touched),
+										'has-success':
+											f2.dependencyDripIndex.valid && (f2.dependencyDripIndex.dirty || f2.dependencyDripIndex.touched)
+									}">
+									<label>{{
+										'Pages.DripFlow.AddEdit.BuildYourDripFlow.DependencyDripAndAction.title' | translate
+									}}</label>
+
+									<ng-select
+										*ngIf="f2.index.value != 0 && f2.systemActionType.value == 'Based on drip sent'"
+										[items]="selected_send_a_drip_list"
+										class="ng-select-wrap"
+										placeholder="{{
+											'Pages.DripFlow.AddEdit.BuildYourDripFlow.DependencyDripAndAction.placeholder' | translate
+										}}"
+										bindLabel="dripDropDownTitle"
+										bindValue="index"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="dependencyDripIndex"
+										(change)="selectDependancyDrip($event)"
+										data-toggle="tooltip"
+										data-placement="top"
+										title="{{
+											f2.dependencyDripIndex.value != null && selected_take_action_list[f2.dependencyDripIndex.value]
+												? selected_take_action_list[f2.dependencyDripIndex.value].dripDropDownTitle
+												: ''
+										}}">
+									</ng-select>
+
+									<ng-select
+										*ngIf="f2.index.value != 0 && f2.systemActionType.value == 'Based on previous action taken'"
+										[items]="selected_take_action_list"
+										class="ng-select-wrap"
+										placeholder="{{
+											'Pages.DripFlow.AddEdit.BuildYourDripFlow.DependencyDripAndAction.placeholder' | translate
+										}}"
+										bindLabel="dripDropDownTitle"
+										bindValue="index"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="dependencyDripIndex"
+										(change)="selectDependancyDrip($event)"
+										data-toggle="tooltip"
+										data-placement="top"
+										title="{{
+											f2.dependencyDripIndex.value != null && selected_take_action_list[f2.dependencyDripIndex.value]
+												? selected_take_action_list[f2.dependencyDripIndex.value].dripDropDownTitle
+												: ''
+										}}">
+									</ng-select>
+									<div *ngIf="f2.index.value == 0">
+										{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.dripflowstartDate' | translate }}
+									</div>
+									<div class="error" *ngIf="f2.dependencyDripIndex.errors && f2.dependencyDripIndex.touched">
+										<div *ngIf="f2.dependencyDripIndex.errors.required">
+											{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.DependencyDrip.error' | translate }}
+										</div>
+									</div>
+								</div>
+
+								<!-- <div
+									class="form-group col-md-6"
+									[ngClass]="{
+										'has-error': f2.sendAfter.invalid && (f2.sendAfter.dirty || f2.sendAfter.touched),
+										'has-success': f2.sendAfter.valid && (f2.sendAfter.dirty || f2.sendAfter.touched)
+									}">
+									<label class="date-div">{{
+										'Pages.DripFlow.AddEdit.BuildYourDripFlow.SendAfter.title' | translate
+									}}</label>
+									<input type="number" class="form-control" formControlName="sendAfter" />
+									<div class="error" *ngIf="f2.sendAfter.errors && f2.sendAfter.touched">
+										<div *ngIf="f2.sendAfter.errors.required">
+											{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.SendAfter.error' | translate }}
+										</div>
+									</div>
+								</div> -->
+
+								<div
+									class="form-group col-md-12"
+									*ngIf="f2.systemActionType.value == 'Based on tags added'"
+									[ngClass]="{
+										'has-error':
+											f2.tagsForSystemAction.invalid &&
+											(f2.tagsForSystemAction.dirty || f2.tagsForSystemAction.touched),
+										'has-success':
+											f2.tagsForSystemAction.valid && (f2.tagsForSystemAction.dirty || f2.tagsForSystemAction.touched)
+									}">
+									<label class="date-div">{{
+										'Pages.DripFlow.AddEdit.BuildYourDripFlow.AddTags.title' | translate
+									}}</label>
+									<input
+										type="text"
+										class="form-control"
+										placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.AddTags.placeholder' | translate }}"
+										formControlName="tagsForSystemAction"
+										(blur)="checkReserveTags(2)" />
+									<div class="error" *ngIf="f2.tagsForSystemAction.errors && f2.tagsForSystemAction.touched">
+										<div *ngIf="f2.tagsForSystemAction.errors.required">
+											{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.AddTags.error' | translate }}
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="col-md-12" *ngIf="f2.dripTriggerRule.value == 'Send based on user activity'">
+							<div class="row">
+								<div
+									class="col-md-6 form-group"
+									[ngClass]="{
+										'has-error':
+											f2.dependencyDripIndex.invalid &&
+											(f2.dependencyDripIndex.dirty || f2.dependencyDripIndex.touched),
+										'has-success':
+											f2.dependencyDripIndex.valid && (f2.dependencyDripIndex.dirty || f2.dependencyDripIndex.touched)
+									}">
+									<label>{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.DependencyDrip.title' | translate }}</label>
+									<ng-select
+										[items]="selected_send_a_drip_list"
+										class="ng-select-wrap"
+										placeholder="{{
+											'Pages.DripFlow.AddEdit.BuildYourDripFlow.DependencyDrip.placeholder' | translate
+										}}"
+										bindLabel="dripDropDownTitle"
+										bindValue="index"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="dependencyDripIndex"
+										(change)="selectDependancyDrip($event)">
+									</ng-select>
+									<div class="error" *ngIf="f2.dependencyDripIndex.errors && f2.dependencyDripIndex.touched">
+										<div *ngIf="f2.dependencyDripIndex.errors.required">
+											{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.DependencyDrip.error' | translate }}
+										</div>
+									</div>
+								</div>
+
+								<div
+									*ngIf="f2.dependencyDripIndex.value != null"
+									class="col-md-4 form-group"
+									[ngClass]="{
+										'has-error': f2.userAction.invalid && (f2.userAction.dirty || f2.userAction.touched),
+										'has-success': f2.userAction.valid && (f2.userAction.dirty || f2.userAction.touched)
+									}">
+									<label>{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.UserAction.title' | translate }}</label>
+									<ng-select
+										*ngIf="!dependancyDrip"
+										[items]="user_action_type_list2"
+										class="ng-select-wrap"
+										placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.UserAction.placeholder' | translate }}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="userAction"
+										(change)="selectTimeIntoDrip()">
+									</ng-select>
+
+									<ng-select
+										*ngIf="
+											showUserActivityScoreDDOption &&
+											dependancyDrip &&
+											dependancyDrip.dripType === 'Only DripApp' &&
+											showImageDripOption
+										"
+										[items]="user_action_type_list"
+										class="ng-select-wrap"
+										placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.UserAction.placeholder' | translate }}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="userAction"
+										(change)="selectTimeIntoDrip()">
+									</ng-select>
+									<ng-select
+										*ngIf="
+											!showUserActivityScoreDDOption &&
+											dependancyDrip &&
+											dependancyDrip.dripType === 'Only DripApp' &&
+											showImageDripOption &&
+											!showQuickReplyList &&
+											!showQuestionList
+										"
+										[items]="user_action_type_list_without_activity_score"
+										class="ng-select-wrap"
+										placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.UserAction.placeholder' | translate }}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="userAction"
+										(change)="selectTimeIntoDrip()">
+									</ng-select>
+
+									<ng-select
+										*ngIf="
+											showUserActivityScoreDDOption &&
+											dependancyDrip &&
+											['DripApp with sharing on WhatsApp', 'DripApp with sharing on Email'].indexOf(
+												dependancyDrip.dripType
+											) != -1 &&
+											showImageDripOption &&
+											!showQuickReplyList
+										"
+										[items]="user_action_type"
+										class="ng-select-wrap"
+										placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.UserAction.placeholder' | translate }}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="userAction"
+										(change)="selectTimeIntoDrip()">
+									</ng-select>
+
+									<!-------------------------------------------------------------- For Drip Type 6 Teams With Drip App ------------------------------------------>
+									<ng-select
+										*ngIf="
+											showUserActivityScoreDDOption &&
+											dependancyDrip &&
+											dependancyDrip.dripType == 'DripApp with sharing on Teams' &&
+											showImageDripOption &&
+											!showQuickReplyList
+										"
+										[items]="user_action_type_for_teams_with_drip_app"
+										class="ng-select-wrap"
+										placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.UserAction.placeholder' | translate }}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="userAction"
+										(change)="selectTimeIntoDrip()">
+									</ng-select>
+
+									<ng-select
+										*ngIf="
+											!showUserActivityScoreDDOption &&
+											dependancyDrip &&
+											['DripApp with sharing on WhatsApp', 'DripApp with sharing on Email'].indexOf(
+												dependancyDrip.dripType
+											) != -1 &&
+											showImageDripOption &&
+											!showQuestionList
+										"
+										[items]="user_action_type_without_activity_score"
+										class="ng-select-wrap"
+										placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.UserAction.placeholder' | translate }}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="userAction"
+										(change)="selectTimeIntoDrip()">
+									</ng-select>
+
+									<!-------------------------------------------------------------- For Drip Type 6 Teams With Drip App ------------------------------------------>
+
+									<ng-select
+										*ngIf="
+											!showUserActivityScoreDDOption &&
+											dependancyDrip &&
+											dependancyDrip.dripType == 'DripApp with sharing on Teams' &&
+											showImageDripOption &&
+											!showQuestionList
+										"
+										[items]="user_action_type_without_activity_score_for_teams_with_drip_app"
+										class="ng-select-wrap"
+										placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.UserAction.placeholder' | translate }}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="userAction"
+										(change)="selectTimeIntoDrip()">
+									</ng-select>
+
+									<ng-select
+										*ngIf="
+											((showUserActivityScoreDDOption && showImageDripOption) ||
+												(showQuickReplyList && !showTrackingLink)) &&
+											dependancyDrip &&
+											dependancyDrip.dripType === 'Only WhatsApp'
+										"
+										[items]="user_action_type2"
+										class="ng-select-wrap"
+										placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.UserAction.placeholder' | translate }}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="userAction"
+										(change)="selectTimeIntoDrip()">
+									</ng-select>
+
+									<ng-select
+										*ngIf="
+											((showUserActivityScoreDDOption && showImageDripOption) ||
+												(showQuickReplyList && showTrackingLink)) &&
+											dependancyDrip &&
+											dependancyDrip.dripType === 'Only WhatsApp'
+										"
+										[items]="user_action_type_with_external_link"
+										class="ng-select-wrap"
+										placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.UserAction.placeholder' | translate }}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="userAction"
+										(change)="selectTimeIntoDrip()">
+									</ng-select>
+
+									<!-------------------------------------------------------------- For Drip Type 5 Only Teams ------------------------------------------>
+									<ng-select
+										*ngIf="showTrackingLink && dependancyDrip && dependancyDrip.dripType === 'Only Teams'"
+										[items]="user_action_type_with_external_link_for_only_teams"
+										class="ng-select-wrap"
+										placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.UserAction.placeholder' | translate }}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="userAction"
+										(change)="selectTimeIntoDrip()">
+									</ng-select>
+
+									<ng-select
+										*ngIf="
+											!showUserActivityScoreDDOption &&
+											dependancyDrip &&
+											dependancyDrip.dripType === 'Only WhatsApp' &&
+											showImageDripOption &&
+											!showQuickReplyList &&
+											!showQuestionList &&
+											!showTrackingLink
+										"
+										[items]="user_action_type_without_activity_score2"
+										class="ng-select-wrap"
+										placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.UserAction.placeholder' | translate }}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="userAction"
+										(change)="selectTimeIntoDrip()">
+									</ng-select>
+
+									<ng-select
+										*ngIf="
+											!showUserActivityScoreDDOption &&
+											dependancyDrip &&
+											dependancyDrip.dripType === 'Only WhatsApp' &&
+											showImageDripOption &&
+											!showQuickReplyList &&
+											!showQuestionList &&
+											showTrackingLink
+										"
+										[items]="user_action_type_with_external_link_without_activity_score2"
+										class="ng-select-wrap"
+										placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.UserAction.placeholder' | translate }}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="userAction"
+										(change)="selectTimeIntoDrip()">
+									</ng-select>
+
+									<ng-select
+										*ngIf="!showImageDripOption && dependancyDrip.dripType === 'Only DripApp' && !showQuestionList"
+										[items]="user_action_type_list_for_image_drip"
+										class="ng-select-wrap"
+										placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.UserAction.placeholder' | translate }}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="userAction"
+										(change)="selectTimeIntoDrip()">
+									</ng-select>
+
+									<ng-select
+										*ngIf="
+											!showImageDripOption &&
+											dependancyDrip &&
+											dependancyDrip.dripType != null &&
+											['DripApp with sharing on WhatsApp', 'DripApp with sharing on Email'].indexOf(
+												dependancyDrip.dripType
+											) != -1 &&
+											!showQuestionList
+										"
+										[items]="user_action_type_list_for_image_drip2"
+										class="ng-select-wrap"
+										placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.UserAction.placeholder' | translate }}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="userAction"
+										(change)="selectTimeIntoDrip()">
+									</ng-select>
+
+									<!-------------------------------------------------------------- For Drip Type 6 Teams With Drip App ------------------------------------------>
+									<ng-select
+										*ngIf="
+											!showImageDripOption &&
+											dependancyDrip &&
+											dependancyDrip.dripType != null &&
+											dependancyDrip.dripType == 'DripApp with sharing on Teams' &&
+											!showQuestionList
+										"
+										[items]="user_action_type_list_for_image_drip2_for_teams_with_drip_app"
+										class="ng-select-wrap"
+										placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.UserAction.placeholder' | translate }}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="userAction"
+										(change)="selectTimeIntoDrip()">
+									</ng-select>
+
+									<div class="error" *ngIf="f2.userAction.errors && f2.userAction.touched">
+										<div *ngIf="f2.userAction.errors.required">
+											{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.UserAction.error' | translate }}
+										</div>
+									</div>
+								</div>
+
+								<!-- <div
+									class="form-group col-md-2"
+									[ngClass]="{
+										'has-error': f2.sendAfter.invalid && (f2.sendAfter.dirty || f2.sendAfter.touched),
+										'has-success': f2.sendAfter.valid && (f2.sendAfter.dirty || f2.sendAfter.touched)
+									}">
+									<label class="date-div">{{
+										'Pages.DripFlow.AddEdit.BuildYourDripFlow.SendAfter.title' | translate
+									}}</label>
+									<input type="number" class="form-control" formControlName="sendAfter" />
+									<div class="error" *ngIf="f2.sendAfter.errors && f2.sendAfter.touched">
+										<div *ngIf="f2.sendAfter.errors.required">
+											{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.SendAfter.error' | translate }}
+										</div>
+									</div>
+								</div> -->
+								<div
+									*ngIf="
+										[
+											'Not read on channel',
+											'Not read on drip app',
+											'Drip Action not taken',
+											'Drip submit Action not taken'
+										].includes(dripFlowDripForm.value.userAction)
+									">
+									<div
+										class="col-md-2 form-group"
+										[ngClass]="{
+											'has-error': f2.within.invalid && (f2.within.dirty || f2.within.touched),
+											'has-success': f2.within.valid && (f2.within.dirty || f2.within.touched)
+										}">
+										<label>{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.EndDate.within' | translate }}</label>
+										<input
+											type="number"
+											name="within"
+											id="within"
+											placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.EndDate.within' | translate }}"
+											formControlName="within"
+											class="form-control" />
+										<div class="error" *ngIf="f2.within.errors && f2.within.touched">
+											<div *ngIf="f2.within.errors.required">
+												{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.EndDate.error' | translate }}
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<!-- <div>
+									<div
+										class="col-md-12"
+										*ngIf="
+											[
+												'Not read on channel',
+												'Not read on drip app',
+												'Drip Action not taken',
+												'Drip submit Action not taken'
+											].includes(dripFlowDripForm.value.userAction)
+										">
+										<div class="row">
+											<div
+												class="col-md-3 form-group"
+												[ngClass]="{
+													'has-error': f2.within.invalid && (f2.within.dirty || f2.within.touched),
+													'has-success': f2.within.valid && (f2.within.dirty || f2.within.touched)
+												}">
+												<label>{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.EndDate.within' | translate }}</label>
+												<input
+													type="number"
+													name="within"
+													id="within"
+													placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.EndDate.within' | translate }}"
+													formControlName="within"
+													class="form-control" />
+												<div class="error" *ngIf="f2.within.errors && f2.within.touched">
+													<div *ngIf="f2.within.errors.required">
+														{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.EndDate.error' | translate }}
+													</div>
+												</div>
+											</div>
+
+											<div
+												class="col-md-3 form-group"
+												[ngClass]="{
+													'has-error':
+														f2.dripActionEndTimeId.invalid &&
+														(f2.dripActionEndTimeId.dirty || f2.dripActionEndTimeId.touched),
+													'has-success':
+														f2.dripActionEndTimeId.valid &&
+														(f2.dripActionEndTimeId.dirty || f2.dripActionEndTimeId.touched)
+												}">
+												<label>
+													{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.EndTime.title' | translate }}
+												</label>
+												<ng-select
+													[items]="timePicker"
+													class="ng-select-wrap"
+													placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.EndTime.placeholder' | translate }}"
+													bindLabel="time"
+													bindValue="id"
+													[multiple]="false"
+													[closeOnSelect]="true"
+													[searchable]="true"
+													formControlName="dripActionEndTimeId"
+													(change)="selectTimeIntoDrip()"
+													(change)="DateChangeForDripTriggerDate()">
+												</ng-select>
+												<div class="error" *ngIf="f2.dripActionEndTimeId.errors && f2.dripActionEndTimeId.touched">
+													<div *ngIf="f2.dripActionEndTimeId.errors.required">
+														{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.EndTime.error' | translate }}
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div> -->
+							</div>
+						</div>
+
+						<div class="col-md-6" *ngIf="f2.dripTriggerRule.value == 'Send based on contact milestone'">
+							<div class="row">
+								<!-- Milestone List -->
+
+								<div
+									class="col-md-6 form-group"
+									[ngClass]="{
+										'has-error': f2.milestoneField.invalid && (f2.milestoneField.dirty || f2.milestoneField.touched),
+										'has-success': f2.milestoneField.valid && (f2.milestoneField.dirty || f2.milestoneField.touched)
+									}">
+									<label>{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.MilestoneField.title' | translate }}</label>
+									<ng-select
+										[items]="customDateFieldsList"
+										class="ng-select-wrap"
+										placeholder="{{
+											'Pages.DripFlow.AddEdit.BuildYourDripFlow.MilestoneField.placeholder' | translate
+										}}"
+										bindLabel="label"
+										bindValue="label"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="milestoneField">
+									</ng-select>
+
+									<div class="error" *ngIf="f2.milestoneField.errors && f2.milestoneField.touched">
+										<div *ngIf="f2.milestoneField.errors.required">
+											{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.MilestoneField.error' | translate }}
+										</div>
+									</div>
+								</div>
+
+								<!-- Time Drop Down -->
+
+								<div
+									class="col-md-3 form-group"
+									[ngClass]="{
+										'has-error':
+											f2.dripTriggerTimeId.invalid && (f2.dripTriggerTimeId.dirty || f2.dripTriggerTimeId.touched),
+										'has-success':
+											f2.dripTriggerTimeId.valid && (f2.dripTriggerTimeId.dirty || f2.dripTriggerTimeId.touched)
+									}">
+									<label>
+										{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.PickSendTime.title' | translate }}
+									</label>
+									<ng-select
+										[items]="timePicker"
+										class="ng-select-wrap"
+										placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.PickSendTime.placeholder' | translate }}"
+										bindLabel="time"
+										bindValue="id"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="true"
+										formControlName="dripTriggerTimeId">
+									</ng-select>
+									<div class="error" *ngIf="f2.dripTriggerTimeId.errors && f2.dripTriggerTimeId.touched">
+										<div *ngIf="f2.dripTriggerTimeId.errors.required">
+											{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.PickSendTime.error' | translate }}
+										</div>
+									</div>
+								</div>
+
+								<!-- Annually Repeat -->
+								<div class="col-md-3">
+									<div
+										class="form-group"
+										[ngClass]="{
+											'has-error': f2.recurAnnually.invalid && (f2.recurAnnually.dirty || f2.recurAnnually.touched),
+											'has-success': f2.recurAnnually.valid && (f2.recurAnnually.dirty || f2.recurAnnually.touched)
+										}">
+										<label>{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.RecurAnnually.title' | translate }}</label>
+										<div>
+											<label class="switch">
+												<input type="checkbox" class="form-control js-switch" formControlName="recurAnnually" />
+												<span
+													class="slider round"
+													[ngStyle]="{
+														'background-color': f2.recurAnnually.value ? appService.whiteBrandingColor : '#ccc'
+													}">
+												</span>
+											</label>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="col-md-12" *ngIf="f2.userAction.value == 'Activity Outcome'">
+							<div class="row" *ngIf="showQuestionList">
+								<div
+									class="col-md-6 form-group"
+									[ngClass]="{
+										'has-error': f2.DripQuestionId.invalid && (f2.DripQuestionId.dirty || f2.DripQuestionId.touched),
+										'has-success': f2.DripQuestionId.valid && (f2.DripQuestionId.dirty || f2.DripQuestionId.touched)
+									}">
+									<label> {{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.questionList.title' | translate }}</label>
+
+									<ng-select
+										[items]="questionList"
+										class="ng-select-wrap"
+										placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.questionList.placeholder' | translate }}"
+										bindLabel="question"
+										bindValue="id"
+										[multiple]="false"
+										[searchable]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="DripQuestionId"
+										(change)="selectQuestion($event)">
+									</ng-select>
+									<div class="error" *ngIf="f2.DripQuestionId.errors && f2.DripQuestionId.touched">
+										<div *ngIf="f2.DripQuestionId.errors.required">
+											{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.questionList.error' | translate }}
+										</div>
+									</div>
+								</div>
+							</div>
+							<div
+								class="row"
+								*ngIf="
+									!showPoolOption &&
+									!showQuickReplyList &&
+									(!showQuestionList || (showQuestionList && selctedRatingScaleQuestion))
+								">
+								<div
+									class="col-md-4 form-group"
+									[ngClass]="{
+										'has-error':
+											f2.activityScoreType.invalid && (f2.activityScoreType.dirty || f2.activityScoreType.touched),
+										'has-success':
+											f2.activityScoreType.valid && (f2.activityScoreType.dirty || f2.activityScoreType.touched)
+									}">
+									<label> {{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.ActivityScoreType.title' | translate }}</label>
+
+									<ng-select
+										[items]="activity_score_type_list"
+										class="ng-select-wrap"
+										placeholder="{{
+											'Pages.DripFlow.AddEdit.BuildYourDripFlow.ActivityScoreType.placeholder' | translate
+										}}"
+										bindLabel="name"
+										bindValue="name"
+										[multiple]="false"
+										[searchable]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="activityScoreType">
+									</ng-select>
+									<div class="error" *ngIf="f2.activityScoreType.errors && f2.activityScoreType.touched">
+										<div *ngIf="f2.activityScoreType.errors.required">
+											{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.ActivityScoreType.error' | translate }}
+										</div>
+									</div>
+								</div>
+								<div
+									class="form-group col-md-2"
+									[ngClass]="{
+										'has-error': f2.score.invalid && (f2.score.dirty || f2.score.touched),
+										'has-success': f2.score.valid && (f2.score.dirty || f2.score.touched)
+									}">
+									<label class="date-div" *ngIf="!showQuestionList">{{
+										'Pages.DripFlow.AddEdit.BuildYourDripFlow.Score.title' | translate
+									}}</label>
+									<label class="date-div" *ngIf="showQuestionList && selctedRatingScaleQuestion">{{
+										'Pages.DripFlow.AddEdit.BuildYourDripFlow.level.title' | translate
+									}}</label>
+									<input type="number" class="form-control" formControlName="score" />
+									<div class="error" *ngIf="f2.score.errors && f2.score.touched">
+										<div *ngIf="f2.score.errors.required">
+											{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.Score.error' | translate }}
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="row" *ngIf="showPoolOption && !showQuestionList">
+								<div
+									class="col-md-4 form-group"
+									[ngClass]="{
+										'has-error': f2.poolOptionType.invalid && (f2.poolOptionType.dirty || f2.poolOptionType.touched),
+										'has-success': f2.poolOptionType.valid && (f2.poolOptionType.dirty || f2.poolOptionType.touched)
+									}">
+									<label> {{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.PoolActivityOption.title' | translate }}</label>
+
+									<ng-select
+										[items]="pool_activity_option_list"
+										class="ng-select-wrap"
+										placeholder="{{
+											'Pages.DripFlow.AddEdit.BuildYourDripFlow.PoolActivityOption.placeholder' | translate
+										}}"
+										bindLabel="name"
+										bindValue="name"
+										[multiple]="false"
+										[searchable]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="poolOptionType">
+									</ng-select>
+									<div class="error" *ngIf="f2.poolOptionType.errors && f2.poolOptionType.touched">
+										<div *ngIf="f2.poolOptionType.errors.required">
+											{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.PoolActivityOption.error' | translate }}
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<!-- Only For Question's Options -->
+							<div class="row" *ngIf="showPoolOption && showQuestionList">
+								<div
+									class="col-md-6 form-group"
+									[ngClass]="{
+										'has-error': f2.poolOptionType.invalid && (f2.poolOptionType.dirty || f2.poolOptionType.touched),
+										'has-success': f2.poolOptionType.valid && (f2.poolOptionType.dirty || f2.poolOptionType.touched)
+									}">
+									<label> {{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.questionsOption.title' | translate }}</label>
+
+									<ng-select
+										[items]="pool_activity_option_list"
+										class="ng-select-wrap"
+										placeholder="{{
+											'Pages.DripFlow.AddEdit.BuildYourDripFlow.questionsOption.placeholder' | translate
+										}}"
+										bindLabel="name"
+										bindValue="name"
+										[multiple]="false"
+										[searchable]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="poolOptionType">
+									</ng-select>
+									<div class="error" *ngIf="f2.poolOptionType.errors && f2.poolOptionType.touched">
+										<div *ngIf="f2.poolOptionType.errors.required">
+											{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.questionsOption.error' | translate }}
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="row" *ngIf="showQuickReplyList">
+								<div
+									class="col-md-4 form-group"
+									[ngClass]="{
+										'has-error': f2.quickReply.invalid && (f2.quickReply.dirty || f2.quickReply.touched),
+										'has-success': f2.quickReply.valid && (f2.quickReply.dirty || f2.quickReply.touched)
+									}">
+									<label> {{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.qulickReplyList.title' | translate }}</label>
+
+									<ng-select
+										[items]="quickReplayList"
+										class="ng-select-wrap"
+										placeholder="{{
+											'Pages.DripFlow.AddEdit.BuildYourDripFlow.qulickReplyList.placeholder' | translate
+										}}"
+										bindLabel="label"
+										bindValue="label"
+										[multiple]="false"
+										[searchable]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="quickReply">
+									</ng-select>
+									<div class="error" *ngIf="f2.quickReply.errors && f2.quickReply.touched">
+										<div *ngIf="f2.quickReply.errors.required">
+											{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.qulickReplyList.error' | translate }}
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div
+						class="row"
+						*ngIf="
+							dripFlowDripForm.controls['whatsAppTemplateFlag'].value == true &&
+							dripFlowDripForm.controls['templateStatus'].value != null
+						">
+						<div class="col-md-12 form-group">
+							<div style="display: flex">
+								<div>
+									<img style="width: 25px; margin-right: 8px" src="assets/images/error_icon.svg" />
+								</div>
+								<div>
+									<p style="margin: 0px; margin-top: 2px">
+										{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.dripUnapprovedWhatsApptemplate' | translate }}
+									</p>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="row" *ngIf="dripFlowDripForm.controls['assetVideoTranscoding'].value == false">
+						<div class="col-md-12 form-group">
+							<div style="display: flex">
+								<div>
+									<img style="width: 25px; margin-right: 8px" src="assets/images/error_icon.svg" />
+								</div>
+								<div>
+									<p style="margin: 0px; margin-top: 2px">
+										{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.DripvideoAssetsoptimised' | translate }}
+									</p>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="row" *ngIf="dripFlowDripForm.value.dripType">
+						<div
+							*ngIf="f2.dripTriggerRule.value !== 'Send on date'"
+							class="form-group col-md-2"
+							[ngClass]="{
+								'has-error': f2.sendAfter.invalid && (f2.sendAfter.dirty || f2.sendAfter.touched),
+								'has-success': f2.sendAfter.valid && (f2.sendAfter.dirty || f2.sendAfter.touched)
+							}">
+							<label class="date-div">{{
+								'Pages.DripFlow.AddEdit.BuildYourDripFlow.SendAfter.title' | translate
+							}}</label>
+							<input type="number" class="form-control" formControlName="sendAfter" />
+							<div class="error" *ngIf="f2.sendAfter.errors && f2.sendAfter.touched">
+								<div *ngIf="f2.sendAfter.errors.required">
+									{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.SendAfter.error' | translate }}
+								</div>
+							</div>
+						</div>
+						<div
+							*ngIf="dripFlowDripForm.value.dripType != 'Only WhatsApp'"
+							class="col-md-4 form-group"
+							[ngClass]="{
+								'has-error': f2.unAssignDayCount.invalid && (f2.unAssignDayCount.dirty || f2.unAssignDayCount.touched),
+								'has-success': f2.unAssignDayCount.valid && (f2.unAssignDayCount.dirty || f2.unAssignDayCount.touched)
+							}">
+							<label> {{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.autoUnAssignThisDrip.title' | translate }}</label>
+
+							<ng-select
+								[items]="dayCount"
+								class="ng-select-wrap"
+								placeholder="{{
+									'Pages.DripFlow.AddEdit.BuildYourDripFlow.autoUnAssignThisDrip.placeholder' | translate
+								}}"
+								bindLabel="name"
+								bindValue="count"
+								[multiple]="false"
+								[searchable]="false"
+								[closeOnSelect]="true"
+								[searchable]="false"
+								formControlName="unAssignDayCount">
+							</ng-select>
+							<div class="error" *ngIf="f2.unAssignDayCount.errors && f2.unAssignDayCount.touched">
+								<div *ngIf="f2.unAssignDayCount.errors.required">
+									{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.autoUnAssignThisDrip.error' | translate }}
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div
+							class="form-group col-md-12"
+							[ngClass]="{
+								'has-error': f2.dripName.invalid && (f2.dripName.dirty || f2.dripName.touched),
+								'has-success': f2.dripName.valid && (f2.dripName.dirty || f2.dripName.touched)
+							}">
+							<label>{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.Drip.title' | translate }} </label>
+							<input
+								type="text"
+								class="form-control"
+								placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.Drip.placeholder' | translate }}"
+								formControlName="dripName" />
+							<div class="error" *ngIf="f2.dripName.errors && f2.dripName.touched">
+								<div *ngIf="f2.dripName.errors.required">
+									{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.Drip.error' | translate }}
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- -------------------------------------------- Take Action---------------------------------------------------------------- -->
+				<div *ngIf="f2.dripFlowType.value == 'Take Action'">
+					<div class="row">
+						<div
+							class="col-md-6 form-group"
+							[ngClass]="{
+								'has-error': f2.actionType.invalid && (f2.actionType.dirty || f2.actionType.touched),
+								'has-success': f2.actionType.valid && (f2.actionType.dirty || f2.actionType.touched)
+							}">
+							<label>{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.ChooseActionType.title' | translate }}</label>
+							<ng-select
+								[items]="action_type_list"
+								class="ng-select-wrap"
+								placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.ChooseActionType.placeholder' | translate }}"
+								bindLabel="label"
+								bindValue="name"
+								[multiple]="false"
+								[closeOnSelect]="true"
+								[searchable]="false"
+								formControlName="actionType"
+								(change)="selectActionType($event)">
+							</ng-select>
+							<div class="error" *ngIf="f2.actionType.errors && f2.actionType.touched">
+								<div *ngIf="f2.actionType.errors.required">
+									{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.ChooseActionType.error' | translate }}
+								</div>
+							</div>
+						</div>
+
+						<div
+							*ngIf="f2.actionType.value == 'Add to group' || f2.actionType.value == 'Delete from group'"
+							class="col-md-6 form-group"
+							[ngClass]="{
+								'has-error': f2.groupForAction.invalid && (f2.groupForAction.dirty || f2.groupForAction.touched),
+								'has-success': f2.groupForAction.valid && (f2.groupForAction.dirty || f2.groupForAction.touched)
+							}">
+							<label>{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.SelectLearnerGroup.title' | translate }}</label>
+							<ng-select
+								*ngIf="f2.actionType.value == 'Add to group'"
+								[items]="learner_group_for_add_to_group"
+								class="ng-select-wrap"
+								placeholder="{{
+									'Pages.DripFlow.AddEdit.BuildYourDripFlow.SelectLearnerGroup.placeholder' | translate
+								}}"
+								bindLabel="title"
+								bindValue="id"
+								[multiple]="true"
+								[closeOnSelect]="false"
+								[searchable]="true"
+								formControlName="groupForAction"
+								(change)="selectLearnerGroupForAction($event)">
+							</ng-select>
+							<ng-select
+								*ngIf="f2.actionType.value == 'Delete from group'"
+								[items]="learner_group_for_delete_to_group"
+								class="ng-select-wrap"
+								placeholder="{{
+									'Pages.DripFlow.AddEdit.BuildYourDripFlow.SelectLearnerGroup.placeholder' | translate
+								}}"
+								bindLabel="title"
+								bindValue="id"
+								[multiple]="true"
+								[closeOnSelect]="false"
+								[searchable]="true"
+								formControlName="groupForAction"
+								(change)="selectLearnerGroupForAction($event)">
+							</ng-select>
+							<div class="error" *ngIf="f2.groupForAction.errors && f2.groupForAction.touched">
+								<div *ngIf="f2.groupForAction.errors.required">
+									{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.SelectLearnerGroup.error' | translate }}
+								</div>
+							</div>
+						</div>
+
+						<div
+							*ngIf="f2.actionType.value == 'Add Tag' || f2.actionType.value == 'Delete Tag'"
+							class="col-md-6 form-group"
+							[ngClass]="{
+								'has-error': f2.tagsForAction.invalid && (f2.tagsForAction.dirty || f2.tagsForAction.touched),
+								'has-success': f2.tagsForAction.valid && (f2.tagsForAction.dirty || f2.tagsForAction.touched)
+							}">
+							<label> {{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.AddTags.title' | translate }}</label>
+							<input
+								type="text"
+								class="form-control"
+								placeholder=" {{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.AddTags.placeholder' | translate }}"
+								formControlName="tagsForAction"
+								(blur)="checkReserveTags(3)" />
+							<div class="error" *ngIf="f2.tagsForAction.errors && f2.tagsForAction.touched">
+								<div *ngIf="f2.tagsForAction.errors.required">
+									{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.AddTags.error' | translate }}
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div
+							class="col-md-6 form-group"
+							[ngClass]="{
+								'has-error':
+									f2.actionTriggerRule.invalid && (f2.actionTriggerRule.dirty || f2.actionTriggerRule.touched),
+								'has-success':
+									f2.actionTriggerRule.valid && (f2.actionTriggerRule.dirty || f2.actionTriggerRule.touched)
+							}">
+							<label>{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.DripActionTrigger.title' | translate }}</label>
+
+							<!-- <ng-select
+								*ngIf="showUserActivityBaseOption"
+								[items]="action_trigger_ruleList"
+								class="ng-select-wrap"
+								placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.DripActionTrigger.placeholder' | translate }}"
+								bindLabel="label"
+								bindValue="name"
+								[multiple]="false"
+								[closeOnSelect]="true"
+								[searchable]="false"
+								formControlName="actionTriggerRule">
+							</ng-select>
+
+							<ng-select
+								*ngIf="!showUserActivityBaseOption"
+								[items]="action_trigger_ruleList_without_user_base_activity"
+								class="ng-select-wrap"
+								placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.DripActionTrigger.placeholder' | translate }}"
+								bindLabel="label"
+								bindValue="name"
+								[multiple]="false"
+								[closeOnSelect]="true"
+								[searchable]="false"
+								formControlName="actionTriggerRule">
+							</ng-select> -->
+
+							<!-- With User Base Activity -->
+							<ng-select
+								*ngIf="
+									showUserActivityBaseOption &&
+									(!dripFlowDetailsForm.value.startRule || dripFlowDetailsForm.value.startRule === 'Start on date')
+								"
+								[items]="action_trigger_ruleList"
+								class="ng-select-wrap"
+								placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.DripActionTrigger.placeholder' | translate }}"
+								bindLabel="label"
+								bindValue="name"
+								[multiple]="false"
+								[closeOnSelect]="true"
+								[searchable]="false"
+								formControlName="actionTriggerRule">
+							</ng-select>
+							<!-- Without User Base Activity -->
+
+							<ng-select
+								*ngIf="
+									!showUserActivityBaseOption &&
+									(!dripFlowDetailsForm.value.startRule || dripFlowDetailsForm.value.startRule === 'Start on date')
+								"
+								[items]="action_trigger_ruleList_without_user_base_activity"
+								class="ng-select-wrap"
+								placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.DripActionTrigger.placeholder' | translate }}"
+								bindLabel="label"
+								bindValue="name"
+								[multiple]="false"
+								[closeOnSelect]="true"
+								[searchable]="false"
+								formControlName="actionTriggerRule">
+							</ng-select>
+
+							<ng-select
+								*ngIf="
+									showUserActivityBaseOption &&
+									dripFlowDetailsForm.value.startRule &&
+									dripFlowDetailsForm.value.startRule !== 'Start on date'
+								"
+								[items]="action_trigger_ruleList2"
+								class="ng-select-wrap"
+								placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.DripActionTrigger.placeholder' | translate }}"
+								bindLabel="label"
+								bindValue="name"
+								[multiple]="false"
+								[closeOnSelect]="true"
+								[searchable]="false"
+								formControlName="actionTriggerRule">
+							</ng-select>
+							<!-- Without User Base Activity -->
+
+							<ng-select
+								*ngIf="
+									!showUserActivityBaseOption &&
+									dripFlowDetailsForm.value.startRule &&
+									dripFlowDetailsForm.value.startRule !== 'Start on date'
+								"
+								[items]="action_trigger_ruleList_without_user_base_activity2"
+								class="ng-select-wrap"
+								placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.DripActionTrigger.placeholder' | translate }}"
+								bindLabel="label"
+								bindValue="name"
+								[multiple]="false"
+								[closeOnSelect]="true"
+								[searchable]="false"
+								formControlName="actionTriggerRule">
+							</ng-select>
+
+							<div class="error" *ngIf="f2.actionTriggerRule.errors && f2.actionTriggerRule.touched">
+								<div *ngIf="f2.actionTriggerRule.errors.required">
+									{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.DripActionTrigger.error' | translate }}
+								</div>
+							</div>
+						</div>
+
+						<div class="col-md-6" *ngIf="f2.actionTriggerRule.value == 'Take action on date'">
+							<div class="row">
+								<div
+									class="col-md-6 form-group"
+									[ngClass]="{
+										'has-error': f2.dripTriggerDate.invalid && (f2.dripTriggerDate.dirty || f2.dripTriggerDate.touched),
+										'has-success': f2.dripTriggerDate.valid && (f2.dripTriggerDate.dirty || f2.dripTriggerDate.touched)
+									}">
+									<label>{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.SendDate.title' | translate }}</label>
+
+									<input
+										type="text"
+										ngxDaterangepickerMd
+										[showDropdowns]="true"
+										onkeydown="return false"
+										name="sDate"
+										id="sDate"
+										[showClearButton]="false"
+										[(ngModel)]="selecteddripTriggerDate"
+										[showCancel]="true"
+										[singleDatePicker]="true"
+										[autoApply]="true"
+										[formControl]="dripFlowDripForm.controls['dripTriggerDate']"
+										[locale]="{ applyLabel: 'ok', format: 'DD-MM-YYYY' }"
+										placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.SendDate.placeholder' | translate }}"
+										autocomplete="off"
+										(change)="DateChangeForDripTriggerDate()"
+										class="form-control" />
+
+									<div class="error" *ngIf="f2.dripTriggerDate.errors && f2.dripTriggerDate.touched">
+										<div *ngIf="f2.dripTriggerDate.errors.required">
+											{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.SendDate.error' | translate }}
+										</div>
+									</div>
+								</div>
+
+								<div
+									class="col-md-6 form-group"
+									[ngClass]="{
+										'has-error':
+											f2.dripTriggerTimeId.invalid && (f2.dripTriggerTimeId.dirty || f2.dripTriggerTimeId.touched),
+										'has-success':
+											f2.dripTriggerTimeId.valid && (f2.dripTriggerTimeId.dirty || f2.dripTriggerTimeId.touched)
+									}">
+									<label> {{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.PickSendTime.title' | translate }}</label>
+									<ng-select
+										[items]="timePicker"
+										class="ng-select-wrap"
+										placeholder=" {{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.PickSendTime.placeholder' | translate }}"
+										bindLabel="time"
+										bindValue="id"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="true"
+										formControlName="dripTriggerTimeId"
+										(change)="selectTimeIntoDrip()">
+									</ng-select>
+									<div class="error" *ngIf="f2.dripTriggerTimeId.errors && f2.dripTriggerTimeId.touched">
+										<div *ngIf="f2.dripTriggerTimeId.errors.required">
+											{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.PickSendTime.error' | translate }}
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="col-md-6" *ngIf="f2.actionTriggerRule.value == 'Take action on drip flow start date'">
+							<div class="row">
+								<div
+									class="form-group col-md-6"
+									[ngClass]="{
+										'has-error': f2.sendAfter.invalid && (f2.sendAfter.dirty || f2.sendAfter.touched),
+										'has-success': f2.sendAfter.valid && (f2.sendAfter.dirty || f2.sendAfter.touched)
+									}">
+									<label class="date-div">{{
+										'Pages.DripFlow.AddEdit.BuildYourDripFlow.SendAfter.title' | translate
+									}}</label>
+									<input type="number" class="form-control" formControlName="sendAfter" />
+									<div class="error" *ngIf="f2.sendAfter.errors && f2.sendAfter.touched">
+										<div *ngIf="f2.sendAfter.errors.required">
+											{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.SendAfter.error' | translate }}
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="col-md-6" *ngIf="f2.actionTriggerRule.value == 'Take action based on system activity'">
+							<div class="row">
+								<div
+									class="col-md-6 form-group"
+									[ngClass]="{
+										'has-error':
+											f2.systemActionType.invalid && (f2.systemActionType.dirty || f2.systemActionType.touched),
+										'has-success':
+											f2.systemActionType.valid && (f2.systemActionType.dirty || f2.systemActionType.touched)
+									}">
+									<label>{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.SystemAction.title' | translate }}</label>
+
+									<!-- For Conversational -->
+									<ng-select
+										*ngIf="f2.index.value == 0 && f.flowType.value === 'Conversational'"
+										[items]="drip_system_action_type_only_tag_with_ticket_comment"
+										class="ng-select-wrap"
+										placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.SystemAction.placeholder' | translate }}"
+										bindLabel="name"
+										bindValue="name"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="systemActionType">
+									</ng-select>
+
+									<!-- For Campaign -->
+									<ng-select
+										*ngIf="f2.index.value == 0 && f.flowType.value === 'Campaign'"
+										[items]="drip_system_action_type_only_tag"
+										class="ng-select-wrap"
+										placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.SystemAction.placeholder' | translate }}"
+										bindLabel="name"
+										bindValue="name"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="systemActionType">
+									</ng-select>
+
+									<ng-select
+										*ngIf="
+											f2.index.value != 0 &&
+											selected_send_a_drip_list.length > 0 &&
+											selected_take_action_list.length == 0
+										"
+										[items]="drip_system_action_type_with_tag_drip"
+										class="ng-select-wrap"
+										placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.SystemAction.placeholder' | translate }}"
+										bindLabel="name"
+										bindValue="name"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="systemActionType">
+									</ng-select>
+
+									<ng-select
+										*ngIf="
+											f2.index.value != 0 &&
+											selected_send_a_drip_list.length == 0 &&
+											selected_take_action_list.length > 0
+										"
+										[items]="drip_system_action_type_with_tag_action"
+										class="ng-select-wrap"
+										placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.SystemAction.placeholder' | translate }}"
+										bindLabel="name"
+										bindValue="name"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="systemActionType">
+									</ng-select>
+
+									<ng-select
+										*ngIf="
+											f2.index.value != 0 &&
+											selected_send_a_drip_list.length > 0 &&
+											selected_take_action_list.length > 0
+										"
+										[items]="drip_system_action_type"
+										class="ng-select-wrap"
+										placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.SystemAction.placeholder' | translate }}"
+										bindLabel="name"
+										bindValue="name"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="systemActionType">
+									</ng-select>
+
+									<div class="error" *ngIf="f2.systemActionType.errors && f2.systemActionType.touched">
+										<div *ngIf="f2.systemActionType.errors.required">
+											{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.SystemAction.error' | translate }}
+										</div>
+									</div>
+								</div>
+
+								<div
+									class="col-md-6 form-group"
+									*ngIf="
+										f2.systemActionType.value == 'Based on drip sent' ||
+										f2.systemActionType.value == 'Based on previous action taken'
+									"
+									[ngClass]="{
+										'has-error':
+											f2.dependencyDripIndex.invalid &&
+											(f2.dependencyDripIndex.dirty || f2.dependencyDripIndex.touched),
+										'has-success':
+											f2.dependencyDripIndex.valid && (f2.dependencyDripIndex.dirty || f2.dependencyDripIndex.touched)
+									}">
+									<label>{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.DependencyDrip.title' | translate }}</label>
+
+									<ng-select
+										*ngIf="f2.index.value != 0 && f2.systemActionType.value == 'Based on drip sent'"
+										[items]="selected_send_a_drip_list"
+										class="ng-select-wrap"
+										placeholder="{{
+											'Pages.DripFlow.AddEdit.BuildYourDripFlow.DependencyDrip.placeholder' | translate
+										}}"
+										bindLabel="dripDropDownTitle"
+										bindValue="index"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="dependencyDripIndex"
+										(change)="selectDependancyDripInAction($event)">
+									</ng-select>
+
+									<ng-select
+										*ngIf="f2.index.value != 0 && f2.systemActionType.value == 'Based on previous action taken'"
+										[items]="selected_take_action_list"
+										class="ng-select-wrap"
+										placeholder="{{
+											'Pages.DripFlow.AddEdit.BuildYourDripFlow.DependencyDrip.placeholder' | translate
+										}}"
+										bindLabel="dripDropDownTitle"
+										bindValue="index"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="dependencyDripIndex"
+										(change)="selectDependancyDrip($event)">
+									</ng-select>
+
+									<div class="error" *ngIf="f2.dependencyDripIndex.errors && f2.dependencyDripIndex.touched">
+										<div *ngIf="f2.dependencyDripIndex.errors.required">
+											{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.DependencyDrip.error' | translate }}
+										</div>
+									</div>
+								</div>
+
+								<div
+									class="form-group col-md-6"
+									[ngClass]="{
+										'has-error': f2.sendAfter.invalid && (f2.sendAfter.dirty || f2.sendAfter.touched),
+										'has-success': f2.sendAfter.valid && (f2.sendAfter.dirty || f2.sendAfter.touched)
+									}">
+									<label class="date-div">
+										{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.SendAfter.title' | translate }}</label
+									>
+									<input type="number" class="form-control" formControlName="sendAfter" />
+									<div class="error" *ngIf="f2.sendAfter.errors && f2.sendAfter.touched">
+										<div *ngIf="f2.sendAfter.errors.required">
+											{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.SendAfter.error' | translate }}
+										</div>
+									</div>
+								</div>
+
+								<div
+									class="form-group col-md-12"
+									*ngIf="f2.systemActionType.value == 'Based on tags added'"
+									[ngClass]="{
+										'has-error':
+											f2.tagsForSystemAction.invalid &&
+											(f2.tagsForSystemAction.dirty || f2.tagsForSystemAction.touched),
+										'has-success':
+											f2.tagsForSystemAction.valid && (f2.tagsForSystemAction.dirty || f2.tagsForSystemAction.touched)
+									}">
+									<label class="date-div">
+										{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.AddTags.title' | translate }}</label
+									>
+									<input
+										type="text"
+										class="form-control"
+										placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.AddTags.placeholder' | translate }}"
+										formControlName="tagsForSystemAction"
+										(blur)="checkReserveTags(2)" />
+									<div class="error" *ngIf="f2.tagsForSystemAction.errors && f2.tagsForSystemAction.touched">
+										<div *ngIf="f2.tagsForSystemAction.errors.required">
+											{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.AddTags.error' | translate }}
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="col-md-12" *ngIf="f2.actionTriggerRule.value == 'Take action based on user activity'">
+							<div class="row">
+								<div
+									class="col-md-6 form-group"
+									[ngClass]="{
+										'has-error':
+											f2.dependencyDripIndex.invalid &&
+											(f2.dependencyDripIndex.dirty || f2.dependencyDripIndex.touched),
+										'has-success':
+											f2.dependencyDripIndex.valid && (f2.dependencyDripIndex.dirty || f2.dependencyDripIndex.touched)
+									}">
+									<label>{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.DependencyDrip.title' | translate }}</label>
+									<ng-select
+										[items]="selected_send_a_drip_list"
+										class="ng-select-wrap"
+										placeholder="{{
+											'Pages.DripFlow.AddEdit.BuildYourDripFlow.DependencyDrip.placeholder' | translate
+										}}"
+										bindLabel="dripDropDownTitle"
+										bindValue="index"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="dependencyDripIndex"
+										(change)="selectDependancyDripInAction($event)">
+									</ng-select>
+									<div class="error" *ngIf="f2.dependencyDripIndex.errors && f2.dependencyDripIndex.touched">
+										<div *ngIf="f2.dependencyDripIndex.errors.required">
+											{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.DependencyDrip.error' | translate }}
+										</div>
+									</div>
+								</div>
+
+								<div
+									class="col-md-4 form-group"
+									[ngClass]="{
+										'has-error': f2.userAction.invalid && (f2.userAction.dirty || f2.userAction.touched),
+										'has-success': f2.userAction.valid && (f2.userAction.dirty || f2.userAction.touched)
+									}">
+									<label>{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.UserAction.title' | translate }}</label>
+									<ng-select
+										*ngIf="!dependancyDrip"
+										[items]="user_action_type_list2"
+										class="ng-select-wrap"
+										placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.UserAction.placeholder' | translate }}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="userAction"
+										(change)="selectTimeIntoDrip()">
+									</ng-select>
+
+									<ng-select
+										*ngIf="
+											showUserActivityScoreDDOption &&
+											dependancyDrip &&
+											dependancyDrip.dripType === 'Only DripApp' &&
+											showImageDripOption
+										"
+										[items]="user_action_type_list"
+										class="ng-select-wrap"
+										placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.UserAction.placeholder' | translate }}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="userAction"
+										(change)="selectTimeIntoDrip()">
+									</ng-select>
+									<ng-select
+										*ngIf="
+											!showUserActivityScoreDDOption &&
+											dependancyDrip &&
+											dependancyDrip.dripType === 'Only DripApp' &&
+											showImageDripOption &&
+											!showQuestionList
+										"
+										[items]="user_action_type_list_without_activity_score"
+										class="ng-select-wrap"
+										placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.UserAction.placeholder' | translate }}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="userAction"
+										(change)="selectTimeIntoDrip()">
+									</ng-select>
+
+									<ng-select
+										*ngIf="
+											showUserActivityScoreDDOption &&
+											dependancyDrip &&
+											['DripApp with sharing on WhatsApp', 'DripApp with sharing on Email'].indexOf(
+												dependancyDrip.dripType
+											) != -1 &&
+											showImageDripOption
+										"
+										[items]="user_action_type"
+										class="ng-select-wrap"
+										placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.UserAction.placeholder' | translate }}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="userAction"
+										(change)="selectTimeIntoDrip()">
+									</ng-select>
+
+									<!-------------------------------------------------------------- For Drip Type 6 Teams With Drip App ------------------------------------------>
+									<ng-select
+										*ngIf="
+											showUserActivityScoreDDOption &&
+											dependancyDrip &&
+											dependancyDrip.dripType == 'DripApp with sharing on Teams' &&
+											showImageDripOption
+										"
+										[items]="user_action_type_for_teams_with_drip_app"
+										class="ng-select-wrap"
+										placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.UserAction.placeholder' | translate }}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="userAction"
+										(change)="selectTimeIntoDrip()">
+									</ng-select>
+
+									<ng-select
+										*ngIf="
+											!showUserActivityScoreDDOption &&
+											dependancyDrip &&
+											['DripApp with sharing on WhatsApp', 'DripApp with sharing on Email'].indexOf(
+												dependancyDrip.dripType
+											) != -1 &&
+											showImageDripOption &&
+											!showQuestionList
+										"
+										[items]="user_action_type_without_activity_score"
+										class="ng-select-wrap"
+										placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.UserAction.placeholder' | translate }}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="userAction"
+										(change)="selectTimeIntoDrip()">
+									</ng-select>
+
+									<!-------------------------------------------------------------- For Drip Type 6 Teams With Drip App ------------------------------------------>
+									<ng-select
+										*ngIf="
+											!showUserActivityScoreDDOption &&
+											dependancyDrip &&
+											dependancyDrip.dripType == 'DripApp with sharing on Teams' &&
+											showImageDripOption &&
+											!showQuestionList
+										"
+										[items]="user_action_type_without_activity_score_for_teams_with_drip_app"
+										class="ng-select-wrap"
+										placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.UserAction.placeholder' | translate }}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="userAction"
+										(change)="selectTimeIntoDrip()">
+									</ng-select>
+
+									<ng-select
+										*ngIf="
+											((showUserActivityScoreDDOption && showImageDripOption) ||
+												(showQuickReplyList && !showTrackingLink)) &&
+											dependancyDrip &&
+											dependancyDrip.dripType === 'Only WhatsApp'
+										"
+										[items]="user_action_type2"
+										class="ng-select-wrap"
+										placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.UserAction.placeholder' | translate }}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="userAction"
+										(change)="selectTimeIntoDrip()">
+									</ng-select>
+
+									<ng-select
+										*ngIf="
+											((showUserActivityScoreDDOption && showImageDripOption) ||
+												(showQuickReplyList && showTrackingLink)) &&
+											dependancyDrip &&
+											dependancyDrip.dripType === 'Only WhatsApp'
+										"
+										[items]="user_action_type_with_external_link"
+										class="ng-select-wrap"
+										placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.UserAction.placeholder' | translate }}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="userAction"
+										(change)="selectTimeIntoDrip()">
+									</ng-select>
+
+									<ng-select
+										*ngIf="
+											!showUserActivityScoreDDOption &&
+											dependancyDrip &&
+											dependancyDrip.dripType === 'Only WhatsApp' &&
+											showImageDripOption &&
+											!showQuickReplyList &&
+											!showQuestionList &&
+											!showTrackingLink
+										"
+										[items]="user_action_type_without_activity_score2"
+										class="ng-select-wrap"
+										placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.UserAction.placeholder' | translate }}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="userAction"
+										(change)="selectTimeIntoDrip()">
+									</ng-select>
+
+									<ng-select
+										*ngIf="
+											!showUserActivityScoreDDOption &&
+											dependancyDrip &&
+											dependancyDrip.dripType === 'Only WhatsApp' &&
+											showImageDripOption &&
+											!showQuickReplyList &&
+											!showQuestionList &&
+											showTrackingLink
+										"
+										[items]="user_action_type_with_external_link_without_activity_score2"
+										class="ng-select-wrap"
+										placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.UserAction.placeholder' | translate }}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="userAction"
+										(change)="selectTimeIntoDrip()">
+									</ng-select>
+
+									<ng-select
+										*ngIf="!showImageDripOption && dependancyDrip.dripType === 'Only DripApp' && !showQuestionList"
+										[items]="user_action_type_list_for_image_drip"
+										class="ng-select-wrap"
+										placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.UserAction.placeholder' | translate }}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="userAction"
+										(change)="selectTimeIntoDrip()">
+									</ng-select>
+									<ng-select
+										*ngIf="
+											!showImageDripOption &&
+											['DripApp with sharing on WhatsApp', 'DripApp with sharing on Email'].indexOf(
+												dependancyDrip.dripType
+											) != -1 &&
+											!showQuestionList
+										"
+										[items]="user_action_type_list_for_image_drip2"
+										class="ng-select-wrap"
+										placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.UserAction.placeholder' | translate }}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="userAction"
+										(change)="selectTimeIntoDrip()">
+									</ng-select>
+
+									<!-------------------------------------------------------------- For Drip Type 6 Teams With Drip App ------------------------------------------>
+									<ng-select
+										*ngIf="
+											!showImageDripOption &&
+											dependancyDrip.dripType == 'DripApp with sharing on Teams' &&
+											!showQuestionList
+										"
+										[items]="user_action_type_list_for_image_drip2_for_teams_with_drip_app"
+										class="ng-select-wrap"
+										placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.UserAction.placeholder' | translate }}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="userAction"
+										(change)="selectTimeIntoDrip()">
+									</ng-select>
+
+									<div class="error" *ngIf="f2.userAction.errors && f2.userAction.touched">
+										<div *ngIf="f2.userAction.errors.required">
+											{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.UserAction.error' | translate }}
+										</div>
+									</div>
+								</div>
+
+								<div
+									*ngIf="
+										[
+											'Not read on channel',
+											'Not read on drip app',
+											'Drip Action not taken',
+											'Drip submit Action not taken'
+										].includes(dripFlowDripForm.value.userAction)
+									">
+									<div
+										class="col-md-2 form-group"
+										[ngClass]="{
+											'has-error': f2.within.invalid && (f2.within.dirty || f2.within.touched),
+											'has-success': f2.within.valid && (f2.within.dirty || f2.within.touched)
+										}">
+										<label>{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.EndDate.within' | translate }}</label>
+										<input
+											type="number"
+											name="within"
+											id="within"
+											placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.EndDate.within' | translate }}"
+											formControlName="within"
+											class="form-control" />
+										<div class="error" *ngIf="f2.within.errors && f2.within.touched">
+											<div *ngIf="f2.within.errors.required">
+												{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.EndDate.error' | translate }}
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div
+									class="form-group col-md-2"
+									[ngClass]="{
+										'has-error': f2.sendAfter.invalid && (f2.sendAfter.dirty || f2.sendAfter.touched),
+										'has-success': f2.sendAfter.valid && (f2.sendAfter.dirty || f2.sendAfter.touched)
+									}">
+									<label class="date-div">
+										{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.SendAfter.title' | translate }}
+									</label>
+									<input type="number" class="form-control" formControlName="sendAfter" />
+									<div class="error" *ngIf="f2.sendAfter.errors && f2.sendAfter.touched">
+										<div *ngIf="f2.sendAfter.errors.required">
+											{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.SendAfter.error' | translate }}
+										</div>
+									</div>
+								</div>
+
+								<!-- <div>
+									<div
+										class="col-md-12"
+										*ngIf="
+											[
+												'Not read on channel',
+												'Not read on drip app',
+												'Drip Action not taken',
+												'Drip submit Action not taken'
+											].includes(dripFlowDripForm.value.userAction)
+										">
+										<div class="row">
+											<div
+												class="col-md-3 form-group"
+												[ngClass]="{
+													'has-error': f2.within.invalid && (f2.within.dirty || f2.within.touched),
+													'has-success': f2.within.valid && (f2.within.dirty || f2.within.touched)
+												}">
+												<label>{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.EndDate.within' | translate }}</label>
+												<input
+													type="number"
+													name="within"
+													id="within"
+													placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.EndDate.within' | translate }}"
+													formControlName="within"
+													class="form-control" />
+												<div class="error" *ngIf="f2.within.errors && f2.within.touched">
+													<div *ngIf="f2.within.errors.required">
+														{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.EndDate.error' | translate }}
+													</div>
+												</div>
+											</div>
+
+											<div
+												class="col-md-3 form-group"
+												[ngClass]="{
+													'has-error':
+														f2.dripActionEndTimeId.invalid &&
+														(f2.dripActionEndTimeId.dirty || f2.dripActionEndTimeId.touched),
+													'has-success':
+														f2.dripActionEndTimeId.valid &&
+														(f2.dripActionEndTimeId.dirty || f2.dripActionEndTimeId.touched)
+												}">
+												<label>
+													{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.EndTime.title' | translate }}
+												</label>
+												<ng-select
+													[items]="timePicker"
+													class="ng-select-wrap"
+													placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.EndTime.placeholder' | translate }}"
+													bindLabel="time"
+													bindValue="id"
+													[multiple]="false"
+													[closeOnSelect]="true"
+													[searchable]="true"
+													formControlName="dripActionEndTimeId"
+													(change)="selectTimeIntoDrip()"
+													(change)="DateChangeForDripTriggerDate()">
+												</ng-select>
+												<div class="error" *ngIf="f2.dripActionEndTimeId.errors && f2.dripActionEndTimeId.touched">
+													<div *ngIf="f2.dripActionEndTimeId.errors.required">
+														{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.EndTime.error' | translate }}
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div> -->
+							</div>
+						</div>
+
+						<div class="col-md-12" *ngIf="f2.userAction.value == 'Activity Outcome'">
+							<div class="row" *ngIf="showQuestionList">
+								<div
+									class="col-md-6 form-group"
+									[ngClass]="{
+										'has-error': f2.DripQuestionId.invalid && (f2.DripQuestionId.dirty || f2.DripQuestionId.touched),
+										'has-success': f2.DripQuestionId.valid && (f2.DripQuestionId.dirty || f2.DripQuestionId.touched)
+									}">
+									<label> {{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.questionList.title' | translate }}</label>
+
+									<ng-select
+										[items]="questionList"
+										class="ng-select-wrap"
+										placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.questionList.placeholder' | translate }}"
+										bindLabel="question"
+										bindValue="id"
+										[multiple]="false"
+										[searchable]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="DripQuestionId"
+										(change)="selectQuestion($event)">
+									</ng-select>
+									<div class="error" *ngIf="f2.DripQuestionId.errors && f2.DripQuestionId.touched">
+										<div *ngIf="f2.DripQuestionId.errors.required">
+											{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.questionList.error' | translate }}
+										</div>
+									</div>
+								</div>
+							</div>
+							<div
+								class="row"
+								*ngIf="
+									!showPoolOption &&
+									!showQuickReplyList &&
+									(!showQuestionList || (showQuestionList && selctedRatingScaleQuestion))
+								">
+								<div
+									class="col-md-4 form-group"
+									[ngClass]="{
+										'has-error':
+											f2.activityScoreType.invalid && (f2.activityScoreType.dirty || f2.activityScoreType.touched),
+										'has-success':
+											f2.activityScoreType.valid && (f2.activityScoreType.dirty || f2.activityScoreType.touched)
+									}">
+									<label> {{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.ActivityScoreType.title' | translate }}</label>
+
+									<ng-select
+										[items]="activity_score_type_list"
+										class="ng-select-wrap"
+										placeholder="{{
+											'Pages.DripFlow.AddEdit.BuildYourDripFlow.ActivityScoreType.placeholder' | translate
+										}}"
+										bindLabel="name"
+										bindValue="name"
+										[multiple]="false"
+										[searchable]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="activityScoreType">
+									</ng-select>
+									<div class="error" *ngIf="f2.activityScoreType.errors && f2.activityScoreType.touched">
+										<div *ngIf="f2.activityScoreType.errors.required">
+											{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.ActivityScoreType.error' | translate }}
+										</div>
+									</div>
+								</div>
+								<div
+									class="form-group col-md-2"
+									[ngClass]="{
+										'has-error': f2.score.invalid && (f2.score.dirty || f2.score.touched),
+										'has-success': f2.score.valid && (f2.score.dirty || f2.score.touched)
+									}">
+									<label class="date-div" *ngIf="!showQuestionList">{{
+										'Pages.DripFlow.AddEdit.BuildYourDripFlow.Score.title' | translate
+									}}</label>
+									<label class="date-div" *ngIf="showQuestionList && selctedRatingScaleQuestion">{{
+										'Pages.DripFlow.AddEdit.BuildYourDripFlow.level.title' | translate
+									}}</label>
+									<input type="number" class="form-control" formControlName="score" />
+									<div class="error" *ngIf="f2.score.errors && f2.score.touched">
+										<div *ngIf="f2.score.errors.required">
+											{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.Score.error' | translate }}
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="row" *ngIf="showPoolOption && !showQuestionList">
+								<div
+									class="col-md-4 form-group"
+									[ngClass]="{
+										'has-error': f2.poolOptionType.invalid && (f2.poolOptionType.dirty || f2.poolOptionType.touched),
+										'has-success': f2.poolOptionType.valid && (f2.poolOptionType.dirty || f2.poolOptionType.touched)
+									}">
+									<label> {{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.PoolActivityOption.title' | translate }}</label>
+
+									<ng-select
+										[items]="pool_activity_option_list"
+										class="ng-select-wrap"
+										placeholder="{{
+											'Pages.DripFlow.AddEdit.BuildYourDripFlow.PoolActivityOption.placeholder' | translate
+										}}"
+										bindLabel="name"
+										bindValue="name"
+										[multiple]="false"
+										[searchable]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="poolOptionType">
+									</ng-select>
+									<div class="error" *ngIf="f2.poolOptionType.errors && f2.poolOptionType.touched">
+										<div *ngIf="f2.poolOptionType.errors.required">
+											{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.PoolActivityOption.error' | translate }}
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<!-- Only For Question's Options -->
+							<div class="row" *ngIf="showPoolOption && showQuestionList">
+								<div
+									class="col-md-6 form-group"
+									[ngClass]="{
+										'has-error': f2.poolOptionType.invalid && (f2.poolOptionType.dirty || f2.poolOptionType.touched),
+										'has-success': f2.poolOptionType.valid && (f2.poolOptionType.dirty || f2.poolOptionType.touched)
+									}">
+									<label> {{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.questionsOption.title' | translate }}</label>
+
+									<ng-select
+										[items]="pool_activity_option_list"
+										class="ng-select-wrap"
+										placeholder="{{
+											'Pages.DripFlow.AddEdit.BuildYourDripFlow.questionsOption.placeholder' | translate
+										}}"
+										bindLabel="name"
+										bindValue="name"
+										[multiple]="false"
+										[searchable]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="poolOptionType">
+									</ng-select>
+									<div class="error" *ngIf="f2.poolOptionType.errors && f2.poolOptionType.touched">
+										<div *ngIf="f2.poolOptionType.errors.required">
+											{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.questionsOption.error' | translate }}
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="row" *ngIf="showQuickReplyList">
+								<div
+									class="col-md-4 form-group"
+									[ngClass]="{
+										'has-error': f2.quickReply.invalid && (f2.quickReply.dirty || f2.quickReply.touched),
+										'has-success': f2.quickReply.valid && (f2.quickReply.dirty || f2.quickReply.touched)
+									}">
+									<label> {{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.qulickReplyList.title' | translate }}</label>
+
+									<ng-select
+										[items]="quickReplayList"
+										class="ng-select-wrap"
+										placeholder="{{
+											'Pages.DripFlow.AddEdit.BuildYourDripFlow.qulickReplyList.placeholder' | translate
+										}}"
+										bindLabel="label"
+										bindValue="label"
+										[multiple]="false"
+										[searchable]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="quickReply">
+									</ng-select>
+									<div class="error" *ngIf="f2.quickReply.errors && f2.quickReply.touched">
+										<div *ngIf="f2.quickReply.errors.required">
+											{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.qulickReplyList.error' | translate }}
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div
+							class="form-group col-md-12"
+							[ngClass]="{
+								'has-error': f2.dripName.invalid && (f2.dripName.dirty || f2.dripName.touched),
+								'has-success': f2.dripName.valid && (f2.dripName.dirty || f2.dripName.touched)
+							}">
+							<label>{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.Action.title' | translate }}</label>
+							<input
+								type="text"
+								class="form-control"
+								placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.Action.placeholder' | translate }}"
+								formControlName="dripName" />
+							<div class="error" *ngIf="f2.dripName.errors && f2.dripName.touched">
+								<div *ngIf="f2.dripName.errors.required">
+									{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.Action.error' | translate }}
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<hr />
+
+				<div class="row">
+					<div class="col-md-8">
+						<p style="float: left; margin-top: -7px; margin-bottom: -7px">
+							{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.dripflowvisible' | translate }}
+						</p>
+						<p style="float: left; margin-top: 16px; margin-bottom: -7px">
+							{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.missingVariablenote' | translate }}
+						</p>
+					</div>
+					<div
+						class="col-md-4"
+						*ngIf="editDripIndex == null && canAddMoreDrip"
+						style="display: flex; flex-direction: row; justify-content: flex-end; align-items: center; height: 6rem">
+						<a
+							style="float: right; font-size: 0.875rem; color: grey"
+							*ngIf="this.editCampaign && this.editCampaign.type != 'view'">
+							<div class="info-icon-div">
+								<div style="margin-right: 5px">
+									<label>{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.Addonemoredriptodripflow' | translate }}</label>
+								</div>
+								<div>
+									<label style="cursor: pointer">
+										<span class="info-icon" [innerHTML]="iconObject['add_icon_35']" (click)="addMoreDrip()"></span>
+									</label>
+								</div>
+							</div>
+						</a>
+					</div>
+
+					<div
+						class="col-md-4"
+						*ngIf="editDripIndex != null"
+						style="margin-top: 6.5px; margin-bottom: 6.5px"
+						style="display: flex; flex-direction: row; justify-content: flex-end; align-items: center; height: 6rem">
+						<a style="float: right; font-size: 0.8rem; color: grey">
+							<button
+								class="btn-xs action-delete-btn"
+								[ngStyle]="{
+									color: appService.whiteBrandingColor,
+									border: '0.5px solid' + appService.whiteBrandingColor,
+								}"
+								(click)="cancelEdit()"
+								style="padding: 6px 24px; margin-left: 0px; margin-right: 10px">
+								{{ 'Utils.Action.cancel' | translate }}
+							</button>
+
+							<button
+								class="btn-xs action-edit-btn"
+								(click)="addMoreDrip()"
+								[ngStyle]="{
+									'background-color': appService.whiteBrandingColor,
+									border: '1px solid' + appService.whiteBrandingColor,
+									color: 'white'
+								}"
+								[ngClass]="{
+									'btn-disabled':
+										(this.editCampaign && this.editCampaign.type == 'view') ||
+										editButtonDisableByUSeingStatusForView(dripStatus)
+								}"
+								[disabled]="
+									(this.editCampaign && this.editCampaign.type == 'view') ||
+									editButtonDisableByUSeingStatusForView(dripStatus)
+								"
+								style="padding: 6px 32px">
+								{{ 'Utils.Action.save' | translate }}
+							</button>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+
+	<!-- ---------------------------------Selected Drip For Drip Flow Table--------------------------------------------------------- -->
+
+	<div
+		class="row"
+		style="margin-left: -15px; margin-right: -15px; margin-top: 2rem"
+		*ngIf="selectedDripForDripFlow.length > 0">
+		<!-- Table -->
+		<div class="panel panel-white" style="border-radius: 12px 12px 12px 12px; margin: 0px">
+			<div class="sub table-responsive">
+				<table class="table table-striped table-hover" id="sample-table-3">
+					<thead>
+						<tr style="height: 80px">
+							<th
+								class="left tb-head-bg tb-line-height"
+								style="
+									padding-left: 1rem;
+									width: 20vw;
+									word-wrap: break-word;
+									border-radius: 10px 0px 0px 0px !important;
+								">
+								{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.Table.Header.dripname' | translate }}
+							</th>
+							<th class="left tb-head-bg tb-line-height" style="word-wrap: break-word">
+								{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.Table.Header.dripflowtype' | translate }}
+							</th>
+							<!-- <th class="left tb-head-bg" style="width: 12vw;word-wrap: break-word;">Trigger Rule</th> -->
+							<th class="left tb-head-bg tb-line-height" style="word-wrap: break-word">
+								{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.Table.Header.triggerdate' | translate }}
+							</th>
+							<th class="left tb-head-bg tb-line-height">
+								{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.Table.Header.status' | translate }}
+							</th>
+							<th
+								class="left tb-head-bg tb-line-height"
+								style="border-radius: 0px 10px 0px 0px !important; width: 186px; min-width: 186px; max-width: 186px">
+								{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.Table.Header.actions' | translate }}
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr *ngFor="let drip of selectedDripForDripFlow; let i = index" style="height: 5em">
+							<td
+								class="pt-05"
+								style="max-width: 18vw; word-wrap: break-word; padding-top: 15px !important; padding-left: 1rem">
+								<p
+									style="
+										line-height: 1.6em;
+										max-height: 3.5em;
+										overflow: hidden;
+										text-overflow: ellipsis;
+										display: -webkit-box;
+										-webkit-box-orient: vertical;
+										-webkit-line-clamp: 2;
+									">
+									{{ drip.dripName }}
+								</p>
+							</td>
+							<td class="pt-05" style="max-width: 18vw; word-wrap: break-word; padding-top: 15px !important">
+								<p
+									style="
+										line-height: 1.6em;
+										max-height: 3.5em;
+										overflow: hidden;
+										text-overflow: ellipsis;
+										display: -webkit-box;
+										-webkit-box-orient: vertical;
+										-webkit-line-clamp: 2;
+									">
+									{{ drip.dripFlowType }}
+								</p>
+							</td>
+							<!-- <td class="pt-05" style="max-width:18vw;word-wrap: break-word;padding-top: 15px !important;">
+                                <p style="line-height: 1.6em;max-height: 3.5em;overflow: hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 2;">
+                                    {{drip.dripTriggerRule}}
+                                </p>
+                            </td> -->
+							<td class="pt-05" style="max-width: 18vw; word-wrap: break-word; padding-top: 15px !important">
+								<p
+									style="
+										line-height: 1.6em;
+										max-height: 3.5em;
+										overflow: hidden;
+										text-overflow: ellipsis;
+										display: -webkit-box;
+										-webkit-box-orient: vertical;
+										-webkit-line-clamp: 2;
+									">
+									{{ drip.dripTriggerDate != null ? (drip.dripTriggerDate | DateFormat) : '-' }}
+									{{ drip.dripTriggerDate != null ? drip.dripTriggerActualTime : '' }}
+								</p>
+							</td>
+							<td class="pt-05" style="padding-top: 13px !important">
+								<span *ngIf="drip.status == 'Delivered'" class="status-delivered">{{
+									'Utils.Status.delivered' | translate
+								}}</span>
+								<span *ngIf="drip.status == 'Removed'" class="status-removed">{{
+									'Utils.Status.removed' | translate
+								}}</span>
+								<span *ngIf="drip.status == 'Deleted'" class="status-deleted">{{
+									'Utils.Status.deleted' | translate
+								}}</span>
+								<span *ngIf="drip.status == 'PFA'" class="status-pfa">{{ 'Utils.Status.pfa' | translate }}</span>
+								<span *ngIf="drip.status == 'Scheduled'" class="status-scheduled">{{
+									'Utils.Status.scheduled' | translate
+								}}</span>
+								<span *ngIf="drip.status == 'Delivering'" class="status-delivering">{{
+									'Utils.Status.delivering' | translate
+								}}</span>
+								<span *ngIf="drip.status == 'Performing'" class="status-performing">{{
+									'Utils.Status.performing' | translate
+								}}</span>
+								<span *ngIf="drip.status == 'Performed'" class="status-performed">{{
+									'Utils.Status.performed' | translate
+								}}</span>
+							</td>
+							<td class="left" style="padding: 15px 5px 15px 9px">
+								<div class="visible-md visible-lg visible-sm visible-xs">
+									<button
+										class="btn-xs action-edit-btn"
+										[ngStyle]="{
+											'background-color': appService.whiteBrandingColor,
+											border: '1px solid' + appService.whiteBrandingColor,
+											color: 'white'
+										}"
+										*ngIf="editButtonDisableByUSeingStatusForEdit(drip.status)"
+										(click)="editDrip(i, drip.status)"
+										[disabled]="this.editCampaign && this.editCampaign.type == 'view'"
+										[ngClass]="{
+											'edit-disabled':
+												editButtonDisableByUSeingStatus(drip.status) ||
+												(this.editCampaign && this.editCampaign.type == 'view')
+										}"
+										style="padding: 4px 26px">
+										{{ 'Utils.Action.edit' | translate }}
+									</button>
+									<button
+										class="btn-xs action-delete-btn"
+										[ngStyle]="{
+											color: appService.whiteBrandingColor,
+											border: '0.5px solid' + appService.whiteBrandingColor,
+										}"
+										(click)="viewDrip(i, drip.status)"
+										*ngIf="editButtonDisableByUSeingStatusForView(drip.status)"
+										style="margin-left: 0px; padding: 4px 24px">
+										{{ 'Utils.Action.view' | translate }}
+									</button>
+									<button
+										class="btn-xs action-delete-btn"
+										(click)="remove(i)"
+										[ngStyle]="{
+											color: appService.whiteBrandingColor,
+											border: '0.5px solid' + appService.whiteBrandingColor,
+										}"
+										[disabled]="this.editCampaign.type == 'view'"
+										[ngClass]="{
+											'delete-disabled':
+												removeButtonDisableByUsingStatus(drip.status) ||
+												(this.editCampaign && this.editCampaign.type == 'view')
+										}"
+										style="padding: 4px 11px">
+										{{ 'Utils.Action.remove' | translate }}
+									</button>
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+	<div class="row" *ngIf="f.successMetrics.value === true">
+		<div class="row card-body" style="margin: 0px">
+			<div style="float: left; margin-top: 1rem">
+				<form [formGroup]="dripFlowDetailsForm">
+					<div class="form-group">
+						<div style="display: flex">
+							<!-- <label>{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.addSuccessMetrics' | translate }}</label> -->
+							<div>
+								<label class="switch">
+									<input
+										type="checkbox"
+										class="form-control js-switch"
+										[disabled]="disableAddMetrics"
+										formControlName="successMetrics" />
+									<span
+										class="slider round"
+										[ngStyle]="{ 'background-color': f.successMetrics.value ? appService.whiteBrandingColor : '#ccc' }">
+									</span>
+								</label>
+							</div>
+							<div style="margin-top: 4px; margin-left: 0.5rem">
+								<label>{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.addSuccessMetrics.title' | translate }}</label>
+							</div>
+							<div style="margin-top: 0.2rem; margin-left: 0.5rem">
+								<!-- <img
+									src="assets/images/info_icon.svg"
+									style="width: 1.5rem"
+									title="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.addSuccessMetrics.info' | translate }}" /> -->
+								<span
+									[innerHTML]="iconObject['info_icon_1_6_rem']"
+									title="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.addSuccessMetrics.info' | translate }}"></span>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<div style="margin-top: 1rem" *ngIf="f.successMetrics.value === true">
+		<div class="row section-wrapper">
+			<div class="form-title">
+				<span>{{ 'Pages.DripFlow.AddEdit.successMetrics.title' | translate }}</span>
+			</div>
+			<div class="row card-body">
+				<div *ngIf="successMetricsList?.length > 0">
+					<div class="row">
+						<div class="col-md-6" *ngFor="let metric of successMetricsList; let i = index">
+							<div class="row" [ngStyle]="{ 'margin-top': i != 0 && i != 1 ? '1.2rem' : '0rem' }">
+								<div class="col-md-6">
+									<p style="color: #5b5b60">{{ metric.label }}</p>
+								</div>
+								<div class="col-md-2">
+									<div class="visible-md visible-lg visible-sm visible-xs">
+										<button
+											[ngClass]="{
+												'btn-disabled': metric?.status !== 'Scheduled'
+											}"
+											(click)="editSuccessMetrics(i)"
+											[disabled]="metric?.status !== 'Scheduled' && metric?.status !== 'PFA'"
+											class="btn-xs action-edit-btn"
+											[ngStyle]="{
+												'background-color': appService.whiteBrandingColor,
+												border: '1px solid' + appService.whiteBrandingColor,
+												color: 'white'
+											}">
+											{{ 'Utils.Action.edit' | translate }}
+										</button>
+									</div>
+								</div>
+								<div class="col-md-1">
+									<img (click)="deleteMetric(i)" src="assets/images/cancel_icon.svg" style="width: 1.5rem" />
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!------------------------------- Add Success Metrics Section --------------------------->
+				<div *ngIf="successMetricsList.length <= 5" (click)="addSuccessMetrics()">
+					<div
+						style="display: flex; align-items: center; cursor: pointer"
+						[ngStyle]="{ 'margin-top': successMetricsList.length > 0 ? '1rem' : '0rem' }">
+						<div>
+							<!-- <img src="assets/images/add_icon.svg" style="width: 35px" /> -->
+							<span [innerHTML]="iconObject['add_icon_35']"></span>
+						</div>
+						<div class="add-metrics-text">
+							<p *ngIf="successMetricsList.length == 0">
+								{{ 'Pages.DripFlow.AddEdit.successMetrics.addMerics' | translate }}
+							</p>
+							<p *ngIf="successMetricsList.length != 0">
+								{{ 'Pages.DripFlow.AddEdit.successMetrics.addAnotherMetrics' | translate }}
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- ---------------------------------------Save as a Draft and Publish Buttons------------------------------------------- -->
+	<div class="row">
+		<div class="row card-body" style="margin: 0px">
+			<div style="float: left; margin-top: 2rem" *ngIf="f.successMetrics.value === false">
+				<form [formGroup]="dripFlowDetailsForm">
+					<div class="form-group">
+						<div style="display: flex">
+							<!-- <label>{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.addSuccessMetrics' | translate }}</label> -->
+							<div>
+								<label class="switch">
+									<input
+										type="checkbox"
+										[disabled]="disableAddMetrics"
+										class="form-control js-switch"
+										formControlName="successMetrics" />
+									<span
+										class="slider round"
+										[ngStyle]="{ 'background-color': f.successMetrics.value ? appService.whiteBrandingColor : '#ccc' }">
+									</span>
+								</label>
+							</div>
+							<div style="margin-top: 4px; margin-left: 0.5rem">
+								<label>{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.addSuccessMetrics.title' | translate }}</label>
+							</div>
+							<div style="margin-top: 0.2rem; margin-left: 0.5rem">
+								<!-- <img
+									src="assets/images/info_icon.svg"
+									style="width: 1.5rem"
+									title="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.addSuccessMetrics.info' | translate }}" /> -->
+								<span
+									[innerHTML]="iconObject['info_icon_1_6_rem']"
+									title="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.addSuccessMetrics.info' | translate }}"></span>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+			<div style="float: right; margin-top: 2rem">
+				<button
+					class="btn btn-o btn-primary border_radius functionalBtn"
+					style="
+						margin-right: 20px;
+						background-color: lightgray !important;
+						color: black;
+						border: 1px solid lightgray !important;
+					"
+					(click)="cancel()">
+					{{ 'Utils.cancel' | translate }}
+				</button>
+				<button
+					*ngIf="canAddMoreDrip"
+					class="btn border_radius functionalBtn"
+					style="
+						margin-right: 20px;
+						background-color: lightgray !important;
+						color: black;
+						border: 1px solid lightgray !important;
+					"
+					(click)="saveDripFlow(false)"
+					[disabled]="this.editCampaign && this.editCampaign.type == 'view'">
+					{{ 'Utils.Action.saveasdraft' | translate }}
+				</button>
+				<button
+					class="btn border_radius functionalBtn"
+					style="margin-right: 0px"
+					[ngStyle]="{
+						'background-color': appService.whiteBrandingColor,
+						border: '1px solid' + appService.whiteBrandingColor,
+						color: 'white'
+					}"
+					(click)="saveDripFlow(true)"
+					[disabled]="this.editCampaign && this.editCampaign.type == 'view'">
+					{{ 'Utils.Action.publishdripflow' | translate }}
+				</button>
+			</div>
+		</div>
+	</div>
+
+	<!-- learner group save modal -->
+	<div
+		class="modal fade credit-note"
+		id="confirmationModal"
+		tabindex="-1"
+		role="dialog"
+		aria-labelledby="myModalLabel"
+		aria-hidden="true"
+		data-backdrop="static"
+		data-keyboard="false">
+		<div class="modal-dialog" style="width: 50%; margin-top: 20%; margin-left: 35%">
+			<div class="modal-content">
+				<div
+					class="modal-header"
+					[ngStyle]="{
+						'background-color': appService.whiteBrandingColor,
+						border: '1px solid' + appService.whiteBrandingColor,
+						color: 'white'
+					}">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="onCancel()">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title" id="myModalLabel">{{ 'Pages.DripFlow.AddEdit.Modal.title' | translate }}</h4>
+				</div>
+				<div class="modal-body">
+					<p>{{ 'Pages.DripFlow.AddEdit.Modal.placeholder' | translate }}</p>
+					<div class="visible-md visible-lg visible-sm visible-xs" style="text-align: right; margin-bottom: 10px">
+						<a
+							class="btn-xs action-edit-btn"
+							[ngStyle]="{
+								'background-color': appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+								color: 'white'
+							}"
+							style="margin-right: 15px; padding: 7px 20px; border-radius: 30px; font-size: 0.9rem"
+							(click)="onProceed()"
+							>{{ 'Utils.Action.proceed' | translate }}</a
+						>
+						<a
+							class="btn-xs action-pause-btn"
+							[ngStyle]="{
+								color: appService.whiteBrandingColor,
+								border: '0.5px solid' + appService.whiteBrandingColor,
+							}"
+							style="padding: 7px 23px; border-radius: 30px; font-size: 0.9rem"
+							(click)="onCancel()"
+							>{{ 'Utils.Action.cancel' | translate }}</a
+						>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- //createDrip MOdal -->
+	<div
+		class="modal fade credit-note"
+		id="createdripModal"
+		tabindex="-1"
+		role="dialog"
+		aria-labelledby="myModalLabel"
+		aria-hidden="true"
+		data-backdrop="static"
+		data-keyboard="false">
+		<div class="modal-dialog" style="width: 50%; margin-top: 20%; margin-left: 35%">
+			<div class="modal-content">
+				<div
+					class="modal-header"
+					[ngStyle]="{
+						'background-color': appService.whiteBrandingColor,
+						border: '1px solid' + appService.whiteBrandingColor,
+						color: 'white'
+					}">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="cancel()">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title" id="myModalLabel">
+						{{ 'Pages.DripFlow.AddEdit.Modal.createDriptitle' | translate }}
+					</h4>
+				</div>
+				<div class="modal-body">
+					<p>{{ 'Pages.DripFlow.AddEdit.Modal.createDripplaceholder' | translate }}</p>
+					<div class="visible-md visible-lg visible-sm visible-xs" style="text-align: right; margin-bottom: 10px">
+						<a
+							class="btn-xs action-edit-btn"
+							[ngStyle]="{
+								'background-color': appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+								color: 'white'
+							}"
+							style="margin-right: 15px; padding: 7px 20px; border-radius: 30px; font-size: 0.9rem"
+							(click)="onProceedDrip()"
+							>{{ 'Utils.Action.proceed' | translate }}</a
+						>
+						<a
+							class="btn-xs action-pause-btn"
+							[ngStyle]="{
+								color: appService.whiteBrandingColor,
+								border: '0.5px solid' + appService.whiteBrandingColor,
+							}"
+							style="padding: 7px 23px; border-radius: 30px; font-size: 0.9rem"
+							(click)="onCancelDrip()"
+							>{{ 'Utils.Action.cancel' | translate }}</a
+						>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Select Client List -->
+	<div
+		class="modal fade credit-note"
+		id="selecteClientList"
+		tabindex="-1"
+		role="dialog"
+		aria-labelledby="myModalLabel"
+		aria-hidden="true"
+		data-backdrop="static"
+		data-keyboard="false">
+		<div class="modal-dialog" style="width: 34%; margin-top: 10%; margin-left: 34%">
+			<div class="modal-content">
+				<div
+					class="modal-header"
+					[ngStyle]="{
+						'background-color': appService.whiteBrandingColor,
+						border: '1px solid' + appService.whiteBrandingColor,
+						color: 'white'
+					}">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="cancelClientlistPopUp()">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title" id="myModalLabel">
+						<span>{{ 'Pages.DripFlow.AddEdit.Modal.SelectClientForRole.Account.title' | translate }}</span>
+					</h4>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-md-12 form-group" style="margin-top: -5px">
+							<label>{{ 'Pages.DripFlow.AddEdit.Modal.SelectClientForRole.Account.title' | translate }}</label>
+							<ng-select
+								[items]="client_List"
+								class="ng-select-wrap"
+								placeholder="{{ 'Pages.DripFlow.AddEdit.Modal.SelectClientForRole.Account.placeholder' | translate }}"
+								bindLabel="nameWithClientId"
+								bindValue="id"
+								[multiple]="false"
+								[clearable]="true"
+								[closeOnSelect]="true"
+								[searchable]="true"
+								[(ngModel)]="ownerClient.id"
+								(change)="selctedClient($event)">
+							</ng-select>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12 form-group" style="margin-top: -5px">
+							<label>{{ 'Pages.DripFlow.AddEdit.Modal.SelectClientForRole.Role.title' | translate }}</label>
+							<ng-select
+								[items]="ownUserRoleList"
+								class="ng-select-wrap"
+								placeholder="{{ 'Pages.DripFlow.AddEdit.Modal.SelectClientForRole.Role.placeholder' | translate }}"
+								bindLabel="name"
+								bindValue="RoleId"
+								[multiple]="false"
+								[clearable]="true"
+								[closeOnSelect]="true"
+								[searchable]="true"
+								[(ngModel)]="ownerClient.RoleId"
+								(change)="selectRole($event)">
+							</ng-select>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12 form-group" style="margin-top: -5px">
+							<label>{{ 'Pages.DripFlow.AddEdit.Modal.SelectClientForRole.User.title' | translate }}</label>
+							<ng-select
+								[items]="userListForOwnList"
+								class="ng-select-wrap"
+								placeholder="{{ 'Pages.DripFlow.AddEdit.Modal.SelectClientForRole.User.placeholder' | translate }}"
+								bindLabel="fullName"
+								bindValue="id"
+								[multiple]="false"
+								[clearable]="true"
+								[closeOnSelect]="true"
+								[searchable]="true"
+								[(ngModel)]="ownerClient.UserId"
+								(change)="selctedUser($event)">
+							</ng-select>
+						</div>
+					</div>
+					<div
+						class="visible-md visible-lg visible-sm visible-xs"
+						style="text-align: right; margin-bottom: 0.75rem; margin-top: 1.5rem">
+						<a
+							class="btn-xs action-pause-btn"
+							[ngStyle]="{
+								color: appService.whiteBrandingColor,
+								border: '0.5px solid' + appService.whiteBrandingColor,
+							}"
+							style="padding: 7px 23px; border-radius: 30px; font-size: 0.9rem; margin-right: 10px"
+							(click)="cancelClientlistPopUp()"
+							>{{ 'Utils.Action.cancel' | translate }}</a
+						>
+						<a
+							class="btn-xs action-edit-btn"
+							[ngStyle]="{
+								'background-color': appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+								color: 'white'
+							}"
+							(click)="selectClient()"
+							style="margin-right: 9px; padding: 7px 20px; border-radius: 30px; font-size: 0.9rem"
+							>{{ 'Utils.ok' | translate }}</a
+						>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Contact Milestone Popuo -->
+	<div
+		class="modal fade credit-note"
+		id="contactMilestoneModel"
+		tabindex="-1"
+		role="dialog"
+		aria-labelledby="myModalLabel"
+		aria-hidden="true"
+		data-backdrop="static"
+		data-keyboard="false">
+		<div class="modal-dialog" style="width: 50%; margin-top: 15%; margin-left: 25%">
+			<div class="modal-content">
+				<div
+					class="modal-header"
+					[ngStyle]="{
+						'background-color': appService.whiteBrandingColor,
+						border: '1px solid' + appService.whiteBrandingColor,
+						color: 'white'
+					}">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="cancelMilestonePopup()">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title" id="myModalLabel">
+						{{ 'Pages.DripFlow.AddEdit.contactMiltstoneModal.title' | translate }}
+					</h4>
+				</div>
+				<div class="modal-body">
+					<p>{{ 'Pages.DripFlow.AddEdit.contactMiltstoneModal.noteTitle' | translate }}</p>
+					<ul class="contact-milestone" style="margin-bottom: 1.2rem; margin-top: 1rem">
+						<li>{{ 'Pages.DripFlow.AddEdit.contactMiltstoneModal.note_1' | translate }}</li>
+						<li>{{ 'Pages.DripFlow.AddEdit.contactMiltstoneModal.note_2' | translate }}</li>
+					</ul>
+
+					<p style="margin-bottom: 1.2rem">{{ 'Pages.DripFlow.AddEdit.contactMiltstoneModal.note_3' | translate }}</p>
+					<div class="visible-md visible-lg visible-sm visible-xs" style="text-align: right; margin-bottom: 10px">
+						<a
+							class="btn-xs action-edit-btn"
+							[ngStyle]="{
+								'background-color': appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+								color: 'white'
+							}"
+							style="margin-right: 15px; padding: 7px 20px; border-radius: 30px; font-size: 0.9rem"
+							(click)="saveDripFlow(drip_flow_status)"
+							>{{ 'Utils.Action.proceed' | translate }}</a
+						>
+						<a
+							class="btn-xs action-pause-btn"
+							[ngStyle]="{
+								color: appService.whiteBrandingColor,
+								border: '0.5px solid' + appService.whiteBrandingColor,
+							}"
+							style="padding: 7px 23px; border-radius: 30px; font-size: 0.9rem"
+							(click)="cancelMilestonePopup()"
+							>{{ 'Utils.Action.cancel' | translate }}</a
+						>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Add/Edit Success Metrics -->
+	<div
+		class="modal fade credit-note"
+		id="addEditSuccessMetricsModel"
+		tabindex="-1"
+		role="dialog"
+		aria-labelledby="myModalLabel"
+		aria-hidden="true"
+		data-backdrop="static"
+		data-keyboard="false">
+		<div class="modal-dialog" style="width: 65%; margin-top: 8%">
+			<div class="modal-content">
+				<div
+					class="modal-header"
+					[ngStyle]="{
+						'background-color': appService.whiteBrandingColor,
+						border: '1px solid' + appService.whiteBrandingColor,
+						color: 'white'
+					}">
+					<button
+						type="button"
+						class="close"
+						data-dismiss="modal"
+						aria-label="Close"
+						(click)="cancelSuccessMetricsPopup()">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title" id="myModalLabel">
+						{{ 'Pages.DripFlow.AddEdit.successMetricsModel.addTitle' | translate }}
+					</h4>
+				</div>
+				<div class="modal-body">
+					<!-- Success Metrics Forms -->
+					<div class="row">
+						<form [formGroup]="successMetricsForm">
+							<div class="col-md-6">
+								<div
+									class="form-group"
+									[ngClass]="{
+										'has-error': f3.DripCampIndex.invalid && (f3.DripCampIndex.dirty || f3.DripCampIndex.touched),
+										'has-success': f3.DripCampIndex.valid && (f3.DripCampIndex.dirty || f3.DripCampIndex.touched)
+									}">
+									<label> {{ 'Pages.DripFlow.AddEdit.successMetricsModel.form.dripName.title' | translate }}</label>
+
+									<ng-select
+										[items]="successMetricsDripList"
+										class="ng-select-wrap"
+										placeholder="{{
+											'Pages.DripFlow.AddEdit.successMetricsModel.form.dripName.placeholder' | translate
+										}}"
+										bindLabel="dripName"
+										bindValue="DripCampIndex"
+										[multiple]="true"
+										[searchable]="true"
+										[closeOnSelect]="false"
+										(change)="selectMetricsDrip($event)"
+										formControlName="DripCampIndex">
+									</ng-select>
+									<div class="error" *ngIf="f3.DripCampIndex.errors && f3.DripCampIndex.touched">
+										<div *ngIf="f3.DripCampIndex.errors.required">
+											{{ 'Pages.DripFlow.AddEdit.successMetricsModel.form.dripName.error' | translate }}
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<!-- ----------------------------------------All Metrics List as per Template Type ------------------------- -->
+
+							<div class="col-md-6">
+								<div
+									class="form-group"
+									[ngClass]="{
+										'has-error': f3.metrics.invalid && (f3.metrics.dirty || f3.metrics.touched),
+										'has-success': f3.metrics.valid && (f3.metrics.dirty || f3.metrics.touched)
+									}">
+									<label> {{ 'Pages.DripFlow.AddEdit.successMetricsModel.form.metrics.title' | translate }}</label>
+
+									<!-- -------------------------------------------------For Empty-------------------------------------------- -->
+									<ng-select
+										*ngIf="
+											(f3.tempType.value === null || f3.tempType.value === '') &&
+											(f3.dripType.value === '' || f3.dripType.value === null)
+										"
+										[items]="metrics_list_for_empty"
+										class="ng-select-wrap"
+										placeholder="{{
+											'Pages.DripFlow.AddEdit.successMetricsModel.form.metrics.placeholder' | translate
+										}}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[searchable]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="metrics"
+										(change)="selecteMetrics($event)">
+									</ng-select>
+
+									<!-- -------------------------------------------------For Mutiple Drip-------------------------------------------- -->
+									<ng-select
+										*ngIf="f3.tempType.value === 'Select All'"
+										[items]="metrics_list_for_multiple_drip"
+										class="ng-select-wrap"
+										placeholder="{{
+											'Pages.DripFlow.AddEdit.successMetricsModel.form.metrics.placeholder' | translate
+										}}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[searchable]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="metrics"
+										(change)="selecteMetrics($event)">
+									</ng-select>
+
+									<!-- -------------------------------------------------For Learning Content-------------------------------------------- -->
+									<!-- With External Link -->
+									<ng-select
+										*ngIf="
+											f3.tempType.value === 'Single Image' &&
+											isPresentExternalLink &&
+											f3.dripType.value != 'DripApp with sharing on Teams'
+										"
+										[items]="metrics_list_for_learning_content_with_external_link"
+										class="ng-select-wrap"
+										placeholder="{{
+											'Pages.DripFlow.AddEdit.successMetricsModel.form.metrics.placeholder' | translate
+										}}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[searchable]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="metrics"
+										(change)="selecteMetrics($event)">
+									</ng-select>
+
+									<!-- With External Link For Drip With Teams-->
+									<ng-select
+										*ngIf="
+											f3.tempType.value === 'Single Image' &&
+											isPresentExternalLink &&
+											f3.dripType.value === 'DripApp with sharing on Teams'
+										"
+										[items]="metrics_list_for_learning_content_with_external_link_for_drip_with_team"
+										class="ng-select-wrap"
+										placeholder="{{
+											'Pages.DripFlow.AddEdit.successMetricsModel.form.metrics.placeholder' | translate
+										}}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[searchable]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="metrics"
+										(change)="selecteMetrics($event)">
+									</ng-select>
+
+									<!-- Without External Link -->
+									<ng-select
+										*ngIf="
+											f3.tempType.value === 'Single Image' &&
+											!isPresentExternalLink &&
+											f3.dripType.value != 'DripApp with sharing on Teams'
+										"
+										[items]="metrics_list_for_learning_content_without_external_link"
+										class="ng-select-wrap"
+										placeholder="{{
+											'Pages.DripFlow.AddEdit.successMetricsModel.form.metrics.placeholder' | translate
+										}}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[searchable]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="metrics"
+										(change)="selecteMetrics($event)">
+									</ng-select>
+
+									<!-- Without External Link For Drip With TEAM-->
+									<ng-select
+										*ngIf="
+											f3.tempType.value === 'Single Image' &&
+											!isPresentExternalLink &&
+											f3.dripType.value === 'DripApp with sharing on Teams'
+										"
+										[items]="metrics_list_for_learning_content_without_external_link_for_drip_with_team"
+										class="ng-select-wrap"
+										placeholder="{{
+											'Pages.DripFlow.AddEdit.successMetricsModel.form.metrics.placeholder' | translate
+										}}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[searchable]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="metrics"
+										(change)="selecteMetrics($event)">
+									</ng-select>
+
+									<!-- -------------------------------------------------For Carousal-------------------------------------------- -->
+									<!-- With External Link -->
+									<ng-select
+										*ngIf="
+											f3.tempType.value === 'Carousel' &&
+											isPresentExternalLink &&
+											f3.dripType.value != 'DripApp with sharing on Teams'
+										"
+										[items]="metrics_list_for_carousal_with_external_link"
+										class="ng-select-wrap"
+										placeholder="{{
+											'Pages.DripFlow.AddEdit.successMetricsModel.form.metrics.placeholder' | translate
+										}}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[searchable]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="metrics"
+										(change)="selecteMetrics($event)">
+									</ng-select>
+
+									<!-- With External Link For Drip With Team -->
+									<ng-select
+										*ngIf="
+											f3.tempType.value === 'Carousel' &&
+											isPresentExternalLink &&
+											f3.dripType.value == 'DripApp with sharing on Teams'
+										"
+										[items]="metrics_list_for_carousal_with_external_link_for_drip_with"
+										class="ng-select-wrap"
+										placeholder="{{
+											'Pages.DripFlow.AddEdit.successMetricsModel.form.metrics.placeholder' | translate
+										}}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[searchable]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="metrics"
+										(change)="selecteMetrics($event)">
+									</ng-select>
+
+									<!-- Without External Link -->
+									<ng-select
+										*ngIf="
+											f3.tempType.value === 'Carousel' &&
+											!isPresentExternalLink &&
+											f3.dripType.value != 'DripApp with sharing on Teams'
+										"
+										[items]="metrics_list_for_carousal_without_external_link"
+										class="ng-select-wrap"
+										placeholder="{{
+											'Pages.DripFlow.AddEdit.successMetricsModel.form.metrics.placeholder' | translate
+										}}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[searchable]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="metrics"
+										(change)="selecteMetrics($event)">
+									</ng-select>
+
+									<!-- Without External Link For Drip With Teams -->
+									<ng-select
+										*ngIf="
+											f3.tempType.value === 'Carousel' &&
+											!isPresentExternalLink &&
+											f3.dripType.value == 'DripApp with sharing on Teams'
+										"
+										[items]="metrics_list_for_carousal_without_external_link_for_drip_with_teams"
+										class="ng-select-wrap"
+										placeholder="{{
+											'Pages.DripFlow.AddEdit.successMetricsModel.form.metrics.placeholder' | translate
+										}}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[searchable]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="metrics"
+										(change)="selecteMetrics($event)">
+									</ng-select>
+
+									<!-- -------------------------------------------------For Quiz or Quiz (Randomised)-------------------------------------------- -->
+									<ng-select
+										*ngIf="
+											(f3.tempType.value === 'Quiz' || f3.tempType.value === 'Quiz (Randomised)') &&
+											f3.dripType.value != 'DripApp with sharing on Teams'
+										"
+										[items]="metrics_list_for_quiz"
+										class="ng-select-wrap"
+										placeholder="{{
+											'Pages.DripFlow.AddEdit.successMetricsModel.form.metrics.placeholder' | translate
+										}}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[searchable]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="metrics"
+										(change)="selecteMetrics($event)">
+									</ng-select>
+
+									<!-- For Drip With Teams -->
+									<ng-select
+										*ngIf="
+											(f3.tempType.value === 'Quiz' || f3.tempType.value === 'Quiz (Randomised)') &&
+											f3.dripType.value == 'DripApp with sharing on Teams'
+										"
+										[items]="metrics_list_for_quiz_for_drip_teams"
+										class="ng-select-wrap"
+										placeholder="{{
+											'Pages.DripFlow.AddEdit.successMetricsModel.form.metrics.placeholder' | translate
+										}}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[searchable]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="metrics"
+										(change)="selecteMetrics($event)">
+									</ng-select>
+
+									<!-- -------------------------------------------------For Spin The Wheel-------------------------------------------- -->
+									<ng-select
+										*ngIf="
+											f3.tempType.value === 'Spin The Wheel' && f3.dripType.value != 'DripApp with sharing on Teams'
+										"
+										[items]="metrics_list_for_spin_the_wheel"
+										class="ng-select-wrap"
+										placeholder="{{
+											'Pages.DripFlow.AddEdit.successMetricsModel.form.metrics.placeholder' | translate
+										}}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[searchable]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="metrics"
+										(change)="selecteMetrics($event)">
+									</ng-select>
+
+									<!-- For Drip With Teams -->
+									<ng-select
+										*ngIf="
+											f3.tempType.value === 'Spin The Wheel' && f3.dripType.value == 'DripApp with sharing on Teams'
+										"
+										[items]="metrics_list_for_spin_the_wheel_for_drip_teams"
+										class="ng-select-wrap"
+										placeholder="{{
+											'Pages.DripFlow.AddEdit.successMetricsModel.form.metrics.placeholder' | translate
+										}}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[searchable]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="metrics"
+										(change)="selecteMetrics($event)">
+									</ng-select>
+
+									<!-- -------------------------------------------------For Video-------------------------------------------- -->
+									<!-- With External Link -->
+									<ng-select
+										*ngIf="
+											f3.tempType.value === 'Video' &&
+											isPresentExternalLink &&
+											f3.dripType.value != 'DripApp with sharing on Teams'
+										"
+										[items]="metrics_list_for_video_with_external_link"
+										class="ng-select-wrap"
+										placeholder="{{
+											'Pages.DripFlow.AddEdit.successMetricsModel.form.metrics.placeholder' | translate
+										}}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[searchable]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="metrics"
+										(change)="selecteMetrics($event)">
+									</ng-select>
+
+									<!-- With External Link For Drip With Teams-->
+									<ng-select
+										*ngIf="
+											f3.tempType.value === 'Video' &&
+											isPresentExternalLink &&
+											f3.dripType.value == 'DripApp with sharing on Teams'
+										"
+										[items]="metrics_list_for_video_with_external_link_drip_with_teams"
+										class="ng-select-wrap"
+										placeholder="{{
+											'Pages.DripFlow.AddEdit.successMetricsModel.form.metrics.placeholder' | translate
+										}}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[searchable]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="metrics"
+										(change)="selecteMetrics($event)">
+									</ng-select>
+
+									<!-- Without External Link -->
+									<ng-select
+										*ngIf="
+											f3.tempType.value === 'Video' &&
+											!isPresentExternalLink &&
+											f3.dripType.value != 'DripApp with sharing on Teams'
+										"
+										[items]="metrics_list_for_video_without_external_link"
+										class="ng-select-wrap"
+										placeholder="{{
+											'Pages.DripFlow.AddEdit.successMetricsModel.form.metrics.placeholder' | translate
+										}}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[searchable]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="metrics"
+										(change)="selecteMetrics($event)">
+									</ng-select>
+
+									<!-- Without External Link For Drip with Teams-->
+									<ng-select
+										*ngIf="
+											f3.tempType.value === 'Video' &&
+											!isPresentExternalLink &&
+											f3.dripType.value == 'DripApp with sharing on Teams'
+										"
+										[items]="metrics_list_for_video_without_external_link_drip_with_teams"
+										class="ng-select-wrap"
+										placeholder="{{
+											'Pages.DripFlow.AddEdit.successMetricsModel.form.metrics.placeholder' | translate
+										}}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[searchable]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="metrics"
+										(change)="selecteMetrics($event)">
+									</ng-select>
+
+									<!-- -------------------------------------------------For Poll-------------------------------------------- -->
+									<ng-select
+										*ngIf="f3.tempType.value === 'Poll' && f3.dripType.value != 'DripApp with sharing on Teams'"
+										[items]="metrics_list_for_poll"
+										class="ng-select-wrap"
+										placeholder="{{
+											'Pages.DripFlow.AddEdit.successMetricsModel.form.metrics.placeholder' | translate
+										}}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[searchable]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="metrics"
+										(change)="selecteMetrics($event)">
+									</ng-select>
+
+									<!-- For Drip With Teams -->
+									<ng-select
+										*ngIf="f3.tempType.value === 'Poll' && f3.dripType.value == 'DripApp with sharing on Teams'"
+										[items]="metrics_list_for_poll_for_drip_with_teams"
+										class="ng-select-wrap"
+										placeholder="{{
+											'Pages.DripFlow.AddEdit.successMetricsModel.form.metrics.placeholder' | translate
+										}}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[searchable]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="metrics"
+										(change)="selecteMetrics($event)">
+									</ng-select>
+
+									<!-- -------------------------------------------------For Survey-------------------------------------------- -->
+									<ng-select
+										*ngIf="f3.tempType.value === 'Survey' && f3.dripType.value != 'DripApp with sharing on Teams'"
+										[items]="metrics_list_for_survey"
+										class="ng-select-wrap"
+										placeholder="{{
+											'Pages.DripFlow.AddEdit.successMetricsModel.form.metrics.placeholder' | translate
+										}}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[searchable]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="metrics"
+										(change)="selecteMetrics($event)">
+									</ng-select>
+
+									<!-- For Drip With Teams -->
+									<ng-select
+										*ngIf="f3.tempType.value === 'Survey' && f3.dripType.value == 'DripApp with sharing on Teams'"
+										[items]="metrics_list_for_survey_for_drip_with_teams"
+										class="ng-select-wrap"
+										placeholder="{{
+											'Pages.DripFlow.AddEdit.successMetricsModel.form.metrics.placeholder' | translate
+										}}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[searchable]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="metrics"
+										(change)="selecteMetrics($event)">
+									</ng-select>
+
+									<!-- -------------------------------------------------For Offline Task-------------------------------------------- -->
+									<ng-select
+										*ngIf="f3.tempType.value === 'Offline Task' && f3.dripType.value != 'DripApp with sharing on Teams'"
+										[items]="metrics_list_for_offline_task"
+										class="ng-select-wrap"
+										placeholder="{{
+											'Pages.DripFlow.AddEdit.successMetricsModel.form.metrics.placeholder' | translate
+										}}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[searchable]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="metrics"
+										(change)="selecteMetrics($event)">
+									</ng-select>
+
+									<!--For Drip With Teams  -->
+									<ng-select
+										*ngIf="f3.tempType.value === 'Offline Task' && f3.dripType.value == 'DripApp with sharing on Teams'"
+										[items]="metrics_list_for_offline_task_for_drip_with_teams"
+										class="ng-select-wrap"
+										placeholder="{{
+											'Pages.DripFlow.AddEdit.successMetricsModel.form.metrics.placeholder' | translate
+										}}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[searchable]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="metrics"
+										(change)="selecteMetrics($event)">
+									</ng-select>
+
+									<!-- -------------------------------------------------For Only WhatsApp-------------------------------------------- -->
+
+									<!-- With External Link and With Quick Reply -->
+									<ng-select
+										*ngIf="f3.dripType.value === 'Only WhatsApp' && isPresentExternalLink && isPresentQuickReplay"
+										[items]="metrics_list_for_Only_whatsapp_with_quick_reply_with_external_source"
+										class="ng-select-wrap"
+										placeholder="{{
+											'Pages.DripFlow.AddEdit.successMetricsModel.form.metrics.placeholder' | translate
+										}}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[searchable]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="metrics"
+										(change)="selecteMetrics($event)">
+									</ng-select>
+
+									<!-- With External Link and Without Quick Reply -->
+									<ng-select
+										*ngIf="f3.dripType.value === 'Only WhatsApp' && isPresentExternalLink && !isPresentQuickReplay"
+										[items]="metrics_list_for_Only_whatsapp_without_quick_reply_with_external_source"
+										class="ng-select-wrap"
+										placeholder="{{
+											'Pages.DripFlow.AddEdit.successMetricsModel.form.metrics.placeholder' | translate
+										}}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[searchable]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="metrics"
+										(change)="selecteMetrics($event)">
+									</ng-select>
+
+									<!-- Without External Link and With Quick Reply -->
+									<ng-select
+										*ngIf="f3.dripType.value === 'Only WhatsApp' && !isPresentExternalLink && isPresentQuickReplay"
+										[items]="metrics_list_for_Only_whatsapp_with_quick_reply_without_external_source"
+										class="ng-select-wrap"
+										placeholder="{{
+											'Pages.DripFlow.AddEdit.successMetricsModel.form.metrics.placeholder' | translate
+										}}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[searchable]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="metrics"
+										(change)="selecteMetrics($event)">
+									</ng-select>
+
+									<!-- Without External Link and Without Quick Reply -->
+									<ng-select
+										*ngIf="f3.dripType.value === 'Only WhatsApp' && !isPresentExternalLink && !isPresentQuickReplay"
+										[items]="metrics_list_for_Only_whatsapp_without_quick_reply_without_external_source"
+										class="ng-select-wrap"
+										placeholder="{{
+											'Pages.DripFlow.AddEdit.successMetricsModel.form.metrics.placeholder' | translate
+										}}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[searchable]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="metrics"
+										(change)="selecteMetrics($event)">
+									</ng-select>
+
+									<!-- -------------------------------------------------For Only Teams-------------------------------------------- -->
+
+									<!-- With External Link -->
+									<ng-select
+										*ngIf="f3.dripType.value === 'Only Teams' && isPresentExternalLink"
+										[items]="metrics_list_for_Only_teams_with_external_source"
+										class="ng-select-wrap"
+										placeholder="{{
+											'Pages.DripFlow.AddEdit.successMetricsModel.form.metrics.placeholder' | translate
+										}}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[searchable]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="metrics"
+										(change)="selecteMetrics($event)">
+									</ng-select>
+
+									<!-- Without External Link -->
+									<ng-select
+										*ngIf="f3.dripType.value === 'Only Teams' && !isPresentExternalLink"
+										[items]="metrics_list_for_Only_teams_without_external_source"
+										class="ng-select-wrap"
+										placeholder="{{
+											'Pages.DripFlow.AddEdit.successMetricsModel.form.metrics.placeholder' | translate
+										}}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[searchable]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="metrics"
+										(change)="selecteMetrics($event)">
+									</ng-select>
+
+									<!-- -------------------------------------------------For Only Emails-------------------------------------------- -->
+									<!----- For SendGrid---->
+									<ng-select
+										*ngIf="f3.dripType.value === 'Only Email' && isSendGridEmail"
+										[items]="metrics_list_for_Only_Email_for_send_grid"
+										class="ng-select-wrap"
+										placeholder="{{
+											'Pages.DripFlow.AddEdit.successMetricsModel.form.metrics.placeholder' | translate
+										}}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[searchable]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="metrics"
+										(change)="selecteMetrics($event)">
+									</ng-select>
+
+									<!----- For BroadSide---->
+									<ng-select
+										*ngIf="f3.dripType.value === 'Only Email' && !isSendGridEmail"
+										[items]="metrics_list_for_Only_Email_for_broad_side"
+										class="ng-select-wrap"
+										placeholder="{{
+											'Pages.DripFlow.AddEdit.successMetricsModel.form.metrics.placeholder' | translate
+										}}"
+										bindLabel="label"
+										bindValue="name"
+										[multiple]="false"
+										[searchable]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="metrics"
+										(change)="selecteMetrics($event)">
+									</ng-select>
+
+									<div class="error" *ngIf="f3.metrics.errors && f3.metrics.touched">
+										<div *ngIf="f3.metrics.errors.required">
+											{{ 'Pages.DripFlow.AddEdit.successMetricsModel.form.metrics.error' | translate }}
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="col-md-12"></div>
+
+							<!-- ---------------------For Poll  with Option Selected----------------------------------------->
+							<div class="col-md-6" *ngIf="f3.tempType.value === 'Poll' && f3.metrics.value === 'Option Selected'">
+								<div
+									class="form-group"
+									style="margin-top: 0px"
+									[ngClass]="{
+										'has-error': f3.DripOptionId.invalid && (f3.DripOptionId.dirty || f3.DripOptionId.touched),
+										'has-success': f3.DripOptionId.valid && (f3.DripOptionId.dirty || f3.DripOptionId.touched)
+									}">
+									<label> {{ 'Pages.DripFlow.AddEdit.successMetricsModel.form.option.title' | translate }}</label>
+
+									<ng-select
+										[items]="pollOptionListForMetrics"
+										class="ng-select-wrap"
+										placeholder="{{ 'Pages.DripFlow.AddEdit.successMetricsModel.form.option.placeholder' | translate }}"
+										bindLabel="text"
+										bindValue="id"
+										[multiple]="false"
+										[searchable]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="DripOptionId"
+										(change)="selectOption($event)">
+									</ng-select>
+									<div class="error" *ngIf="f3.DripOptionId.errors && f3.DripOptionId.touched">
+										<div *ngIf="f3.DripOptionId.errors.required">
+											{{ 'Pages.DripFlow.AddEdit.successMetricsModel.form.option.error' | translate }}
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<!-- ---------------------For Video  with Watched more than/less than)----------------------------------------->
+							<div
+								class="col-md-6"
+								*ngIf="f3.tempType.value === 'Video' && f3.metrics.value === 'Watched more than/less than'">
+								<!-- Less than Greter than Drop Down -->
+								<div class="row">
+									<div
+										class="col-md-8 form-group"
+										style="margin-top: 0px"
+										[ngClass]="{
+											'has-error':
+												f3.activityScoreType.invalid && (f3.activityScoreType.dirty || f3.activityScoreType.touched),
+											'has-success':
+												f3.activityScoreType.valid && (f3.activityScoreType.dirty || f3.activityScoreType.touched)
+										}">
+										<label> {{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.ActivityScoreType.title' | translate }}</label>
+
+										<ng-select
+											[items]="video_activity_score_type_list"
+											class="ng-select-wrap"
+											placeholder="{{
+												'Pages.DripFlow.AddEdit.BuildYourDripFlow.ActivityScoreType.placeholder' | translate
+											}}"
+											bindLabel="name"
+											bindValue="name"
+											[multiple]="false"
+											[searchable]="false"
+											[closeOnSelect]="true"
+											[searchable]="false"
+											formControlName="activityScoreType">
+										</ng-select>
+										<div class="error" *ngIf="f3.activityScoreType.errors && f3.activityScoreType.touched">
+											<div *ngIf="f3.activityScoreType.errors.required">
+												{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.ActivityScoreType.error' | translate }}
+											</div>
+										</div>
+									</div>
+									<!-- Text box for adding Score with score Validation-->
+									<div
+										class="form-group col-md-4"
+										style="margin-top: 0px"
+										[ngClass]="{
+											'has-error': f3.score.invalid && (f3.score.dirty || f3.score.touched),
+											'has-success': f3.score.valid && (f3.score.dirty || f3.score.touched)
+										}">
+										<label class="date-div">{{
+											'Pages.DripFlow.AddEdit.BuildYourDripFlow.Seconds.title' | translate
+										}}</label>
+										<input type="number" class="form-control" formControlName="score" />
+										<div class="error" *ngIf="f3.score.errors && f3.score.touched">
+											<div *ngIf="f3.score.errors.required">
+												{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.Seconds.error' | translate }}
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<!-- ---------------------For Survey Question 'Option Selected'/ 'Rating is more than/less than/equal to'----------------------------------------->
+
+							<div
+								class="col-md-6"
+								*ngIf="
+									f3.tempType.value === 'Survey' &&
+									['Option Selected', 'Rating is more than/less than/equal to'].indexOf(f3.metrics.value) > -1
+								">
+								<!-- Show Question DropDown -->
+								<div
+									class="form-group"
+									style="margin-top: 0px"
+									[ngClass]="{
+										'has-error': f3.DripQuestionId.invalid && (f3.DripQuestionId.dirty || f3.DripQuestionId.touched),
+										'has-success': f3.DripQuestionId.valid && (f3.DripQuestionId.dirty || f3.DripQuestionId.touched)
+									}">
+									<label> {{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.questionList.title' | translate }}</label>
+
+									<ng-select
+										[items]="dropDownRatingQuestionList"
+										class="ng-select-wrap"
+										placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.questionList.placeholder' | translate }}"
+										bindLabel="question"
+										bindValue="id"
+										[multiple]="false"
+										[searchable]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="DripQuestionId"
+										(change)="selectMetricsQuestion($event)">
+									</ng-select>
+									<div class="error" *ngIf="f3.DripQuestionId.errors && f3.DripQuestionId.touched">
+										<div *ngIf="f3.DripQuestionId.errors.required">
+											{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.questionList.error' | translate }}
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<!-- ---------------------For Survey Question's Option== 'Option Selected'----------------------------------------->
+
+							<div class="col-md-6" *ngIf="f3.tempType.value === 'Survey' && f3.metrics.value === 'Option Selected'">
+								<!-- Show Option DropDown -->
+								<div
+									class="form-group"
+									style="margin-top: 0px"
+									[ngClass]="{
+										'has-error': f3.DripOptionId.invalid && (f3.DripOptionId.dirty || f3.DripOptionId.touched),
+										'has-success': f3.DripOptionId.valid && (f3.DripOptionId.dirty || f3.DripOptionId.touched)
+									}">
+									<label> {{ 'Pages.DripFlow.AddEdit.successMetricsModel.form.option.title' | translate }}</label>
+
+									<ng-select
+										[items]="dropDownRatingQuestionsOptionList"
+										class="ng-select-wrap"
+										placeholder="{{ 'Pages.DripFlow.AddEdit.successMetricsModel.form.option.placeholder' | translate }}"
+										bindLabel="text"
+										bindValue="id"
+										[multiple]="false"
+										[searchable]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="DripOptionId"
+										(change)="selectOption($event)">
+									</ng-select>
+									<div class="error" *ngIf="f3.DripOptionId.errors && f3.DripOptionId.touched">
+										<div *ngIf="f3.DripOptionId.errors.required">
+											{{ 'Pages.DripFlow.AddEdit.successMetricsModel.form.option.error' | translate }}
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<!-- ---------------------For Quiz and Randmise  with Score is greater than/less than/equal to-->
+
+							<div
+								class="col-md-6"
+								*ngIf="
+									['Quiz', 'Quiz (Randomised)', 'Survey', 'Spin The Wheel'].indexOf(f3.tempType.value) > -1 &&
+									['Score is greater than/less than/equal to', 'Rating is more than/less than/equal to'].indexOf(
+										f3.metrics.value
+									) > -1
+								">
+								<!-- Less than Greter than Drop Down -->
+								<div class="row">
+									<div
+										class="col-md-8 form-group"
+										style="margin-top: 0px"
+										[ngClass]="{
+											'has-error':
+												f3.activityScoreType.invalid && (f3.activityScoreType.dirty || f3.activityScoreType.touched),
+											'has-success':
+												f3.activityScoreType.valid && (f3.activityScoreType.dirty || f3.activityScoreType.touched)
+										}">
+										<label> {{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.ActivityScoreType.title' | translate }}</label>
+
+										<ng-select
+											[items]="activity_score_type_list"
+											class="ng-select-wrap"
+											placeholder="{{
+												'Pages.DripFlow.AddEdit.BuildYourDripFlow.ActivityScoreType.placeholder' | translate
+											}}"
+											bindLabel="name"
+											bindValue="name"
+											[multiple]="false"
+											[searchable]="false"
+											[closeOnSelect]="true"
+											[searchable]="false"
+											formControlName="activityScoreType">
+										</ng-select>
+										<div class="error" *ngIf="f3.activityScoreType.errors && f3.activityScoreType.touched">
+											<div *ngIf="f3.activityScoreType.errors.required">
+												{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.ActivityScoreType.error' | translate }}
+											</div>
+										</div>
+									</div>
+									<!-- Text box for adding Score with score Validation-->
+									<div
+										class="form-group col-md-4"
+										style="margin-top: 0px"
+										[ngClass]="{
+											'has-error': f3.score.invalid && (f3.score.dirty || f3.score.touched),
+											'has-success': f3.score.valid && (f3.score.dirty || f3.score.touched)
+										}">
+										<label class="date-div">{{
+											'Pages.DripFlow.AddEdit.BuildYourDripFlow.Score.title' | translate
+										}}</label>
+										<input type="number" class="form-control" formControlName="score" />
+										<div class="error" *ngIf="f3.score.errors && f3.score.touched">
+											<div *ngIf="f3.score.errors.required">
+												{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.Score.error' | translate }}
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<!-- -------------------------------------------For Only WhatApp Quick Reply Selected---------------------------->
+							<div
+								class="col-md-6"
+								*ngIf="f3.dripType.value === 'Only WhatsApp' && f3.metrics.value === 'Quick Reply Selected'">
+								<!-- Show Option DropDown -->
+								<div
+									class="form-group"
+									style="margin-top: 0px"
+									[ngClass]="{
+										'has-error': f3.quickReply.invalid && (f3.quickReply.dirty || f3.quickReply.touched),
+										'has-success': f3.quickReply.valid && (f3.quickReply.dirty || f3.quickReply.touched)
+									}">
+									<label> {{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.quickReply.title' | translate }}</label>
+
+									<ng-select
+										[items]="onlyWhatsAppQuickReplayList"
+										class="ng-select-wrap"
+										placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.quickReply.placeholder' | translate }}"
+										bindLabel="label"
+										bindValue="label"
+										[multiple]="false"
+										[searchable]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="quickReply">
+									</ng-select>
+									<div class="error" *ngIf="f3.quickReply.errors && f3.quickReply.touched">
+										<div *ngIf="f3.quickReply.errors.required">
+											{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.quickReply.error' | translate }}
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<!-- -------------------------------------------For Offline Task Grade is---------------------------->
+							<div class="col-md-6" *ngIf="f3.tempType.value === 'Offline Task' && f3.metrics.value === 'Grade is'">
+								<div
+									class="form-group"
+									style="margin-top: 0px"
+									[ngClass]="{
+										'has-error': f3.offlineTaskText.invalid && (f3.offlineTaskText.dirty || f3.offlineTaskText.touched),
+										'has-success': f3.offlineTaskText.valid && (f3.offlineTaskText.dirty || f3.offlineTaskText.touched)
+									}">
+									<label>{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.offlienTask.title' | translate }}</label>
+									<input
+										type="text"
+										class="form-control"
+										placeholder="{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.offlienTask.placeholder' | translate }}"
+										formControlName="offlineTaskText" />
+									<div class="error" *ngIf="f3.offlineTaskText.errors && f3.offlineTaskText.touched">
+										<div *ngIf="f3.offlineTaskText.errors.required">
+											{{ 'Pages.DripFlow.AddEdit.BuildYourDripFlow.offlienTask.error' | translate }}
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="col-md-6">
+								<div
+									class="form-group"
+									style="margin-top: 0px"
+									[ngClass]="{
+										'has-error': f3.label.invalid && (f3.label.dirty || f3.label.touched),
+										'has-success': f3.label.valid && (f3.label.dirty || f3.label.touched)
+									}">
+									<label>{{ 'Pages.DripFlow.AddEdit.successMetricsModel.form.label.title' | translate }}</label>
+									<input
+										type="text"
+										class="form-control"
+										placeholder="{{ 'Pages.DripFlow.AddEdit.successMetricsModel.form.label.placeholder' | translate }}"
+										formControlName="label"
+										[maxlength]="maxMetricsLength"
+										(keyup)="checkMetricsCharacterLimit($event.target.value)" />
+									<span
+										>{{ 'Utils.charactersleft' | translate }} -
+										{{
+											characterRemainsForMetrics != null || characterRemainsForMetrics != undefined
+												? characterRemainsForMetrics + '/' + maxMetricsLength
+												: maxMetricsLength + '/' + maxMetricsLength
+										}}</span
+									>
+									<div class="error" *ngIf="f3.label.errors && f3.label.touched">
+										<div *ngIf="f3.label.errors.required">
+											{{ 'Pages.DripFlow.AddEdit.successMetricsModel.form.label.error' | translate }}
+										</div>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+
+					<!-- ---Success Metrics Save/Cancel Button -->
+					<div
+						class="visible-md visible-lg visible-sm visible-xs"
+						style="text-align: right; margin-bottom: 10px; margin-top: 1rem">
+						<a
+							class="btn-xs action-pause-btn"
+							[ngStyle]="{
+								color: appService.whiteBrandingColor,
+								border: '0.5px solid' + appService.whiteBrandingColor,
+							}"
+							style="margin-right: 15px; padding: 7px 23px; border-radius: 30px; font-size: 0.9rem"
+							(click)="cancelSuccessMetricsPopup()"
+							>{{ 'Utils.Action.cancel' | translate }}</a
+						>
+						<a
+							class="btn-xs action-edit-btn"
+							[ngStyle]="{
+								'background-color': appService.whiteBrandingColor,
+								border: '1px solid' + appService.whiteBrandingColor,
+								color: 'white'
+							}"
+							style="padding: 7px 35px; border-radius: 30px; font-size: 0.9rem"
+							(click)="SaveSuccessMetrics(editSuccessMetricsIndex)"
+							>{{ 'Utils.Action.add' | translate }}</a
+						>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

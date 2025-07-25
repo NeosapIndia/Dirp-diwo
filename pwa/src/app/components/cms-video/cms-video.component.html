@@ -1,0 +1,36 @@
+<div class="wrap-element" [ngClass]="{ 'worksheet-page-style': isWorksheetPage }">
+	<div class="media-cms-player" #cms_video_container>
+		<mux-player
+			[src]="videoSrc"
+			controls
+			#videoPlayer
+			prefer-ui="desktop"
+			playsinline
+			stream-type="on-demand"
+			preload="metadata" 
+			playback-engine="mse"
+			playbackEngine="mse"
+			accent-color="#4971E3">
+		</mux-player>
+
+		<!-- Play/Pause button -->
+		<div
+			class="center-play-button"
+			(click)="togglePlayPause()"
+			[ngClass]="{ 'show-on-mobile': !isdesktopView && showMobileButton }">
+			<ng-container *ngIf="isPaused; else playing">
+				<svg viewBox="0 0 100 100" class="pause-icon">
+					<circle cx="50" cy="50" r="48" fill="rgba(0,0,0,0.6)" />
+					<rect x="35" y="30" width="10" height="40" fill="#fff" />
+					<rect x="55" y="30" width="10" height="40" fill="#fff" />
+				</svg>
+			</ng-container>
+			<ng-template #playing>
+				<svg viewBox="0 0 100 100" class="play-icon">
+					<circle cx="50" cy="50" r="48" fill="rgba(0,0,0,0.6)" />
+					<polygon points="40,30 70,50 40,70" fill="#fff" />
+				</svg>
+			</ng-template>
+		</div>
+	</div>
+</div>

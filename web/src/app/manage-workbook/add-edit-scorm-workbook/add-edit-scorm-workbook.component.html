@@ -1,0 +1,729 @@
+<div class="container-fluid" style="background-color: #ffffff; min-height: 99vh; max-height: 99vh"
+    *ngIf="!showModuleTypeSelection">
+    <div style="margin: 0% 1% 1% 1%">
+        <div class="row" style="
+                height: 7.5vh;
+                display: flex;
+                align-items: center;
+                margin-left: -30px;
+                margin-right: -30px;
+            ">
+            <div class="col-md-5" style="display: flex">
+                <span [innerHTML]="iconObject['back_arrow_icon']" (click)="showWorksheetLeavePopUp()"
+                    style="cursor: pointer"></span>
+
+                <p class="workbook-name">
+                    {{
+                    workbookForm.value.title
+                    ? workbookForm.value.title
+                    : ("Pages.Workbook.AddEdit.untitledworkbook"
+                    | translate)
+                    }}
+
+                    <span>                       
+                        {{
+                        "(" + ("Utils.scm" | translate) + ")"
+                        }}</span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div style="height: 100%" class="col-md-12">
+        <div class="row" style="height: 90%">
+            <div style="height: 100%" class="col-md-12 col-padding-zero">
+                <div class="main-workspace">
+                    <div class="sub-main-workspace">
+                        <!---------------------------------------------------- Workbook Deatils ------------------------------------------------------->
+                        <div class="row card-body" >
+                            <div class="section-wrapper">
+                                <form [formGroup]="workbookForm" style="padding: 1.5rem">
+                                    <div class="row">
+                                    
+                                        <!-- <div class="col-md-12">
+															<div class="form-group" style="margin-top: -5px">
+																<label>
+																	{{ 'Pages.Workbook.AddEdit.Course.title' | translate }}
+																</label>
+																<ng-select
+																	[items]="course_List"
+																	class="ng-select-wrap"
+																	placeholder=" {{ 'Pages.Workbook.AddEdit.Course.placeholder' | translate }}"
+																	bindLabel="title"
+																	bindValue="id"
+																	[multiple]="false"
+																	[closeOnSelect]="true"
+																	[searchable]="true"
+																	formControlName="CourseId"
+																	(change)="OnchangeCourse($event)">
+																</ng-select>
+																<div
+																	class="error"
+																	style="color: #a94442"
+																	*ngIf="wbform.CourseId.errors && wbform.CourseId.touched">
+																	<div *ngIf="wbform.CourseId.errors.required">
+																		{{ 'Pages.Workbook.AddEdit.Course.error' | translate }}
+																	</div>
+																</div>
+															</div>
+														</div> -->
+                                        <div class="col-md-12">
+                                            <div class="form-group" style="margin-top: -5px" [ngClass]="{
+                                                    'has-error':
+                                                        wbform.title.invalid &&
+                                                        (wbform.title.dirty ||
+                                                            wbform.title
+                                                                .touched),
+                                                    'has-success':
+                                                        wbform.title.valid &&
+                                                        (wbform.title.dirty ||
+                                                            wbform.title
+                                                                .touched)
+                                                }">
+                                                <label>
+                                                    {{
+                                                    "Pages.Workbook.AddEdit.WorkbookTitle.title"
+                                                    | translate
+                                                    }}</label>
+                                                <input type="text" class="form-control" placeholder="{{
+                                                        'Pages.Workbook.AddEdit.WorkbookTitle.placeholder'
+                                                            | translate
+                                                    }}" formControlName="title" [maxlength]="
+                                                        maxLengthForModuleTitle
+                                                    " (keyup)="
+                                                        checkCharacterLimitForModuleTitle()
+                                                    " />
+
+                                                <span class="characteleft">{{
+                                                    "Utils.charactersleft"
+                                                    | translate
+                                                    }}
+                                                    -
+                                                    {{
+                                                    characterRemainsForModuleTitle !=
+                                                    null ||
+                                                    characterRemainsForModuleTitle !=
+                                                    undefined
+                                                    ? characterRemainsForModuleTitle +
+                                                    "/" +
+                                                    maxLengthForModuleTitle
+                                                    : maxLengthForModuleTitle +
+                                                    "/" +
+                                                    maxLengthForModuleTitle
+                                                    }}</span>
+
+                                                <div class="error" *ngIf="
+                                                        wbform.title.errors &&
+                                                        wbform.title.touched
+                                                    ">
+                                                    <div *ngIf="
+                                                            wbform.title.errors
+                                                                .required
+                                                        ">
+                                                        {{
+                                                        "Pages.Workbook.AddEdit.WorkbookTitle.error"
+                                                        | translate
+                                                        }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <div class="form-group" [ngClass]="{
+                                                    'has-error':
+                                                        wbform.descrip
+                                                            .invalid &&
+                                                        (wbform.descrip.dirty ||
+                                                            wbform.descrip
+                                                                .touched),
+                                                    'has-success':
+                                                        wbform.descrip.valid &&
+                                                        (wbform.descrip.dirty ||
+                                                            wbform.descrip
+                                                                .touched)
+                                                }">
+                                                <label>{{
+                                                    "Pages.Workbook.AddEdit.WorkbookDescription.title"
+                                                    | translate
+                                                    }}</label>
+                                                <textarea type="text" class="form-control" placeholder="{{
+                                                        'Pages.Workbook.AddEdit.WorkbookDescription.placeholder'
+                                                            | translate
+                                                    }}" formControlName="descrip" [maxlength]="
+                                                        maxLengthForModuleDescription
+                                                    " (keyup)="
+                                                        checkCharacterLimitForModuleDescription()
+                                                    " rows="3">
+                                                </textarea>
+                                                <span class="characteleft">{{
+                                                    "Utils.charactersleft"
+                                                    | translate
+                                                    }}
+                                                    -
+                                                    {{
+                                                    characterRemainsForModuleDescription !=
+                                                    null ||
+                                                    characterRemainsForModuleDescription !=
+                                                    undefined
+                                                    ? characterRemainsForModuleDescription +
+                                                    "/" +
+                                                    maxLengthForModuleDescription
+                                                    : maxLengthForModuleDescription +
+                                                    "/" +
+                                                    maxLengthForModuleDescription
+                                                    }}</span>
+                                                <div class="error" *ngIf="
+                                                        wbform.descrip.errors &&
+                                                        wbform.descrip.touched
+                                                    ">
+                                                    <div *ngIf="
+                                                            wbform.descrip
+                                                                .errors.required
+                                                        ">
+                                                        {{
+                                                        "Pages.Workbook.AddEdit.WorkbookDescription.error"
+                                                        | translate
+                                                        }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <div class="form-group" [ngClass]="{
+                                                    'has-error':
+                                                        wbform.e_duration
+                                                            .invalid &&
+                                                        (wbform.e_duration
+                                                            .dirty ||
+                                                            wbform.e_duration
+                                                                .touched),
+                                                    'has-success':
+                                                        wbform.e_duration
+                                                            .valid &&
+                                                        (wbform.e_duration
+                                                            .dirty ||
+                                                            wbform.e_duration
+                                                                .touched)
+                                                }">
+                                                <label>{{
+                                                    "Pages.Workbook.AddEdit.Eduration.title"
+                                                    | translate
+                                                    }}</label>
+                                                <input type="number" min="0" class="form-control"
+                                                    id="exampleInputEmail2" placeholder="{{
+                                                        'Pages.Workbook.AddEdit.Eduration.placeholder'
+                                                            | translate
+                                                    }}" formControlName="e_duration" (input)="
+                                                        preventNegative($event)
+                                                    " />
+                                                <div class="error" *ngIf="
+                                                        wbform.e_duration
+                                                            .errors &&
+                                                        wbform.e_duration
+                                                            .touched
+                                                    ">
+                                                    <div *ngIf="
+                                                            wbform.e_duration
+                                                                .errors.required
+                                                        ">
+                                                        {{
+                                                        "Pages.Workbook.AddEdit.Eduration.error"
+                                                        | translate
+                                                        }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Mastery Score -->
+                                        <div class="col-md-12">
+                                            <div
+                                                class="form-group"
+                                                [ngClass]="{
+                                                'has-error':
+                                                    wbform.masteryScore.invalid &&
+                                                    (wbform.masteryScore.dirty || wbform.masteryScore.touched),
+                                                'has-success':
+                                                    wbform.masteryScore.valid &&
+                                                    (wbform.masteryScore.dirty || wbform.masteryScore.touched)
+                                                }"
+                                            >
+                                                <!-- Label on Top -->
+                                                <label>{{  "Pages.Workbook.AddEdit.MasteryScoreTitle.title" | translate }}</label>
+
+                                                <!-- Toggle + Input in Same Row -->
+                                                <div class="d-flex align-items-center" style="gap: 1rem; flex-wrap: nowrap;">
+                                                <!-- Toggle -->
+                                                    <div style="flex-shrink: 0;">
+                                                        <label class="switch mb-0">
+                                                        <input
+                                                            type="checkbox"
+                                                            formControlName="IsMasteryScore"
+                                                            [disabled]="isviewMode"
+                                                        />
+                                                        <span
+                                                            class="slider round"
+                                                            [ngStyle]="{
+                                                            'background-color': wbform.IsMasteryScore.value
+                                                                ? appService.whiteBrandingColor
+                                                                : '#ccc'
+                                                            }"
+                                                        ></span>
+                                                        </label>
+                                                    </div>
+
+                                                    <!-- Input (only when toggle is ON) -->
+                                                    <div class="flex-grow-1" *ngIf="wbform.IsMasteryScore.value">
+                                                        <input
+                                                            type="number"
+                                                            class="form-control"
+                                                            formControlName="masteryScore"
+                                                            placeholder="{{ 'Pages.Workbook.AddEdit.MasteryScoreTitle.useMateryScorePlaceholder' | translate }}"
+                                                            min="0"
+                                                            max="100"
+                                                            [disabled]="isviewMode"
+                                                        />
+                                                    </div>
+
+                                                </div>
+
+                                                <!-- Error Message -->
+                                                <div class="error mt-1" *ngIf="wbform.masteryScore.errors && wbform.masteryScore.touched">
+                                                    <div *ngIf="wbform.masteryScore.errors.required">
+                                                        {{  "Pages.Workbook.AddEdit.MasteryScoreTitle.error" | translate }}
+                                                    </div>
+                                                    <div *ngIf="wbform.masteryScore.errors.min || wbform.masteryScore.errors.max">
+                                                        {{  "Pages.Workbook.AddEdit.MasteryScoreTitle.placeholder" | translate }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="col-md-12">
+                                            <div class="form-group last-elem-of-card">
+                                                <label>
+                                                    {{ "Pages.Workbook.AddEdit.workbookthumbnail" | translate }}
+                                                </label>
+
+                                                <div
+                                                    *ngIf="
+                                                        !workbookForm.value.DiwoAssets
+                                                    "
+                                                    style="display: flex; align-items: center;"
+                                                >
+                                                    <div>
+                                                        <label
+                                                            class="btn center pad fileinput-button browse_lable"
+                                                            [ngStyle]="{
+                                                                'background-color': appService.whiteBrandingColor,
+                                                                border: '1px solid' + appService.whiteBrandingColor,
+                                                                color: 'white'
+                                                            }"
+                                                            style="
+                                                                padding: 10px 20px;
+                                                                border-radius: 22px;
+                                                                color: white;
+                                                                margin-bottom: 0px;
+                                                                margin-top: 2px;
+                                                            "
+                                                        >
+                                                            <input
+                                                                id="workbook_thumbnail"
+                                                                [(ngModel)]="workbook_thumbnail"
+                                                                [ngModelOptions]="{ standalone: true }"
+                                                                (click)="selectAssetFromPopUp(['Image'], 'WORKBOOK THUMBNAIL')"
+                                                            />
+                                                            {{ "Pages.Workbook.AddEdit.browseimage" | translate }}
+                                                        </label>
+                                                    </div>
+
+                                                    <table
+                                                        *ngIf="
+                                                           !workbookForm.value.DiwoAssets
+                                                        "
+                                                        role="presentation"
+                                                        class="table table-striped"
+                                                        style="margin-bottom: 0px;"
+                                                    >
+                                                        <tbody class="files">
+                                                            <tr class="template-upload fade in">
+                                                                <td>
+                                                                    <p class="name imgName" style="margin: 0;">
+                                                                        {{ "Pages.Workbook.AddEdit.recommendedratio16:9" | translate }}
+                                                                    </p>
+                                                                </td>
+                                                                <td style="position: absolute; right: 0;"></td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+
+                                                <div class="error" style="color: #a94442" *ngIf="wbform.DiwoAssets.errors && wbform.DiwoAssets.touched">
+                                                    <div *ngIf="wbform.DiwoAssets.errors.required">
+                                                        {{ "Pages.Workbook.AddEdit.imagerequired" | translate }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3 form-group asset-img-wrapper" *ngIf="
+                                                workbookForm.value.DiwoAssets &&
+                                                workbookForm.value.DiwoAssets[0]
+                                                    .path &&
+                                                workbookForm.value.DiwoAssets[0]
+                                                    .type == 'Image'
+                                            " style="margin-top: 0">
+                                            <img [src]="
+                                                    assetBasePath +
+                                                    workbookForm.value
+                                                        .DiwoAssets[0].path
+                                                " style="
+                                                    height: 250px;
+                                                    object-fit: contain;
+                                                " />
+                                        </div>
+                                        <div class="col-md-1 form-group cancel-asset-img" *ngIf="
+                                                workbookForm.value.DiwoAssets &&
+                                                workbookForm.value.DiwoAssets[0]
+                                                    .path &&
+                                                workbookForm.value.DiwoAssets[0]
+                                                    .type == 'Image'
+                                            " style="margin-top: 0">
+                                            <img src="assets/images/cancel_icon.svg" class="cancel-img-icon" (click)="
+                                                    clearWorkbookThubnail()
+                                                " />
+                                        </div>
+
+                                        <!-- SCORM Package Upload field/button -->
+                                        <div class="col-md-12">
+                                            <div class="form-group last-elem-of-card">
+                                                <label>
+                                                {{ "Pages.Workbook.AddEdit.SCORMpackageupload" | translate }}
+                                                </label>
+
+                                                <div style="display: flex; align-items: center">
+                                                    <!-- *ngIf="!workbookForm.value.ScromAssets" -->
+                                                    <!-- <div                                                        
+                                                        *ngIf="scromFileUploadProgress == 0 && (workbookForm.value.ScromAssets?.length == 0 || workbookForm.value.ScromAssets == null)"
+                                                        class="scrom-package-dragger-box"
+                                                        (click)="!wbform.isSCORM.value && fileInput.click()" >
+
+                                                        <div class = "scrom-package-box-content">
+                                                            <span class="title">
+                                                            {{ 'Pages.Workbook.AddEdit.scormpackageupload' | translate }}
+                                                            </span>                                                  
+                                                            <span class="subtitle">
+                                                            {{ 'Pages.Workbook.AddEdit.scormpackageuploadDescriptionText' | translate }}
+                                                            </span>
+                                                        </div>
+
+                                                        <input
+                                                        hidden
+                                                        #fileInput
+                                                        id="SCORM_package_thumbnail"
+                                                        [(ngModel)]="SCORM_package_thumbnail"
+                                                        [ngModelOptions]="{ standalone: true }"
+                                                        (click)="
+                                                            !wbform.isSCORM.value &&
+                                                            selectAssetFromPopUp(['.zip'], 'SCORM PACKAGE')
+                                                        "
+                                                        [disabled]="wbform.isSCORM.value"
+                                                        />
+                                                    </div>    -->
+
+
+                                                    <div                                                        
+                                                        *ngIf="scromFileUploadProgress == 0 && (workbookForm.value.ScromAssets?.length == 0 || workbookForm.value.ScromAssets == null)"
+                                                        class="scrom-package-dragger-box" >
+
+                                                        <div class = "scrom-package-box-content">
+
+                                                            <i class="fa fa-cloud-upload pad" style="font-size: 1.875rem" aria-hidden="true"></i>
+															<p class="pad" style="font-size: 0.938rem">
+                                                                {{
+                                                                    'Pages.Workbook.AddEdit.UploadScormFile.DragandDropFile'
+                                                                        | translate
+                                                                }}
+                                                            </p>
+                                                            <p class="pad" style="font-size: 0.938rem">
+                                                                {{ 'Pages.Workbook.AddEdit.UploadScormFile.or' | translate }}
+                                                            </p>
+
+                                                            <span class="title">
+                                                                {{ 'Pages.Workbook.AddEdit.scormpackageupload' | translate }}
+                                                            </span>                                                  
+                                                            <span class="subtitle">
+                                                                {{ 'Pages.Workbook.AddEdit.scormpackageuploadDescriptionText' | translate }}
+                                                            </span>
+
+                                                            <label
+                                                                class="btn center pad fileinput-button browse_lable"
+                                                                [ngStyle]="{
+                                                                    'background-color': appService.whiteBrandingColor,
+                                                                    border: '1px solid' + appService.whiteBrandingColor,
+                                                                    color: 'white'
+                                                                }"
+                                                                style="
+                                                                    padding: 10px 20px;
+                                                                    border-radius: 22px;
+                                                                    color: white;
+                                                                    margin-bottom: 0px;
+                                                                    margin-top: 2px;
+                                                                "
+                                                                >
+                                                                <input
+                                                                    id="SCORM_package_thumbnail"
+                                                                    [(ngModel)]="SCORM_package_thumbnail"
+                                                                    [ngModelOptions]="{ standalone: true }"
+                                                                    (click)="
+                                                                    !wbform.isSCORM.value &&
+                                                                    selectAssetFromPopUp(['.zip'], 'SCORM PACKAGE')
+                                                                    "
+                                                                    [disabled]="wbform.isSCORM.value"
+                                                                />
+                                                                {{ "Pages.Workbook.AddEdit.UploadScormFile.BrowseFile" | translate }}
+                                                                </label>
+
+                                                        </div>                                                      
+                                                    </div>   
+
+                                                    <div class="scrom-package-dragger-box" *ngIf="scromFileUploadProgress !== null && scromFileUploadProgress > 0 && scromFileUploadProgress < 100">
+                                                        <div  class="scrom-package-progress-bar-box">
+                                                                <progress
+                                                                        [value]="scromFileUploadProgress"
+                                                                        [max]="100"
+                                                                        style="padding: 0.8rem; height: 15px; margin-top: 1rem; width: 100%"></progress>                                                                                                                                                                                                                
+
+                                                                <div
+                                                                        style="display: flex; flex-direction: column; align-items: center; margin-top: 0.25rem">
+                                                                        <span style="font-size: 1rem">
+                                                                            {{ 'Pages.Workbook.AddEdit.uploading' | translate }}
+                                                                            {{ scromFileUploadProgress }}%…........
+                                                                        </span>
+                                                                        <span>
+                                                                            {{ 'Pages.Workbook.AddEdit.uploadScromModuleprompt' | translate }}
+                                                                        </span>
+                                                                </div>
+
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+
+                                                <!-- Display uploaded file name -->
+                                                <div *ngIf="wbform.isSCORM.value && workbookForm.value.ScromAssets?.length > 0 && workbookForm.value.ScromAssets[0].type === '.zip' " style="margin-top: 0.5rem; color: #333;">
+                                                    {{ workbookForm.value.ScromAssets[0].fileName }}
+                                                    
+                                                    <label
+                                                        class="btn cancel border_radius"
+                                                        [ngStyle]="{
+                                                            'background-color': appService.whiteBrandingColor,
+                                                            border: '1px solid' + appService.whiteBrandingColor,
+                                                            color: 'white'
+                                                        }">
+                                                        <span
+                                                            (click)="
+                                                                deleteUploadedZipFile()"                                                          
+                                                            >{{ 'Utils.delete' | translate }}</span
+                                                        >
+                                                    </label>
+                                                </div>
+
+                                                <div
+                                                class="error"
+                                                style="color: #a94442"
+                                                *ngIf="wbform.ScromAssets.errors && wbform.ScromAssets.touched"
+                                                >
+                                                <div *ngIf="wbform.ScromAssets.errors.required">
+                                                    {{ "Pages.Workbook.AddEdit.zipfilesrequired" | translate }}
+                                                </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Bar -->
+        <div class="row col-padding-zero" style="height: 10%; margin: 0px">
+            <div class="col-md-12 col-padding-zero" style="
+                    height: 100%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    background-color: #f9fafb;
+                ">
+                <div style="text-align: center">
+                    <button class="btn bottom-grey-btn" (click)="cancelWB()">
+                        {{ "Utils.Action.cancel" | translate }}
+                    </button>
+                    <button class="btn bottom-grey-btn" [disabled]="isviewMode" (click)="save(false, 'saveBtn')">
+                        {{ "Utils.Action.saveasdraft" | translate }}
+                    </button>
+                    <button class="btn bottom-button" [ngStyle]="{
+                            'background-color': appService.whiteBrandingColor,
+                            border: '1px solid' + appService.whiteBrandingColor,
+                            color: 'white'
+                        }" [disabled]="isviewMode" (click)="save(true, 'saveBtn')">
+                        {{
+                        "Pages.Workbook.AddEdit.publishworkbook" | translate
+                        }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- img for Template Question and Option Select Model -->
+<div class="modal fade credit-note" id="selectMediaModel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" style="width: 90%; margin-top: 3%">
+        <div class="modal-content" >
+            <div class="modal-header" [ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                    (click)="cancelMediaPopUp()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    <!-- <span *ngIf="typeForSearch == 'Video'"> {{ 'Pages.Drips.AddEdit.Modal.uploadvideo' | translate }}</span> -->
+                    <span> {{ 'Pages.Drips.AddEdit.Modal.uploadMedia' | translate }}</span>
+                </h4>
+            </div>
+            <div class="modal-body" style="overflow-y: scroll; padding: 0px">
+                <div class="row" style="margin-right: 2rem; margin-left: 2rem">
+                    <div class="col-md-12" style="text-align: center; font-size: 1.1rem; color: black; cursor: pointer"
+                        [ngStyle]="{
+							'border-bottom': showAssetTab == 1 ? '2px solid ' + appService.whiteBrandingColor : 'none'
+						}" (click)="changeAssetLibareTab(1)">
+                        {{ 'Pages.Workbook.AddEdit.uploadfromcomputer' | translate }}
+                    </div>
+                </div>
+
+                <!--------------------------- Google Workspace Code ---------------------->
+                <div *ngIf="showAssetTab == 1">
+					<div style="height: 20vh">
+
+                        <div style="display: flex; justify-content: center; margin-top: 5vh" *ngIf="typeForSearch != 'Video' && typeForSearch != '.zip'">
+							<label
+								class="btn pad fileinput-button browse_lable big-button"
+								[ngStyle]="{
+									'background-color': appService.whiteBrandingColor,
+									border: '1px solid' + appService.whiteBrandingColor,
+									color: 'white'
+								}">
+								<input
+									id="worksheet_thumbnail"
+									type="file"
+									accept=".jpg, .png "
+									[(ngModel)]="worksheet_thumbnail"
+									(change)="uploadedAssetFromPopUp($event)" />
+								{{ 'Pages.Workbook.AddEdit.browse' | translate }}
+							</label>
+						</div>
+                        
+                        <div style="display: flex; justify-content: center; margin-top: 5vh" *ngIf="typeForSearch == '.zip' ">
+							<label
+								class="btn pad fileinput-button browse_lable big-button"                               
+								[ngStyle]="{
+									'background-color': appService.whiteBrandingColor,
+									border: '1px solid' + appService.whiteBrandingColor,
+									color: 'white'
+								}">
+								<input
+									id="SCORM_package_thumbnail"
+									type="file"
+									accept=".zip"
+									[(ngModel)]="SCORM_package_thumbnail"
+									(change)="uploadedAssetFromPopUp($event)" />
+								{{ 'Pages.Workbook.AddEdit.browse' | translate }}
+							</label>
+						</div>
+					</div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- close worksheet confirm MODAL -->
+<div
+	class="modal fade credit-note"
+	id="leaveworksheetPageModal"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="myModalLabel"
+	aria-hidden="true"
+	data-backdrop="static"
+	data-keyboard="false">
+	<div class="modal-dialog" style="width: 40%; margin-top: 15%; margin-left: auto; margin-right: auto">
+		<div class="modal-content">
+			<div
+				class="modal-header"
+				[ngStyle]="{
+					'background-color': appService.whiteBrandingColor,
+					border: '1px solid' + appService.whiteBrandingColor,
+					color: 'white'
+				}">
+				<button
+					type="button"
+					class="close"
+					data-dismiss="modal"
+					aria-label="Close"
+					(click)="cancelleaveworksheetPage()">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					<span> {{ 'Pages.Workbook.AddEdit.Modal.leaveWorksheet.title' | translate }}</span>
+				</h4>
+			</div>
+			<div class="modal-body">
+				<span>
+					{{ 'Pages.Workbook.AddEdit.Modal.leaveWorksheet.confirmation' | translate }}
+				</span>
+				<div
+					class="visible-md visible-lg visible-sm visible-xs"
+					style="text-align: right; margin-bottom: 0.75rem; margin-top: 1.5rem">
+					<a
+						class="btn-xs action-edit-btn action-yes-no"
+						[ngStyle]="{
+							'background-color': appService.whiteBrandingColor,
+							border: '1px solid' + appService.whiteBrandingColor,
+							color: 'white'
+						}"
+						style="margin-right: 2%; padding: 7px 20px"
+						(click)="leaveworksheetPage()"
+						>{{ 'Utils.yes' | translate }}</a
+					>
+					<a
+						class="btn-xs action-pause-btn action-yes-no"
+						[ngStyle]="{
+							color: appService.whiteBrandingColor,
+							 border: '1px solid' + appService.whiteBrandingColor,
+							 
+						}"
+						style="padding: 7px 23px; margin-right: 1%"
+						(click)="cancelleaveworksheetPage()"
+						>{{ 'Utils.no' | translate }}</a
+					>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

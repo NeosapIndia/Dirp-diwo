@@ -1,0 +1,36 @@
+.banner-image {
+	height: 40vh;
+	// border-top-left-radius: 0.75rem;
+	// border-top-right-radius:  0.75rem;
+	width: 100%;
+	object-fit: cover;
+}
+
+.banner-text {
+	font-size: 0.9rem;
+	font-weight: 400;
+	text-align: start;
+	padding: 1rem;
+	text-align: center;
+	margin-bottom: 0px;
+}
+
+.banner-image-2 {
+	width: 12%;
+}
+
+.version-text {
+	font-size: 0.9rem;
+	padding-bottom: 1rem;
+}
+
+.image-sec {
+	border-top-left-radius: 0.75rem !important;
+	border-top-right-radius: 0.75rem !important;
+	overflow: hidden;
+}
+
+.pageDiv {
+	padding-left: 1.9%;
+	padding-right: 0.9%;
+}

@@ -1,0 +1,9 @@
+::ng-deep.refresher-native {
+	ion-spinner {
+		color: var(--branding-color) !important;
+	}
+
+	.arrow-container ion-icon {
+		color: var(--branding-color) !important;
+	}
+}

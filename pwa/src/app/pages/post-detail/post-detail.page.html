@@ -1,0 +1,113 @@
+<ion-header class="ion-no-border">
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-back-button (click)="back()" text=""></ion-back-button>
+        </ion-buttons>
+        <ion-title>{{'Utils.contentDetails' | translate}}</ion-title>
+        <ion-buttons slot="end">
+            <ion-button>
+                <ion-icon slot="icon-only" name="ellipsis-horizontal"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding-horizontal">
+    <ion-grid *ngIf="post">
+        <ion-row>
+            <ion-col>
+                <ion-card class="ion-no-margin">
+                    <ion-card-title>
+                        <ion-item lines="none" class="ion-no-padding">
+                            <ion-avatar slot="start">
+                                <img [src]="imageHost+post.avatar" />
+                            </ion-avatar>
+                            <ion-label>
+                                <h2 class="item-title">{{ post.title }}</h2>
+                                <p class="item-subtitle">{{ post.date | humanizeDate }}</p>
+                            </ion-label>
+                            <!-- <ion-button slot="end" fill="outline" size="small" color="primary">Follow</ion-button> -->
+                        </ion-item>
+                    </ion-card-title>
+
+                    <ion-card-content class="ion-no-padding">
+                        <ion-slides pager="true" [options]="config">
+                            <ion-slide *ngFor="let asset of post.asset_details">
+                                <img *ngIf="asset.displayType == 'Image'" [src]="imageHost + asset.path" />
+                                <!-- <div class="video-img"> -->
+                                <iframe *ngIf="asset.displayType == 'Video'" [src]="transform(asset.path)" width="100%"
+                                    frameborder="0" allow="autoplay; encrypted-media;" allowfullscreen></iframe>
+                                <!-- </div> -->
+
+                                <!-- <video *ngIf="asset.displayType == 'Video'" style="width: 100%;" controls>
+                                    <source [src]="imageHost + asset.path" type="video/mp4">
+                                  </video> -->
+                            </ion-slide>
+                        </ion-slides>
+
+                        <div class="card-footer">
+                            <div class="icon-container">
+                                <ul>
+                                    <li>
+                                        <ion-item lines="none">
+                                            <ion-icon *ngIf="post.isLiked" name="heart" (click)="onLike()"
+                                                color="danger"></ion-icon>
+                                            <ion-icon *ngIf="!post.isLiked" name="heart-outline"
+                                                (click)="onLike()"></ion-icon>
+                                            <!-- <ion-label>{{ post.likes }}</ion-label> -->
+                                        </ion-item>
+                                    </li>
+                                    <!-- <li>
+                                        <ion-item lines="none">
+                                            <ion-icon color="light" name="chatbubble"></ion-icon>
+                                        </ion-item>
+                                    </li> -->
+                                </ul>
+                            </div>
+
+                            <ion-buttons slot="end">
+                                <ion-button class="circle-btn" (click)="onBookmark()" fill="clear" size="small"
+                                    shape="round" color="light">
+                                    <ion-icon *ngIf="post.isBookmarked" slot="icon-only" name="bookmark"></ion-icon>
+                                    <ion-icon *ngIf="!post.isBookmarked" name="bookmark-outline"></ion-icon>
+                                </ion-button>
+                                <!-- <ion-button class="circle-btn" fill="clear" size="small" shape="round" color="light">
+                                    <ion-icon slot="icon-only" name="arrow-redo"></ion-icon>
+                                </ion-button> -->
+                            </ion-buttons>
+                        </div>
+
+                        <p id="description">{{post.description}}</p>
+
+                    </ion-card-content>
+                </ion-card>
+            </ion-col>
+        </ion-row>
+
+        <ion-row>
+            <ion-col class="ion-no-padding">
+                <ion-list class="ion-no-padding">
+                    <ion-item lines="none">
+                        <ion-text class="comment"><span
+                                class="user-comment">{{post.comments.latest_comments}}</span></ion-text>
+                    </ion-item>
+                </ion-list>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+</ion-content>
+
+<ion-footer class="ion-no-border">
+    <ion-button fill="clear" size="small" (click)="navigateToComments()">{{'Utils.viewAllComments' |
+        translate}}</ion-button>
+    <form [formGroup]="commentForm" (ngSubmit)="submitComment()">
+        <ion-item lines="none">
+            <ion-input type="text" placeholder="{{'Utils.writeYourComment' | translate}}"
+                formControlName="comment"></ion-input>
+            <ion-button slot="end" class="circle-btn" fill="clear" size="small" shape="round" color="primary"
+                type="submit">
+                <ion-icon slot="icon-only" name="paper-plane"></ion-icon>
+            </ion-button>
+        </ion-item>
+    </form>
+</ion-footer>

@@ -1,0 +1,845 @@
+<div class="container-fluid" style="margin: 2% 2% 2% 3%; min-height: calc(100vh - 110px)">
+	<div class="row add-edit-main-row">
+		<span *ngIf="projectType == 'drip'">
+			<span
+				[routerLink]="['/whatsapp-setup']"
+				style="margin-left: 0.25rem; color: #637373; margin-right: 2px; cursor: pointer">
+				{{ 'Pages.WhatsAppSetups.AddEdit.pagetitle' | translate }}</span
+			>
+			<img src="assets/images/arrow_forward.svg" style="width: 27px" />
+			<span style="margin-left: 3px" [ngStyle]="{ color: appService.whiteBrandingColor }">
+				{{ 'Pages.WhatsAppSetups.AddEdit.subtitle' | translate }}</span
+			>
+		</span>
+		<span *ngIf="projectType == 'diwo'">
+			<span
+				[routerLink]="['/whatsapp-setup']"
+				style="margin-left: 0.25rem; color: #637373; margin-right: 2px; cursor: pointer">
+				{{ 'Pages.WhatsAppSetups.AddEdit.pagetitleMsg' | translate }}</span
+			>
+			<img src="assets/images/arrow_forward.svg" style="width: 27px" />
+			<span style="margin-left: 3px" [ngStyle]="{ color: appService.whiteBrandingColor }">
+				{{ 'Pages.WhatsAppSetups.AddEdit.subtitleMsg' | translate }}</span
+			>
+		</span>
+	</div>
+
+	<form [formGroup]="whatsAppSetupDetailsForm">
+		<div class="row section-wrapper" style="margin-top: 2rem" *ngIf="projectType == 'drip'">
+			<div class="form-title">
+				<span>{{ 'Pages.WhatsAppSetups.AddEdit.WhatsappSetupSection.title' | translate }}</span>
+			</div>
+			<div class="row card-body">
+				<!-- common code -->
+				<div class="row">
+					<div class="col-md-12">
+						<div class="row">
+							<div class="col-md-6">
+								<div
+									class="form-group"
+									style="margin-top: -5px"
+									[ngClass]="{
+										'has-error': f.ClientId.invalid && (f.ClientId.dirty || f.ClientId.touched),
+										'has-success': f.ClientId.valid && (f.ClientId.dirty || f.ClientId.touched)
+									}">
+									<label for="ClientId">{{
+										'Pages.WhatsAppSetups.AddEdit.WhatsappSetupSection.Client.title' | translate
+									}}</label>
+									<ng-select
+										[items]="ClientList"
+										class="ng-select-wrap"
+										placeholder="{{
+											'Pages.WhatsAppSetups.AddEdit.WhatsappSetupSection.Client.placeholder' | translate
+										}}"
+										bindLabel="name"
+										bindValue="id"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="true"
+										formControlName="ClientId"
+										(change)="selectClient()">
+									</ng-select>
+									<div *ngIf="f.ClientId.errors && f.ClientId.touched" class="error invalid-feedback">
+										<div *ngIf="f.ClientId.errors.required">
+											{{ 'Pages.WhatsAppSetups.AddEdit.WhatsappSetupSection.Client.error' | translate }}
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div
+									class="form-group"
+									style="margin-top: -5px"
+									[ngClass]="{
+										'has-error': f.isMeta.invalid && (f.isMeta.dirty || f.isMeta.touched),
+										'has-success': f.isMeta.valid && (f.isMeta.dirty || f.isMeta.touched)
+									}">
+									<label>{{ 'Pages.WhatsAppSetups.AddEdit.WhatsappSetupSection.isMeta.title' | translate }}</label>
+									<div>
+										<label class="switch">
+											<input
+												type="checkbox"
+												class="form-control js-switch"
+												formControlName="isMeta"
+												(change)="onEnableMeta()" />
+											<span class="slider round"> </span>
+										</label>
+									</div>
+									<div *ngIf="f.isMeta.errors && f.isMeta.touched" class="error invalid-feedback">
+										<div *ngIf="f.isMeta.errors.required">
+											{{ 'Pages.WhatsAppSetups.AddEdit.WhatsappSetupSection.isMeta.error' | translate }}
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="row" *ngIf="f.isMeta.value" style="margin-bottom: 1rem">
+					<div class="col-md-12">
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group">
+									<label>{{
+										'Pages.WhatsAppSetups.AddEdit.WhatsappSetupSection.connectwithmetatext' | translate
+									}}</label>
+								</div>
+
+								<button
+									class="btn border_radius functionalBtn"
+									[ngStyle]="{
+										'background-color': appService.whiteBrandingColor,
+										border: '1px solid' + appService.whiteBrandingColor,
+										color: 'white'
+									}"
+									style="margin-right: 0px"
+									(click)="startEmbeddedSignup()">
+									{{ 'Pages.WhatsAppSetups.AddEdit.WhatsappSetupSection.connectwithmeta' | translate }}
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- meta code -->
+				<div class="row" *ngIf="f.isMeta.value">
+					<div class="col-md-12">
+						<div class="row">
+							<div class="col-md-6">
+								<div
+									class="form-group"
+									[ngClass]="{
+										'has-error': f.MTPNoId.invalid && (f.MTPNoId.dirty || f.MTPNoId.touched),
+										'has-success': f.MTPNoId.valid && (f.MTPNoId.dirty || f.MTPNoId.touched)
+									}">
+									<label>{{
+										'Pages.WhatsAppSetups.AddEdit.WhatsappSetupSection.MetaPhoneNumber.title' | translate
+									}}</label>
+									<input
+										type="text"
+										class="form-control"
+										placeholder="{{
+											'Pages.WhatsAppSetups.AddEdit.WhatsappSetupSection.MetaPhoneNumber.placeholder' | translate
+										}}"
+										formControlName="MTPNoId" />
+									<div class="error" *ngIf="f.MTPNoId.errors && f.MTPNoId.touched">
+										<div *ngIf="f.MTPNoId.errors.required">
+											{{ 'Pages.WhatsAppSetups.AddEdit.WhatsappSetupSection.MetaPhoneNumber.error' | translate }}
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="col-md-6">
+								<div
+									class="form-group"
+									[ngClass]="{
+										'has-error': f.MTToken.invalid && (f.MTToken.dirty || f.MTToken.touched),
+										'has-success': f.MTToken.valid && (f.MTToken.dirty || f.MTToken.touched)
+									}">
+									<label>{{
+										'Pages.WhatsAppSetups.AddEdit.WhatsappSetupSection.MetaAccessToken.title' | translate
+									}}</label>
+									<input
+										type="text"
+										class="form-control"
+										placeholder="{{
+											'Pages.WhatsAppSetups.AddEdit.WhatsappSetupSection.MetaAccessToken.placeholder' | translate
+										}}"
+										formControlName="MTToken" />
+									<div class="error" *ngIf="f.MTToken.errors && f.MTToken.touched">
+										<div *ngIf="f.MTToken.errors.required">
+											{{ 'Pages.WhatsAppSetups.AddEdit.WhatsappSetupSection.MetaAccessToken.error' | translate }}
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-md-6">
+								<div
+									class="form-group"
+									[ngClass]="{
+										'has-error': f.MTAccId.invalid && (f.MTAccId.dirty || f.MTAccId.touched),
+										'has-success': f.MTAccId.valid && (f.MTAccId.dirty || f.MTAccId.touched)
+									}">
+									<label>{{
+										'Pages.WhatsAppSetups.AddEdit.WhatsappSetupSection.MetaWABAAccountNumber.title' | translate
+									}}</label>
+									<input
+										type="text"
+										class="form-control"
+										placeholder="{{
+											'Pages.WhatsAppSetups.AddEdit.WhatsappSetupSection.MetaWABAAccountNumber.placeholder' | translate
+										}}"
+										formControlName="MTAccId" />
+									<div class="error" *ngIf="f.MTAccId.errors && f.MTAccId.touched">
+										<div *ngIf="f.MTAccId.errors.required">
+											{{ 'Pages.WhatsAppSetups.AddEdit.WhatsappSetupSection.MetaWABAAccountNumber.error' | translate }}
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="col-md-6">
+								<div
+									class="form-group"
+									[ngClass]="{
+										'has-error': f.MTAppId.invalid && (f.MTAppId.dirty || f.MTAppId.touched),
+										'has-success': f.MTAppId.valid && (f.MTAppId.dirty || f.MTAppId.touched)
+									}">
+									<label>{{
+										'Pages.WhatsAppSetups.AddEdit.WhatsappSetupSection.MetaAppNumber.title' | translate
+									}}</label>
+									<input
+										type="text"
+										class="form-control"
+										placeholder="{{
+											'Pages.WhatsAppSetups.AddEdit.WhatsappSetupSection.MetaAppNumber.placeholder' | translate
+										}}"
+										formControlName="MTAppId" />
+									<div class="error" *ngIf="f.MTAppId.errors && f.MTAppId.touched">
+										<div *ngIf="f.MTAppId.errors.required">
+											{{ 'Pages.WhatsAppSetups.AddEdit.WhatsappSetupSection.MetaAppNumber.error' | translate }}
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- gupshup code -->
+				<div class="row" *ngIf="!f.isMeta.value">
+					<div class="col-md-12">
+						<div class="row">
+							<div class="col-md-6">
+								<div
+									class="form-group"
+									[ngClass]="{
+										'has-error': f.user_id.invalid && (f.user_id.dirty || f.user_id.touched),
+										'has-success': f.user_id.valid && (f.user_id.dirty || f.user_id.touched)
+									}">
+									<label>{{ 'Pages.WhatsAppSetups.AddEdit.WhatsappSetupSection.UserName.title' | translate }}</label>
+									<input
+										type="text"
+										class="form-control"
+										placeholder="{{
+											'Pages.WhatsAppSetups.AddEdit.WhatsappSetupSection.UserName.placeholder' | translate
+										}}"
+										formControlName="user_id" />
+									<div class="error" *ngIf="f.user_id.errors && f.user_id.touched">
+										<div *ngIf="f.user_id.errors.required">
+											{{ 'Pages.WhatsAppSetups.AddEdit.WhatsappSetupSection.UserName.error' | translate }}
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="col-md-6">
+								<div
+									class="form-group"
+									[ngClass]="{
+										'has-error': f.password.invalid && (f.password.dirty || f.password.touched),
+										'has-success': f.password.valid && (f.password.dirty || f.password.touched)
+									}">
+									<label>{{ 'Pages.WhatsAppSetups.AddEdit.WhatsappSetupSection.Password.title' | translate }}</label>
+									<input
+										type="password"
+										class="form-control"
+										placeholder="{{
+											'Pages.WhatsAppSetups.AddEdit.WhatsappSetupSection.Password.placeholder' | translate
+										}}"
+										formControlName="password" />
+									<div class="error" *ngIf="f.password.errors && f.password.touched">
+										<div *ngIf="f.password.errors.required">
+											{{ 'Pages.WhatsAppSetups.AddEdit.WhatsappSetupSection.Password.error' | translate }}
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- common code -->
+				<div class="row">
+					<div class="col-md-12">
+						<div class="row">
+							<div class="col-md-6">
+								<div
+									class="form-group"
+									[ngClass]="{
+										'has-error': f.waNumber.invalid && (f.waNumber.dirty || f.waNumber.touched),
+										'has-success': f.waNumber.valid && (f.waNumber.dirty || f.waNumber.touched)
+									}">
+									<label>{{ 'Pages.WhatsAppSetups.AddEdit.WhatsappSetupSection.WABANumber.title' | translate }}</label>
+									<input
+										type="text"
+										class="form-control"
+										placeholder="{{
+											'Pages.WhatsAppSetups.AddEdit.WhatsappSetupSection.WABANumber.placeholder' | translate
+										}}"
+										formControlName="waNumber" />
+									<div class="error" *ngIf="f.waNumber.errors && f.waNumber.touched">
+										<div *ngIf="f.waNumber.errors.required">
+											{{ 'Pages.WhatsAppSetups.AddEdit.WhatsappSetupSection.WABANumber.error' | translate }}
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="col-md-6">
+								<div class="form-group">
+									<label>{{
+										'Pages.WhatsAppSetups.AddEdit.WhatsappSetupSection.PhoneNumberMessagingLimit.title' | translate
+									}}</label>
+									<input type="text" class="form-control" formControlName="messageLimit" />
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-12">
+						<div class="row">
+							<div class="col-md-6">
+								<div
+									class="form-group"
+									[ngClass]="{
+										'has-error':
+											f.canSelectTempType.invalid && (f.canSelectTempType.dirty || f.canSelectTempType.touched),
+										'has-success':
+											f.canSelectTempType.valid && (f.canSelectTempType.dirty || f.canSelectTempType.touched)
+									}">
+									<label>{{
+										'Pages.WhatsAppSetups.AddEdit.WhatsappSetupSection.TemplateTypeSelection.title' | translate
+									}}</label>
+									<div>
+										<label class="switch">
+											<input type="checkbox" class="form-control js-switch" formControlName="canSelectTempType" />
+											<span
+												class="slider round"
+												[ngStyle]="{
+													'background-color': f.canSelectTempType.value ? appService.whiteBrandingColor : '#ccc'
+												}">
+											</span>
+										</label>
+									</div>
+									<div *ngIf="f.canSelectTempType.errors && f.canSelectTempType.touched" class="error invalid-feedback">
+										<div *ngIf="f.canSelectTempType.errors.required">
+											{{ 'Pages.WhatsAppSetups.AddEdit.WhatsappSetupSection.TemplateTypeSelection.error' | translate }}
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="col-md-6" *ngIf="f.canSelectTempType.value == false">
+								<div
+									class="form-group"
+									[ngClass]="{
+										'has-error': f.category.invalid && (f.category.dirty || f.category.touched),
+										'has-success': f.category.valid && (f.category.dirty || f.category.touched)
+									}">
+									<label>{{
+										'Pages.WhatsAppSetups.AddEdit.WhatsappSetupSection.DefaultTemplateCategory.title' | translate
+									}}</label>
+									<ng-select
+										[items]="template_Category"
+										class="ng-select-wrap"
+										placeholder="{{
+											'Pages.WhatsAppSetups.AddEdit.WhatsappSetupSection.DefaultTemplateCategory.placeholder'
+												| translate
+										}}"
+										bindLabel="name"
+										bindValue="name"
+										[multiple]="false"
+										[closeOnSelect]="true"
+										[searchable]="false"
+										formControlName="category">
+									</ng-select>
+									<div *ngIf="f.category.errors && f.category.touched" class="error invalid-feedback">
+										<div *ngIf="f.category.errors.required">
+											{{
+												'Pages.WhatsAppSetups.AddEdit.WhatsappSetupSection.DefaultTemplateCategory.error' | translate
+											}}
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-6">
+						<div
+							class="form-group"
+							[ngClass]="{
+								'has-error': f.canChangeTempCat.invalid && (f.canChangeTempCat.dirty || f.canChangeTempCat.touched),
+								'has-success': f.canChangeTempCat.valid && (f.canChangeTempCat.dirty || f.canChangeTempCat.touched)
+							}">
+							<label>{{
+								'Pages.WhatsAppSetups.AddEdit.WhatsappSetupSection.AllowWhatsAppChangeTemplateCategory.title'
+									| translate
+							}}</label>
+							<div>
+								<label class="switch">
+									<input type="checkbox" class="form-control js-switch" formControlName="canChangeTempCat" />
+									<span
+										class="slider round"
+										[ngStyle]="{
+											'background-color': f.canChangeTempCat.value ? appService.whiteBrandingColor : '#ccc'
+										}">
+									</span>
+								</label>
+							</div>
+							<div *ngIf="f.canChangeTempCat.errors && f.canChangeTempCat.touched" class="error invalid-feedback">
+								<div *ngIf="f.canChangeTempCat.errors.required">
+									{{
+										'Pages.WhatsAppSetups.AddEdit.WhatsappSetupSection.AllowWhatsAppChangeTemplateCategory.error'
+											| translate
+									}}
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-6" style="vertical-align: middle; margin-top: 15px">
+						<a
+							href="https://developers.facebook.com/docs/whatsapp/updates-to-pricing/new-template-guidelines"
+							target="_blank">
+							{{ 'Pages.WhatsAppSetups.AddEdit.WhatsappSetupSection.aboutTemplatecategories' | translate }}</a
+						>
+						<div>
+							<label class="switch" style="visibility: hidden"> </label>
+						</div>
+					</div>
+
+					<div class="col-md-12">
+						<div class="row">
+							<div class="col-md-4">
+								<div class="form-group">
+									<label>{{
+										'Pages.WhatsAppSetups.AddEdit.WhatsappSetupSection.EnableRetryforFailedMessages.title' | translate
+									}}</label>
+									<div>
+										<label class="switch">
+											<input type="checkbox" class="form-control js-switch" formControlName="enableRetry" />
+											<span
+												class="slider round"
+												[ngStyle]="{
+													'background-color': f.enableRetry.value ? appService.whiteBrandingColor : '#ccc'
+												}">
+											</span>
+										</label>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-4" *ngIf="f.enableRetry.value">
+								<div
+									class="form-group"
+									[ngClass]="{
+										'has-error': f.retryInterval.invalid && (f.retryInterval.dirty || f.retryInterval.touched),
+										'has-success': f.retryInterval.valid && (f.retryInterval.dirty || f.retryInterval.touched)
+									}">
+									<label>{{
+										'Pages.WhatsAppSetups.AddEdit.WhatsappSetupSection.RetryInterval.title' | translate
+									}}</label>
+									<input
+										type="number"
+										class="form-control"
+										placeholder="{{
+											'Pages.WhatsAppSetups.AddEdit.WhatsappSetupSection.RetryInterval.placeholder' | translate
+										}}"
+										formControlName="retryInterval" />
+									<div class="error" *ngIf="f.retryInterval.errors && f.retryInterval.touched">
+										<div *ngIf="f.retryInterval.errors.required">
+											{{ 'Pages.WhatsAppSetups.AddEdit.WhatsappSetupSection.RetryInterval.error' | translate }}
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="col-md-4" *ngIf="f.enableRetry.value">
+								<div
+									class="form-group"
+									[ngClass]="{
+										'has-error': f.retryFrequency.invalid && (f.retryFrequency.dirty || f.retryFrequency.touched),
+										'has-success': f.retryFrequency.valid && (f.retryFrequency.dirty || f.retryFrequency.touched)
+									}">
+									<label>{{
+										'Pages.WhatsAppSetups.AddEdit.WhatsappSetupSection.RetryFrequency.title' | translate
+									}}</label>
+									<ng-select
+										[items]="retryFrequency"
+										class="ng-select-wrap"
+										placeholder="{{
+											'Pages.WhatsAppSetups.AddEdit.WhatsappSetupSection.RetryFrequency.placeholder' | translate
+										}}"
+										bindLabel="name"
+										bindValue="name"
+										[multiple]="false"
+										[closeOnSelect]="false"
+										[searchable]="false"
+										formControlName="retryFrequency">
+									</ng-select>
+									<div *ngIf="f.retryFrequency.errors && f.retryFrequency.touched" class="error invalid-feedback">
+										<div *ngIf="f.retryFrequency.errors.required">
+											{{ 'Pages.WhatsAppSetups.AddEdit.WhatsappSetupSection.RetryFrequency.error' | translate }}
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-12" style="padding-left: 0; padding-right: 0" *ngIf="projectType == 'drip'">
+						<div class="col-md-6" *ngIf="WhatsAppSetup.whatsAppSetupId">
+							<div class="form-group">
+								<button
+									class="btn border_radius functionalBtn"
+									[ngStyle]="{
+										'background-color': appService.whiteBrandingColor,
+										border: '1px solid' + appService.whiteBrandingColor,
+										color: 'white'
+									}"
+									style="margin-right: 0px"
+									[disabled]="f.otpTempId.value"
+									(click)="createOtpTemplate()">
+									{{ 'Pages.WhatsAppSetups.AddEdit.createotptemplate' | translate }}
+								</button>
+								<span class="btn-xs whatsApp-status-na" *ngIf="f.otpTempStatus.value == 'NA'">{{
+									'Utils.Status.na' | translate
+								}}</span>
+								<span class="btn-xs whatsApp-status-enabled" *ngIf="f.otpTempStatus.value == 'Enabled'">{{
+									'Utils.Status.enabled' | translate
+								}}</span>
+								<span class="btn-xs whatsApp-status-pending" *ngIf="f.otpTempStatus.value == 'Pending'">{{
+									'Utils.Status.pending' | translate
+								}}</span>
+								<span class="btn-xs whatsApp-status-flagged" *ngIf="f.otpTempStatus.value == 'Flagged'">{{
+									'Utils.Status.flagged' | translate
+								}}</span>
+								<span class="btn-xs whatsApp-status-rejected" *ngIf="f.otpTempStatus.value == 'Rejected'">{{
+									'Utils.Status.rejected' | translate
+								}}</span>
+								<span class="btn-xs whatsApp-status-disabled" *ngIf="f.otpTempStatus.value == 'Disabled'">{{
+									'Utils.Status.disabled' | translate
+								}}</span>
+								<span class="btn-xs whatsApp-status-not-created" *ngIf="f.otpTempStatus.value == 'Not Created'">{{
+									'Utils.Status.notcreated' | translate
+								}}</span>
+							</div>
+						</div>
+					</div>
+
+					<!-- <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group"
+                                    [ngClass]="{ 'has-error': f.sendNtOptIn.invalid && (f.sendNtOptIn.dirty || f.sendNtOptIn.touched) ,'has-success': f.sendNtOptIn.valid && ( f.sendNtOptIn.dirty || f.sendNtOptIn.touched)}">
+                                    <label>{{'Pages.WhatsAppSetups.AddEdit.WhatsappSetupSection.SendWhatsAppmessageswithoutOptInConfirmationSystem.title'
+                                        | translate }}</label>
+                                    <div>
+                                        <label class="switch">
+                                            <input type="checkbox" class="form-control js-switch"
+                                                formControlName="sendNtOptIn">
+                                            <span class="slider round">
+                                            </span>
+                                        </label>
+                                    </div>
+                                    <div *ngIf="f.sendNtOptIn.errors && f.sendNtOptIn.touched"
+                                        class="error invalid-feedback">
+                                        <div *ngIf="f.sendNtOptIn.errors.required">
+                                            {{'Pages.WhatsAppSetups.AddEdit.WhatsappSetupSection.SendWhatsAppmessageswithoutOptInConfirmationSystem.error'
+                                            | translate }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> -->
+
+					<!-- <div class="col-md-12" style="padding-left: 0; padding-right: 0">
+						<div class="col-md-6">
+							<div
+								class="form-group"
+								[ngClass]="{
+									'has-error': f.optInRedirectUrl.invalid && (f.optInRedirectUrl.dirty || f.optInRedirectUrl.touched),
+									'has-success': f.optInRedirectUrl.valid && (f.optInRedirectUrl.dirty || f.optInRedirectUrl.touched)
+								}">
+								<label>{{
+									'Pages.WhatsAppSetups.AddEdit.WhatsappSetupSection.WhatsAppOpt-InRedirectURL.title' | translate
+								}}</label>
+								<input
+									type="text"
+									class="form-control"
+									placeholder="{{
+										'Pages.WhatsAppSetups.AddEdit.WhatsappSetupSection.WhatsAppOpt-InRedirectURL.placeholder'
+											| translate
+									}}"
+									formControlName="optInRedirectUrl" />
+							</div>
+						</div>
+
+						<div class="col-md-6">
+							<div
+								class="form-group"
+								[ngClass]="{
+									'has-error': f.optInMsg.invalid && (f.optInMsg.dirty || f.optInMsg.touched),
+									'has-success': f.optInMsg.valid && (f.optInMsg.dirty || f.optInMsg.touched)
+								}">
+								<label>
+									{{
+										'Pages.WhatsAppSetups.AddEdit.WhatsappSetupSection.WhatsAppOpt-InMessage.title' | translate
+									}}</label
+								>
+								<textarea
+									type="text"
+									class="form-control"
+									placeholder=" {{
+										'Pages.WhatsAppSetups.AddEdit.WhatsappSetupSection.WhatsAppOpt-InMessage.placeholder' | translate
+									}}"
+									formControlName="optInMsg"></textarea>
+							</div>
+						</div>
+					</div> -->
+				</div>
+			</div>
+		</div>
+
+		<!-- Message Setup Section -->
+		<div class="row section-wrapper" style="margin-top: 2rem">
+			<div class="form-title">
+				<span>{{ 'Pages.WhatsAppSetups.AddEdit.messageSetupSection.title' | translate }}</span>
+			</div>
+			<div class="row card-body">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="row">
+							<div class="col-md-12" *ngIf="projectType == 'diwo'">
+								<div class="row">
+									<div class="col-md-6">
+										<div
+											class="form-group"
+											style="margin-top: -5px"
+											[ngClass]="{
+												'has-error': f.ClientId.invalid && (f.ClientId.dirty || f.ClientId.touched),
+												'has-success': f.ClientId.valid && (f.ClientId.dirty || f.ClientId.touched)
+											}">
+											<label for="ClientId">{{
+												'Pages.WhatsAppSetups.AddEdit.WhatsappSetupSection.Client.title' | translate
+											}}</label>
+											<ng-select
+												[items]="ClientList"
+												class="ng-select-wrap"
+												placeholder="{{
+													'Pages.WhatsAppSetups.AddEdit.WhatsappSetupSection.Client.placeholder' | translate
+												}}"
+												bindLabel="name"
+												bindValue="id"
+												[multiple]="false"
+												[closeOnSelect]="true"
+												[searchable]="true"
+												formControlName="ClientId"
+												(change)="selectClient()">
+											</ng-select>
+											<div *ngIf="f.ClientId.errors && f.ClientId.touched" class="error invalid-feedback">
+												<div *ngIf="f.ClientId.errors.required">
+													{{ 'Pages.WhatsAppSetups.AddEdit.WhatsappSetupSection.Client.error' | translate }}
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div
+									class="form-group"
+									[ngClass]="{
+										'has-error': f.messenger_id.invalid && (f.messenger_id.dirty || f.messenger_id.touched),
+										'has-success': f.messenger_id.valid && (f.messenger_id.dirty || f.messenger_id.touched)
+									}">
+									<label>{{ 'Pages.WhatsAppSetups.AddEdit.WhatsappSetupSection.UserName.title' | translate }}</label>
+									<input type="text" class="form-control" formControlName="messenger_id" />
+									<div class="error" *ngIf="f.messenger_id.errors && f.messenger_id.touched">
+										<div *ngIf="f.messenger_id.errors.required">
+											{{ 'Pages.WhatsAppSetups.AddEdit.WhatsappSetupSection.UserName.error' | translate }}
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="col-md-6">
+								<div
+									class="form-group"
+									[ngClass]="{
+										'has-error': f.messenger_password.invalid && (f.password.dirty || f.messenger_password.touched),
+										'has-success':
+											f.messenger_password.valid && (f.messenger_password.dirty || f.messenger_password.touched)
+									}">
+									<label>{{ 'Pages.WhatsAppSetups.AddEdit.WhatsappSetupSection.Password.title' | translate }}</label>
+									<input type="password" class="form-control" formControlName="messenger_password" />
+									<div class="error" *ngIf="f.messenger_password.errors && f.messenger_password.touched">
+										<div *ngIf="f.messenger_password.errors.required">
+											{{ 'Pages.WhatsAppSetups.AddEdit.WhatsappSetupSection.Password.error' | translate }}
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="col-md-6">
+								<div
+									class="form-group"
+									[ngClass]="{
+										'has-error':
+											f.messenger_template.invalid && (f.messenger_template.dirty || f.messenger_template.touched),
+										'has-success':
+											f.messenger_template.valid && (f.messenger_template.dirty || f.messenger_template.touched)
+									}">
+									<label>{{ 'Pages.WhatsAppSetups.AddEdit.messageSetupSection.template.title' | translate }}</label>
+									<textarea type="text" class="form-control" formControlName="messenger_template"></textarea>
+									<div class="error" *ngIf="f.messenger_template.errors && f.messenger_template.touched">
+										<div *ngIf="f.messenger_template.errors.required">
+											{{ 'Pages.WhatsAppSetups.AddEdit.messageSetupSection.template.error' | translate }}
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+
+	<!-- Child Account Section -->
+	<div class="row section-wrapper" style="margin-top: 2rem" *ngIf="childClientList.length > 0">
+		<div class="form-title">
+			<span>{{ 'Pages.WhatsAppSetups.AddEdit.ChlidAccountAccess.title' | translate }}</span>
+		</div>
+		<div class="row card-body">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="form-group" style="display: flex; float: right">
+						<div style="margin-right: 1rem">
+							<label>{{ 'Pages.WhatsAppSetups.AddEdit.ChlidAccountAccess.title2' | translate }}</label>
+						</div>
+						<div>
+							<label class="switch">
+								<input
+									type="checkbox"
+									class="form-control js-switch"
+									[(ngModel)]="selecteAllChildClient"
+									(change)="selectAllChildClient()"
+									[disabled]="isViewMode" />
+								<span
+									class="slider round"
+									[ngStyle]="{ 'background-color': selecteAllChildClient ? appService.whiteBrandingColor : '#ccc' }">
+								</span>
+							</label>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-md-4" *ngFor="let childClient of childClientList">
+					<div class="add-image-card">
+						<div class="add-image-card-div">
+							<div style="padding-top: 0.3rem">
+								<p>
+									{{ childClient.client_id }}
+								</p>
+							</div>
+							<div style="padding-top: 0.3rem">
+								<p>
+									{{ childClient.name }}
+								</p>
+							</div>
+							<div style="margin-left: 0.5rem">
+								<div>
+									<label class="switch">
+										<input
+											type="checkbox"
+											class="form-control js-switch"
+											[(ngModel)]="childClient.isSelected"
+											(change)="changeOneToggle(childClient.isSelected)"
+											[disabled]="isViewMode" />
+										<span
+											class="slider round"
+											[ngStyle]="{
+												'background-color': childClient.isSelected ? appService.whiteBrandingColor : '#ccc'
+											}">
+										</span>
+									</label>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="row card-body" style="margin: 0px">
+			<div style="float: right; margin-top: 2rem">
+				<button
+					class="btn btn-o btn-primary border_radius functionalBtn"
+					style="
+						margin-right: 20px;
+						background-color: lightgray !important;
+						color: black;
+						border: 1px solid lightgray !important;
+					"
+					(click)="cancel()">
+					{{ 'Utils.cancel' | translate }}
+				</button>
+				<button
+					class="btn border_radius functionalBtn"
+					[ngStyle]="{
+						'background-color': appService.whiteBrandingColor,
+						border: '1px solid' + appService.whiteBrandingColor,
+						color: 'white'
+					}"
+					style="margin-right: 0px"
+					(click)="saveWhatsAppSetup()"
+					[disabled]="isViewMode"
+					*ngIf="WhatsAppSetup.whatsAppSetupId">
+					{{ 'Utils.update' | translate }}
+				</button>
+				<button
+					class="btn border_radius functionalBtn"
+					[ngStyle]="{
+						'background-color': appService.whiteBrandingColor,
+						border: '1px solid' + appService.whiteBrandingColor,
+						color: 'white'
+					}"
+					style="margin-right: 0px"
+					(click)="saveWhatsAppSetup()"
+					[disabled]="isViewMode"
+					*ngIf="!WhatsAppSetup.whatsAppSetupId">
+					{{ 'Utils.save' | translate }}
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
