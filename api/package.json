@@ -38,7 +38,7 @@
 		"express": "^4.21.2",
 		"express-useragent": "^1.0.15",
 		"file-type": "^16.5.4",
-		"form-data": "^4.0.1",
+		"form-data": "^4.0.4",
 		"geoip-lite": "^1.4.10",
 		"googleapis": "^144.0.0",
 		"graceful-fs": "https://github.com/tejas-nimkar/node-graceful-fs.git",
