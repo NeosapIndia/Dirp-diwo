@@ -27,7 +27,6 @@
 		"@ngx-translate/core": "^14.0.0",
 		"@ngx-translate/http-loader": "^3.0.1",
 		"@swimlane/ngx-charts": "22.0.0",
-		"@tinymce/tinymce-angular": "^9.0.0",
 		"angular-tag-cloud-module": "14.0.0",
 		"angular2-datetimepicker": "^1.1.1",
 		"core-js": "^3.44.0",
